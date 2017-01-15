@@ -1,0 +1,296 @@
+body {
+    margin: 0;
+    font-family: "Open Sans", helvetica, arial, sans-serif;
+    font-size: 14px;
+    color: #000;
+}
+
+#topbar {
+    background-color: #000;
+    color: #eee;
+}
+
+.newChat {
+    padding: 5px 3px 5px 5px;
+}
+
+.chatName {
+    font-weight: 700;
+}
+
+.newChat:nth-child(even) {
+    background-color: #eee;
+}
+
+#dcbal {
+    line-height: 40px;
+}
+
+#signOut {
+    margin-left: 5px;
+    color: #777;
+    cursor: pointer;
+}
+
+.subt {
+    font-size: 14px;
+    font-weight: 400;
+    color: #00f;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.fire {
+    color: #F4810B;
+}
+
+#topbar .inr {
+    line-height: 60px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 850px;
+}
+
+#actualChat {
+    border: 1px solid #ccc;
+    height: 500px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+#mainThing {
+    width: 850px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.inputline {
+    line-height: 35px;
+}
+
+#login {
+    width: 850px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#addToQueueBttn {
+    font-weight: 700;
+    padding: 5px;
+    color: #999;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+input {
+    width: 250px;
+    font-size: 14px;
+    font-family: "Open Sans", helvetica, arial, sans-serif;
+    border: 1px solid #ccc;
+}
+
+.qtxt {
+    display: inline-block;
+    width: 210px;
+}
+
+#mainThing #rightbox {
+    float: right;
+    width: 250px;
+}
+
+.delete .material-icons {
+    font-size: 15px !important;
+    cursor: pointer;
+}
+
+.playcount {
+    position: absolute;
+    bottom: 0;
+}
+
+.delete {
+    float: right;
+}
+
+.spotlight {
+    background-color: #F4810B;
+    color: #fff;
+    border: 1px solid #F4810B !important;
+}
+
+#nowplaying {
+    font-size: 18px;
+    line-height: 50px;
+    width: 500px;
+    float: left;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#timr {
+    font-size: 16px;
+    float: right;
+    display: inline-block;
+    line-height: 50px;
+}
+
+#deck {
+    margin-top: 10px;
+    height: 106px;
+}
+
+#deck .spot {
+    position: relative;
+    border: 1px solid #ccc;
+    width: 120px;
+    padding: 5px;
+    margin-right: 10px;
+    height: 90px;
+    overflow-y: hidden;
+    display: inline-block;
+}
+
+#mainThing #leftbox {
+    float: left;
+    padding-top: 10px;
+    width: 580px;
+}
+
+#topbar .inr .left {
+    float: left;
+    color: #E5B628;
+    font-size: 25px;
+    font-weight: 700;
+}
+
+div.qresult:nth-child(even) {
+    background-color: #eee;
+}
+
+span.utitle {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+div.qitem:nth-child(even) {
+    background-color: #eee;
+}
+
+input#qsearch {
+    width: 95%;
+    line-height: 30px;
+    padding: 5px;
+}
+
+div#cancelqsearch {
+    font-size: 12px;
+    color: #999;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+div.qresult {
+    padding: 5px 3px 5px 5px;
+    cursor: pointer;
+}
+
+div.qitem {
+    padding: 5px 3px 5px 5px;
+}
+
+#topbar .inr .right {
+    float: right;
+}
+
+.prson {
+    padding: 5px 3px 5px 5px;
+}
+
+.prson:nth-child(even) {
+    background-color: #eee;
+}
+
+.clear {
+    clear: both;
+}
+
+#niceboxes {
+    margin-top: 20px;
+}
+
+#usersbox {
+    float: left;
+    width: 280px;
+}
+
+#queuebox {
+    float: right;
+    width: 280px;
+}
+
+.chatline:nth-child(even) {
+    background-color: #eee;
+}
+
+.userline:nth-child(even) {
+    background-color: #eee;
+}
+
+.queueline:nth-child(even) {
+    background-color: #eee;
+}
+
+.queueline, .userline {
+    padding: 5px;
+}
+
+#idtitle {
+    font-size: 16px;
+    color: #fff;
+    font-weight: 400;
+}
+
+#userslist {
+    height: 330px;
+    margin-top: 5px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+}
+
+.usertab {
+    font-weight: 700;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.chatline {
+    padding: 5px;
+}
+
+.chatline .from {
+    font-weight: 700;
+}
+
+#usertabs .selected {
+    background-color: #000;
+    color: #fff;
+}
+
+#queuelist {
+    height: 330px;
+    margin-top: 5px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+}
+
+#bottomInfo {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    font-size: 10px;
+    font-family: helvetica, arial, sans-serif;
+    color: #fff;
+    background-color: #000;
+}

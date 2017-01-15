@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Indie Discotheque | firetable</title>
+	<link rel="shortcut icon" href="favicon.png">
+	<link rel="stylesheet" href="css/looks.css" type="text/css" />
+	<script src="https://cdn.jsdelivr.net/emojione/2.2.7/lib/js/emojione.min.js"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/emojione/2.2.7/assets/css/emojione.min.css" />
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="js/jquery.countdown.min.js"></script>
+
+</head>
+
+<body>
+	<div id="contain">
+		<div class="inner">
+
+		</div>
+		<div id="topbar">
+			<div class="inr">
+				<div class="left">
+					<span class="fire">fire</span>table <span id="idtitle">Indie Discotheque</span>
+				</div>
+				<div class="right">
+					<span id="loggedInEmail">Not Logged In</span><span id="signOut"> </span>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<div id="login">
+			<div id="logscreen">
+
+				<h1>Log In <span class="subt" id="signuplink">Or Sign Up</span></h1>
+				<div class="inputline">
+					Email: <input type="text" id="loginemail">
+				</div>
+				<div class="inputline">
+					Password: <input type="password" id="loginpass">
+				</div>
+				<div class="inputline">
+					<button id="loginBttn">Log In</button> <span class="subt" id="resetpass">Reset Password</span>
+				</div>
+			</div>
+			<div id="createscreen" style="display:none;">
+				<h1>No Account? Sign Up! <span class="subt" id="loginlink2">Or Log In</span></h1>
+				<div class="inputline">
+					Email: <input type="text" id="newemail">
+				</div>
+				<div class="inputline">
+					Password: <input type="password" id="newpass">
+				</div>
+				<div class="inputline">
+					<button id="createAccountBttn">Create Account</button>
+				</div>
+			</div>
+			<div id="resetscreen" style="display:none;">
+				<h1>Reset your password! <span class="subt" id="loginlink">Back to login</span></h1>
+
+				<div class="inputline">
+					Password: <input type="text" id="theAddress">
+				</div>
+				<div class="inputline">
+					<button id="resetPassBttn">Reset password</button>
+				</div>
+			</div>
+		</div>
+		<div id="mainThing" style="display:none;">
+			<div id="leftbox">
+				<div style="display:none" id="playerArea"></div>
+				<div>
+					<div id="nowplaying">
+						<span id="track">
+						Nothing
+					</span> &ndash; <span id="artist">
+						Playing
+					</span>
+					</div>
+				</div>
+				<div id="timr"></div>
+				<div class="clear"></div>
+				<div id="deck"></div>
+				<div id="niceboxes">
+					<div id="usersbox">
+						<div id="usertabs">
+							<span class="usertab selected" id="label1">Users</span> <span class="usertab" id="label2">Waitlist</span>
+						</div>
+						<div id="userslist">
+							<div id="allusers" class="innr">
+								okay nice
+							</div>
+							<div id="justwaitlist" style="display:none" class="innr">
+								just the wait
+							</div>
+						</div>
+					</div>
+					<div id="queuebox">
+						<strong>Your Queue</strong> <span id="addToQueueBttn">Add Song</span>
+						<div id="queuelist">
+							<div id="mainqueue" class="innr">
+								heres the queue
+							</div>
+							<div id="addbox" style="display:none" class="innr">
+								<input type="text" placeholder="Add a thing to the your queue now" id="qsearch"></input>
+								<div id="cancelqsearch">
+									Return to my queue
+								</div>
+								<div id="searchResults">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="clear"></div>
+				</div>
+
+			</div>
+			<div id="rightbox">
+				<div id="dcbal">
+					Balance: <span id="dcnum">0</span> disocheques
+				</div>
+				<div id="actualChat"></div>
+				<input placeholder="Chat a thing" type="text" id="newchat">
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	</div>
+	<div id="bottomInfo">
+		&copy; 2016 Indie Discotheque. Much love to turntable.fm and dubtrack.fm
+		<3 <3. Powered by Firebase. </div>
+</body>
+<script src="https://apis.google.com/js/client.js?onload=googleApiClientReady">
+</script>
+<script type="text/javascript" src="js/main.js"></script>
+
+</html>
