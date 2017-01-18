@@ -198,6 +198,12 @@ div.qresult {
 
 div.qitem {
     padding: 5px 3px 5px 5px;
+    background-color: #fff;
+    cursor: move;
+    /* fallback if grab cursor is unsupported */
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
 }
 
 #topbar .inr .right {

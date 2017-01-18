@@ -44,10 +44,23 @@ firetable.init = function() {
                 for (var key in okdata) {
                     if (okdata.hasOwnProperty(key)) {
                         var thisone = okdata[key];
-                        newlist += "<div class=\"qitem\"><div class=\"qtxt\">" + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div>";
+                        newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"qtxt\">" + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div>";
                     }
                 }
                 $("#mainqueue").html(newlist);
+                $('#mainqueue').sortable({
+                    start: function(event, ui) {
+                        var start_pos = ui.item.index();
+                        ui.item.data('start_pos', start_pos);
+                    },
+                    change: function(event, ui) {
+
+                    },
+                    update: function(event, ui) {
+                        console.log("UPDATE");
+                        firetable.actions.updateQueue();
+                    }
+                });
             });
             $("#signOut").html("<span onclick=\"firetable.actions.logOut()\" id=\"logOutButton\">Log Out</span>");
             $("#login").css("display", "none");
@@ -81,6 +94,31 @@ firetable.actions = {
             }
             console.log(error);
         });
+    },
+    updateQueue() {
+        //this fires when someone drags a song to a new spot in the queue
+        var arr = $('#mainqueue > div').map(function() {
+            var theid = this.id;
+            var idraw = theid.slice(3);
+            return idraw;
+        }).get();
+
+        var okdata = firetable.queue;
+        var ids = [];
+        for (var key in okdata) {
+            if (okdata.hasOwnProperty(key)) {
+                ids.push(key);
+            }
+        }
+        var newobj = {};
+        for (var i = 0; i < arr.length; i++) {
+            var songid = arr[i];
+            var newspot = ids[i];
+            var thisone = okdata[songid];
+            newobj[newspot] = thisone;
+        }
+        var qref = firebase.database().ref("queues/" + firetable.uid);
+        qref.set(newobj);
     },
     bumpSongInQueue(songid) {
         //this is a stupid way of doing this,
