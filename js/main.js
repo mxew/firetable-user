@@ -3,6 +3,7 @@ var firetable = {
     uid: null,
     playdex: 0,
     users: {},
+    queue: false,
     playlimit: 2
 }
 
@@ -37,12 +38,13 @@ firetable.init = function() {
             var refq = firebase.database().ref("queues/" + firetable.uid);
             refq.on('value', function(dataSnapshot) {
                 var okdata = dataSnapshot.val();
+                firetable.queue = okdata;
                 var newlist = "";
                 console.log(okdata);
                 for (var key in okdata) {
                     if (okdata.hasOwnProperty(key)) {
                         var thisone = okdata[key];
-                        newlist += "<div class=\"qitem\"><div class=\"qtxt\">" + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div>";
+                        newlist += "<div class=\"qitem\"><div class=\"qtxt\">" + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div>";
                     }
                 }
                 $("#mainqueue").html(newlist);
@@ -79,6 +81,47 @@ firetable.actions = {
             }
             console.log(error);
         });
+    },
+    bumpSongInQueue(songid) {
+        //this is a stupid way of doing this,
+        //but i couldn't find a way to re-order a fb ref
+        //or add to the top of it (fb has a push() but no unshift() equivalent)
+        if (!firetable.queue) return false;
+        var okdata = firetable.queue;
+        var qtemp = [];
+        var ids = [];
+        var indx = false;
+        var countr = 0;
+        for (var key in okdata) {
+            if (okdata.hasOwnProperty(key)) {
+                var thisone = okdata[key];
+                var obj = {
+                    data: thisone,
+                    key: key
+                };
+                qtemp.push(obj);
+                ids.push(key);
+                if (key == songid) indx = countr;
+                countr++;
+            }
+        }
+        var newobj = {};
+        if (indx) {
+            var thingo = qtemp[indx];
+            qtemp.splice(indx, 1); //take song out of temp array
+            qtemp.unshift(thingo); //add it to the top
+
+            //now we have to rebuild the object keeping the oldkeys in the same order
+            //we have to do it this way (i think) because firebase orders based on its ids
+            for (var i = 0; i < qtemp.length; i++) {
+                var theid = ids[i];
+                console.log(theid);
+                newobj[theid] = qtemp[i].data;
+            }
+            var qref = firebase.database().ref("queues/" + firetable.uid);
+            qref.set(newobj); //send it off to firebase!
+        }
+
     },
     signUp: function(email, password) {
         firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
@@ -180,18 +223,18 @@ firetable.ui = {
                         countr++;
                     }
                 }
-                if (countr < 4){
-                  ok1 += "<div class=\"spot\"><div class=\"djname\"><strong>EMPTY seat!</strong> <br/>Type !addme to DJ right now.</div></div> ";
-                  countr++;
-                  for (var i=countr; i< 4; i++){
-                    ok1 += "<div class=\"spot\"></div> ";
-                  }
+                if (countr < 4) {
+                    ok1 += "<div class=\"spot\"><div class=\"djname\"><strong>EMPTY seat!</strong> <br/>Type !addme to DJ right now.</div></div> ";
+                    countr++;
+                    for (var i = countr; i < 4; i++) {
+                        ok1 += "<div class=\"spot\"></div> ";
+                    }
                 }
 
             } else {
                 ok1 += "<div class=\"spot\"><div class=\"djname\"><strong>EMPTY seat!</strong><br/>Type !addme to DJ right now.</div></div> ";
-                for (var i=0; i< 3; i++){
-                  ok1 += "<div class=\"spot\"></div> ";
+                for (var i = 0; i < 3; i++) {
+                    ok1 += "<div class=\"spot\"></div> ";
                 }
             }
             $("#deck").html(ok1);
