@@ -58,6 +58,26 @@ body {
     overflow-y: scroll;
 }
 
+.badoop{
+  background-color: #e2f7ff !important;
+}
+
+.chatTime {
+    display: inline-block;
+    float: right;
+    font-weight: 400;
+    font-size: 10px;
+    color: #888;
+}
+
+a {
+    color: #0084B4;
+}
+
+.npmsg{
+  font-size:12px;
+}
+
 #mainThing {
     width: 850px;
     margin-left: auto;

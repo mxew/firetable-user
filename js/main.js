@@ -7,10 +7,13 @@ var firetable = {
     preview: false,
     song: null,
     playerLoaded: null,
+    lastChatPerson: false,
+    lastChatId: false,
+    nonpmsg: true,
     playlimit: 2
 }
 
-firetable.version = "00.00.01";
+firetable.version = "00.00.02";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -28,10 +31,10 @@ function initialize(event) {
     firetable.playerLoaded = true;
     var vol = localStorage["firetableVol"];
     if (!vol) {
-      vol = 80;
-      localStorage["firetableVol"] = 80;
+        vol = 80;
+        localStorage["firetableVol"] = 80;
     } else {
-      player.setVolume(vol);
+        player.setVolume(vol);
     }
 
     $("#slider").slider({
@@ -195,7 +198,7 @@ firetable.actions = {
                 var secSince = Math.floor(timeSince / 1000);
                 var timeLeft = firetable.song.duration - secSince;
                 if (firetable.song.type == 1) {
-                    if (!firetable.preview) player.loadVideoById(data.cid, secSince, "large")
+                    if (!firetable.preview) player.loadVideoById(firetable.song.cid, secSince, "large")
                 }
             }, 30 * 1000);
             $("#pv" + id).html("&#xE034;");
@@ -322,18 +325,20 @@ firetable.actions = {
             cid: cid
         };
         qref.push(info);
-        if (firetable.preview.slice(0, 5) == "ytcid") {
-            $("#pv" + firetable.preview).html("&#xE037;");
-            clearTimeout(firetable.ptimeout);
-            firetable.ptimeout = null;
-            firetable.preview = false;
-            //start regular song
-            var nownow = Date.now();
-            var timeSince = nownow - firetable.song.started;
-            var secSince = Math.floor(timeSince / 1000);
-            var timeLeft = firetable.song.duration - secSince;
-            if (firetable.song.type == 1) {
-                if (!firetable.preview) player.loadVideoById(firetable.song.cid, secSince, "large")
+        if (firetable.preview) {
+            if (firetable.preview.slice(0, 5) == "ytcid") {
+                $("#pv" + firetable.preview).html("&#xE037;");
+                clearTimeout(firetable.ptimeout);
+                firetable.ptimeout = null;
+                firetable.preview = false;
+                //start regular song
+                var nownow = Date.now();
+                var timeSince = nownow - firetable.song.started;
+                var secSince = Math.floor(timeSince / 1000);
+                var timeLeft = firetable.song.duration - secSince;
+                if (firetable.song.type == 1) {
+                    if (!firetable.preview) player.loadVideoById(firetable.song.cid, secSince, "large")
+                }
             }
         }
         $("#mainqueue").css("display", "block");
@@ -341,10 +346,48 @@ firetable.actions = {
     }
 };
 
+firetable.utilities = {
+    playSound: function(filename) {
+        document.getElementById("alert").innerHTML = '<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename + '.mp3" /></audio>';
+    },
+    format_date: function(d) {
+
+        var date = new Date(d);
+
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var year = date.getFullYear();
+
+        var formatted_date = month + "-" + day + "-" + year;
+        return formatted_date;
+    },
+    format_time: function(d) {
+
+        var date = new Date(d);
+
+        var hours1 = date.getHours();
+        var ampm = "am";
+        var hours = hours1;
+        if (hours1 > 12) {
+            ampm = "pm";
+            hours = hours1 - 12;
+        }
+        if (hours == 0) hours = 12;
+        var minutes = date.getMinutes();
+        var min = "";
+        if (minutes > 9) {
+            min += minutes;
+        } else {
+            min += "0" + minutes;
+        }
+        return hours + ":" + min + "" + ampm;
+    }
+};
+
 firetable.ui = {
     textToLinks: function(text) {
 
-        var re = /(https?:\/\/(([-\w\.]+)+(:\d+)?(\/([\w/_\.]*(\?\S+)?)?)?))/g;
+        var re = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
         return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
     },
     init: function() {
@@ -366,6 +409,22 @@ firetable.ui = {
                         player.loadVideoById(data.cid, secSince, "large")
                     }
                 }
+            }
+            if (data.cid != 0) {
+                var nicename = data.djid;
+                if (firetable.users[data.djid]) {
+                    if (firetable.users[data.djid].username) nicename = Object.keys(firetable.users[data.djid].username)[0];
+                }
+                if (firetable.nonpmsg) {
+                    firetable.nonpmsg = false;
+                } else {
+                    $("#actualChat").append("<div class=\"newChat\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
+                    var objDiv = document.getElementById("actualChat");
+                    objDiv.scrollTop = objDiv.scrollHeight;
+                    firetable.lastChatPerson = false;
+                    firetable.lastChatId = false;
+                }
+
             }
             $("#timr").countdown({
                 until: timeLeft,
@@ -491,6 +550,11 @@ firetable.ui = {
             var objDiv = document.getElementById("actualChat");
             var utitle = "";
 
+            var you = firetable.uid;
+            if (firetable.users[firetable.uid]) {
+                if (firetable.users[firetable.uid].username) you = Object.keys(firetable.users[firetable.uid].username)[0];
+            }
+
             if (firetable.users[chatData.id]) {
                 if (firetable.users[chatData.id].username) namebo = Object.keys(firetable.users[chatData.id].username)[0];
                 if (firetable.users[chatData.id].mod) utitle = "cop";
@@ -499,9 +563,29 @@ firetable.ui = {
             var txtOut = firetable.ui.textToLinks(chatData.txt);
             txtOut = emojione.shortnameToImage(txtOut);
             txtOut = emojione.unicodeToImage(txtOut);
+            var badoop = false;
+            if (chatData.txt.match(you, 'i') || chatData.txt.match(/\@everyone/)) {
+                var oknow = Date.now();
+                if (oknow - chatData.time < (10 * 1000)) {
+                    firetable.utilities.playSound("sound");
+                    badoop = true;
+                }
+            }
+            if (chatData.id == firetable.lastChatPerson && !badoop) {
+                $("#chat" + firetable.lastChatId).append("<div>" + txtOut + "</div>");
+                $("#chatTime" + firetable.lastChatId).text(firetable.utilities.format_time(chatData.time));
+            } else {
+                if (badoop) {
+                    $("#actualChat").append("<div class=\"newChat badoop\"><div class=\"chatName\">" + namebo + " <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chat" + childSnapshot.key + "\" class=\"chatText\">" + txtOut + "</div>")
+                } else {
+                    $("#actualChat").append("<div class=\"newChat\"><div class=\"chatName\">" + namebo + " <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chat" + childSnapshot.key + "\" class=\"chatText\">" + txtOut + "</div>")
+                }
+                firetable.lastChatPerson = chatData.id;
+                firetable.lastChatId = childSnapshot.key;
+            }
 
-            $("#actualChat").append("<div class=\"newChat\"><div class=\"chatName\">" + namebo + " <span class=\"utitle\">" + utitle + "</span></div><div class=\"chatText\">" + txtOut + "</div>")
             objDiv.scrollTop = objDiv.scrollHeight;
+
         });
 
         $("#label1").bind("click.lb1tab", firetable.ui.usertab1);
@@ -513,18 +597,20 @@ firetable.ui = {
         $("#cancelqsearch").bind("click", function() {
             $("#mainqueue").css("display", "block");
             $("#addbox").css("display", "none");
-            if (firetable.preview.slice(0, 5) == "ytcid") {
-                $("#pv" + firetable.preview).html("&#xE037;");
-                clearTimeout(firetable.ptimeout);
-                firetable.ptimeout = null;
-                firetable.preview = false;
-                //start regular song
-                var nownow = Date.now();
-                var timeSince = nownow - firetable.song.started;
-                var secSince = Math.floor(timeSince / 1000);
-                var timeLeft = firetable.song.duration - secSince;
-                if (firetable.song.type == 1) {
-                    if (!firetable.preview) player.loadVideoById(firetable.song.cid, secSince, "large")
+            if (firetable.preview) {
+                if (firetable.preview.slice(0, 5) == "ytcid") {
+                    $("#pv" + firetable.preview).html("&#xE037;");
+                    clearTimeout(firetable.ptimeout);
+                    firetable.ptimeout = null;
+                    firetable.preview = false;
+                    //start regular song
+                    var nownow = Date.now();
+                    var timeSince = nownow - firetable.song.started;
+                    var secSince = Math.floor(timeSince / 1000);
+                    var timeLeft = firetable.song.duration - secSince;
+                    if (firetable.song.type == 1) {
+                        if (!firetable.preview) player.loadVideoById(firetable.song.cid, secSince, "large")
+                    }
                 }
             }
         });
@@ -588,6 +674,7 @@ firetable.ui = {
                     var q = $('#qsearch').val();
                     var request = gapi.client.youtube.search.list({
                         q: q,
+                        type: 'video',
                         part: 'snippet',
                         maxResults: 15
                     });
