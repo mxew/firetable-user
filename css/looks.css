@@ -99,7 +99,7 @@ input {
     width: 250px;
 }
 
-.delete .material-icons {
+.material-icons {
     font-size: 15px !important;
     cursor: pointer;
 }
@@ -193,7 +193,6 @@ div#cancelqsearch {
 
 div.qresult {
     padding: 5px 3px 5px 5px;
-    cursor: pointer;
 }
 
 div.qitem {

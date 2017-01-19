@@ -4,6 +4,8 @@ var firetable = {
     playdex: 0,
     users: {},
     queue: false,
+    preview: false,
+    song: null,
     playlimit: 2
 }
 
@@ -44,7 +46,11 @@ firetable.init = function() {
                 for (var key in okdata) {
                     if (okdata.hasOwnProperty(key)) {
                         var thisone = okdata[key];
-                        newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"qtxt\">" + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div>";
+                        var psign = "&#xE037;";
+                        if (key == firetable.preview) {
+                            psign = "&#xE034;";
+                        }
+                        newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + key + "')\">" + psign + "</i> " + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div>";
                     }
                 }
                 $("#mainqueue").html(newlist);
@@ -95,7 +101,54 @@ firetable.actions = {
             console.log(error);
         });
     },
-    updateQueue() {
+    pview: function(id, fromSearch) {
+        if (firetable.preview == id) {
+            //already previewing this. stop and resume regular song
+            clearTimeout(firetable.ptimeout);
+            firetable.ptimeout = null;
+            $("#pv" + firetable.preview).html("&#xE037;");
+            firetable.preview = false;
+            //start regular song
+            var nownow = Date.now();
+            var timeSince = nownow - firetable.song.started;
+            var secSince = Math.floor(timeSince / 1000);
+            var timeLeft = firetable.song.duration - secSince;
+            if (firetable.song.type == 1) {
+                if (!firetable.preview) $("#playerArea").html("<iframe src=\"https://www.youtube.com/embed/" + firetable.song.cid + "?autoplay=1&start=" + secSince + "\"></iframe>")
+            }
+        } else {
+            if (firetable.preview) $("#pv" + firetable.preview).html("&#xE037;");
+            firetable.preview = id;
+            if (fromSearch) {
+                var cid = id.slice(5);
+            } else {
+                var cid = firetable.queue[id].cid;
+            }
+
+            if (firetable.ptimeout != null) {
+                clearTimeout(firetable.ptimeout);
+                firetable.ptimeout = null;
+            }
+            firetable.ptimeout = setTimeout(function() {
+                firetable.ptimeout = null;
+                $("#pv" + firetable.preview).html("&#xE037;");
+                firetable.preview = false;
+
+                //start regular song
+                var nownow = Date.now();
+                var timeSince = nownow - firetable.song.started;
+                var secSince = Math.floor(timeSince / 1000);
+                var timeLeft = firetable.song.duration - secSince;
+                if (firetable.song.type == 1) {
+                    if (!firetable.preview) $("#playerArea").html("<iframe src=\"https://www.youtube.com/embed/" + firetable.song.cid + "?autoplay=1&start=" + secSince + "\"></iframe>")
+                }
+            }, 30 * 1000);
+            $("#pv" + id).html("&#xE034;");
+            $("#playerArea").html("<iframe src=\"https://www.youtube.com/embed/" + cid + "?autoplay=1\"></iframe>");
+        }
+
+    },
+    updateQueue: function() {
         //this fires when someone drags a song to a new spot in the queue
         var arr = $('#mainqueue > div').map(function() {
             var theid = this.id;
@@ -110,17 +163,23 @@ firetable.actions = {
                 ids.push(key);
             }
         }
+        var changePv = false;
         var newobj = {};
         for (var i = 0; i < arr.length; i++) {
             var songid = arr[i];
             var newspot = ids[i];
             var thisone = okdata[songid];
             newobj[newspot] = thisone;
+            if (firetable.preview == songid) {
+                changePv = newspot;
+                console.log(changePv);
+            }
         }
+        if (changePv) firetable.preview = changePv;
         var qref = firebase.database().ref("queues/" + firetable.uid);
         qref.set(newobj);
     },
-    bumpSongInQueue(songid) {
+    bumpSongInQueue: function(songid) {
         //this is a stupid way of doing this,
         //but i couldn't find a way to re-order a fb ref
         //or add to the top of it (fb has a push() but no unshift() equivalent)
@@ -148,14 +207,19 @@ firetable.actions = {
             var thingo = qtemp[indx];
             qtemp.splice(indx, 1); //take song out of temp array
             qtemp.unshift(thingo); //add it to the top
-
+            var changePv = false;
             //now we have to rebuild the object keeping the oldkeys in the same order
             //we have to do it this way (i think) because firebase orders based on its ids
             for (var i = 0; i < qtemp.length; i++) {
                 var theid = ids[i];
                 console.log(theid);
+                if (firetable.preview == qtemp[i].key) {
+                    changePv = theid;
+                }
+
                 newobj[theid] = qtemp[i].data;
             }
+            if (changePv) firetable.preview = changePv;
             var qref = firebase.database().ref("queues/" + firetable.uid);
             qref.set(newobj); //send it off to firebase!
         }
@@ -202,6 +266,20 @@ firetable.actions = {
             cid: cid
         };
         qref.push(info);
+        if (firetable.preview.slice(0, 5) == "ytcid") {
+            $("#pv" + firetable.preview).html("&#xE037;");
+            clearTimeout(firetable.ptimeout);
+            firetable.ptimeout = null;
+            firetable.preview = false;
+            //start regular song
+            var nownow = Date.now();
+            var timeSince = nownow - firetable.song.started;
+            var secSince = Math.floor(timeSince / 1000);
+            var timeLeft = firetable.song.duration - secSince;
+            if (firetable.song.type == 1) {
+                if (!firetable.preview) $("#playerArea").html("<iframe src=\"https://www.youtube.com/embed/" + firetable.song.cid + "?autoplay=1&start=" + secSince + "\"></iframe>")
+            }
+        }
         $("#mainqueue").css("display", "block");
         $("#addbox").css("display", "none");
     }
@@ -224,8 +302,9 @@ firetable.ui = {
             var timeSince = nownow - data.started;
             var secSince = Math.floor(timeSince / 1000);
             var timeLeft = data.duration - secSince;
+            firetable.song = data;
             if (data.type == 1) {
-                $("#playerArea").html("<iframe src=\"https://www.youtube.com/embed/" + data.cid + "?autoplay=1&start=" + secSince + "\"></iframe>")
+                if (!firetable.preview) $("#playerArea").html("<iframe src=\"https://www.youtube.com/embed/" + data.cid + "?autoplay=1&start=" + secSince + "\"></iframe>")
             }
             $("#timr").countdown({
                 until: timeLeft,
@@ -373,6 +452,20 @@ firetable.ui = {
         $("#cancelqsearch").bind("click", function() {
             $("#mainqueue").css("display", "block");
             $("#addbox").css("display", "none");
+            if (firetable.preview.slice(0, 5) == "ytcid") {
+                $("#pv" + firetable.preview).html("&#xE037;");
+                clearTimeout(firetable.ptimeout);
+                firetable.ptimeout = null;
+                firetable.preview = false;
+                //start regular song
+                var nownow = Date.now();
+                var timeSince = nownow - firetable.song.started;
+                var secSince = Math.floor(timeSince / 1000);
+                var timeLeft = firetable.song.duration - secSince;
+                if (firetable.song.type == 1) {
+                    if (!firetable.preview) $("#playerArea").html("<iframe src=\"https://www.youtube.com/embed/" + firetable.song.cid + "?autoplay=1&start=" + secSince + "\"></iframe>")
+                }
+            }
         });
         $("#resetpass").bind("click", function() {
             $("#logscreen").css("display", "none");
@@ -441,13 +534,30 @@ firetable.ui = {
                         $("#qsearch").val("");
                         $('#searchResults').html("");
 
+                        if (firetable.preview) {
+                            if (firetable.preview.slice(0, 5) == "ytcid") {
+                                $("#pv" + firetable.preview).html("&#xE037;");
+                                clearTimeout(firetable.ptimeout);
+                                firetable.ptimeout = null;
+                                firetable.preview = false;
+                                //start regular song
+                                var nownow = Date.now();
+                                var timeSince = nownow - firetable.song.started;
+                                var secSince = Math.floor(timeSince / 1000);
+                                var timeLeft = firetable.song.duration - secSince;
+                                if (firetable.song.type == 1) {
+                                    if (!firetable.preview) $("#playerArea").html("<iframe src=\"https://www.youtube.com/embed/" + firetable.song.cid + "?autoplay=1&start=" + secSince + "\"></iframe>")
+                                }
+                            }
+                        }
                         var srchItems = response.result.items;
                         console.log(response);
                         $.each(srchItems, function(index, item) {
                             vidTitle = item.snippet.title;
 
+                            var pkey = "ytcid" + item.id.videoId;
 
-                            $("#searchResults").append("<div onclick=\"firetable.actions.queueTrack('" + item.id.videoId + "', '" + vidTitle + "', 1)\" class=\"qresult\">" + vidTitle + "</div>");
+                            $("#searchResults").append("<div class=\"qresult\"><div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + pkey + "', true)\">&#xE037;</i>" + vidTitle + "</div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id.videoId + "', '" + vidTitle + "', 1)\">&#xE03B;</i></div></div>");
                         })
                     })
                 }
