@@ -6,10 +6,65 @@ var firetable = {
     queue: false,
     preview: false,
     song: null,
+    playerLoaded: null,
     playlimit: 2
 }
 
 firetable.version = "00.00.01";
+var player;
+
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('playerArea', {
+        width: 600,
+        height: 400,
+        videoId: '0',
+        events: {
+            onReady: initialize
+        }
+    });
+}
+
+function initialize(event) {
+    firetable.playerLoaded = true;
+    var vol = localStorage["firetableVol"];
+    if (!vol) {
+      vol = 80;
+      localStorage["firetableVol"] = 80;
+    } else {
+      player.setVolume(vol);
+    }
+
+    $("#slider").slider({
+        orientation: "horizontal",
+        range: "min",
+        min: 0,
+        max: 100,
+        value: vol,
+        step: 5,
+        slide: function(event, ui) {
+            player.setVolume(ui.value);
+            localStorage["firetableVol"] = ui.value;
+        }
+    });
+    if (firetable.song) {
+        var data = firetable.song;
+        var nownow = Date.now();
+        var timeSince = nownow - data.started;
+        var secSince = Math.floor(timeSince / 1000);
+        var timeLeft = data.duration - secSince;
+        if (data.type == 1) {
+            if (!firetable.preview) {
+                player.loadVideoById(data.cid, secSince, "large")
+            }
+        }
+    }
+
+
+}
+
+function onPlayerStateChange(event) {
+    //state changed thanks
+}
 
 firetable.init = function() {
     console.log("Yo sup welcome to firetable my name is chris rohn.")
@@ -114,7 +169,7 @@ firetable.actions = {
             var secSince = Math.floor(timeSince / 1000);
             var timeLeft = firetable.song.duration - secSince;
             if (firetable.song.type == 1) {
-                if (!firetable.preview) $("#playerArea").html("<iframe src=\"https://www.youtube.com/embed/" + firetable.song.cid + "?autoplay=1&start=" + secSince + "\"></iframe>")
+                if (!firetable.preview) player.loadVideoById(firetable.song.cid, secSince, "large")
             }
         } else {
             if (firetable.preview) $("#pv" + firetable.preview).html("&#xE037;");
@@ -140,11 +195,12 @@ firetable.actions = {
                 var secSince = Math.floor(timeSince / 1000);
                 var timeLeft = firetable.song.duration - secSince;
                 if (firetable.song.type == 1) {
-                    if (!firetable.preview) $("#playerArea").html("<iframe src=\"https://www.youtube.com/embed/" + firetable.song.cid + "?autoplay=1&start=" + secSince + "\"></iframe>")
+                    if (!firetable.preview) player.loadVideoById(data.cid, secSince, "large")
                 }
             }, 30 * 1000);
             $("#pv" + id).html("&#xE034;");
-            $("#playerArea").html("<iframe src=\"https://www.youtube.com/embed/" + cid + "?autoplay=1\"></iframe>");
+            player.loadVideoById(cid, "large")
+
         }
 
     },
@@ -277,7 +333,7 @@ firetable.actions = {
             var secSince = Math.floor(timeSince / 1000);
             var timeLeft = firetable.song.duration - secSince;
             if (firetable.song.type == 1) {
-                if (!firetable.preview) $("#playerArea").html("<iframe src=\"https://www.youtube.com/embed/" + firetable.song.cid + "?autoplay=1&start=" + secSince + "\"></iframe>")
+                if (!firetable.preview) player.loadVideoById(firetable.song.cid, secSince, "large")
             }
         }
         $("#mainqueue").css("display", "block");
@@ -292,6 +348,7 @@ firetable.ui = {
         return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
     },
     init: function() {
+
         var s2p = firebase.database().ref("songToPlay");
         s2p.on('value', function(dataSnapshot) {
             var data = dataSnapshot.val();
@@ -303,8 +360,12 @@ firetable.ui = {
             var secSince = Math.floor(timeSince / 1000);
             var timeLeft = data.duration - secSince;
             firetable.song = data;
-            if (data.type == 1) {
-                if (!firetable.preview) $("#playerArea").html("<iframe src=\"https://www.youtube.com/embed/" + data.cid + "?autoplay=1&start=" + secSince + "\"></iframe>")
+            if (firetable.playerLoaded) {
+                if (data.type == 1) {
+                    if (!firetable.preview) {
+                        player.loadVideoById(data.cid, secSince, "large")
+                    }
+                }
             }
             $("#timr").countdown({
                 until: timeLeft,
@@ -463,7 +524,7 @@ firetable.ui = {
                 var secSince = Math.floor(timeSince / 1000);
                 var timeLeft = firetable.song.duration - secSince;
                 if (firetable.song.type == 1) {
-                    if (!firetable.preview) $("#playerArea").html("<iframe src=\"https://www.youtube.com/embed/" + firetable.song.cid + "?autoplay=1&start=" + secSince + "\"></iframe>")
+                    if (!firetable.preview) player.loadVideoById(firetable.song.cid, secSince, "large")
                 }
             }
         });
@@ -546,7 +607,7 @@ firetable.ui = {
                                 var secSince = Math.floor(timeSince / 1000);
                                 var timeLeft = firetable.song.duration - secSince;
                                 if (firetable.song.type == 1) {
-                                    if (!firetable.preview) $("#playerArea").html("<iframe src=\"https://www.youtube.com/embed/" + firetable.song.cid + "?autoplay=1&start=" + secSince + "\"></iframe>")
+                                    if (!firetable.preview) player.loadVideoById(firetable.song.cid, secSince, "large")
                                 }
                             }
                         }
