@@ -526,6 +526,13 @@ firetable.ui = {
                 if (okdata.hasOwnProperty(key)) {
                     var thisone = okdata[key];
                     var utitle = "";
+                    if (key == firetable.uid) {
+                        if (!thisone.status) {
+                            //Firebase thinks you are not here (but you are totally here!)
+                            var ref0 = firebase.database().ref("users/" + user.uid + "/status");
+                            ref0.set(true);
+                        }
+                    }
                     if (thisone.status) {
                         //THIS PERSON IS HERE
                         var thename = key;
