@@ -3,6 +3,7 @@ body {
     font-family: "Open Sans", helvetica, arial, sans-serif;
     font-size: 14px;
     color: #000;
+    margin-bottom:15px;
 }
 
 #topbar {
@@ -124,9 +125,31 @@ input {
     cursor: pointer;
 }
 
+#volplace{
+  float:left;
+}
+
+#info i{
+  font-size:16px;
+}
+
+#info a{
+  color:#666;
+  font-size:12px;
+  text-decoration:none;
+}
+
 #volplace .material-icons {
     font-size: 16px !important;
-    margin-right: 5px;
+}
+
+#shareinfo{
+  float:right;
+}
+
+i#refreshSong {
+    margin-left: 15px;
+    cursor:pointer;
 }
 
 .playcount {
@@ -231,8 +254,8 @@ div#cancelqsearch {
     touch-action: none;
 }
 
-#volplace {
-    margin-top: 10px;
+#volandthings {
+    margin-top: 15px;
     margin-bottom: 25px;
 }
 
@@ -405,7 +428,7 @@ div.qitem {
 }
 
 #bottomInfo {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
     font-size: 10px;
