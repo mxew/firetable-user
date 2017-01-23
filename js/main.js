@@ -350,6 +350,9 @@ firetable.utilities = {
     playSound: function(filename) {
         document.getElementById("alert").innerHTML = '<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename + '.mp3" /></audio>';
     },
+    htmlEscape: function(str) {
+        return str.replace(/'/g, '\\\'')
+    },
     format_date: function(d) {
 
         var date = new Date(d);
@@ -712,7 +715,7 @@ firetable.ui = {
 
                             var pkey = "ytcid" + item.id.videoId;
 
-                            $("#searchResults").append("<div class=\"qresult\"><div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + pkey + "', true)\">&#xE037;</i>" + vidTitle + "</div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id.videoId + "', '" + vidTitle + "', 1)\">&#xE03B;</i></div></div>");
+                            $("#searchResults").append("<div class=\"qresult\"><div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + pkey + "', true)\">&#xE037;</i>" + vidTitle + "</div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id.videoId + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 1)\">&#xE03B;</i></div></div>");
                         })
                     })
                 }
