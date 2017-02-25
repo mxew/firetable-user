@@ -440,15 +440,18 @@ firetable.ui = {
         wl.on('value', function(dataSnapshot) {
             var data = dataSnapshot.val();
             var ok1 = "";
+	    var lbl = "Waitlist (0)";
             if (data) {
                 var countr = 1;
                 for (var key in data) {
                     if (data.hasOwnProperty(key)) {
+			lbl = "Waitlist ("+countr+")";
                         ok1 += "<div class=\"prson\">" + countr + ". " + data[key].name + "</div>";
                         countr++;
                     }
                 }
             }
+	   $("#label2").text(lbl);
             $("#justwaitlist").html(ok1);
         });
         var tbl = firebase.database().ref("table");
