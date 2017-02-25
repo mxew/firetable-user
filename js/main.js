@@ -644,6 +644,36 @@ firetable.ui = {
             $("#createscreen").css("display", "block");
             $("#resetscreen").css("display", "none");
         });
+	$("#loginpass").bind("keyup", function() {
+            if (event.which == 13) {
+      		var email = $("#loginemail").val();
+         	var pass = $("#loginpass").val();
+            	firetable.actions.logIn(email, pass);
+            }
+        });
+	$("#newpass").bind("keyup", function() {
+            if (event.which == 13) {
+      		var email = $("#newemail").val();
+            	var pass = $("#newpass").val();
+            	firetable.actions.signUp(email, pass);
+            }
+        });
+	$("#theAddress").bind("keyup", function() {
+            if (event.which == 13) {
+      		var email = $("#theAddress").val();
+           	firebase.auth().sendPasswordResetEmail(email).catch(function(error) {
+                	var errorCode = error.code;
+                	var errorMessage = error.message;
+                	if (errorCode === 'auth/wrong-password') {
+                    		alert('Wrong password.');
+                	} else {
+                    		alert(errorMessage);
+                	}
+                	console.log(error);
+            	});
+            	alert("Reset email sent. Click the reset link when it arrives thanks.");
+            }
+        });
         $("#createAccountBttn").bind("click", function() {
             var email = $("#newemail").val();
             var pass = $("#newpass").val();
