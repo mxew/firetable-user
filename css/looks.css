@@ -213,18 +213,14 @@ i#refreshSong {
     font-weight: 700;
 }
 
-div.qresult:nth-child(even) {
-    background-color: #eee;
-}
+
 
 span.utitle {
     font-size: 12px;
     font-weight: 400;
 }
 
-div.qitem:nth-child(even) {
-    background-color: #eee;
-}
+
 
 input#qsearch {
     width: 95%;
@@ -326,6 +322,7 @@ div#cancelqsearch {
 
 div.qresult {
     padding: 5px 3px 5px 5px;
+   border-bottom: 1px solid #eee;
 }
 
 .ui-widget.ui-widget-content {
@@ -339,6 +336,7 @@ div.qitem {
     /* fallback if grab cursor is unsupported */
     cursor: grab;
     cursor: -moz-grab;
+    border-bottom:1px solid #eee;
     cursor: -webkit-grab;
 }
 
