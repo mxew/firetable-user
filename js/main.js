@@ -78,7 +78,6 @@ firetable.init = function() {
         databaseURL: "https://firetable-e10fd.firebaseio.com"
     };
     var height = $(window).height(); // New height
-    console.log(height);
     if (height > 690){
       var morethan = height - 690;
       var newh = 330 + morethan;
@@ -95,7 +94,6 @@ firetable.init = function() {
     $(window).resize(function() {
   // This will execute whenever the window is resized
    var height = $(window).height(); // New height
-   console.log(height);
    if (height > 690){
      var morethan = height - 690;
      var newh = 330 + morethan;
