@@ -54,7 +54,7 @@ body {
 
 #actualChat {
     border: 1px solid #ccc;
-    height: 530px;
+    height: 535px;
     overflow-x: hidden;
     overflow-y: scroll;
 }

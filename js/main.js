@@ -77,6 +77,39 @@ firetable.init = function() {
         authDomain: "firetable-e10fd.firebaseapp.com",
         databaseURL: "https://firetable-e10fd.firebaseio.com"
     };
+    var height = $(window).height(); // New height
+    console.log(height);
+    if (height > 690){
+      var morethan = height - 690;
+      var newh = 330 + morethan;
+      var chah = 535 + morethan;
+      $("#queuelist").css("height",newh+"px");
+      $("#userslist").css("height",newh+"px");
+      $("#actualChat").css("height",chah+"px");
+    } else {
+      $("#queuelist").css("height", "330px");
+      $("#userslist").css("height", "330px");
+      $("#actualChat").css("height","530px");
+
+    }
+    $(window).resize(function() {
+  // This will execute whenever the window is resized
+   var height = $(window).height(); // New height
+   console.log(height);
+   if (height > 690){
+     var morethan = height - 690;
+     var newh = 330 + morethan;
+     var chah = 535 + morethan;
+     $("#queuelist").css("height",newh+"px");
+     $("#userslist").css("height",newh+"px");
+     $("#actualChat").css("height",chah+"px");
+   } else {
+     $("#queuelist").css("height", "330px");
+     $("#userslist").css("height", "330px");
+     $("#actualChat").css("height","530px");
+
+   }
+  });
 
     firebase.initializeApp(config);
     firebase.auth().onAuthStateChanged(function(user) {
