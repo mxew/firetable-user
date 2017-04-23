@@ -186,6 +186,7 @@ i#refreshSong {
     font-size: 18px;
     line-height: 50px;
     width: 500px;
+    font-weight:700;
     float: left;
     display: inline-block;
     overflow: hidden;
@@ -193,7 +194,8 @@ i#refreshSong {
 }
 
 #timr {
-    font-size: 16px;
+    font-size: 14px;
+    font-weight:700;
     float: right;
     display: inline-block;
     line-height: 50px;
