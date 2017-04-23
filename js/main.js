@@ -348,6 +348,13 @@ firetable.actions = {
         if (!match && firetable.users[name]) match = name;
         return match;
     },
+    grab: function(){
+      if (firetable.song.cid != 0){
+        var title = firetable.song.artist + " - " + firetable.song.title;
+        firetable.actions.queueTrack(firetable.song.cid, title, firetable.song.type);
+        $("#grab").addClass("grabbed");
+      }
+    },
     queueTrack: function(cid, name, type) {
         var qref = firebase.database().ref("queues/" + firetable.uid);
         var info = {
@@ -430,6 +437,7 @@ firetable.ui = {
         s2p.on('value', function(dataSnapshot) {
             var data = dataSnapshot.val();
             $("#timr").countdown("destroy");
+            $("#grab").removeClass("grabbed");
             $("#track").text(data.title);
             $("#artist").text(data.artist);
             var nownow = Date.now();
@@ -663,6 +671,8 @@ firetable.ui = {
             $("#createscreen").css("display", "none");
             $("#resetscreen").css("display", "block");
         });
+        $("#grab").bind("click", firetable.actions.grab);
+
         $("#loginlink").bind("click", function() {
             $("#logscreen").css("display", "block");
             $("#createscreen").css("display", "none");
