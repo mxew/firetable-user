@@ -13,7 +13,7 @@ var firetable = {
     playlimit: 2
 }
 
-firetable.version = "00.00.02";
+firetable.version = "00.00.03";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -49,6 +49,7 @@ function initialize(event) {
             localStorage["firetableVol"] = ui.value;
         }
     });
+    $("#playerArea").toggle();
     if (firetable.song) {
         var data = firetable.song;
         var nownow = Date.now();
@@ -116,7 +117,7 @@ firetable.init = function() {
             console.log("user signed in!");
             if (firetable.users[firetable.uid]) {
                 if (firetable.users[firetable.uid].username) {
-                    $("#loggedInEmail").text(Object.keys(firetable.users[firetable.uid].username)[0]);
+                    $("#loggedInEmail").text(firetable.users[firetable.uid].username);
                 } else {
                     $("#loggedInEmail").text(user.uid);
                 }
@@ -339,7 +340,7 @@ firetable.actions = {
         for (var key in usrs) {
             if (usrs.hasOwnProperty(key)) {
                 if (firetable.users[key].username) {
-                    if (Object.keys(firetable.users[key].username)[0] == name) {
+                    if (firetable.users[key].username == name) {
                         match = key;
                     }
                 }
@@ -455,7 +456,7 @@ firetable.ui = {
             if (data.cid != 0) {
                 var nicename = data.djid;
                 if (firetable.users[data.djid]) {
-                    if (firetable.users[data.djid].username) nicename = Object.keys(firetable.users[data.djid].username)[0];
+                    if (firetable.users[data.djid].username) nicename = firetable.users[data.djid].username;
                 }
                 if (firetable.nonpmsg) {
                     firetable.nonpmsg = false;
@@ -562,7 +563,7 @@ firetable.ui = {
             firetable.users = okdata;
             if ($("#loggedInEmail").text() == firetable.uid) {
                 if (firetable.users[firetable.uid]) {
-                    if (firetable.users[firetable.uid].username) $("#loggedInEmail").text(Object.keys(firetable.users[firetable.uid].username)[0]);
+                    if (firetable.users[firetable.uid].username) $("#loggedInEmail").text(firetable.users[firetable.uid].username);
                 }
             }
             var newlist = "";
@@ -585,7 +586,7 @@ firetable.ui = {
                         if (firetable.users[key]) {
                             if (firetable.users[key].mod) utitle = "cop";
                             if (firetable.users[key].supermod) utitle = "supercop";
-                            if (firetable.users[key].username) thename = Object.keys(firetable.users[key].username)[0];
+                            if (firetable.users[key].username) thename = firetable.users[key].username;
                         }
                         newlist += "<div class=\"prson\">" + thename + " <span class=\"utitle\">" + utitle + "</span></div>";
                     }
@@ -604,11 +605,11 @@ firetable.ui = {
 
             var you = firetable.uid;
             if (firetable.users[firetable.uid]) {
-                if (firetable.users[firetable.uid].username) you = Object.keys(firetable.users[firetable.uid].username)[0];
+                if (firetable.users[firetable.uid].username) you = firetable.users[firetable.uid].username;
             }
 
             if (firetable.users[chatData.id]) {
-                if (firetable.users[chatData.id].username) namebo = Object.keys(firetable.users[chatData.id].username)[0];
+                if (firetable.users[chatData.id].username) namebo = firetable.users[chatData.id].username;
                 if (firetable.users[chatData.id].mod) utitle = "cop";
                 if (firetable.users[chatData.id].supermod) utitle = "supercop";
             }
@@ -671,8 +672,7 @@ firetable.ui = {
             $("#createscreen").css("display", "none");
             $("#resetscreen").css("display", "block");
         });
-        $("#grab").bind("click", firetable.actions.grab);
-
+        $("#resetpass").bind("click", firetable.actions.grab);
         $("#loginlink").bind("click", function() {
             $("#logscreen").css("display", "block");
             $("#createscreen").css("display", "none");
@@ -805,13 +805,7 @@ firetable.ui = {
                 if (matches) {
                     var command = matches[1].toLowerCase();
                     var args = matches[2];
-                    if (command == "become") {
-                        // TIME TO BECOME A NEW CHAT-A-ROO NAME DAWG
-                        var nameclaimref = firebase.database().ref("usernames/" + args + "/" + firetable.uid);
-                        nameclaimref.set(true);
-                        var uref = firebase.database().ref("users/" + firetable.uid + "/username/" + args);
-                        uref.set(true);
-                    } else if (command == "mod") {
+                    if (command == "mod") {
                         var personToMod = firetable.actions.uidLookup(args);
                         if (personToMod) {
                             var modp = firebase.database().ref("users/" + personToMod + "/mod");
