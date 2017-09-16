@@ -502,7 +502,7 @@ firetable.ui = {
                 var countr = 0;
                 for (var key in data) {
                     if (data.hasOwnProperty(key)) {
-                        ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"djname\">" + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div> ";
+                        ok1 += "<div style=\"background-repeat: no-repeat; background-position: bottom center; background-image: url(https://robohash.org/"+data[key].id+""+data[key].name+".png?size=90x90);\" id=\"spt" + countr + "\" class=\"spot\"><div class=\"djname\">" + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div> ";
                         countr++;
                     }
                 }

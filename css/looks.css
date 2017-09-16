@@ -214,6 +214,7 @@ i#refreshSong {
     margin-right: 10px;
     height: 90px;
     overflow-y: hidden;
+    overflow-x:hidden;
     display: inline-block;
 }
 
