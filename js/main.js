@@ -81,14 +81,14 @@ firetable.init = function() {
     var height = $(window).height(); // New height
     if (height > 690){
       var morethan = height - 690;
-      var newh = 310 + morethan;
+      var newh = 305 + morethan;
       var chah = 528 + morethan;
       $("#queuelist").css("height",newh+"px");
       $("#userslist").css("height",newh+"px");
       $("#actualChat").css("height",chah+"px");
     } else {
-      $("#queuelist").css("height", "310px");
-      $("#userslist").css("height", "310px");
+      $("#queuelist").css("height", "305px");
+      $("#userslist").css("height", "305px");
       $("#actualChat").css("height","528px");
 
     }
@@ -97,14 +97,14 @@ firetable.init = function() {
    var height = $(window).height(); // New height
    if (height > 690){
      var morethan = height - 690;
-     var newh = 310 + morethan;
+     var newh = 305 + morethan;
      var chah = 528 + morethan;
      $("#queuelist").css("height",newh+"px");
      $("#userslist").css("height",newh+"px");
      $("#actualChat").css("height",chah+"px");
    } else {
-     $("#queuelist").css("height", "310px");
-     $("#userslist").css("height", "310px");
+     $("#queuelist").css("height", "305px");
+     $("#userslist").css("height", "305px");
      $("#actualChat").css("height","528px");
 
    }
