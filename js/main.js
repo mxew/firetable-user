@@ -81,15 +81,15 @@ firetable.init = function() {
     var height = $(window).height(); // New height
     if (height > 690){
       var morethan = height - 690;
-      var newh = 330 + morethan;
-      var chah = 535 + morethan;
+      var newh = 310 + morethan;
+      var chah = 528 + morethan;
       $("#queuelist").css("height",newh+"px");
       $("#userslist").css("height",newh+"px");
       $("#actualChat").css("height",chah+"px");
     } else {
-      $("#queuelist").css("height", "330px");
-      $("#userslist").css("height", "330px");
-      $("#actualChat").css("height","530px");
+      $("#queuelist").css("height", "310px");
+      $("#userslist").css("height", "310px");
+      $("#actualChat").css("height","528px");
 
     }
     $(window).resize(function() {
@@ -97,15 +97,15 @@ firetable.init = function() {
    var height = $(window).height(); // New height
    if (height > 690){
      var morethan = height - 690;
-     var newh = 330 + morethan;
-     var chah = 535 + morethan;
+     var newh = 310 + morethan;
+     var chah = 528 + morethan;
      $("#queuelist").css("height",newh+"px");
      $("#userslist").css("height",newh+"px");
      $("#actualChat").css("height",chah+"px");
    } else {
-     $("#queuelist").css("height", "330px");
-     $("#userslist").css("height", "330px");
-     $("#actualChat").css("height","530px");
+     $("#queuelist").css("height", "310px");
+     $("#userslist").css("height", "310px");
+     $("#actualChat").css("height","528px");
 
    }
   });
@@ -502,34 +502,32 @@ firetable.ui = {
                 var countr = 0;
                 for (var key in data) {
                     if (data.hasOwnProperty(key)) {
-                        ok1 += "<div style=\"background-repeat: no-repeat; background-position: bottom center; background-image: url(https://robohash.org/"+data[key].id+""+data[key].name+".png?size=90x90);\" id=\"spt" + countr + "\" class=\"spot\"><div class=\"djname\">" + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div> ";
+                        ok1 += "<div style=\"background-repeat: no-repeat; background-position: bottom 18px center; background-image: url(https://robohash.org/"+data[key].id+""+data[key].name+".png?size=90x90);\" id=\"spt" + countr + "\" class=\"spot\"><div class=\"djname\">" + data[key].name + "</div><div id=\"djthing"+countr+"\" class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div> ";
                         countr++;
                     }
                 }
                 if (countr < 4) {
-                    ok1 += "<div class=\"spot\"><div class=\"djname\"><strong>EMPTY seat!</strong> <br/>Type !addme to DJ right now.</div></div> ";
+                    ok1 += "<div class=\"spot\"><div class=\"djname\"><br/><br/><strong>EMPTY seat!</strong> <br/>Type !addme to DJ right now.</div><div class=\"playcount\"></div></div> ";
                     countr++;
                     for (var i = countr; i < 4; i++) {
-                        ok1 += "<div class=\"spot\"></div> ";
+                        ok1 += "<div class=\"spot\"><div class=\"playcount\"></div></div> ";
                     }
                 }
 
             } else {
-                ok1 += "<div class=\"spot\"><div class=\"djname\"><strong>EMPTY seat!</strong><br/>Type !addme to DJ right now.</div></div> ";
+                ok1 += "<div class=\"spot\"><div class=\"djname\"><br/><br/><strong>EMPTY seat!</strong><br/>Type !addme to DJ right now.</div><div class=\"playcount\"></div></div> ";
                 for (var i = 0; i < 3; i++) {
-                    ok1 += "<div class=\"spot\"></div> ";
+                    ok1 += "<div class=\"spot\"><div class=\"playcount\"></div></div> ";
                 }
             }
             $("#deck").html(ok1);
             for (var i = 0; i < 4; i++) {
                 if (i != firetable.playdex) {
-                    $("#spt" + i).css("border", "1px solid #ccc");
-                    $("#spt" + i).css("background-color", "#fff");
-                    $("#spt" + i).css("color", "#000");
+                    $("#djthing" + i).css("background-color", "#ccc");
+                    $("#djthing" + i).css("color", "#000");
                 } else {
-                    $("#spt" + i).css("border", "1px solid #F4810B");
-                    $("#spt" + i).css("background-color", "#F4810B");
-                    $("#spt" + i).css("color", "#fff");
+                    $("#djthing" + i).css("background-color", "#F4810B");
+                    $("#djthing" + i).css("color", "#fff");
                 }
             }
         });
@@ -539,13 +537,11 @@ firetable.ui = {
             firetable.playdex = data;
             for (var i = 0; i < 4; i++) {
                 if (i != data) {
-                    $("#spt" + i).css("border", "1px solid #ccc");
-                    $("#spt" + i).css("background-color", "#fff");
-                    $("#spt" + i).css("color", "#000");
+                  $("#djthing" + i).css("background-color", "#ccc");
+                  $("#djthing" + i).css("color", "#000");
                 } else {
-                    $("#spt" + i).css("border", "1px solid #F4810B");
-                    $("#spt" + i).css("background-color", "#F4810B");
-                    $("#spt" + i).css("color", "#fff");
+                  $("#djthing" + i).css("background-color", "#F4810B");
+                  $("#djthing" + i).css("color", "#fff");
                 }
             }
         });

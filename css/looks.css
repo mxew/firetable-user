@@ -1,13 +1,13 @@
 body {
-    margin: 0;
-    font-family: "Open Sans", helvetica, arial, sans-serif;
-    font-size: 14px;
-    color: #000;
-    margin-bottom:15px;
+  margin: 0;
+  font-family: "Open Sans", helvetica, arial, sans-serif;
+  font-size: 14px;
+  color: #000;
+  margin-bottom: 15px;
 }
 
-#grab{
-  cursor:pointer;
+#grab {
+  cursor: pointer;
   font-size: 12px;
   margin-right: 15px;
   color: #999;
@@ -18,437 +18,450 @@ body {
 }
 
 #topbar {
-    background-color: #000;
-    color: #eee;
+  background-color: #000;
+  color: #eee;
 }
 
 .newChat {
-    padding: 5px 3px 5px 5px;
+  padding: 5px 3px 5px 5px;
 }
 
 .chatName {
-    font-weight: 700;
+  font-weight: 700;
 }
 
 .newChat:nth-child(even) {
-    background-color: #eee;
-}
-
-#dcbal {
-    line-height: 40px;
+  background-color: #eee;
 }
 
 #signOut {
-    margin-left: 5px;
-    color: #777;
-    cursor: pointer;
+  margin-left: 5px;
+  color: #777;
+  cursor: pointer;
+}
+
+#chatlabel{
+  margin-top:20px;
+  display:block;
 }
 
 .subt {
-    font-size: 14px;
-    font-weight: 400;
-    color: #00f;
-    cursor: pointer;
-    text-decoration: underline;
+  font-size: 14px;
+  font-weight: 400;
+  color: #00f;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .fire {
-    color: #F4810B;
+  color: #F4810B;
 }
 
 #topbar .inr {
-    line-height: 60px;
-    margin-left: auto;
-    margin-right: auto;
-    width: 850px;
+  line-height: 60px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 850px;
 }
 
 #actualChat {
-    border: 1px solid #ccc;
-    height: 535px;
-    overflow-x: hidden;
-    overflow-y: scroll;
+  border: 1px solid #ccc;
+  height: 535px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  margin-top:5px;
 }
 
-.badoop{
+.badoop {
   background-color: #e2f7ff !important;
 }
 
 .chatTime {
-    display: inline-block;
-    float: right;
-    font-weight: 400;
-    font-size: 10px;
-    color: #888;
+  display: inline-block;
+  float: right;
+  font-weight: 400;
+  font-size: 10px;
+  color: #888;
 }
 
 a {
-    color: #0084B4;
+  color: #0084B4;
 }
 
-.npmsg{
-  font-size:12px;
+.npmsg {
+  font-size: 12px;
 }
 
 #mainThing {
-    width: 850px;
-    margin-left: auto;
-    margin-right: auto;
+  width: 850px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .inputline {
-    line-height: 35px;
+  line-height: 35px;
 }
 
 #login {
-    width: 850px;
-    margin-left: auto;
-    margin-right: auto;
+  width: 850px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #addToQueueBttn {
-    font-weight: 700;
-    padding: 5px;
-    color: #999;
-    cursor: pointer;
-    font-size: 12px;
+  font-weight: 700;
+  padding: 5px;
+  color: #999;
+  cursor: pointer;
+  font-size: 12px;
 }
 
 input {
-    width: 250px;
-    font-size: 14px;
-    font-family: "Open Sans", helvetica, arial, sans-serif;
-    border: 1px solid #ccc;
+  width: 250px;
+  font-size: 14px;
+  font-family: "Open Sans", helvetica, arial, sans-serif;
+  border: 1px solid #ccc;
 }
 
 .qtxt {
-    display: inline-block;
-    width: 210px;
+  display: inline-block;
+  width: 210px;
 }
 
 #mainThing #rightbox {
-    float: right;
-    width: 250px;
+  float: right;
+  width: 250px;
 }
 
 #queuebox .material-icons {
-    font-size: 15px !important;
-    cursor: pointer;
+  font-size: 15px !important;
+  cursor: pointer;
 }
 
-#volplace{
-  float:left;
+#volplace {
+  float: left;
 }
 
-#info i{
-  font-size:16px;
+#info i {
+  font-size: 16px;
 }
 
-#info{
+#info {
   font-weight: 700;
 }
 
-#info a{
-  color:#999;
-  font-size:12px;
-  text-decoration:none;
+#info a {
+  color: #999;
+  font-size: 12px;
+  text-decoration: none;
 }
 
 #volplace .material-icons {
-    font-size: 16px !important;
+  font-size: 16px !important;
 }
 
-#shareinfo{
-  float:right;
+#shareinfo {
+  float: right;
 }
 
 i#refreshSong {
-    margin-left: 15px;
-    cursor:pointer;
+  margin-left: 15px;
+  cursor: pointer;
 }
 
 .playcount {
-    position: absolute;
-    bottom: 0;
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+  background-color: #ccc;
+  width: 110px;
+  height: 18px;
+  text-align: center;
+  -webkit-border-top-left-radius: 10px;
+  -webkit-border-top-right-radius: 10px;
+  -moz-border-radius-topleft: 10px;
+  -moz-border-radius-topright: 10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .delete {
-    float: right;
+  float: right;
 }
 
 .spotlight {
-    background-color: #F4810B;
-    color: #fff;
-    border: 1px solid #F4810B !important;
+  background-color: #F4810B;
+  color: #fff;
+  border: 1px solid #F4810B !important;
 }
 
 #nowplaying {
-    font-size: 18px;
-    line-height: 50px;
-    width: 500px;
-    font-weight:700;
-    float: left;
-    display: inline-block;
-    overflow: hidden;
-    white-space: nowrap;
+  font-size: 18px;
+  line-height: 50px;
+  width: 500px;
+  font-weight: 700;
+  float: left;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 #timr {
-    font-size: 14px;
-    font-weight:700;
-    float: right;
-    display: inline-block;
-    line-height: 50px;
+  font-size: 14px;
+  font-weight: 700;
+  float: right;
+  display: inline-block;
+  line-height: 50px;
 }
 
 #deck {
     margin-top: 10px;
-    height: 106px;
+    height: 130px;
+    border-bottom: 2px solid #ccc;
+}
+
+.djname {
+    text-align: center;
 }
 
 #deck .spot {
-    position: relative;
-    border: 1px solid #ccc;
+  position: relative;
     width: 120px;
     padding: 5px;
     margin-right: 10px;
-    height: 90px;
+    height: 120px;
     overflow-y: hidden;
-    overflow-x:hidden;
+    overflow-x: hidden;
     display: inline-block;
 }
 
 #mainThing #leftbox {
-    float: left;
-    padding-top: 10px;
-    width: 580px;
+  float: left;
+  padding-top: 10px;
+  width: 580px;
 }
 
 #topbar .inr .left {
-    float: left;
-    color: #E5B628;
-    font-size: 25px;
-    font-weight: 700;
+  float: left;
+  color: #E5B628;
+  font-size: 25px;
+  font-weight: 700;
 }
-
-
 
 span.utitle {
-    font-size: 12px;
-    font-weight: 400;
+  font-size: 12px;
+  font-weight: 400;
 }
 
-
-
 input#qsearch {
-    width: 95%;
-    line-height: 30px;
-    padding: 5px;
+  width: 95%;
+  line-height: 30px;
+  padding: 5px;
 }
 
 div#cancelqsearch {
-    font-size: 12px;
-    color: #999;
-    cursor: pointer;
-    margin-bottom: 10px;
+  font-size: 12px;
+  color: #999;
+  cursor: pointer;
+  margin-bottom: 10px;
 }
 
 .ui-slider {
-    position: relative;
-    text-align: left;
+  position: relative;
+  text-align: left;
 }
 
 .ui-slider .ui-slider-handle {
-    position: absolute;
-    z-index: 2;
-    width: 1.2em;
-    height: 1em;
-    cursor: default;
-    -ms-touch-action: none;
-    touch-action: none;
+  position: absolute;
+  z-index: 2;
+  width: 1.2em;
+  height: 1em;
+  cursor: default;
+  -ms-touch-action: none;
+  touch-action: none;
 }
 
 #volandthings {
-    margin-top: 15px;
-    margin-bottom: 25px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .ui-slider .ui-slider-range {
-    position: absolute;
-    z-index: 1;
-    font-size: .7em;
-    display: block;
-    border: 0;
-    background-position: 0 0;
+  position: absolute;
+  z-index: 1;
+  font-size: .7em;
+  display: block;
+  border: 0;
+  background-position: 0 0;
 }
 
 #slider {
-    display: inline-block;
-    margin-bottom: 3px;
+  display: inline-block;
+  margin-bottom: 3px;
 }
 
 .ui-slider-horizontal .ui-slider-range-min {
-    left: 0;
-    background-color: #ccc;
+  left: 0;
+  background-color: #ccc;
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
-    border: 1px solid #c5c5c5;
-    background: #f6f6f6;
-    font-weight: normal;
-    color: #454545;
+  border: 1px solid #c5c5c5;
+  background: #f6f6f6;
+  font-weight: normal;
+  color: #454545;
 }
 
 .ui-widget.ui-widget-content {
-    border: 1px solid #c5c5c5;
+  border: 1px solid #c5c5c5;
 }
 
 .ui-widget-content {
-    border: 1px solid #dddddd;
-    background: #ffffff;
-    color: #333333;
+  border: 1px solid #dddddd;
+  background: #ffffff;
+  color: #333333;
 }
 
 
 /* support: IE8 - See #6727 */
 
 .ui-slider.ui-state-disabled .ui-slider-handle, .ui-slider.ui-state-disabled .ui-slider-range {
-    filter: inherit;
+  filter: inherit;
 }
 
 .ui-slider-horizontal {
-    height: .4em;
+  height: .4em;
 }
 
 .ui-slider-horizontal .ui-slider-handle {
-    top: -.4em;
-    margin-left: -.6em;
+  top: -.4em;
+  margin-left: -.6em;
 }
 
 .ui-slider-horizontal .ui-slider-range {
-    top: 0;
-    height: 100%;
+  top: 0;
+  height: 100%;
 }
 
 .ui-slider-horizontal .ui-slider-range-min {
-    left: 0;
+  left: 0;
 }
 
 .ui-slider-horizontal .ui-slider-range-max {
-    right: 0;
+  right: 0;
 }
 
 div.qresult {
-    padding: 5px 3px 5px 5px;
-   border-bottom: 1px solid #eee;
+  padding: 5px 3px 5px 5px;
+  border-bottom: 1px solid #eee;
 }
 
 .ui-widget.ui-widget-content {
-    border: 1px solid #c5c5c5;
+  border: 1px solid #c5c5c5;
 }
 
 div.qitem {
-    padding: 5px 3px 5px 5px;
-    background-color: #fff;
-    cursor: move;
-    /* fallback if grab cursor is unsupported */
-    cursor: grab;
-    cursor: -moz-grab;
-    border-bottom:1px solid #eee;
-    cursor: -webkit-grab;
+  padding: 5px 3px 5px 5px;
+  background-color: #fff;
+  cursor: move;
+  /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -moz-grab;
+  border-bottom: 1px solid #eee;
+  cursor: -webkit-grab;
 }
 
 #topbar .inr .right {
-    float: right;
+  float: right;
 }
 
 .prson {
-    padding: 5px 3px 5px 5px;
+  padding: 5px 3px 5px 5px;
 }
 
 .prson:nth-child(even) {
-    background-color: #eee;
+  background-color: #eee;
 }
 
 .clear {
-    clear: both;
+  clear: both;
 }
 
 #niceboxes {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 #usersbox {
-    float: left;
-    width: 280px;
+  float: left;
+  width: 280px;
 }
 
 #queuebox {
-    float: right;
-    width: 280px;
+  float: right;
+  width: 280px;
 }
 
 .chatline:nth-child(even) {
-    background-color: #eee;
+  background-color: #eee;
 }
 
 .userline:nth-child(even) {
-    background-color: #eee;
+  background-color: #eee;
 }
 
 .queueline:nth-child(even) {
-    background-color: #eee;
+  background-color: #eee;
 }
 
 .queueline, .userline {
-    padding: 5px;
+  padding: 5px;
 }
 
 #idtitle {
-    font-size: 16px;
-    color: #fff;
-    font-weight: 400;
+  font-size: 16px;
+  color: #fff;
+  font-weight: 400;
 }
 
 #userslist {
-    height: 330px;
-    margin-top: 5px;
-    overflow-y: scroll;
-    border: 1px solid #ccc;
+  height: 330px;
+  margin-top: 5px;
+  overflow-y: scroll;
+  border: 1px solid #ccc;
 }
 
 .usertab {
-    font-weight: 700;
-    padding: 5px;
-    cursor: pointer;
+  font-weight: 700;
+  padding: 5px;
+  cursor: pointer;
 }
 
 .chatline {
-    padding: 5px;
+  padding: 5px;
 }
 
 .chatline .from {
-    font-weight: 700;
+  font-weight: 700;
 }
 
 #usertabs .selected {
-    background-color: #000;
-    color: #fff;
+  background-color: #000;
+  color: #fff;
 }
 
 #queuelist {
-    height: 330px;
-    margin-top: 5px;
-    overflow-y: scroll;
-    border: 1px solid #ccc;
+  height: 330px;
+  margin-top: 5px;
+  overflow-y: scroll;
+  border: 1px solid #ccc;
 }
 
 #bottomInfo {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    font-size: 10px;
-    font-family: helvetica, arial, sans-serif;
-    color: #fff;
-    background-color: #000;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  font-size: 10px;
+  font-family: helvetica, arial, sans-serif;
+  color: #fff;
+  background-color: #000;
 }
