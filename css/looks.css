@@ -19,7 +19,7 @@ body {
 
 #topbar {
   background-color: #000;
-  color: #eee;
+  color: #fff;
 }
 
 .newChat {
@@ -36,8 +36,8 @@ body {
 
 #signOut {
   margin-left: 5px;
-  color: #777;
   cursor: pointer;
+  color:#777;
 }
 
 #chatlabel{
@@ -53,12 +53,8 @@ body {
   text-decoration: underline;
 }
 
-.fire {
-  color: #F4810B;
-}
-
 #topbar .inr {
-  line-height: 60px;
+  line-height: 35px;
   margin-left: auto;
   margin-right: auto;
   width: 850px;
@@ -244,8 +240,8 @@ i#refreshSong {
 
 #topbar .inr .left {
   float: left;
-  color: #E5B628;
-  font-size: 25px;
+  color: #F4810B;
+  font-size: 18px;
   font-weight: 700;
 }
 
@@ -418,7 +414,7 @@ div.qitem {
 }
 
 #idtitle {
-  font-size: 16px;
+  font-size: 14px;
   color: #fff;
   font-weight: 400;
 }
@@ -459,9 +455,11 @@ div.qitem {
 #bottomInfo {
   position: fixed;
   bottom: 0;
+  width:100%;
+  background-color:#fff;
+  padding-left:2px;
+  padding-right:2px;
   left: 0;
   font-size: 10px;
-  font-family: helvetica, arial, sans-serif;
-  color: #fff;
-  background-color: #000;
+  color: #999;
 }
