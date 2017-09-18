@@ -85,14 +85,14 @@ firetable.init = function() {
     if (height > 690) {
       var morethan = height - 690;
       var newh = 335 + morethan;
-      var chah = 558 + morethan;
+      var chah = 578 + morethan;
       $("#queuelist").css("height", newh + "px");
       $("#userslist").css("height", newh + "px");
       $("#actualChat").css("height", chah + "px");
     } else {
       $("#queuelist").css("height", "335px");
       $("#userslist").css("height", "335px");
-      $("#actualChat").css("height", "558px");
+      $("#actualChat").css("height", "578px");
 
     }
     $(window).resize(function() {
@@ -101,14 +101,14 @@ firetable.init = function() {
       if (height > 690) {
         var morethan = height - 690;
         var newh = 335 + morethan;
-        var chah = 558 + morethan;
+        var chah = 578 + morethan;
         $("#queuelist").css("height", newh + "px");
         $("#userslist").css("height", newh + "px");
         $("#actualChat").css("height", chah + "px");
       } else {
         $("#queuelist").css("height", "335px");
         $("#userslist").css("height", "335px");
-        $("#actualChat").css("height", "558px");
+        $("#actualChat").css("height", "578px");
 
       }
     });
