@@ -758,7 +758,7 @@ firetable.init = function() {
           $("#createscreen").css("display", "none");
           $("#resetscreen").css("display", "block");
         });
-        $("#resetpass").bind("click", firetable.actions.grab);
+        $("#grab").bind("click", firetable.actions.grab);
         $("#loginlink").bind("click", function() {
           $("#logscreen").css("display", "block");
           $("#createscreen").css("display", "none");
