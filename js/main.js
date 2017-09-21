@@ -235,14 +235,21 @@ firetable.init = function() {
             });
             $("#signOut").html("<span onclick=\"firetable.actions.logOut()\" id=\"logOutButton\">Log Out</span>");
             $("#login").css("display", "none");
-            $("#mainThing").css("display", "block");
+            $("#queuebox").css("display", "block");
+            $("#actualChat").css("display", "block");
+            $("#newchat").css("display", "block");
+            $("#grab").css("display", "inline-block");
+            $("#usersbox").removeClass("notLoggedIn");
           } else {
             firetable.uid = null;
             $("#loggedInEmail").text("Not Logged In");
             $("#signOut").html("");
             $("#login").css("display", "block");
-            $("#mainThing").css("display", "none");
-
+            $("#queuebox").css("display", "none");
+            $("#actualChat").css("display", "none");
+            $("#newchat").css("display", "none");
+            $("#grab").css("display", "none");
+            $("#usersbox").addClass("notLoggedIn");
           }
         }); firetable.ui.init();
     };

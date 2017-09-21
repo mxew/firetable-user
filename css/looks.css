@@ -58,7 +58,7 @@ select#listpicker {
 .subt {
   font-size: 14px;
   font-weight: 400;
-  color: #00f;
+  color: #0084B4;
   cursor: pointer;
   text-decoration: underline;
 }
@@ -98,7 +98,12 @@ a {
   font-size: 12px;
 }
 
-#mainThing {
+#login h4{
+  font-size:14px;
+  font-weight: 700;
+}
+
+#middleContain{
   width: 850px;
   margin-left: auto;
   margin-right: auto;
@@ -106,12 +111,6 @@ a {
 
 .inputline {
   line-height: 35px;
-}
-
-#login {
-  width: 850px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 #addToQueueBttn {
@@ -122,11 +121,42 @@ a {
   font-size: 12px;
 }
 
+#welcomeInfo{
+  padding-bottom:25px;
+  border-bottom:1px dotted #ccc;
+}
+
+#login button {
+  background-color: #eee;
+  color: #000;
+  padding: 2px 10px 2px 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.notLoggedIn{
+  width: 100% !important;
+}
+
+#login{
+  margin-top:25px;
+  padding:15px;
+  border: 1px solid #E6DB55;
+  background-color: #FFFFE0;
+}
+
 input {
-  width: 248px;
   font-size: 14px;
   font-family: "Open Sans", helvetica, arial, sans-serif;
   border: 1px solid #ccc;
+}
+
+#login input{
+  width:95%;
+}
+
+#newchat{
+    width: 248px;
 }
 
 .qtxt {
