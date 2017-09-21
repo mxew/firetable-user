@@ -248,6 +248,7 @@ firetable.init = function() {
     firetable.actions = {
       logOut: function() {
         var ref0 = firebase.database().ref("users/" + firetable.uid + "/status");
+        firetable.uid = null;
         ref0.set(false);
         firebase.auth().signOut();
       },
