@@ -644,7 +644,7 @@ firetable.init = function() {
                   ref0.set(true);
                 }
               }
-              if (thisone.status) {
+              if (thisone.status || key == firetable.uid) {
                 //THIS PERSON IS HERE
                 var thename = key;
                 count++;
