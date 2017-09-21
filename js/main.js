@@ -136,7 +136,7 @@ firetable.init = function() {
             .then(function(allQueuesSnap) {
               var allPlaylists = allQueuesSnap.val();
               $("#listpicker").off("change");
-              $("#listpicker").html("");
+              $("#listpicker").html("<option value=\"1\">Create New Playlist</option><option value=\"0\">Default Queue</option>");
               for (var key in allPlaylists) {
                 if (allPlaylists.hasOwnProperty(key)) {
                   $("#listpicker").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
