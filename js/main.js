@@ -9,6 +9,7 @@ var firetable = {
   playerLoaded: null,
   selectedListThing: "0",
   queueBind: null,
+  songTagToEdit: null,
   queueRef: null,
   lastChatPerson: false,
   lastChatId: false,
@@ -188,7 +189,7 @@ firetable.init = function() {
                             if (key == firetable.preview) {
                               psign = "&#xE034;";
                             }
-                            newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + key + "')\">" + psign + "</i> " + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div>";
+                            newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + key + "')\">" + psign + "</i> " + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div>";
                           }
                         }
                         $("#mainqueue").html(newlist);
@@ -213,7 +214,7 @@ firetable.init = function() {
                         if (key == firetable.preview) {
                           psign = "&#xE034;";
                         }
-                        newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + key + "')\">" + psign + "</i> " + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div>";
+                        newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + key + "')\">" + psign + "</i> " + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div>";
                       }
                     }
                     $("#mainqueue").html(newlist);
@@ -350,6 +351,35 @@ firetable.init = function() {
         }
         if (changePv) firetable.preview = changePv;
         firetable.queueRef.set(newobj);
+      },
+      editTagsPrompt: function(songid){
+        var song = firetable.queue[songid];
+        $("#tagMachine").val(song.name);
+        $("#tagSongLink").attr("href", "https://youtube.com/watch?v="+song.cid);
+        console.log(songid);
+        firetable.songToEdit = {
+          song: song,
+          key: songid
+        };
+        $("#tagPromptOverlay").css("display", "block");
+      },
+      editSongTag: function(obj){
+        if (firetable.queue[obj.key].cid == obj.song.cid){
+          var changeref = firetable.queueRef.child(obj.key);
+          changeref.set(obj.song);
+        } else {
+          //song appears to have moved since the editing began, let's try and find it...
+          for (var key in firetable.queue){
+            if (firetable.queue.hasOwnProperty(key)){
+              if (firetable.queue[key].cid == obj.song.cid){
+                var changeref = firetable.queueRef.child(key);
+                changeref.set(obj.song);
+                return;
+              }
+            }
+          }
+        }
+
       },
       bumpSongInQueue: function(songid) {
         //this is a stupid way of doing this,
@@ -774,6 +804,12 @@ firetable.init = function() {
           $("#createscreen").css("display", "none");
           $("#resetscreen").css("display", "none");
         });
+        $("#tagPromptClose").bind("click", function() {
+          $("#tagPromptOverlay").css("display", "none");
+          $("#tagMachine").val("");
+          $("#tagSongLink").attr("href", "https://youtube.com");
+          firetable.songTagToEdit = null;
+        });
         $("#loginlink2").bind("click", function() {
           $("#logscreen").css("display", "block");
           $("#createscreen").css("display", "none");
@@ -838,6 +874,22 @@ firetable.init = function() {
           var email = $("#loginemail").val();
           var pass = $("#loginpass").val();
           firetable.actions.logIn(email, pass);
+        });
+        $("#tagMachine").bind("keyup", function() {
+          if (event.which == 13) {
+            if (firetable.songToEdit){
+              var val = $("#tagMachine").val();
+              if (val != ""){
+                var obj = firetable.songToEdit;
+                obj.song.name = val;
+                firetable.actions.editSongTag(obj);
+                firetable.songToEdit = null;
+                $("#tagMachine").val("");
+                $("#tagSongLink").attr("href", "https://youtube.com");
+                $("#tagPromptOverlay").css("display", "none");
+              }
+            }
+          }
         });
         $("#qsearch").bind("keyup", function() {
           if (event.which == 13) {

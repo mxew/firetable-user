@@ -159,9 +159,25 @@ input {
     width: 248px;
 }
 
+#tagPromptMain .left{
+  float:left;
+}
+
+#tagPromptMain .right{
+  float:right;
+}
+
 .qtxt {
   display: inline-block;
-  width: 210px;
+  width: 198px;
+}
+
+.delete i {
+    line-height: 30px;
+}
+
+.delete i:hover{
+  color:#999;
 }
 
 #mainThing #rightbox {
@@ -300,6 +316,19 @@ input#plmaker {
   width: 95%;
   line-height: 30px;
   padding: 5px;
+}
+
+#rsnCredit{
+  font-size:10px;
+  color:#999;
+  margin-top:5px;
+}
+
+input#tagMachine {
+  line-height: 30px;
+  width: 470px;
+  padding: 5px;
+  margin-bottom:15px;
 }
 
 #plmanager p, #plmanager strong{
@@ -490,6 +519,58 @@ div.qitem {
 
 .chatline .from {
   font-weight: 700;
+}
+
+div#tagPromptOverlay {
+    position: absolute;
+    top: 0;
+    display:none;
+    left: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+}
+
+div#tagPromptBox {
+    background-color: #fff;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 150px;
+}
+
+#tagPromptClose{
+  cursor: pointer;
+  color: #777;
+}
+
+#tagPromptMain{
+  height: 200px;
+  overflow-y:hidden;
+  overflow-x:hidden;
+  padding: 10px;
+}
+
+.ftlogo {
+    color: #F4810B;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+div#tagPromptHeader {
+    background-color: #000;
+    padding: 0 10px 0 10px;
+    line-height: 35px;
+    color: #eee;
+}
+
+#tagPromptHeader .left {
+    float: left;
+}
+
+#tagPromptHeader .right {
+    float: right;
 }
 
 #usertabs .selected {

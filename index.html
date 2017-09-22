@@ -17,6 +17,33 @@
 </head>
 
 <body>
+	<div id="tagPromptOverlay">
+			<div id="tagPromptBox">
+					<div id="tagPromptHeader">
+						<div class="left">
+							<span class="ftlogo">firetable</span> Tag Editor
+						</div>
+						<div class="right">
+							<span id="tagPromptClose">Cancel</span>
+						</div>
+						<div class="clear"></div>
+				</div>
+				<div id="tagPromptMain">
+					<div class="inputline">
+						<div class="left">Edit the song tag + hit enter to save.</div>
+						<div class="right"><a target="_blank" href="https://youtube.com" id="tagSongLink">Track Link</a></div>
+						<div class="clear"></div>
+						<input type="text" placeholder="Artist - Song Title" id="tagMachine"></input>
+					</div>
+					<strong>Tag Formatting Guidelines</strong><br/>
+					Standard: <i>Artist - Song Title</i><br/>
+					Remix: <i>Artist - Song Title (Remixartist Remix)</i><br/>
+					Featuring: <i>Artist - Song Title feat. Subartist</i><br/>
+					Featuring + Remix: <i>Artist - Song Title feat. Subartist (Remixartist Remix)</i>
+					<div id="rsnCredit">Rohn Standard Notation 2015</div>
+				</div>
+			</div>
+	</div>
 	<div id="contain">
 		<div id="topbar">
 			<div class="inr">
