@@ -364,9 +364,22 @@ firetable.init = function() {
         $("#tagPromptOverlay").css("display", "block");
       },
       editSongTag: function(obj){
-        if (firetable.queue[obj.key].cid == obj.song.cid){
-          var changeref = firetable.queueRef.child(obj.key);
-          changeref.set(obj.song);
+        if (firetable.queue[obj.key]){
+          if (firetable.queue[obj.key].cid == obj.song.cid){
+            var changeref = firetable.queueRef.child(obj.key);
+            changeref.set(obj.song);
+          } else {
+            //song appears to have moved since the editing began, let's try and find it...
+            for (var key in firetable.queue){
+              if (firetable.queue.hasOwnProperty(key)){
+                if (firetable.queue[key].cid == obj.song.cid){
+                  var changeref = firetable.queueRef.child(key);
+                  changeref.set(obj.song);
+                  return;
+                }
+              }
+            }
+          }
         } else {
           //song appears to have moved since the editing began, let's try and find it...
           for (var key in firetable.queue){
