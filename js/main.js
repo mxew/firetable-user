@@ -455,12 +455,14 @@ firetable.init = function() {
             if (pg){
               var request = gapi.client.youtube.playlistItems.list({
                 playlistId: id,
+                maxResults: 50,
                 part: "snippet",
                 pageToken: pg
               });
             } else {
               var request = gapi.client.youtube.playlistItems.list({
                 playlistId: id,
+                maxResults: 50,
                 part: "snippet"
               });
             }
