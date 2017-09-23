@@ -45,6 +45,50 @@
 				</div>
 			</div>
 	</div>
+	<div id="deletePromptOverlay">
+			<div id="deletePromptBox">
+					<div id="deletePromptHeader">
+						<div class="left">
+							<span class="ftlogo">firetable</span> Playlist Deletion Zone
+						</div>
+						<div class="right">
+							<span id="deletePromptClose">Cancel</span>
+						</div>
+						<div class="clear"></div>
+				</div>
+				<div id="deletePromptMain">
+					So you want to delete a playlist huh?
+					This action is <strong>irreversible.</strong><br/>
+					If you're super sure you want to do this, pick a playlist to delete below.
+					<br/><br/>
+					<div class="inputline">
+						<select placeholder="Pick a Playlist To Delete" id="deletepicker"></select>
+						<div id="pldeleteButton">Delete This Playlist</div>
+					</div>
+				</div>
+			</div>
+	</div>
+	<div id="importPromptOverlay">
+			<div id="importPromptBox">
+					<div id="importPromptHeader">
+						<div class="left">
+							<span class="ftlogo">firetable</span> Playlist Import Machine
+						</div>
+						<div class="right">
+							<span id="importPromptClose">Cancel</span>
+						</div>
+						<div class="clear"></div>
+				</div>
+				<div id="importPromptMain">
+						<input type="text" placeholder="Search Playlists" id="plMachine"></input>
+						<div id="importSources">
+								<span class="importChoice" id="ytimportchoice">Youtube</span><span id="scimportchoice">Soundcloud</span>
+						</div>
+						<div id="importResults"></div>
+
+				</div>
+			</div>
+	</div>
 	<div id="contain">
 		<div id="topbar">
 			<div class="inr">
@@ -107,7 +151,7 @@
 					</div>
 					<div id="queuebox">
 						<select id="listpicker">
-							<option value="1">Create New Playlist</option>
+							<option value="1">Add/Delete Playlist</option>
   						<option value="0">Default Queue</option>
 						</select>
 						<span id="addToQueueBttn">Add Song</span>
@@ -116,8 +160,11 @@
 								heres the queue
 							</div>
 							<div id="plmanager">
-								<p>Pick a hip and cool name for your new playlist.</p>
+								<div class="helptxt">Choose a name + hit enter to make a blank playlist.</div>
 								<input type="text" placeholder="Choose a playlist name" id="plmaker"></input>
+								<div style="text-align:center" class="helptxt"><br/>or...<br/><br/></div>
+								<div id="plimportLauncher">Import A Playlist</div>
+								<div id="pldeleteLauncher">Delete A Playlist</div>
 							</div>
 							<div id="addbox" style="display:none" class="innr">
 								<input type="text" placeholder="Add a thing to the your queue now" id="qsearch"></input>

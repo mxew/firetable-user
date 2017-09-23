@@ -47,6 +47,24 @@ div#searchSelects {
   color: #fff;
 }
 
+select#deletepicker {
+    width: 98%;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    font-family: "Open Sans", helvetica, arial, sans-serif;
+    white-space: nowrap;
+}
+
+div#pldeleteButton {
+  font-weight: 700;
+  text-align: center;
+  margin-top: 15px;
+  background-color: red;
+  color: #fff;
+  cursor: pointer;
+  width: 98%;
+}
+
 select#listpicker {
     width: 200px;
     font-size: 14px;
@@ -356,8 +374,32 @@ input#tagMachine {
   margin-bottom:15px;
 }
 
+input#plMachine {
+  line-height: 30px;
+  width: 100%;
+  padding: 5px;
+}
+
 #plmanager p, #plmanager strong{
   padding: 5px;
+}
+
+#importSources{
+  line-height:30px;
+  border-bottom: 1px solid #ccc;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.importChoice{
+  background-color:#000;
+  color:#fff;
+}
+
+#importSources span{
+  width: 50%;
+  text-align:center;
+  display:inline-block;
 }
 
 div#cancelqsearch {
@@ -449,17 +491,36 @@ div#cancelqsearch {
   left: 0;
 }
 
+.importResult .material-icons{
+  font-size:15px;
+  cursor: pointer;
+}
+
 .ui-slider-horizontal .ui-slider-range-max {
   right: 0;
 }
 
-div.qresult {
+div.qresult, div.importResult {
   padding: 5px 3px 5px 5px;
   border-bottom: 1px solid #eee;
 }
 
 .ui-widget.ui-widget-content {
   border: 1px solid #c5c5c5;
+}
+
+a.importLinkCheck{
+  color:#000;
+}
+
+.imtxt{
+  width: 420px;
+  float:left;
+  margin-top: 5px;
+}
+
+#results{
+  margin-top:10px;
 }
 
 div.qitem {
@@ -577,6 +638,88 @@ div#tagPromptBox {
   padding: 10px;
 }
 
+div#deletePromptOverlay {
+    position: absolute;
+    top: 0;
+    display:none;
+    left: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+}
+
+div#deletePromptBox {
+    background-color: #fff;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 150px;
+}
+
+#deletePromptClose{
+  cursor: pointer;
+  color: #777;
+}
+
+#deletePromptMain{
+  height: 200px;
+  overflow-y:hidden;
+  overflow-x:hidden;
+  padding: 10px;
+}
+
+.helptxt {
+    padding: 5px;
+}
+
+div#plimportLauncher {
+    cursor: pointer;
+    text-align: center;
+    line-height: 30px;
+    border-top: 1px solid #ccc;
+    background-color: #eee;
+}
+
+div#pldeleteLauncher {
+    cursor: pointer;
+    text-align: center;
+    line-height: 30px;
+    border-top: 1px solid #ccc;
+    background-color: #eee;
+    border-bottom: 1px solid #ccc;
+}
+
+div#importPromptOverlay {
+    position: absolute;
+    top: 0;
+    display:none;
+    left: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+}
+
+div#importPromptBox {
+    background-color: #fff;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 150px;
+}
+
+#importPromptClose{
+  cursor: pointer;
+  color: #777;
+}
+
+#importPromptMain{
+  height: 300px;
+  overflow-y:scroll;
+  overflow-x:hidden;
+}
+
 .ftlogo {
     color: #F4810B;
     font-size: 18px;
@@ -595,6 +738,36 @@ div#tagPromptHeader {
 }
 
 #tagPromptHeader .right {
+    float: right;
+}
+
+div#deletePromptHeader {
+    background-color: #000;
+    padding: 0 10px 0 10px;
+    line-height: 35px;
+    color: #eee;
+}
+
+#deletePromptHeader .left {
+    float: left;
+}
+
+#deletePromptHeader .right {
+    float: right;
+}
+
+div#importPromptHeader {
+    background-color: #000;
+    padding: 0 10px 0 10px;
+    line-height: 35px;
+    color: #eee;
+}
+
+#importPromptHeader .left {
+    float: left;
+}
+
+#importPromptHeader .right {
     float: right;
 }
 

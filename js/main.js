@@ -14,6 +14,7 @@ var firetable = {
   songTagToEdit: null,
   scwidget: null,
   searchSelectsChoice: 1,
+  importSelectsChoice: 1,
   queueRef: null,
   lastChatPerson: false,
   lastChatId: false,
@@ -173,10 +174,10 @@ firetable.init = function() {
             .then(function(allQueuesSnap) {
               var allPlaylists = allQueuesSnap.val();
               $("#listpicker").off("change");
-              $("#listpicker").html("<option value=\"1\">Create New Playlist</option><option value=\"0\">Default Queue</option>");
+              $("#listpicker").html("<option value=\"1\">Add/Delete Playlist</option><option value=\"0\">Default Queue</option>");
               for (var key in allPlaylists) {
                 if (allPlaylists.hasOwnProperty(key)) {
-                  $("#listpicker").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
+                  $("#listpicker").append("<option id=\"pdopt"+key+"\" value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
                 }
               }
               getSelect.once('value')
@@ -434,6 +435,91 @@ firetable.init = function() {
           key: songid
         };
         $("#tagPromptOverlay").css("display", "block");
+      },
+      importList(id, name, type){
+        //time to IMPORT SOME LISTS!
+        $("#importPromptOverlay").css("display", "none");
+        $("#importResults").html("");
+        $("#plMachine").val("");
+        if (type == 1){
+          //youtube
+          var finalList = [];
+          function keyWordsearch(pg) {
+            gapi.client.setApiKey('AIzaSyDCXzJ9gGLTF_BLcTzNUO2Zeh4HwPxgyds');
+            gapi.client.load('youtube', 'v3', function() {
+              makeRequest(pg);
+            });
+          }
+
+          function makeRequest(pg) {
+            if (pg){
+              var request = gapi.client.youtube.playlistItems.list({
+                playlistId: id,
+                part: "snippet",
+                pageToken: pg
+              });
+            } else {
+              var request = gapi.client.youtube.playlistItems.list({
+                playlistId: id,
+                part: "snippet"
+              });
+            }
+            request.execute(function(response) {
+              if (response.items.length){
+                for (var idx = 0; idx<response.items.length; idx++){
+                  finalList.push(response.items[idx]);
+                }
+              }
+              if (response.nextPageToken){
+                if (response.nextPageToken != "") keyWordsearch(response.nextPageToken);
+              } else {
+                console.log(finalList);
+                var plref = firebase.database().ref("playlists/" + firetable.uid);
+                var newlist = plref.push();
+                var listid = newlist.key;
+                var obj = {
+                  name: name,
+                  list: {}
+                };
+                newlist.set(obj);
+                $("#listpicker").append("<option id=\"pdopt"+listid+"\" value=\"" + listid + "\">" + name + "</option>");
+                var nref = firebase.database().ref("playlists/" + firetable.uid + "/" +listid + "/list");
+                for (var i=0; i< finalList.length; i++){
+                  var info = {
+                    type: 1,
+                    name: finalList[i].snippet.title,
+                    cid: finalList[i].snippet.resourceId.videoId
+                  };
+                  nref.push(info);
+                }
+              }
+            })
+          }
+          keyWordsearch();
+
+        } else if (type == 2){
+          SC.get('/playlists/'+id).then(function(listinfo) {
+              console.log(listinfo.tracks);
+              var plref = firebase.database().ref("playlists/" + firetable.uid);
+              var newlist = plref.push();
+              var listid = newlist.key;
+              var obj = {
+                name: name,
+                list: {}
+              };
+              newlist.set(obj);
+              $("#listpicker").append("<option id=\"pdopt"+listid+"\" value=\"" + listid + "\">" + name + "</option>");
+              var nref = firebase.database().ref("playlists/" + firetable.uid + "/" +listid + "/list");
+              for (var i=0; i< listinfo.tracks.length; i++){
+                var info = {
+                  type: 2,
+                  name: listinfo.tracks[i].title,
+                  cid: listinfo.tracks[i].id
+                };
+                nref.push(info);
+              }
+          });
+        }
       },
       editSongTag: function(obj){
         if (firetable.queue[obj.key]){
@@ -879,7 +965,7 @@ firetable.init = function() {
                 list: {}
               };
               newlist.set(obj);
-              $("#listpicker").append("<option value=\"" + listid + "\">" + val + "</option>");
+              $("#listpicker").append("<option id=\"pdopt"+listid+"\" value=\"" + listid + "\">" + val + "</option>");
               $("#listpicker").val(listid).change();
               var uref = firebase.database().ref("users/" + firetable.uid + "/selectedList");
               uref.set(listid);
@@ -931,6 +1017,53 @@ firetable.init = function() {
           $("#tagMachine").val("");
           $("#tagSongLink").attr("href", "https://youtube.com");
           firetable.songTagToEdit = null;
+        });
+        $("#deletePromptClose").bind("click", function() {
+          $("#deletePromptOverlay").css("display", "none");
+          $("#deletepicker").html("");
+        });
+        $("#pldeleteButton").bind("click", function() {
+          var val = $("#deletepicker").val();
+          console.log(val);
+          if (firetable.users[firetable.uid]){
+            if (firetable.users[firetable.uid].selectedList){
+              if (firetable.users[firetable.uid].selectedList == val){
+                $("#listpicker").val("0").change();
+              }
+            }
+          }
+          var removeThis = firebase.database().ref("playlists/" + firetable.uid + "/" +val);
+          $("#pdopt"+val).remove();
+          removeThis.remove()
+            .then(function() {
+              console.log("pl remove went great.");
+
+            })
+            .catch(function(error) {
+              console.log("pl Remove failed: " + error.message);
+            });
+          $("#deletePromptOverlay").css("display", "none");
+        });
+        $("#plimportLauncher").bind("click", function() {
+          $("#importPromptOverlay").css("display", "block");
+        });
+        $("#pldeleteLauncher").bind("click", function() {
+          var allQueues = firebase.database().ref("playlists/" + firetable.uid);
+          allQueues.once('value')
+            .then(function(allQueuesSnap) {
+              var allPlaylists = allQueuesSnap.val();
+              $("#deletepicker").html("");
+              for (var key in allPlaylists) {
+                if (allPlaylists.hasOwnProperty(key)) {
+                  $("#deletepicker").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
+                }
+              }
+              $("#deletePromptOverlay").css("display", "block");
+            });
+        });
+        $("#importPromptClose").bind("click", function() {
+          $("#importPromptOverlay").css("display", "none");
+          $("#plMachine").val("");
         });
         $("#loginlink2").bind("click", function() {
           $("#logscreen").css("display", "block");
@@ -1007,6 +1140,18 @@ firetable.init = function() {
           $("#scsearchSelect").addClass("searchSelectsSelected");
           firetable.searchSelectsChoice = 2;
         });
+        $("#ytimportchoice").bind("click", function() {
+          console.log("a");
+          $("#scimportchoice").removeClass("importChoice");
+          $("#ytimportchoice").addClass("importChoice");
+          firetable.importSelectsChoice = 1;
+        });
+        $("#scimportchoice").bind("click", function() {
+          console.log("b");
+          $("#ytimportchoice").removeClass("importChoice");
+          $("#scimportchoice").addClass("importChoice");
+          firetable.importSelectsChoice = 2;
+        });
         $("#tagMachine").bind("keyup", function() {
           if (event.which == 13) {
             if (firetable.songToEdit){
@@ -1020,6 +1165,55 @@ firetable.init = function() {
                 $("#tagSongLink").attr("href", "https://youtube.com");
                 $("#tagPromptOverlay").css("display", "none");
               }
+            }
+          }
+        });
+        $("#plMachine").bind("keyup", function() {
+          if (event.which == 13) {
+            var val = $("#plMachine").val();
+            if (val != ""){
+                $("#importResults").html("");
+                $("#plMachine").val("");
+                var searchFrom = firetable.importSelectsChoice;
+                if (searchFrom == 1){
+                  //youtube
+                  function keyWordsearch() {
+                    gapi.client.setApiKey('AIzaSyDCXzJ9gGLTF_BLcTzNUO2Zeh4HwPxgyds');
+                    gapi.client.load('youtube', 'v3', function() {
+                      makeRequest();
+                    });
+                  }
+
+                  function makeRequest() {
+                    var request = gapi.client.youtube.search.list({
+                      q: val,
+                      type: 'playlist',
+                      part: 'snippet',
+                      maxResults: 15
+                    });
+                    request.execute(function(response) {
+                      var srchItems = response.result.items;
+                      console.log(response);
+                      $.each(srchItems, function(index, item) {
+                        vidTitle = item.snippet.title;
+                        $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.snippet.title + " by " + item.snippet.channelTitle + "</div><div class=\"delete\"><a target=\"_blank\" href=\"https://www.youtube.com/playlist?list="+item.id.playlistId+"\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i onclick=\"firetable.actions.importList('" + item.id.playlistId + "', '" + firetable.utilities.htmlEscape(item.snippet.title) + "', 1)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div><div class=\"clear\"></div></div>");
+                      })
+                    })
+                  }
+                  keyWordsearch();
+
+                } else if (searchFrom == 2){
+                  //cloud sound world dot com
+                    SC.get('/playlists', {q: val}).then(function(lists) {
+                        for (var i=0; i<lists.length; i++){
+                          var item = lists[i];
+                          if (item.sharing == "public") {
+                            $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " ("+item.track_count+" songs)</div><div class=\"delete\"><a target=\"_blank\" href=\""+item.permalink_url+"\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div><div class=\"clear\"></div></div>");
+
+                          }
+                        }
+                    });
+                }
             }
           }
         });
