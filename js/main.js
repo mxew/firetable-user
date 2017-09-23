@@ -6,10 +6,14 @@ var firetable = {
   queue: false,
   preview: false,
   song: null,
-  playerLoaded: null,
+  scSeek: false,
+  ytLoaded: null,
+  scLoaded: null,
   selectedListThing: "0",
   queueBind: null,
   songTagToEdit: null,
+  scwidget: null,
+  searchSelectsChoice: 1,
   queueRef: null,
   lastChatPerson: false,
   lastChatId: false,
@@ -32,14 +36,14 @@ function onYouTubeIframeAPIReady() {
 }
 
 function initialize(event) {
-  firetable.playerLoaded = true;
+  firetable.ytLoaded = true;
   var vol = localStorage["firetableVol"];
   if (!vol) {
     vol = 80;
     localStorage["firetableVol"] = 80;
-  } else {
-    player.setVolume(vol);
   }
+    player.setVolume(vol);
+
 
   $("#slider").slider({
     orientation: "horizontal",
@@ -50,6 +54,7 @@ function initialize(event) {
     step: 5,
     slide: function(event, ui) {
       player.setVolume(ui.value);
+      firetable.scwidget.setVolume(ui.value);
       localStorage["firetableVol"] = ui.value;
     }
   });
@@ -113,8 +118,39 @@ firetable.init = function() {
 
       }
     });
+    var widgetIframe = document.getElementById('sc-widget');
+    firetable.scwidget = SC.Widget(widgetIframe);
+    firetable.scwidget.bind(SC.Widget.Events.READY, function() {
+      firetable.scwidget.bind(SC.Widget.Events.PLAY, function() {
+        var vol = localStorage["firetableVol"];
+        if (!vol) {
+          vol = 80;
+          localStorage["firetableVol"] = 80;
+        }
+        firetable.scwidget.setVolume(vol);
+        if (firetable.scSeek) firetable.scwidget.seekTo(firetable.scSeek);
+      });
+      if (firetable.song) {
+        var data = firetable.song;
+        var nownow = Date.now();
+        var timeSince = nownow - data.started;
+        var secSince = Math.floor(timeSince / 1000);
+        var timeLeft = data.duration - secSince;
+        if (data.type == 2) {
+          if (!firetable.preview) {
+            firetable.scSeek = timeSince;
+            firetable.scwidget.load("http://api.soundcloud.com/tracks/"+data.cid, { auto_play: true});
+          }
+        }
+      }
+      firetable.scLoaded = true;
+    });
+
 
     firebase.initializeApp(config);
+    SC.initialize({
+      client_id: "27028829630d95b0f9d362951de3ba2c"
+    });
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           firetable.uid = user.uid;
@@ -189,7 +225,7 @@ firetable.init = function() {
                             if (key == firetable.preview) {
                               psign = "&#xE034;";
                             }
-                            newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + key + "')\">" + psign + "</i> " + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div>";
+                            newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + key + "', false,  "+thisone.type+")\">" + psign + "</i> " + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div>";
                           }
                         }
                         $("#mainqueue").html(newlist);
@@ -214,7 +250,7 @@ firetable.init = function() {
                         if (key == firetable.preview) {
                           psign = "&#xE034;";
                         }
-                        newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + key + "')\">" + psign + "</i> " + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div>";
+                        newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + key + "', false,  "+thisone.type+")\">" + psign + "</i> " + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div>";
                       }
                     }
                     $("#mainqueue").html(newlist);
@@ -274,7 +310,7 @@ firetable.init = function() {
           console.log(error);
         });
       },
-      pview: function(id, fromSearch) {
+      pview: function(id, fromSearch, type) {
         if (firetable.preview == id) {
           //already previewing this. stop and resume regular song
           clearTimeout(firetable.ptimeout);
@@ -287,7 +323,16 @@ firetable.init = function() {
           var secSince = Math.floor(timeSince / 1000);
           var timeLeft = firetable.song.duration - secSince;
           if (firetable.song.type == 1) {
-            if (!firetable.preview) player.loadVideoById(firetable.song.cid, secSince, "large")
+            if (!firetable.preview) {
+              if (firetable.scLoaded) firetable.scwidget.pause();
+              player.loadVideoById(firetable.song.cid, secSince, "large");
+            }
+          } else if (firetable.song.type == 2){
+            if (!firetable.preview) {
+              if (firetable.ytLoaded) player.stopVideo();
+              firetable.scSeek = timeSince;
+              firetable.scwidget.load("http://api.soundcloud.com/tracks/"+firetable.song.cid, { auto_play: true});
+            }
           }
         } else {
           if (firetable.preview) $("#pv" + firetable.preview).html("&#xE037;");
@@ -313,11 +358,27 @@ firetable.init = function() {
             var secSince = Math.floor(timeSince / 1000);
             var timeLeft = firetable.song.duration - secSince;
             if (firetable.song.type == 1) {
-              if (!firetable.preview) player.loadVideoById(firetable.song.cid, secSince, "large")
+              if (!firetable.preview) {
+                if (firetable.scLoaded) firetable.scwidget.pause();
+                player.loadVideoById(firetable.song.cid, secSince, "large");
+              }
+            } else if (firetable.song.type == 2){
+              if (!firetable.preview) {
+                if (firetable.ytLoaded) player.stopVideo();
+                firetable.scSeek = timeSince;
+                firetable.scwidget.load("http://api.soundcloud.com/tracks/"+firetable.song.cid, { auto_play: true});
+              }
             }
           }, 30 * 1000);
           $("#pv" + id).html("&#xE034;");
-          player.loadVideoById(cid, "large")
+          if (type == 1){
+            if (firetable.scLoaded) firetable.scwidget.pause();
+            player.loadVideoById(cid, "large")
+          } else if (type == 2){
+            if (firetable.ytLoaded) player.stopVideo();
+            firetable.scwidget.load("http://api.soundcloud.com/tracks/"+cid, { auto_play: true});
+          }
+
 
         }
 
@@ -355,7 +416,18 @@ firetable.init = function() {
       editTagsPrompt: function(songid){
         var song = firetable.queue[songid];
         $("#tagMachine").val(song.name);
-        $("#tagSongLink").attr("href", "https://youtube.com/watch?v="+song.cid);
+        if (song.type == 1){
+          $("#tagSongLink").attr("href", "https://youtube.com/watch?v="+song.cid);
+        } else if (song.type == 2){
+          SC.get('/tracks', {ids: song.cid}).then(function(tracks) {
+              if (tracks.length){
+                $("#tagSongLink").attr("href", tracks[0].permalink_url);
+              } else {
+                $("#tagSongLink").attr("href", "http://howtojointheindiediscothequewaitlist.com/ThisSongIsBroken?thanks=true");
+              }
+          });
+        }
+
         console.log(songid);
         firetable.songToEdit = {
           song: song,
@@ -498,7 +570,16 @@ firetable.init = function() {
             var secSince = Math.floor(timeSince / 1000);
             var timeLeft = firetable.song.duration - secSince;
             if (firetable.song.type == 1) {
-              if (!firetable.preview) player.loadVideoById(firetable.song.cid, secSince, "large")
+              if (!firetable.preview) {
+                if (firetable.scLoaded) firetable.scwidget.pause();
+                player.loadVideoById(firetable.song.cid, secSince, "large");
+              }
+            } else if (firetable.song.type == 2){
+              if (!firetable.preview) {
+                if (firetable.ytLoaded) player.stopVideo();
+                firetable.scSeek = timeSince;
+                firetable.scwidget.load("http://api.soundcloud.com/tracks/"+firetable.song.cid, { auto_play: true});
+              }
             }
           }
         }
@@ -511,8 +592,22 @@ firetable.init = function() {
       playSound: function(filename) {
         document.getElementById("alert").innerHTML = '<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename + '.mp3" /></audio>';
       },
-      htmlEscape: function(str) {
-        return str.replace(/'/g, '\\\'')
+      htmlEscape: function(s, preserveCR) {
+        preserveCR = preserveCR ? '&#13;' : '\n';
+        return ('' + s) /* Forces the conversion to string. */
+        .replace(/&/g, '&amp;') /* This MUST be the 1st replacement. */
+        .replace(/'/g, '&apos;') /* The 4 other predefined entities, required. */
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        /*
+        You may add other replacements here for HTML only
+        (but it's not necessary).
+        Or for XML, only if the named entities are defined in its DTD.
+        */
+        .replace(/\r\n/g, preserveCR) /* Must be before the next replacement. */
+        .replace(/[\r\n]/g, preserveCR);
+        ;
       },
       format_date: function(d) {
 
@@ -568,13 +663,18 @@ firetable.init = function() {
           var secSince = Math.floor(timeSince / 1000);
           var timeLeft = data.duration - secSince;
           firetable.song = data;
-          if (firetable.playerLoaded) {
-            if (data.type == 1) {
+            if (data.type == 1 && firetable.ytLoaded) {
               if (!firetable.preview) {
-                player.loadVideoById(data.cid, secSince, "large")
+                if (firetable.scLoaded) firetable.scwidget.pause();
+                player.loadVideoById(data.cid, secSince, "large");
+              }
+            } else if (data.type == 2 && firetable.scLoaded) {
+              if (!firetable.preview) {
+                if (firetable.ytLoaded) player.stopVideo();
+                firetable.scSeek = timeSince;
+                firetable.scwidget.load("http://api.soundcloud.com/tracks/"+data.cid, { auto_play: true});
               }
             }
-          }
           if (data.cid != 0) {
             var nicename = data.djid;
             if (firetable.users[data.djid]) {
@@ -801,7 +901,16 @@ firetable.init = function() {
               var secSince = Math.floor(timeSince / 1000);
               var timeLeft = firetable.song.duration - secSince;
               if (firetable.song.type == 1) {
-                if (!firetable.preview) player.loadVideoById(firetable.song.cid, secSince, "large")
+                if (!firetable.preview) {
+                  if (firetable.scLoaded) firetable.scwidget.pause();
+                  player.loadVideoById(firetable.song.cid, secSince, "large");
+                }
+              } else if (firetable.song.type == 2){
+                if (!firetable.preview) {
+                  if (firetable.ytLoaded) player.stopVideo();
+                  firetable.scSeek = timeSince;
+                  firetable.scwidget.load("http://api.soundcloud.com/tracks/"+firetable.song.cid, { auto_play: true});
+                }
               }
             }
           }
@@ -888,6 +997,16 @@ firetable.init = function() {
           var pass = $("#loginpass").val();
           firetable.actions.logIn(email, pass);
         });
+        $("#ytsearchSelect").bind("click", function() {
+          $("#scsearchSelect").removeClass("searchSelectsSelected");
+          $("#ytsearchSelect").addClass("searchSelectsSelected");
+          firetable.searchSelectsChoice = 1;
+        });
+        $("#scsearchSelect").bind("click", function() {
+          $("#ytsearchSelect").removeClass("searchSelectsSelected");
+          $("#scsearchSelect").addClass("searchSelectsSelected");
+          firetable.searchSelectsChoice = 2;
+        });
         $("#tagMachine").bind("keyup", function() {
           if (event.which == 13) {
             if (firetable.songToEdit){
@@ -907,7 +1026,7 @@ firetable.init = function() {
         $("#qsearch").bind("keyup", function() {
           if (event.which == 13) {
             var txt = $("#qsearch").val();
-
+            if (firetable.searchSelectsChoice == 1){
             function keyWordsearch() {
               gapi.client.setApiKey('AIzaSyDCXzJ9gGLTF_BLcTzNUO2Zeh4HwPxgyds');
               gapi.client.load('youtube', 'v3', function() {
@@ -939,7 +1058,16 @@ firetable.init = function() {
                     var secSince = Math.floor(timeSince / 1000);
                     var timeLeft = firetable.song.duration - secSince;
                     if (firetable.song.type == 1) {
-                      if (!firetable.preview) player.loadVideoById(firetable.song.cid, secSince, "large")
+                      if (!firetable.preview) {
+                        if (firetable.scLoaded) firetable.scwidget.pause();
+                        player.loadVideoById(firetable.song.cid, secSince, "large");
+                      }
+                    } else if (firetable.song.type == 2){
+                      if (!firetable.preview) {
+                        if (firetable.ytLoaded) player.stopVideo();
+                        firetable.scSeek = timeSince;
+                        firetable.scwidget.load("http://api.soundcloud.com/tracks/"+firetable.song.cid, { auto_play: true});
+                      }
                     }
                   }
                 }
@@ -950,14 +1078,57 @@ firetable.init = function() {
 
                   var pkey = "ytcid" + item.id.videoId;
 
-                  $("#searchResults").append("<div class=\"qresult\"><div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + pkey + "', true)\">&#xE037;</i>" + vidTitle + "</div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id.videoId + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 1)\">&#xE03B;</i></div></div>");
+                  $("#searchResults").append("<div class=\"qresult\"><div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + pkey + "', true, 1)\">&#xE037;</i>" + vidTitle + "</div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id.videoId + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 1)\">&#xE03B;</i></div></div>");
                 })
               })
             }
             keyWordsearch();
 
-          }
+          } else if (firetable.searchSelectsChoice == 2){
+            var q = $('#qsearch').val();
+            SC.get('/tracks', {
+              q: q
+            }).then(function(tracks) {
+              console.log(tracks);
+              $("#qsearch").val("");
+              $('#searchResults').html("");
 
+              if (firetable.preview) {
+                if (firetable.preview.slice(0, 5) == "ytcid") {
+                  $("#pv" + firetable.preview).html("&#xE037;");
+                  clearTimeout(firetable.ptimeout);
+                  firetable.ptimeout = null;
+                  firetable.preview = false;
+                  //start regular song
+                  var nownow = Date.now();
+                  var timeSince = nownow - firetable.song.started;
+                  var secSince = Math.floor(timeSince / 1000);
+                  var timeLeft = firetable.song.duration - secSince;
+                  if (firetable.song.type == 1) {
+                    if (!firetable.preview) {
+                      firetable.scwidget.pause();
+                      player.loadVideoById(firetable.song.cid, secSince, "large");
+                    }
+                  } else if (firetable.song.type == 2){
+                    if (!firetable.preview) {
+                      if (firetable.ytLoaded) player.stopVideo();
+                      firetable.scSeek = timeSince;
+                      firetable.scwidget.load("http://api.soundcloud.com/tracks/"+firetable.song.cid, { auto_play: true});
+                    }
+                  }
+                }
+              }
+              var srchItems = tracks;
+              $.each(srchItems, function(index, item) {
+                vidTitle = item.title;
+
+                var pkey = "sccid" + item.id;
+
+                $("#searchResults").append("<div class=\"qresult\"><div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + pkey + "', true, 2)\">&#xE037;</i>" + vidTitle + "</div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 2)\">&#xE03B;</i></div></div>");
+              })
+            });
+          }
+        }
         });
         $("#newchat").bind("keyup", function() {
           if (event.which == 13) {

@@ -6,13 +6,38 @@ body {
   margin-bottom: 15px;
 }
 
+#scArea{
+  display:none;
+}
 #grab {
   cursor: pointer;
   font-size: 12px;
   margin-right: 15px;
   color: #999;
 }
+span#ytsearchSelect {
+    width: 50%;
+    text-align: center;
+    display: inline-block;
+}
 
+span#scsearchSelect {
+    width: 50%;
+    text-align: center;
+    display: inline-block;
+}
+
+div#searchSelects {
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 25px;
+  border-bottom: 1px solid #ccc;
+}
+
+.searchSelectsSelected{
+  color: #fff;
+  background-color: #000;
+}
 .grabbed {
   color: rgb(244, 129, 11) !important;
 }
