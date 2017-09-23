@@ -596,7 +596,7 @@ firetable.init = function() {
         preserveCR = preserveCR ? '&#13;' : '\n';
         return ('' + s) /* Forces the conversion to string. */
         .replace(/&/g, '&amp;') /* This MUST be the 1st replacement. */
-        .replace(/'/g, '&apos;') /* The 4 other predefined entities, required. */
+        .replace(/'/g, '\\&apos;') /* The 4 other predefined entities, required. */
         .replace(/"/g, '&quot;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
