@@ -377,6 +377,7 @@ firetable.init = function() {
             player.loadVideoById(cid, "large")
           } else if (type == 2){
             if (firetable.ytLoaded) player.stopVideo();
+            firetable.scSeek = false;
             firetable.scwidget.load("http://api.soundcloud.com/tracks/"+cid, { auto_play: true});
           }
 
