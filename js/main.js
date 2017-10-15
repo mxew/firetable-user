@@ -772,9 +772,11 @@ firetable.init = function() {
             if (firetable.nonpmsg) {
               firetable.nonpmsg = false;
             } else {
+              scrollDown = false;
+              if (objDiv.scrollTop == objDiv.scrollHeight - objDiv.clientHeight) scrollDown = true;
               $("#actualChat").append("<div class=\"newChat\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
               var objDiv = document.getElementById("actualChat");
-              objDiv.scrollTop = objDiv.scrollHeight;
+              if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
               firetable.lastChatPerson = false;
               firetable.lastChatId = false;
             }
@@ -938,6 +940,8 @@ firetable.init = function() {
               badoop = true;
             }
           }
+          scrollDown = false;
+          if (objDiv.scrollTop == objDiv.scrollHeight - objDiv.clientHeight) scrollDown = true;
           if (chatData.id == firetable.lastChatPerson && !badoop) {
             $("#chat" + firetable.lastChatId).append("<div>" + txtOut + "</div>");
             $("#chatTime" + firetable.lastChatId).text(firetable.utilities.format_time(chatData.time));
@@ -951,7 +955,7 @@ firetable.init = function() {
             firetable.lastChatId = childSnapshot.key;
           }
 
-          objDiv.scrollTop = objDiv.scrollHeight;
+          if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
 
         });
 
