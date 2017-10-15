@@ -813,7 +813,7 @@ firetable.init = function() {
             var countr = 0;
             for (var key in data) {
               if (data.hasOwnProperty(key)) {
-                ok1 += "<div style=\"background-repeat: no-repeat; background-position: bottom 18px center; background-image: url(https://robohash.org/" + data[key].id + "" + data[key].name + ".png?size=90x90);\" id=\"spt" + countr + "\" class=\"spot\"><div class=\"djname\">" + data[key].name + "</div><div id=\"djthing" + countr + "\" class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div> ";
+                ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"djname\">" + data[key].name + "</div><div class=\"avtr\" id=\"avtr"+countr+"\" style=\"background-repeat: no-repeat; background-position: bottom 18px center; background-image: url(https://robohash.org/" + data[key].id + "" + data[key].name + ".png?size=90x90);\"></div><div id=\"djthing" + countr + "\" class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div> ";
                 countr++;
               }
             }
@@ -836,9 +836,12 @@ firetable.init = function() {
             if (i != firetable.playdex) {
               $("#djthing" + i).css("background-color", "#ccc");
               $("#djthing" + i).css("color", "#000");
+              $("#avtr" + i).css("animation", "none");
+
             } else {
               $("#djthing" + i).css("background-color", "#F4810B");
               $("#djthing" + i).css("color", "#fff");
+              $("#avtr" + i).css("animation", "MoveUpDown 1s linear infinite");
             }
           }
         });
@@ -850,9 +853,13 @@ firetable.init = function() {
             if (i != data) {
               $("#djthing" + i).css("background-color", "#ccc");
               $("#djthing" + i).css("color", "#000");
+              $("#avtr" + i).css("animation", "none");
+
             } else {
               $("#djthing" + i).css("background-color", "#F4810B");
               $("#djthing" + i).css("color", "#fff");
+              $("#avtr" + i).css("animation", "MoveUpDown 1s linear infinite");
+
             }
           }
         });

@@ -763,6 +763,13 @@ div#importPromptHeader {
     color: #eee;
 }
 
+.avtr {
+    height: 120px;
+    position: absolute;
+    bottom: 0;
+    width: 120px;
+}
+
 #importPromptHeader .left {
     float: left;
 }
@@ -792,4 +799,16 @@ div#importPromptHeader {
   left: 0;
   font-size: 10px;
   color: #999;
+}
+
+@keyframes MoveUpDown {
+  0% {
+    bottom: 0px;
+  }
+  50% {
+    bottom: -5px;
+  }
+  100% {
+    bottom: 0px;
+  }
 }
