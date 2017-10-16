@@ -773,9 +773,10 @@ firetable.init = function() {
               firetable.nonpmsg = false;
             } else {
               scrollDown = false;
+              var objDiv = document.getElementById("actualChat");
               if (objDiv.scrollTop == objDiv.scrollHeight - objDiv.clientHeight) scrollDown = true;
               $("#actualChat").append("<div class=\"newChat\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
-              var objDiv = document.getElementById("actualChat");
+
               if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
               firetable.lastChatPerson = false;
               firetable.lastChatId = false;
