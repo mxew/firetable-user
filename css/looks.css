@@ -66,7 +66,7 @@ div#pldeleteButton {
 }
 
 select#listpicker {
-    width: 200px;
+    width: 245px;
     font-size: 14px;
     border: 1px solid #ccc;
     font-family: "Open Sans", helvetica, arial, sans-serif;
@@ -77,6 +77,10 @@ select#listpicker {
 
 .newChat {
   padding: 5px 3px 5px 5px;
+}
+
+.nowplayn{
+  background-color:#ccc !important;
 }
 
 .chatName {
@@ -110,7 +114,7 @@ select#listpicker {
   line-height: 35px;
   margin-left: auto;
   margin-right: auto;
-  width: 850px;
+  width: 1100px;
 }
 
 #actualChat {
@@ -139,6 +143,7 @@ a {
 
 .npmsg {
   font-size: 12px;
+  text-align:center;
 }
 
 #login h4{
@@ -147,9 +152,14 @@ a {
 }
 
 #middleContain{
-  width: 850px;
+  width: 1100px;
   margin-left: auto;
   margin-right: auto;
+}
+
+#mainThing{
+  margin-left:25px;
+  margin-right:25px;
 }
 
 .inputline {
@@ -199,7 +209,7 @@ input {
 }
 
 #newchat{
-    width: 248px;
+    width: 348px;
 }
 
 #tagPromptMain .left{
@@ -225,7 +235,7 @@ input {
 
 #mainThing #rightbox {
   float: right;
-  width: 250px;
+  width: 350px;
 }
 
 #queuebox .material-icons {
@@ -269,7 +279,7 @@ i#refreshSong {
   bottom: 0;
   left: 10px;
   background-color: #ccc;
-  width: 110px;
+  width: 130px;
   height: 18px;
   text-align: center;
   -webkit-border-top-left-radius: 10px;
@@ -293,7 +303,7 @@ i#refreshSong {
 #nowplaying {
   font-size: 18px;
   line-height: 50px;
-  width: 500px;
+  width: 600px;
   font-weight: 700;
   float: left;
   display: inline-block;
@@ -311,7 +321,7 @@ i#refreshSong {
 
 #deck {
     margin-top: 10px;
-    height: 130px;
+    height: 150px;
     border-bottom: 2px solid #ccc;
 }
 
@@ -321,11 +331,11 @@ i#refreshSong {
 
 #deck .spot {
   position: relative;
-    width: 120px;
+    width: 140px;
     padding: 5px;
-    margin-right: 6px;
-    margin-left:6px;
-    height: 120px;
+    margin-right: 8.5px;
+    margin-left:8.5px;
+    height: 140px;
     overflow-y: hidden;
     overflow-x: hidden;
     display: inline-block;
@@ -334,7 +344,7 @@ i#refreshSong {
 #mainThing #leftbox {
   float: left;
   padding-top: 10px;
-  width: 580px;
+  width: 680px;
 }
 
 #topbar .inr .left {
@@ -556,12 +566,12 @@ div.qitem {
 
 #usersbox {
   float: left;
-  width: 280px;
+  width: 330px;
 }
 
 #queuebox {
   float: right;
-  width: 280px;
+  width: 330px;
 }
 
 .chatline:nth-child(even) {
@@ -764,10 +774,10 @@ div#importPromptHeader {
 }
 
 .avtr {
-    height: 120px;
+    height: 140px;
     position: absolute;
     bottom: 0;
-    width: 120px;
+    width: 140px;
 }
 
 #importPromptHeader .left {

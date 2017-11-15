@@ -91,14 +91,14 @@ firetable.init = function() {
     var height = $(window).height(); // New height
     if (height > 690) {
       var morethan = height - 690;
-      var newh = 335 + morethan;
+      var newh = 315 + morethan;
       var chah = 578 + morethan;
       $("#queuelist").css("height", newh + "px");
       $("#userslist").css("height", newh + "px");
       $("#actualChat").css("height", chah + "px");
     } else {
-      $("#queuelist").css("height", "335px");
-      $("#userslist").css("height", "335px");
+      $("#queuelist").css("height", "315px");
+      $("#userslist").css("height", "315px");
       $("#actualChat").css("height", "578px");
 
     }
@@ -107,14 +107,14 @@ firetable.init = function() {
       var height = $(window).height(); // New height
       if (height > 690) {
         var morethan = height - 690;
-        var newh = 335 + morethan;
+        var newh = 315 + morethan;
         var chah = 578 + morethan;
         $("#queuelist").css("height", newh + "px");
         $("#userslist").css("height", newh + "px");
         $("#actualChat").css("height", chah + "px");
       } else {
-        $("#queuelist").css("height", "335px");
-        $("#userslist").css("height", "335px");
+        $("#queuelist").css("height", "315px");
+        $("#userslist").css("height", "315px");
         $("#actualChat").css("height", "578px");
 
       }
@@ -775,7 +775,7 @@ firetable.init = function() {
               scrollDown = false;
               var objDiv = document.getElementById("actualChat");
               if (objDiv.scrollTop == objDiv.scrollHeight - objDiv.clientHeight) scrollDown = true;
-              $("#actualChat").append("<div class=\"newChat\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
+              $("#actualChat").append("<div class=\"newChat nowplayn\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
 
               if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
               firetable.lastChatPerson = false;
@@ -816,7 +816,7 @@ firetable.init = function() {
             var countr = 0;
             for (var key in data) {
               if (data.hasOwnProperty(key)) {
-                ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"djname\">" + data[key].name + "</div><div class=\"avtr\" id=\"avtr"+countr+"\" style=\"background-repeat: no-repeat; background-position: bottom 18px center; background-image: url(https://robohash.org/" + data[key].id + "" + data[key].name + ".png?size=90x90);\"></div><div id=\"djthing" + countr + "\" class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div> ";
+                ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"djname\">" + data[key].name + "</div><div class=\"avtr\" id=\"avtr"+countr+"\" style=\"background-repeat: no-repeat; background-position: bottom 18px center; background-image: url(https://robohash.org/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><div id=\"djthing" + countr + "\" class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div> ";
                 countr++;
               }
             }
