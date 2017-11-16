@@ -222,7 +222,7 @@ input {
 
 .qtxt {
   display: inline-block;
-  width: 198px;
+  width: 240px;
 }
 
 .delete i {
@@ -452,8 +452,11 @@ div#cancelqsearch {
 #slider {
   display: inline-block;
   margin-bottom: 3px;
+  margin-left:5px;
 }
-
+#volstatus{
+  cursor: pointer;
+}
 .ui-slider-horizontal .ui-slider-range-min {
   left: 0;
   background-color: #ccc;
