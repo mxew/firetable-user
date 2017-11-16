@@ -305,6 +305,7 @@ i#refreshSong {
   line-height: 50px;
   width: 600px;
   font-weight: 700;
+  text-overflow: ellipsis;
   float: left;
   display: inline-block;
   overflow: hidden;
