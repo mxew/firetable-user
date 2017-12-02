@@ -1,10 +1,12 @@
 var firetable = {
   started: false,
   uid: null,
+  pvCount: 0,
   playdex: 0,
   users: {},
   queue: false,
   preview: false,
+  movePvBar: null,
   song: null,
   scSeek: false,
   ytLoaded: null,
@@ -245,7 +247,7 @@ firetable.init = function() {
                             if (key == firetable.preview) {
                               psign = "&#xE034;";
                             }
-                            newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + key + "', false,  "+thisone.type+")\">" + psign + "</i> " + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div>";
+                            newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"pvbar\" id=\"pvbar" + key + "\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + key + "', false,  "+thisone.type+")\">" + psign + "</i> " + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div></div>";
                           }
                         }
                         $("#mainqueue").html(newlist);
@@ -270,7 +272,7 @@ firetable.init = function() {
                         if (key == firetable.preview) {
                           psign = "&#xE034;";
                         }
-                        newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + key + "', false,  "+thisone.type+")\">" + psign + "</i> " + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div>";
+                        newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"pvbar\" id=\"pvbar" + key + "\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + key + "', false,  "+thisone.type+")\">" + psign + "</i> " + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div></div>";
                       }
                     }
                     $("#mainqueue").html(newlist);
@@ -385,6 +387,9 @@ firetable.init = function() {
           clearTimeout(firetable.ptimeout);
           firetable.ptimeout = null;
           $("#pv" + firetable.preview).html("&#xE037;");
+          $("#pvbar"+firetable.preview).css("background","none");
+          clearInterval(firetable.movePvBar);
+          firetable.movePvBar = null;
           firetable.preview = false;
           //start regular song
           var nownow = Date.now();
@@ -404,7 +409,11 @@ firetable.init = function() {
             }
           }
         } else {
-          if (firetable.preview) $("#pv" + firetable.preview).html("&#xE037;");
+          if (firetable.preview){
+            $("#pv" + firetable.preview).html("&#xE037;");
+            $("#pvbar"+firetable.preview).css("background","none");
+          }
+
           firetable.preview = id;
           if (fromSearch) {
             var cid = id.slice(5);
@@ -416,9 +425,18 @@ firetable.init = function() {
             clearTimeout(firetable.ptimeout);
             firetable.ptimeout = null;
           }
+          if (firetable.movePvBar != null){
+            clearInterval(firetable.movePvBar);
+            firetable.movePvBar = null;
+          }
+          firetable.pvCount = 0;
           firetable.ptimeout = setTimeout(function() {
             firetable.ptimeout = null;
             $("#pv" + firetable.preview).html("&#xE037;");
+            $("#pvbar"+firetable.preview).css("background","none");
+            clearInterval(firetable.movePvBar);
+            firetable.movePvBar = null;
+            firetable.pvCount = 0;
             firetable.preview = false;
 
             //start regular song
@@ -440,6 +458,11 @@ firetable.init = function() {
             }
           }, 30 * 1000);
           $("#pv" + id).html("&#xE034;");
+          firetable.movePvBar = setInterval(function(){
+            var pcnt = (firetable.pvCount / 29) * 100;
+             firetable.pvCount += 0.1;
+             $("#pvbar"+firetable.preview).css("background","linear-gradient(90deg, #e2f7ff "+pcnt+"%, #fff "+pcnt+"%)");
+          }, 100);
           if (type == 1){
             if (firetable.scLoaded) firetable.scwidget.pause();
             player.loadVideoById(cid, "large")
@@ -716,10 +739,13 @@ firetable.init = function() {
         };
         firetable.queueRef.push(info);
         if (firetable.preview) {
-          if (firetable.preview.slice(0, 5) == "ytcid") {
+          if (firetable.preview.slice(0, 5) == "ytcid" || firetable.preview.slice(0, 5) == "sccid") {
             $("#pv" + firetable.preview).html("&#xE037;");
             clearTimeout(firetable.ptimeout);
             firetable.ptimeout = null;
+            $("#pvbar"+firetable.preview).css("background","none");
+            clearInterval(firetable.movePvBar);
+            firetable.movePvBar = null;
             firetable.preview = false;
             //start regular song
             var nownow = Date.now();
@@ -1059,10 +1085,13 @@ firetable.init = function() {
           $("#mainqueue").css("display", "block");
           $("#addbox").css("display", "none");
           if (firetable.preview) {
-            if (firetable.preview.slice(0, 5) == "ytcid") {
+            if (firetable.preview.slice(0, 5) == "ytcid" || firetable.preview.slice(0, 5) == "sccid") {
               $("#pv" + firetable.preview).html("&#xE037;");
               clearTimeout(firetable.ptimeout);
               firetable.ptimeout = null;
+              $("#pvbar"+firetable.preview).css("background","none");
+              clearInterval(firetable.movePvBar);
+              firetable.movePvBar = null;
               firetable.preview = false;
               //start regular song
               var nownow = Date.now();
@@ -1327,10 +1356,13 @@ firetable.init = function() {
                 $('#searchResults').html("");
 
                 if (firetable.preview) {
-                  if (firetable.preview.slice(0, 5) == "ytcid") {
+                  if (firetable.preview.slice(0, 5) == "ytcid" || firetable.preview.slice(0, 5) == "sccid") {
                     $("#pv" + firetable.preview).html("&#xE037;");
                     clearTimeout(firetable.ptimeout);
                     firetable.ptimeout = null;
+                    $("#pvbar"+firetable.preview).css("background","none");
+                    clearInterval(firetable.movePvBar);
+                    firetable.movePvBar = null;
                     firetable.preview = false;
                     //start regular song
                     var nownow = Date.now();
@@ -1358,7 +1390,7 @@ firetable.init = function() {
 
                   var pkey = "ytcid" + item.id.videoId;
 
-                  $("#searchResults").append("<div class=\"qresult\"><div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + pkey + "', true, 1)\">&#xE037;</i>" + vidTitle + "</div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id.videoId + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 1)\">&#xE03B;</i></div></div>");
+                  $("#searchResults").append("<div class=\"qresult\"><div class=\"pvbar\" id=\"pvbar" + pkey + "\"> <div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + pkey + "', true, 1)\">&#xE037;</i>" + vidTitle + "</div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id.videoId + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 1)\">&#xE03B;</i></div></div></div>");
                 })
               })
             }
@@ -1374,10 +1406,13 @@ firetable.init = function() {
               $('#searchResults').html("");
 
               if (firetable.preview) {
-                if (firetable.preview.slice(0, 5) == "ytcid") {
+                if (firetable.preview.slice(0, 5) == "ytcid" || firetable.preview.slice(0, 5) == "sccid") {
                   $("#pv" + firetable.preview).html("&#xE037;");
                   clearTimeout(firetable.ptimeout);
-                  firetable.ptimeout = null;
+                  firetable.ptimeout = null
+                  $("#pvbar"+firetable.preview).css("background","none");
+                  clearInterval(firetable.movePvBar);
+                  firetable.movePvBar = null;
                   firetable.preview = false;
                   //start regular song
                   var nownow = Date.now();
@@ -1404,7 +1439,7 @@ firetable.init = function() {
 
                 var pkey = "sccid" + item.id;
 
-                $("#searchResults").append("<div class=\"qresult\"><div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + pkey + "', true, 2)\">&#xE037;</i>" + vidTitle + "</div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 2)\">&#xE03B;</i></div></div>");
+                $("#searchResults").append("<div class=\"qresult\"><div class=\"pvbar\" id=\"pvbar" + pkey + "\"><div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + pkey + "', true, 2)\">&#xE037;</i>" + vidTitle + "</div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 2)\">&#xE03B;</i></div></div></div>");
               })
             });
           }

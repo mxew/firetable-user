@@ -514,11 +514,14 @@ div#cancelqsearch {
   right: 0;
 }
 
-div.qresult, div.importResult {
+div.importResult {
   padding: 5px 3px 5px 5px;
   border-bottom: 1px solid #eee;
 }
+div.qresult{
+  border-bottom: 1px solid #eee;
 
+}
 .ui-widget.ui-widget-content {
   border: 1px solid #c5c5c5;
 }
@@ -538,7 +541,7 @@ a.importLinkCheck{
 }
 
 div.qitem {
-  padding: 5px 3px 5px 5px;
+
   background-color: #fff;
   cursor: move;
   /* fallback if grab cursor is unsupported */
@@ -546,6 +549,10 @@ div.qitem {
   cursor: -moz-grab;
   border-bottom: 1px solid #eee;
   cursor: -webkit-grab;
+}
+
+div.pvbar{
+    padding: 5px 3px 5px 5px;
 }
 
 #topbar .inr .right {
