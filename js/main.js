@@ -24,7 +24,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.00.03";
+firetable.version = "00.00.04";
 var player;
 
 function onYouTubeIframeAPIReady() {
