@@ -126,7 +126,7 @@ select#listpicker {
 }
 
 .badoop {
-  background-color: #e2f7ff !important;
+  background-color: #d7edf9 !important;
 }
 
 .chatTime {
@@ -430,9 +430,9 @@ div#cancelqsearch {
 .ui-slider .ui-slider-handle {
   position: absolute;
   z-index: 2;
-  width: 1.2em;
+  width: 1em;
   height: 1em;
-  cursor: default;
+  cursor: grab;
   -ms-touch-action: none;
   touch-action: none;
 }
@@ -460,7 +460,7 @@ div#cancelqsearch {
 }
 .ui-slider-horizontal .ui-slider-range-min {
   left: 0;
-  background-color: #ccc;
+  background-color: #f4810b;
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
@@ -532,7 +532,8 @@ div.qresult{
   background-position:center center;
 }
 .ui-widget.ui-widget-content {
-  border: 1px solid #c5c5c5;
+  border: none;
+  background-color:#ccc;
 }
 
 a.importLinkCheck{

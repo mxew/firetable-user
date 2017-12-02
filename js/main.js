@@ -24,7 +24,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.00.05";
+firetable.version = "00.00.06";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -112,14 +112,14 @@ firetable.init = function() {
     var height = $(window).height(); // New height
     if (height > 690) {
       var morethan = height - 690;
-      var newh = 290 + morethan;
+      var newh = 288 + morethan;
       var chah = 578 + morethan;
       $("#queuelist").css("height", newh + "px");
       $("#userslist").css("height", newh + "px");
       $("#actualChat").css("height", chah + "px");
     } else {
-      $("#queuelist").css("height", "290px");
-      $("#userslist").css("height", "290px");
+      $("#queuelist").css("height", "288px");
+      $("#userslist").css("height", "288px");
       $("#actualChat").css("height", "578px");
 
     }
@@ -128,14 +128,14 @@ firetable.init = function() {
       var height = $(window).height(); // New height
       if (height > 690) {
         var morethan = height - 690;
-        var newh = 290 + morethan;
+        var newh = 288 + morethan;
         var chah = 578 + morethan;
         $("#queuelist").css("height", newh + "px");
         $("#userslist").css("height", newh + "px");
         $("#actualChat").css("height", chah + "px");
       } else {
-        $("#queuelist").css("height", "290px");
-        $("#userslist").css("height", "290px");
+        $("#queuelist").css("height", "288px");
+        $("#userslist").css("height", "288px");
         $("#actualChat").css("height", "578px");
 
       }
@@ -461,7 +461,7 @@ firetable.init = function() {
           firetable.movePvBar = setInterval(function(){
             var pcnt = (firetable.pvCount / 29) * 100;
              firetable.pvCount += 0.1;
-             $("#pvbar"+firetable.preview).css("background","linear-gradient(90deg, #e2f7ff "+pcnt+"%, #fff "+pcnt+"%)");
+             $("#pvbar"+firetable.preview).css("background","linear-gradient(90deg, #d7edf9 "+pcnt+"%, #fff "+pcnt+"%)");
           }, 100);
           if (type == 1){
             if (firetable.scLoaded) firetable.scwidget.pause();
