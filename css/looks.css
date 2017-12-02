@@ -321,7 +321,7 @@ i#refreshSong {
 }
 
 #deck {
-    margin-top: 10px;
+    margin-top: 15px;
     height: 150px;
     border-bottom: 2px solid #ccc;
 }
@@ -438,7 +438,7 @@ div#cancelqsearch {
 }
 
 #volandthings {
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 .ui-slider .ui-slider-range {
@@ -491,6 +491,10 @@ div#cancelqsearch {
   height: .4em;
 }
 
+#upperpart{
+  margin-top:15px;
+}
+
 .ui-slider-horizontal .ui-slider-handle {
   top: -.4em;
   margin-left: -.6em;
@@ -522,12 +526,27 @@ div.qresult{
   border-bottom: 1px solid #eee;
 
 }
+
+#albumArt{
+  background-size:cover;
+  background-position:center center;
+}
 .ui-widget.ui-widget-content {
   border: 1px solid #c5c5c5;
 }
 
 a.importLinkCheck{
   color:#000;
+}
+
+#albumArt{
+  width:50px;
+  height:50px;
+  vertical-align:middle;
+  margin-right:5px;
+  border:1px solid #ccc;
+  display:inline-block;
+
 }
 
 .imtxt{

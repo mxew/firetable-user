@@ -112,14 +112,14 @@ firetable.init = function() {
     var height = $(window).height(); // New height
     if (height > 690) {
       var morethan = height - 690;
-      var newh = 315 + morethan;
+      var newh = 290 + morethan;
       var chah = 578 + morethan;
       $("#queuelist").css("height", newh + "px");
       $("#userslist").css("height", newh + "px");
       $("#actualChat").css("height", chah + "px");
     } else {
-      $("#queuelist").css("height", "315px");
-      $("#userslist").css("height", "315px");
+      $("#queuelist").css("height", "290px");
+      $("#userslist").css("height", "290px");
       $("#actualChat").css("height", "578px");
 
     }
@@ -128,14 +128,14 @@ firetable.init = function() {
       var height = $(window).height(); // New height
       if (height > 690) {
         var morethan = height - 690;
-        var newh = 315 + morethan;
+        var newh = 290 + morethan;
         var chah = 578 + morethan;
         $("#queuelist").css("height", newh + "px");
         $("#userslist").css("height", newh + "px");
         $("#actualChat").css("height", chah + "px");
       } else {
-        $("#queuelist").css("height", "315px");
-        $("#userslist").css("height", "315px");
+        $("#queuelist").css("height", "290px");
+        $("#userslist").css("height", "290px");
         $("#actualChat").css("height", "578px");
 
       }
@@ -841,6 +841,7 @@ firetable.init = function() {
           $("#grab").removeClass("grabbed");
           $("#track").text(data.title);
           $("#artist").text(data.artist);
+          $("#albumArt").css("background-image","url("+data.image+")")
           var nownow = Date.now();
           var timeSince = nownow - data.started;
           var secSince = Math.floor(timeSince / 1000);
