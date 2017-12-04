@@ -25,7 +25,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.00.08";
+firetable.version = "00.00.09";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1090,8 +1090,8 @@ firetable.ui = {
       $("#plmanager").css("display", "none");
     });
 
-    $("#plmaker").bind("keyup", function() {
-      if (event.which == 13) {
+    $("#plmaker").bind("keyup", function(e) {
+      if (e.which == 13) {
         var val = $("#plmaker").val();
         if (val != "") {
           var plref = firebase.database().ref("playlists/" + firetable.uid);
@@ -1220,22 +1220,22 @@ firetable.ui = {
       $("#createscreen").css("display", "block");
       $("#resetscreen").css("display", "none");
     });
-    $("#loginpass").bind("keyup", function() {
-      if (event.which == 13) {
+    $("#loginpass").bind("keyup", function(e) {
+      if (e.which == 13) {
         var email = $("#loginemail").val();
         var pass = $("#loginpass").val();
         firetable.actions.logIn(email, pass);
       }
     });
-    $("#newpass").bind("keyup", function() {
-      if (event.which == 13) {
+    $("#newpass").bind("keyup", function(e) {
+      if (e.which == 13) {
         var email = $("#newemail").val();
         var pass = $("#newpass").val();
         firetable.actions.signUp(email, pass);
       }
     });
-    $("#theAddress").bind("keyup", function() {
-      if (event.which == 13) {
+    $("#theAddress").bind("keyup", function(e) {
+      if (e.which == 13) {
         var email = $("#theAddress").val();
         firebase.auth().sendPasswordResetEmail(email).catch(function(error) {
           var errorCode = error.code;
@@ -1297,8 +1297,8 @@ firetable.ui = {
       $("#scimportchoice").addClass("importChoice");
       firetable.importSelectsChoice = 2;
     });
-    $("#tagMachine").bind("keyup", function() {
-      if (event.which == 13) {
+    $("#tagMachine").bind("keyup", function(e) {
+      if (e.which == 13) {
         if (firetable.songToEdit) {
           var val = $("#tagMachine").val();
           if (val != "") {
@@ -1313,8 +1313,8 @@ firetable.ui = {
         }
       }
     });
-    $("#plMachine").bind("keyup", function() {
-      if (event.which == 13) {
+    $("#plMachine").bind("keyup", function(e) {
+      if (e.which == 13) {
         var val = $("#plMachine").val();
         if (val != "") {
           $("#importResults").html("");
@@ -1364,8 +1364,8 @@ firetable.ui = {
         }
       }
     });
-    $("#qsearch").bind("keyup", function() {
-      if (event.which == 13) {
+    $("#qsearch").bind("keyup", function(e) {
+      if (e.which == 13) {
         var txt = $("#qsearch").val();
         if (firetable.searchSelectsChoice == 1) {
           function keyWordsearch() {
@@ -1481,8 +1481,8 @@ firetable.ui = {
         }
       }
     });
-    $("#newchat").bind("keyup", function() {
-      if (event.which == 13) {
+    $("#newchat").bind("keyup", function(e) {
+      if (e.which == 13) {
         var txt = $("#newchat").val();
         var matches = txt.match(/^(?:[\/])(\w+)\s*(.*)/i);
         if (matches) {
