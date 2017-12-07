@@ -25,7 +25,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.00.09";
+firetable.version = "00.01.0";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -856,7 +856,7 @@ firetable.ui = {
         clearInterval(firetable.moveBar);
         firetable.moveBar = null;
       }
-      $("#prgbar").css("background","none");
+      $("#prgbar").css("background","#ccc");
       $("#grab").removeClass("grabbed");
       $("#track").text(data.title);
       $("#artist").text(data.artist);
@@ -1227,11 +1227,16 @@ firetable.ui = {
         firetable.actions.logIn(email, pass);
       }
     });
-    $("#newpass").bind("keyup", function(e) {
+    $("#newpass2").bind("keyup", function(e) {
       if (e.which == 13) {
         var email = $("#newemail").val();
         var pass = $("#newpass").val();
-        firetable.actions.signUp(email, pass);
+        var pass2 = $("#newpass2").val();
+        if (pass == pass2){
+          firetable.actions.signUp(email, pass);
+        } else {
+          alert("Those passwords do not match!");
+        }
       }
     });
     $("#theAddress").bind("keyup", function(e) {
