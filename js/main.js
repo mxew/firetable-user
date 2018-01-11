@@ -468,9 +468,9 @@ firetable.actions = {
       $("#pv" + id).html("&#xE034;");
       firetable.movePvBar = setInterval(function() {
         var pcnt = (firetable.pvCount / 29) * 100;
-        firetable.pvCount += 0.1;
+        firetable.pvCount += 0.2;
         $("#pvbar" + firetable.preview).css("background", "linear-gradient(90deg, #d7edf9 " + pcnt + "%, #fff " + pcnt + "%)");
-      }, 100);
+      }, 200);
       if (type == 1) {
         if (firetable.scLoaded) firetable.scwidget.pause();
         player.loadVideoById(cid, "large")
@@ -910,7 +910,7 @@ firetable.ui = {
         var sofar = now - firetable.song.started;
         var pcnt = (sofar / (firetable.song.duration * 1000)) * 100;
         $("#prgbar").css("background", "linear-gradient(90deg, #f4810b " + pcnt + "%, #ccc " + pcnt + "%)");
-      }, 100);
+      }, 500);
     });
     var wl = firebase.database().ref("waitlist");
     wl.on('value', function(dataSnapshot) {
