@@ -27,7 +27,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.02.0";
+firetable.version = "00.02.1";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -850,6 +850,14 @@ firetable.utilities = {
   playSound: function(filename) {
     document.getElementById("alert").innerHTML = '<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename + '.mp3" /></audio>';
   },
+  isChatPrettyMuchAtBottom: function(){
+    var objDiv = document.getElementById("actualChat");
+    var answr = false;
+    var thing1 = objDiv.scrollHeight - objDiv.clientHeight;
+    var thing2 = objDiv.scrollTop;
+    if (Math.abs(thing1 - thing2) <=5) answr = true;
+    return answr;
+  },
   htmlEscape: function(s, preserveCR) {
     preserveCR = preserveCR ? '&#13;' : '\n';
     return ('' + s) /* Forces the conversion to string. */
@@ -950,7 +958,7 @@ firetable.ui = {
         } else {
           scrollDown = false;
           var objDiv = document.getElementById("actualChat");
-          if (objDiv.scrollTop == objDiv.scrollHeight - objDiv.clientHeight) scrollDown = true;
+          if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
           $("#actualChat").append("<div class=\"newChat nowplayn\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
 
           if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
@@ -1124,7 +1132,7 @@ firetable.ui = {
         }
       }
       scrollDown = false;
-      if (objDiv.scrollTop == objDiv.scrollHeight - objDiv.clientHeight) scrollDown = true;
+      if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
       if (chatData.id == firetable.lastChatPerson && !badoop) {
         $("#chat" + firetable.lastChatId).append("<div>" + txtOut + "</div>");
         $("#chatTime" + firetable.lastChatId).text(firetable.utilities.format_time(chatData.time));
