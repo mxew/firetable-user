@@ -10,6 +10,8 @@ var firetable = {
   moveBar: null,
   song: null,
   scSeek: false,
+  color: "#F4810B",
+  countcolor: "#fff",
   ytLoaded: null,
   scLoaded: null,
   selectedListThing: "0",
@@ -25,7 +27,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.01.1";
+firetable.version = "00.01.2";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -111,34 +113,91 @@ firetable.init = function() {
     databaseURL: "https://firetable-e10fd.firebaseio.com"
   };
   var height = $(window).height(); // New height
-  if (height > 690) {
-    var morethan = height - 690;
-    var newh = 268 + morethan;
-    var chah = 578 + morethan;
-    $("#queuelist").css("height", newh + "px");
-    $("#userslist").css("height", newh + "px");
-    $("#actualChat").css("height", chah + "px");
-  } else {
-    $("#queuelist").css("height", "268px");
-    $("#userslist").css("height", "268px");
-    $("#actualChat").css("height", "578px");
+  var w = $(window).width();
+  console.log(w);
+  if (w > 1199) {
+    if (height > 520) {
+      var morethan = height - 520;
+      var newh = 146 + morethan;
+      var chah = 461 + morethan;
+      var newu = 458 + morethan;
+      $("#queuelist").css("height", newh + "px");
+      $("#userslist").css("height", newu + "px");
+      $("#actualChat").css("height", chah + "px");
+    } else {
+      $("#queuelist").css("height", "146px");
+      $("#userslist").css("height", "440px");
+      $("#actualChat").css("height", "441px");
 
+    }
+  } else if (w > 799) {
+    var newh = height - 262;
+    if (height > 520) {
+      var morethan = height - 520;
+
+      var chah = 461 + morethan;
+      var newu = 458 + morethan;
+      $("#queuelist").css("height", newh + "px");
+      $("#userslist").css("height", newu + "px");
+      $("#actualChat").css("height", chah + "px");
+    } else {
+
+      $("#queuelist").css("height", "146px");
+      $("#queuelist").css("height", newh + "px");
+      $("#actualChat").css("height", "441px");
+
+    }
+  } else {
+    var chah = height - 272;
+    var newu = height - 91;
+
+    $("#actualChat").css("height", chah + "px");
+    $("#queuelist").css("height", newu + "px");
+    $("#userslist").css("height", newu + "px");
   }
   $(window).resize(function() {
     // This will execute whenever the window is resized
     var height = $(window).height(); // New height
-    if (height > 690) {
-      var morethan = height - 690;
-      var newh = 268 + morethan;
-      var chah = 578 + morethan;
-      $("#queuelist").css("height", newh + "px");
-      $("#userslist").css("height", newh + "px");
-      $("#actualChat").css("height", chah + "px");
-    } else {
-      $("#queuelist").css("height", "268px");
-      $("#userslist").css("height", "268px");
-      $("#actualChat").css("height", "578px");
+    var w = $(window).width();
+    if (w > 1199) {
+      if (height > 520) {
+        var morethan = height - 520;
+        var newh = 146 + morethan;
+        var chah = 461 + morethan;
+        var newu = 458 + morethan;
+        $("#queuelist").css("height", newh + "px");
+        $("#userslist").css("height", newu + "px");
+        $("#actualChat").css("height", chah + "px");
+      } else {
+        $("#queuelist").css("height", "146px");
+        $("#userslist").css("height", "458px");
+        $("#actualChat").css("height", "441px");
 
+      }
+    } else if (w > 799) {
+      var newh = height - 262;
+      if (height > 520) {
+        var morethan = height - 520;
+
+        var chah = 461 + morethan;
+        var newu = 458 + morethan;
+        $("#queuelist").css("height", newh + "px");
+        $("#userslist").css("height", newu + "px");
+        $("#actualChat").css("height", chah + "px");
+      } else {
+
+        $("#queuelist").css("height", "128px");
+        $("#queuelist").css("height", newh + "px");
+        $("#actualChat").css("height", "441px");
+
+      }
+    } else {
+      var chah = height - 272;
+      var newu = height - 91;
+
+      $("#actualChat").css("height", chah + "px");
+      $("#queuelist").css("height", newu + "px");
+      $("#userslist").css("height", newu + "px");
     }
   });
   var widgetIframe = document.getElementById('sc-widget');
@@ -301,7 +360,7 @@ firetable.init = function() {
       $("#actualChat").css("display", "block");
       $("#newchat").css("display", "block");
       $("#grab").css("display", "inline-block");
-      $("#usersbox").removeClass("notLoggedIn");
+      $("#notloggedin").css("display", "none");
     } else {
       firetable.uid = null;
       $("#loggedInEmail").text("Not Logged In");
@@ -311,7 +370,8 @@ firetable.init = function() {
       $("#actualChat").css("display", "none");
       $("#newchat").css("display", "none");
       $("#grab").css("display", "none");
-      $("#usersbox").addClass("notLoggedIn");
+      $("#notloggedin").css("display", "block");
+
     }
   });
   firetable.ui.init();
@@ -852,11 +912,11 @@ firetable.ui = {
     s2p.on('value', function(dataSnapshot) {
       var data = dataSnapshot.val();
       $("#timr").countdown("destroy");
-      if (firetable.moveBar != null){
+      if (firetable.moveBar != null) {
         clearInterval(firetable.moveBar);
         firetable.moveBar = null;
       }
-      $("#prgbar").css("background","#ccc");
+      $("#prgbar").css("background", "#ccc");
       $("#grab").removeClass("grabbed");
       $("#track").text(data.title);
       $("#artist").text(data.artist);
@@ -909,7 +969,7 @@ firetable.ui = {
         var now = Date.now();
         var sofar = now - firetable.song.started;
         var pcnt = (sofar / (firetable.song.duration * 1000)) * 100;
-        $("#prgbar").css("background", "linear-gradient(90deg, #f4810b " + pcnt + "%, #ccc " + pcnt + "%)");
+        $("#prgbar").css("background", "linear-gradient(90deg, " + firetable.color + " " + pcnt + "%, #ccc " + pcnt + "%)");
       }, 500);
     });
     var wl = firebase.database().ref("waitlist");
@@ -964,8 +1024,8 @@ firetable.ui = {
           $("#avtr" + i).css("animation", "none");
 
         } else {
-          $("#djthing" + i).css("background-color", "#F4810B");
-          $("#djthing" + i).css("color", "#fff");
+          $("#djthing" + i).css("background-color", firetable.color);
+          $("#djthing" + i).css("color", firetable.countcolor);
           $("#avtr" + i).css("animation", "MoveUpDown 1s linear infinite");
         }
       }
@@ -1032,7 +1092,7 @@ firetable.ui = {
         }
       }
       $("#allusers").html(newlist);
-      $("#label1").text("Users (" + count + ")");
+      $("#label1").text("Everyone (" + count + ")");
       console.log(okdata);
     });
     var ref = firebase.database().ref("chat");
@@ -1088,6 +1148,31 @@ firetable.ui = {
       $("#mainqueue").css("display", "none");
       $("#addbox").css("display", "block");
       $("#plmanager").css("display", "none");
+    });
+
+    $("#minimodeoptions").bind("click", function(event) {
+      var oldthingid = $("#minimodeoptions").find(".mmselected").attr('id');
+      $("#minimodeoptions").find(".mmselected").removeClass("mmselected");
+      $(event.target).addClass("mmselected");
+      var thingid = $(event.target).attr('id');
+
+
+      if (oldthingid == "mmchat") {
+        $("#rightbox").addClass("mmhidden");
+        $("#upperpart").addClass("mmhidden");
+      } else if (oldthingid == "mmqueue") {
+        $("#queuebox").addClass("mmhidden");
+      } else if (oldthingid == "mmusrs") {
+        $("#usrarea").addClass("mmhidden")
+      }
+      if (thingid == "mmchat") {
+        $("#rightbox").removeClass("mmhidden");
+        $("#upperpart").removeClass("mmhidden");
+      } else if (thingid == "mmqueue") {
+        $("#queuebox").removeClass("mmhidden");
+      } else if (thingid == "mmusrs") {
+        $("#usrarea").removeClass("mmhidden");
+      }
     });
 
     $("#plmaker").bind("keyup", function(e) {
@@ -1232,7 +1317,7 @@ firetable.ui = {
         var email = $("#newemail").val();
         var pass = $("#newpass").val();
         var pass2 = $("#newpass2").val();
-        if (pass == pass2){
+        if (pass == pass2) {
           firetable.actions.signUp(email, pass);
         } else {
           alert("Those passwords do not match!");
@@ -1520,6 +1605,21 @@ firetable.ui = {
       }
 
     });
+    var colors = firebase.database().ref("colors");
+    colors.on('value', function(dataSnapshot) {
+      var data = dataSnapshot.val();
+      console.log("COLOR CHANGE!", data);
+
+      firetable.color = data.color;
+      firetable.countcolor = data.txt;
+      if (data.color == "#fff") {
+        firetable.color = "#F4810B";
+      }
+      $("#upperpart").css("background-color", data.color);
+      $("#djthing" + firetable.playdex).css("background-color", firetable.color);
+      $("#djthing" + firetable.playdex).css("color", firetable.countcolor);
+      $("#volstylebox").html("<style>.ui-slider-horizontal .ui-slider-range-min{ background-color: " + firetable.color + "; } .grabbed { color: " + firetable.color + " !important; } </style>");
+    });
   },
   usertab1: function() {
     $("#allusers").css("display", "block");
@@ -1534,6 +1634,8 @@ firetable.ui = {
     $("#justwaitlist").css("display", "block");
 
   }
+
+
 }
 
 if (!firetable.started) firetable.init();

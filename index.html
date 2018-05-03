@@ -2,7 +2,8 @@
 <html>
 
 <head>
-	<title>Indie Discotheque | firetable</title>
+	<title>Indie Discotheque's Basement | firetable</title>
+	<meta name="viewport" content="width=device-width; initial-scale = 1.0; maximum-scale=1.0; user-scalable=no" />
 	<link rel="shortcut icon" href="favicon.png">
 	<link rel="stylesheet" href="css/looks.css?v=00.01.1" type="text/css" />
 	<script src="https://cdn.jsdelivr.net/emojione/2.2.7/lib/js/emojione.min.js"></script>
@@ -18,6 +19,7 @@
 </head>
 
 <body>
+	<div id="volstylebox"></div>
 	<div id="tagPromptOverlay">
 		<div id="tagPromptBox">
 			<div id="tagPromptHeader">
@@ -87,7 +89,7 @@
 		<div id="topbar">
 			<div class="inr">
 				<div class="left">
-					<span class="fire">fire</span>table <span id="idtitle">Indie Discotheque</span>
+					<span class="fire">fire</span>table <span id="idtitle">Indie Discotheque's Basement</span>
 				</div>
 				<div class="right">
 					<span id="loggedInEmail">Not Logged In</span><span id="signOut"> </span>
@@ -97,50 +99,16 @@
 		</div>
 		<div id="middleContain">
 			<div id="mainThing">
+				<div id="minimodeoptions">
+					<div class="minimodeopt" id="mmusrs">People</div>
+					<div class="minimodeopt" id="mmqueue">Your Queue</div>
+					<div class="minimodeopt mmselected" id="mmchat">Chat</div>
+				</div>
 				<div id="leftbox">
 					<div style="display:block" id="playerArea"></div>
 					<div id="scArea"><iframe id="sc-widget" width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F1848notarealidthanks538&show_artwork=false"></iframe></div>
 					<div style="display:none" id="alert"></div>
-					<div id="upperpart">
-						<div id="npbox">
-							<div id="albumArt"></div>
-							<div id="nowplaying">
-								<div id="nptop">
-									<div id="track">Nothing</div>
-									<div id="timr"></div>
-									<div class="clear"></div>
-								</div>
-								<div id="npmiddle">
-									<div id="artist">Playing</div>
-								</div>
-								<div id="volandthings">
-									<div id="volplace">
-										<i id="volstatus" class="material-icons">&#xE050;</i>
-										<div style="width:200px;" id="slider"></div>
-									</div>
-									<div id="shareinfo">
-										<span id="info">
-								<span id="grab">
-									<i class="material-icons">&#xE03B;</i> Steal the DJ's h0t track
-								</span>
-										<a target="_blank" href="about"><i class="material-icons">&#xE887;</i> Hmm?!?!</a>
-										</span>
-									</div>
-									<div class="clear"></div>
-								</div>
-
-							</div>
-							<div class="clear"></div>
-
-
-						</div>
-
-						<div id="deck"></div>
-						<div id="prgbar"></div>
-
-						<div class="clear"></div>
-					</div>
-					<div id="niceboxes">
+					<div id="usrarea" class="mmhidden">
 						<div id="usersbox">
 							<div id="usertabs">
 								<span class="usertab selected" id="label1">Users</span> <span class="usertab" id="label2">Waitlist</span>
@@ -154,39 +122,87 @@
 								</div>
 							</div>
 						</div>
-						<div id="queuebox">
-							<select id="listpicker">
+					</div>
+					<div id="otherpart">
+						<div id="upperpart">
+							<div id="upperlay">
+								<div id="npbox">
+									<div id="albumArt"></div>
+									<div id="nowplaying">
+										<div id="nptop">
+											<div id="track">Nothing</div>
+											<div id="timr"></div>
+											<div class="clear"></div>
+										</div>
+										<div id="npmiddle">
+											<div id="artist">Playing</div>
+										</div>
+										<div id="volandthings">
+											<div id="volplace">
+												<i id="volstatus" class="material-icons">&#xE050;</i>
+												<div style="width:200px;" id="slider"></div>
+											</div>
+											<div id="shareinfo">
+												<span id="info">
+								<span id="grab">
+									<i class="material-icons">&#xE03B;</i> Steal the DJ's h0t track
+								</span>
+												<a target="_blank" href="about"><i class="material-icons">&#xE887;</i> Hmm?!?!</a>
+												</span>
+											</div>
+											<div class="clear"></div>
+										</div>
+
+									</div>
+									<div class="clear"></div>
+
+
+								</div>
+
+								<div id="deck"></div>
+								<div id="prgbar"></div>
+
+								<div class="clear"></div>
+							</div>
+							<div class="clear"></div>
+						</div>
+						<div id="niceboxes">
+							<div class="mmhidden" id="notloggedin">
+								Log In or Sign Up to Join The Party!
+							</div>
+							<div id="queuebox" class="mmhidden">
+								<select id="listpicker">
 							<option value="1">Add/Delete Playlist</option>
   						<option value="0">Default Queue</option>
 						</select>
-							<span id="addToQueueBttn">Add Song</span>
-							<div id="queuelist">
-								<div id="mainqueue" class="innr">
-									heres the queue
-								</div>
-								<div id="plmanager">
-									<div class="helptxt">Choose a name + hit enter to make a blank playlist.</div>
-									<input type="text" placeholder="Choose a playlist name" id="plmaker"></input>
-									<div style="text-align:center" class="helptxt"><br/>or...<br/><br/></div>
-									<div id="plimportLauncher">Import A Playlist</div>
-									<div id="pldeleteLauncher">Delete A Playlist</div>
-								</div>
-								<div id="addbox" style="display:none" class="innr">
-									<input type="text" placeholder="Add a thing to the your queue now" id="qsearch"></input>
-									<div id="searchSelects">
-										<span class="searchSelectsSelected" id="ytsearchSelect">Youtube</span><span id="scsearchSelect">Soundcloud</span>
+								<span id="addToQueueBttn">Add Song</span>
+								<div id="queuelist">
+									<div id="mainqueue" class="innr">
+										heres the queue
 									</div>
-									<div id="cancelqsearch">
-										Return to my queue
+									<div id="plmanager">
+										<div class="helptxt">Choose a name + hit enter to make a blank playlist.</div>
+										<input type="text" placeholder="Choose a playlist name" id="plmaker"></input>
+										<div style="text-align:center" class="helptxt"><br/>or...<br/><br/></div>
+										<div id="plimportLauncher">Import A Playlist</div>
+										<div id="pldeleteLauncher">Delete A Playlist</div>
 									</div>
-									<div id="searchResults">
+									<div id="addbox" style="display:none" class="innr">
+										<input type="text" placeholder="Add a thing to the your queue now" id="qsearch"></input>
+										<div id="searchSelects">
+											<span class="searchSelectsSelected" id="ytsearchSelect">Youtube</span><span id="scsearchSelect">Soundcloud</span>
+										</div>
+										<div id="cancelqsearch">
+											Return to my queue
+										</div>
+										<div id="searchResults">
+										</div>
 									</div>
 								</div>
 							</div>
+							<div class="clear"></div>
 						</div>
-						<div class="clear"></div>
 					</div>
-
 				</div>
 				<div id="rightbox">
 					<div id="login">
@@ -242,8 +258,7 @@
 		</div>
 	</div>
 	</div>
-	<div id="bottomInfo">
-		&copy; 2017-2018 Matt Thompson | Powered by Firebase + robohash.org</div>
+
 </body>
 <script src="https://apis.google.com/js/client.js?onload=googleApiClientReady">
 </script>
