@@ -27,7 +27,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.02.1";
+firetable.version = "00.02.4";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -326,7 +326,6 @@ firetable.init = function() {
                 var okdata = dataSnapshot.val();
                 firetable.queue = okdata;
                 var newlist = "";
-                console.log(okdata);
                 for (var key in okdata) {
                   if (okdata.hasOwnProperty(key)) {
                     var thisone = okdata[key];
@@ -337,7 +336,6 @@ firetable.init = function() {
                     newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"pvbar\" id=\"pvbar" + key + "\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + key + "', false,  " + thisone.type + ")\">" + psign + "</i> " + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div></div>";
                   }
                 }
-                $("#mainqueue").html(newlist);
                 $('#mainqueue').sortable({
                   start: function(event, ui) {
                     var start_pos = ui.item.index();
@@ -351,6 +349,7 @@ firetable.init = function() {
                     firetable.actions.updateQueue();
                   }
                 });
+                $("#mainqueue").html(newlist);
               });
             });
         });
