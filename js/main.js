@@ -27,14 +27,16 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.02.5";
+firetable.version = "00.02.6";
 var player;
 
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('playerArea', {
     width: 600,
     height: 400,
-    playerVars: { 'autoplay': 1 },
+    playerVars: {
+      'autoplay': 1
+    },
     videoId: '0',
     events: {
       onReady: initialize
@@ -804,7 +806,7 @@ firetable.actions = {
       $("#grab").addClass("grabbed");
     }
   },
-  reloadtrack: function(){
+  reloadtrack: function() {
     //start regular song
     var nownow = Date.now();
     var timeSince = nownow - firetable.song.started;
@@ -871,12 +873,12 @@ firetable.utilities = {
   playSound: function(filename) {
     document.getElementById("alert").innerHTML = '<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename + '.mp3" /></audio>';
   },
-  isChatPrettyMuchAtBottom: function(){
+  isChatPrettyMuchAtBottom: function() {
     var objDiv = document.getElementById("actualChat");
     var answr = false;
     var thing1 = objDiv.scrollHeight - objDiv.clientHeight;
     var thing2 = objDiv.scrollTop;
-    if (Math.abs(thing1 - thing2) <=5) answr = true;
+    if (Math.abs(thing1 - thing2) <= 5) answr = true;
     return answr;
   },
   htmlEscape: function(s, preserveCR) {
@@ -1620,6 +1622,37 @@ firetable.ui = {
               var modp = firebase.database().ref("users/" + personToMod + "/mod");
               modp.set(false);
             }
+          } else if (command == "shrug") {
+            var chat = firebase.database().ref("chat");
+            var chooto = {
+              time: firebase.database.ServerValue.TIMESTAMP,
+              id: firetable.uid,
+              txt: "¯\\_(ツ)_/¯"
+            };
+            console.log(chooto);
+            chat.push(chooto);
+          } else if (command == "tableflip") {
+            var chat = firebase.database().ref("chat");
+            var thingtosay = "(╯°□°）╯︵ ┻━┻";
+            if (args) thingtosay = args + " (╯°□°）╯︵ ┻━┻";
+            var chooto = {
+              time: firebase.database.ServerValue.TIMESTAMP,
+              id: firetable.uid,
+              txt: thingtosay
+            };
+            console.log(chooto);
+            chat.push(chooto);
+          } else if (command == "unflip") {
+            var chat = firebase.database().ref("chat");
+            var thingtosay = "┬─┬ ノ( ゜-゜ノ)";
+            if (args) thingtosay = args + " ┬─┬ ノ( ゜-゜ノ)";
+            var chooto = {
+              time: firebase.database.ServerValue.TIMESTAMP,
+              id: firetable.uid,
+              txt: thingtosay
+            };
+            console.log(chooto);
+            chat.push(chooto);
           }
         } else {
           var chat = firebase.database().ref("chat");
