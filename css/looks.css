@@ -37,7 +37,7 @@ div#upperlay {
   display: none;
 }
 
-#grab {
+#grab, #reloadtrack {
   cursor: pointer;
   font-size: 12px;
   margin-right: 15px;

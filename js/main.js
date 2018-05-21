@@ -27,13 +27,14 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.02.4";
+firetable.version = "00.02.5";
 var player;
 
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('playerArea', {
     width: 600,
     height: 400,
+    playerVars: { 'autoplay': 1 },
     videoId: '0',
     events: {
       onReady: initialize
@@ -803,6 +804,27 @@ firetable.actions = {
       $("#grab").addClass("grabbed");
     }
   },
+  reloadtrack: function(){
+    //start regular song
+    var nownow = Date.now();
+    var timeSince = nownow - firetable.song.started;
+    var secSince = Math.floor(timeSince / 1000);
+    var timeLeft = firetable.song.duration - secSince;
+    if (firetable.song.type == 1) {
+      if (!firetable.preview) {
+        if (firetable.scLoaded) firetable.scwidget.pause();
+        player.loadVideoById(firetable.song.cid, secSince, "large");
+      }
+    } else if (firetable.song.type == 2) {
+      if (!firetable.preview) {
+        if (firetable.ytLoaded) player.stopVideo();
+        firetable.scSeek = timeSince;
+        firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
+          auto_play: true
+        });
+      }
+    }
+  },
   queueTrack: function(cid, name, type) {
     var info = {
       type: type,
@@ -1241,6 +1263,7 @@ firetable.ui = {
       $("#resetscreen").css("display", "block");
     });
     $("#grab").bind("click", firetable.actions.grab);
+    $("#reloadtrack").bind("click", firetable.actions.reloadtrack);
     $("#loginlink").bind("click", function() {
       $("#logscreen").css("display", "block");
       $("#createscreen").css("display", "none");
