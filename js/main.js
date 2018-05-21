@@ -27,7 +27,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.02.6";
+firetable.version = "00.02.7";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1624,10 +1624,12 @@ firetable.ui = {
             }
           } else if (command == "shrug") {
             var chat = firebase.database().ref("chat");
+            var thingtosay = "¯\\_(ツ)_/¯";
+            if (args) thingtosay = args + " ¯\\_(ツ)_/¯";
             var chooto = {
               time: firebase.database.ServerValue.TIMESTAMP,
               id: firetable.uid,
-              txt: "¯\\_(ツ)_/¯"
+              txt: thingtosay
             };
             console.log(chooto);
             chat.push(chooto);
