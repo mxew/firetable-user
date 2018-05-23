@@ -274,6 +274,7 @@ input {
 #newchat {
   width: calc(100% - 16px);
   padding-left: 15px;
+  line-height:30px;
   border-left: none;
 }
 

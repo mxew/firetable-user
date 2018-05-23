@@ -27,7 +27,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.03.1";
+firetable.version = "00.03.3";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -122,7 +122,7 @@ firetable.init = function() {
     if (height > 520) {
       var morethan = height - 520;
       var newh = 146 + morethan;
-      var chah = 461 + morethan;
+      var chah = 451 + morethan;
       var newu = 458 + morethan;
       $("#queuelist").css("height", newh + "px");
       $("#userslist").css("height", newu + "px");
@@ -138,7 +138,7 @@ firetable.init = function() {
     if (height > 520) {
       var morethan = height - 520;
 
-      var chah = 461 + morethan;
+      var chah = 451 + morethan;
       var newu = 458 + morethan;
       $("#queuelist").css("height", newh + "px");
       $("#userslist").css("height", newu + "px");
@@ -151,7 +151,7 @@ firetable.init = function() {
 
     }
   } else {
-    var chah = height - 272;
+    var chah = height - 282;
     var newu = height - 91;
 
     $("#actualChat").css("height", chah + "px");
@@ -166,7 +166,7 @@ firetable.init = function() {
       if (height > 520) {
         var morethan = height - 520;
         var newh = 146 + morethan;
-        var chah = 461 + morethan;
+        var chah = 451 + morethan;
         var newu = 458 + morethan;
         $("#queuelist").css("height", newh + "px");
         $("#userslist").css("height", newu + "px");
@@ -182,7 +182,7 @@ firetable.init = function() {
       if (height > 520) {
         var morethan = height - 520;
 
-        var chah = 461 + morethan;
+        var chah = 451 + morethan;
         var newu = 458 + morethan;
         $("#queuelist").css("height", newh + "px");
         $("#userslist").css("height", newu + "px");
@@ -195,7 +195,7 @@ firetable.init = function() {
 
       }
     } else {
-      var chah = height - 272;
+      var chah = height - 282;
       var newu = height - 91;
 
       $("#actualChat").css("height", chah + "px");
@@ -802,7 +802,7 @@ firetable.actions = {
   grab: function() {
     if (firetable.song.cid != 0) {
       var title = firetable.song.artist + " - " + firetable.song.title;
-      firetable.actions.queueTrack(firetable.song.cid, title, firetable.song.type);
+      firetable.actions.queueTrack(firetable.song.cid, title, firetable.song.type, true);
       $("#grab").addClass("grabbed");
     }
   },
@@ -827,13 +827,19 @@ firetable.actions = {
       }
     }
   },
-  queueTrack: function(cid, name, type) {
+  queueTrack: function(cid, name, type, tobottom) {
     var info = {
       type: type,
       name: name,
       cid: cid
     };
-    firetable.queueRef.push(info);
+
+      var cuteid = firetable.queueRef.push(info, function() {
+        console.log(cuteid.key);
+        if (!tobottom) firetable.actions.bumpSongInQueue(cuteid.key);
+      });
+
+
     if (firetable.preview) {
       if (firetable.preview.slice(0, 5) == "ytcid" || firetable.preview.slice(0, 5) == "sccid") {
         $("#pv" + firetable.preview).html("&#xE037;");
