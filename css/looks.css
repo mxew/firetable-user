@@ -37,6 +37,16 @@ div#upperlay {
   display: none;
 }
 
+#playerArea{
+  position: absolute;
+  top: -300px;
+  border: 2px solid #777;
+  border-top: 0;
+  left: calc(50% - 300px);
+  z-index: 20;
+  pointer-events: none;
+}
+
 #grab, #reloadtrack {
   cursor: pointer;
   font-size: 12px;
@@ -75,6 +85,8 @@ div#searchSelects {
 #topbar {
   background-color: #000;
   color: #fff;
+  z-index: 22;
+  position: relative;
 }
 
 select#deletepicker {
@@ -521,6 +533,7 @@ div#cancelqsearch {
   bottom: 0;
   position: absolute;
   width: 100%;
+  z-index: 22;
 }
 
 .ui-slider .ui-slider-range {
@@ -989,6 +1002,12 @@ div#usertabs {
 @media only screen and (max-width: 1199px) {
   .avtr {
     display: none;
+  }
+  #playerArea{
+    top:-320px !important;
+  }
+  #volandthings {
+    bottom: 0 !important;
   }
   div#deck {
     height: 46px !important;

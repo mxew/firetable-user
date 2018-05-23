@@ -27,15 +27,16 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.02.7";
+firetable.version = "00.03.0";
 var player;
 
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('playerArea', {
-    width: 600,
-    height: 400,
+    width: 500,
+    height: 268,
     playerVars: {
-      'autoplay': 1
+      'autoplay': 1,
+      'controls': 0
     },
     videoId: '0',
     events: {
@@ -86,7 +87,6 @@ function initialize(event) {
       }
     }
   });
-  $("#playerArea").toggle();
   if (firetable.song) {
     var data = firetable.song;
     var nownow = Date.now();
@@ -1002,6 +1002,26 @@ firetable.ui = {
         var pcnt = (sofar / (firetable.song.duration * 1000)) * 100;
         $("#prgbar").css("background", "linear-gradient(90deg, " + firetable.color + " " + pcnt + "%, #ccc " + pcnt + "%)");
       }, 500);
+    });
+    var thescreen = firebase.database().ref("thescreen");
+    thescreen.on('value', function(dataSnapshot) {
+      var data = dataSnapshot.val();
+      console.log(data);
+      if (data) {
+        $("#playerArea").animate({
+          'top': '36px'
+        }, 5000);
+        $("#volandthings").animate({
+          'bottom': '123px'
+        }, 1000);
+      } else {
+        $("#playerArea").animate({
+          'top': '-300px'
+        }, 2000);
+        $("#volandthings").animate({
+          'bottom': '0'
+        }, 2000);
+      }
     });
     var wl = firebase.database().ref("waitlist");
     wl.on('value', function(dataSnapshot) {
