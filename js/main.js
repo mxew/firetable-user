@@ -27,7 +27,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.03.0";
+firetable.version = "00.03.1";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1092,7 +1092,7 @@ firetable.ui = {
           $("#avtr" + i).css("animation", "none");
 
         } else {
-          $("#djthing" + i).css("background-color", "#F4810B");
+          $("#djthing" + i).css("background-color", firetable.color);
           $("#djthing" + i).css("color", "#fff");
           $("#avtr" + i).css("animation", "MoveUpDown 1s linear infinite");
 
