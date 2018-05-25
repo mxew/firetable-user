@@ -37,7 +37,7 @@ div#upperlay {
   display: none;
 }
 
-#playerArea{
+#playerArea {
   position: absolute;
   top: -300px;
   border: 2px solid #777;
@@ -267,6 +267,20 @@ input {
   border: 1px solid #ccc;
 }
 
+.previewicon {
+  display: block !important;
+  float: left;
+  line-height: 30px !important;
+  width: 25px;
+}
+
+span.listwords {
+  display: block;
+  padding-top: 5px;
+  float: right;
+  width: calc(100% - 25px);
+}
+
 #login input {
   width: 95%;
 }
@@ -274,7 +288,7 @@ input {
 #newchat {
   width: calc(100% - 16px);
   padding-left: 15px;
-  line-height:30px;
+  line-height: 30px;
   border-left: none;
 }
 
@@ -288,11 +302,13 @@ input {
 
 .qtxt {
   display: inline-block;
-  width: calc(100% - 60px);
+  width: calc(100% - 75px);
 }
 
 .delete i {
   line-height: 30px;
+  padding-left: 3px;
+  padding-right: 3px;
 }
 
 .delete i:hover {
@@ -645,7 +661,7 @@ a.importLinkCheck {
 }
 
 .imtxt {
-  width: calc(100% - 45px);
+  width: calc(100% - 50px);
   float: left;
   margin-top: 5px;
 }
@@ -1004,8 +1020,8 @@ div#usertabs {
   .avtr {
     display: none;
   }
-  #playerArea{
-    top:-320px !important;
+  #playerArea {
+    top: -320px !important;
   }
   #volandthings {
     bottom: 0 !important;

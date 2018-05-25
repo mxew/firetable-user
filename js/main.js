@@ -27,7 +27,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.03.3";
+firetable.version = "00.03.5";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -312,7 +312,7 @@ firetable.init = function() {
                         if (key == firetable.preview) {
                           psign = "&#xE034;";
                         }
-                        newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"pvbar\" id=\"pvbar" + key + "\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + key + "', false,  " + thisone.type + ")\">" + psign + "</i> " + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div></div>";
+                        newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"pvbar\" id=\"pvbar" + key + "\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + key + "', false,  " + thisone.type + ")\">" + psign + "</i> <span class=\"listwords\">" + thisone.name + "</span></div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div></div>";
                       }
                     }
                     $("#mainqueue").html(newlist);
@@ -336,7 +336,7 @@ firetable.init = function() {
                     if (key == firetable.preview) {
                       psign = "&#xE034;";
                     }
-                    newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"pvbar\" id=\"pvbar" + key + "\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + key + "', false,  " + thisone.type + ")\">" + psign + "</i> " + thisone.name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div></div>";
+                    newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"pvbar\" id=\"pvbar" + key + "\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + key + "', false,  " + thisone.type + ")\">" + psign + "</i> <span class=\"listwords\">" + thisone.name + "</span></div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div></div>";
                   }
                 }
                 $('#mainqueue').sortable({
@@ -967,13 +967,22 @@ firetable.ui = {
         if (!firetable.preview) {
           if (firetable.scLoaded) firetable.scwidget.pause();
           player.loadVideoById(data.cid, secSince, "large");
+          var thevolactual = $("#slider").slider("value");
+          player.setVolume(thevolactual);
+          firetable.scwidget.setVolume(thevolactual);
         }
       } else if (data.type == 2 && firetable.scLoaded) {
         if (!firetable.preview) {
           if (firetable.ytLoaded) player.stopVideo();
           firetable.scSeek = timeSince;
           firetable.scwidget.load("http://api.soundcloud.com/tracks/" + data.cid, {
-            auto_play: true
+            auto_play: true,
+            single_active: false,
+            callback: function(){
+              var thevolactual = localStorage["firetableVol"];
+              player.setVolume(thevolactual);
+              firetable.scwidget.setVolume(thevolactual);
+            }
           });
         }
       }
@@ -1572,7 +1581,7 @@ firetable.ui = {
 
                 var pkey = "ytcid" + item.id.videoId;
 
-                $("#searchResults").append("<div class=\"qresult\"><div class=\"pvbar\" id=\"pvbar" + pkey + "\"> <div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + pkey + "', true, 1)\">&#xE037;</i>" + vidTitle + "</div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id.videoId + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 1)\">&#xE03B;</i></div></div></div>");
+                $("#searchResults").append("<div class=\"qresult\"><div class=\"pvbar\" id=\"pvbar" + pkey + "\"> <div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, 1)\">&#xE037;</i><span class=\"listwords\">" + vidTitle + "</span></div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id.videoId + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 1)\">&#xE03B;</i></div></div></div>");
               })
             })
           }
@@ -1623,7 +1632,7 @@ firetable.ui = {
 
               var pkey = "sccid" + item.id;
 
-              $("#searchResults").append("<div class=\"qresult\"><div class=\"pvbar\" id=\"pvbar" + pkey + "\"><div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.pview('" + pkey + "', true, 2)\">&#xE037;</i>" + vidTitle + "</div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 2)\">&#xE03B;</i></div></div></div>");
+              $("#searchResults").append("<div class=\"qresult\"><div class=\"pvbar\" id=\"pvbar" + pkey + "\"><div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, 2)\">&#xE037;</i><span class=\"listwords\">" + vidTitle + "</span></div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 2)\">&#xE03B;</i></div></div></div>");
             })
           });
         }
