@@ -113,6 +113,7 @@ select#listpicker {
   border: 1px solid #ccc;
   font-family: "Open Sans", helvetica, arial, sans-serif;
   border-bottom: none;
+  margin-left:10px;
   height: 24px;
   white-space: nowrap;
 }
@@ -681,7 +682,7 @@ div.qitem {
 }
 
 div.pvbar {
-  padding: 5px 3px 5px 5px;
+  padding: 5px 3px 0 5px;
 }
 
 #topbar .inr .right {
@@ -978,6 +979,13 @@ div#usertabs {
   #deletePromptBox, #tagPromptBox, #importPromptBox {
     width: 100% !important;
   }
+
+  select#listpicker {
+    margin-left:0px;
+    border-left:none;
+    border-top:none;
+
+  }
   #tagMachine {
     width: calc(100% - 12px) !important;
   }
@@ -1026,6 +1034,7 @@ div#usertabs {
   #volandthings {
     bottom: 0 !important;
   }
+
   div#deck {
     height: 46px !important;
     overflow: hidden;

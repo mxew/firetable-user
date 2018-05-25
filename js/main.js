@@ -27,7 +27,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.03.5";
+firetable.version = "00.03.6";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1182,7 +1182,7 @@ firetable.ui = {
       txtOut = emojione.shortnameToImage(txtOut);
       txtOut = emojione.unicodeToImage(txtOut);
       var badoop = false;
-      if (chatData.txt.match(you, 'i') || chatData.txt.match(/\@everyone/)) {
+      if (chatData.txt.match("@"+ you, 'i') || chatData.txt.match(/\@everyone/)) {
         var oknow = Date.now();
         if (oknow - chatData.time < (10 * 1000)) {
           firetable.utilities.playSound("sound");
@@ -1657,6 +1657,24 @@ firetable.ui = {
               var modp = firebase.database().ref("users/" + personToMod + "/mod");
               modp.set(false);
             }
+          } else if (command == "hot") {
+            var chat = firebase.database().ref("chat");
+            var chooto = {
+              time: firebase.database.ServerValue.TIMESTAMP,
+              id: firetable.uid,
+              txt: ":fire:"
+            };
+            console.log(chooto);
+            chat.push(chooto);
+          } else if (command == "storm"){
+            var chat = firebase.database().ref("chat");
+            var chooto = {
+              time: firebase.database.ServerValue.TIMESTAMP,
+              id: firetable.uid,
+              txt: ":cloud_with_rain:"
+            };
+            console.log(chooto);
+            chat.push(chooto);
           } else if (command == "shrug") {
             var chat = firebase.database().ref("chat");
             var thingtosay = "¯\\_(ツ)_/¯";
