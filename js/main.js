@@ -27,7 +27,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.03.6";
+firetable.version = "00.03.9";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -151,7 +151,7 @@ firetable.init = function() {
 
     }
   } else {
-    var chah = height - 282;
+    var chah = height - 283;
     var newu = height - 91;
 
     $("#actualChat").css("height", chah + "px");
@@ -195,7 +195,7 @@ firetable.init = function() {
 
       }
     } else {
-      var chah = height - 282;
+      var chah = height - 283;
       var newu = height - 91;
 
       $("#actualChat").css("height", chah + "px");

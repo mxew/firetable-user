@@ -113,7 +113,7 @@ select#listpicker {
   border: 1px solid #ccc;
   font-family: "Open Sans", helvetica, arial, sans-serif;
   border-bottom: none;
-  margin-left:10px;
+  margin-left:5px;
   height: 24px;
   white-space: nowrap;
 }
@@ -690,7 +690,10 @@ div.pvbar {
 }
 
 .prson {
-  padding: 5px 3px 5px 5px;
+    padding: 5px 10px 5px 10px;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
 }
 
 .prson:nth-child(even) {
