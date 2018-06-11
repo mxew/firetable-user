@@ -7,7 +7,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 3px;
   height: 10px;
 }
 
@@ -113,7 +113,8 @@ select#listpicker {
   border: 1px solid #ccc;
   font-family: "Open Sans", helvetica, arial, sans-serif;
   border-bottom: none;
-  margin-left:5px;
+  padding-left:5px;
+  border-left:none;
   height: 24px;
   white-space: nowrap;
 }

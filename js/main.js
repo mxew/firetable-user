@@ -548,6 +548,59 @@ firetable.actions = {
     }
 
   },
+  queueFromLink(link) {
+    if (link.match(/youtube.com\/watch/)) {
+      //youtube
+      console.log("yt");
+
+      function getQueryStringValue(str, key) {
+        return unescape(str.replace(new RegExp("^(?:.*[&\\?]" + escape(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+      }
+      var therealid = getQueryStringValue(link, "v");
+      if (therealid) {
+        function keyWordsearch() {
+          gapi.client.setApiKey('AIzaSyDCXzJ9gGLTF_BLcTzNUO2Zeh4HwPxgyds');
+          gapi.client.load('youtube', 'v3', function() {
+            makeRequest();
+          });
+        }
+
+        function makeRequest() {
+          var request = gapi.client.youtube.videos.list({
+            id: therealid,
+            part: 'snippet',
+            maxResults: 1
+          });
+          request.execute(function(response) {
+            console.log(response);
+            if (response.result) {
+              if (response.result.items) {
+                if (response.result.items.length) {
+                  firetable.actions.queueTrack(response.result.items[0].id, response.result.items[0].snippet.title, 1);
+                }
+              }
+            }
+          })
+        }
+        keyWordsearch();
+      }
+    } else if (link.match(/soundcloud.com/)) {
+      //soundcloud
+      console.log("sc");
+      var getComments = function(track) {
+        return SC.get("tracks/" + track.id);
+      };
+
+      var listComments = function(tracks) {
+        console.log(tracks);
+        if (tracks) {
+          firetable.actions.queueTrack(tracks.id, tracks.title, 2);
+        }
+      };
+      SC.resolve(link).then(getComments).then(listComments);
+
+    }
+  },
   updateQueue: function() {
     //this fires when someone drags a song to a new spot in the queue
     var arr = $('#mainqueue > div').map(function() {
@@ -834,10 +887,10 @@ firetable.actions = {
       cid: cid
     };
 
-      var cuteid = firetable.queueRef.push(info, function() {
-        console.log(cuteid.key);
-        if (!tobottom) firetable.actions.bumpSongInQueue(cuteid.key);
-      });
+    var cuteid = firetable.queueRef.push(info, function() {
+      console.log(cuteid.key);
+      if (!tobottom) firetable.actions.bumpSongInQueue(cuteid.key);
+    });
 
 
     if (firetable.preview) {
@@ -978,7 +1031,7 @@ firetable.ui = {
           firetable.scwidget.load("http://api.soundcloud.com/tracks/" + data.cid, {
             auto_play: true,
             single_active: false,
-            callback: function(){
+            callback: function() {
               var thevolactual = localStorage["firetableVol"];
               player.setVolume(thevolactual);
               firetable.scwidget.setVolume(thevolactual);
@@ -1182,7 +1235,7 @@ firetable.ui = {
       txtOut = emojione.shortnameToImage(txtOut);
       txtOut = emojione.unicodeToImage(txtOut);
       var badoop = false;
-      if (chatData.txt.match("@"+ you, 'i') || chatData.txt.match(/\@everyone/)) {
+      if (chatData.txt.match("@" + you, 'i') || chatData.txt.match(/\@everyone/)) {
         var oknow = Date.now();
         if (oknow - chatData.time < (10 * 1000)) {
           firetable.utilities.playSound("sound");
@@ -1207,6 +1260,8 @@ firetable.ui = {
       if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
 
     });
+
+    firetable.ui.LinkGrabber.start();
 
     $("#label1").bind("click.lb1tab", firetable.ui.usertab1);
     $("#label2").bind("click.lb2tab", firetable.ui.usertab2);
@@ -1666,7 +1721,7 @@ firetable.ui = {
             };
             console.log(chooto);
             chat.push(chooto);
-          } else if (command == "storm"){
+          } else if (command == "storm") {
             var chat = firebase.database().ref("chat");
             var chooto = {
               time: firebase.database.ServerValue.TIMESTAMP,
@@ -1751,6 +1806,73 @@ firetable.ui = {
     $("#allusers").css("display", "none");
     $("#justwaitlist").css("display", "block");
 
+  },
+  LinkGrabber: {
+    textarea: null,
+
+    /* Textarea Management */
+
+    attach_ta: function(event) {
+      if (!$.contains(document.getElementById("mainqueue"), event.target)) return;
+      if (firetable.ui.LinkGrabber.textarea != null) return;
+
+      var textarea = firetable.ui.LinkGrabber.textarea = document.createElement("textarea");
+      textarea.setAttribute("style", "position: fixed; width: 100%; margin: 0; top: 0; bottom: 0; right: 0; left: 0; z-index: 99999999");
+      textarea.style.opacity = "0.000000000000000001";
+
+      var body = document.getElementsByTagName("body")[0];
+      body.appendChild(textarea);
+
+      textarea.oninput = firetable.ui.LinkGrabber.evt_got_link;
+    },
+
+    detach_ta: function() {
+      if (firetable.ui.LinkGrabber.textarea == null) return;
+      var textarea = firetable.ui.LinkGrabber.textarea;
+
+      textarea.parentNode.removeChild(textarea);
+      firetable.ui.LinkGrabber.textarea = null;
+    },
+
+    /* Event Handlers */
+
+    evt_drag_over: function(event) {
+      firetable.ui.LinkGrabber.attach_ta(event); //Create TA overlay
+    },
+
+    evt_got_link: function() {
+      /* THIS IS WHERE WE HANDLE THE RECEIVED LINK */
+
+      var link = firetable.ui.LinkGrabber.textarea.value;
+      console.log("NEW LINK RECEIVED VIA THE DRAGON'S DROP. " + link);
+      firetable.actions.queueFromLink(link);
+
+      firetable.ui.LinkGrabber.detach_ta();
+    },
+
+    evt_drag_out: function(e) {
+      if (e.target == firetable.ui.LinkGrabber.textarea) firetable.ui.LinkGrabber.detach_ta();
+    },
+
+    /* Start/Stop */
+
+    start: function() {
+      document.addEventListener("dragover", firetable.ui.LinkGrabber.evt_drag_over, false);
+      document.addEventListener("dragenter", firetable.ui.LinkGrabber.evt_drag_over, false);
+
+      document.addEventListener("mouseup", firetable.ui.LinkGrabber.evt_drag_out, false);
+      document.addEventListener("dragleave", firetable.ui.LinkGrabber.evt_drag_out, false);
+    },
+
+    stop: function() {
+      document.removeEventListener("dragover", firetable.ui.LinkGrabber.evt_drag_over);
+      document.removeEventListener("dragenter", firetable.ui.LinkGrabber.evt_drag_over);
+
+      document.removeEventListener("mouseup", firetable.ui.LinkGrabber.evt_drag_out);
+      document.removeEventListener("dragleave", firetable.ui.LinkGrabber.evt_drag_out);
+
+      firetable.ui.LinkGrabber.detach_ta();
+    }
   }
 
 
