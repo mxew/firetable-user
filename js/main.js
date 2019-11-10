@@ -27,7 +27,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.04.0";
+firetable.version = "00.04.1";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -91,6 +91,8 @@ function initialize(event) {
     var data = firetable.song;
     var nownow = Date.now();
     var timeSince = nownow - data.started;
+    if (timeSince <= 0 ) timeSince = 0;
+
     var secSince = Math.floor(timeSince / 1000);
     var timeLeft = data.duration - secSince;
     if (data.type == 1) {
@@ -219,6 +221,8 @@ firetable.init = function() {
       var data = firetable.song;
       var nownow = Date.now();
       var timeSince = nownow - data.started;
+      if (timeSince <= 0 ) timeSince = 0;
+
       var secSince = Math.floor(timeSince / 1000);
       var timeLeft = data.duration - secSince;
       if (data.type == 2) {
@@ -460,6 +464,8 @@ firetable.actions = {
       //start regular song
       var nownow = Date.now();
       var timeSince = nownow - firetable.song.started;
+      if (timeSince <= 0 ) timeSince = 0;
+
       var secSince = Math.floor(timeSince / 1000);
       var timeLeft = firetable.song.duration - secSince;
       if (firetable.song.type == 1) {
@@ -510,6 +516,8 @@ firetable.actions = {
         //start regular song
         var nownow = Date.now();
         var timeSince = nownow - firetable.song.started;
+        if (timeSince <= 0 ) timeSince = 0;
+
         var secSince = Math.floor(timeSince / 1000);
         var timeLeft = firetable.song.duration - secSince;
         if (firetable.song.type == 1) {
@@ -863,6 +871,7 @@ firetable.actions = {
     //start regular song
     var nownow = Date.now();
     var timeSince = nownow - firetable.song.started;
+    if (timeSince <= 0 ) timeSince = 0;
     var secSince = Math.floor(timeSince / 1000);
     var timeLeft = firetable.song.duration - secSince;
     if (firetable.song.type == 1) {
@@ -905,6 +914,7 @@ firetable.actions = {
         //start regular song
         var nownow = Date.now();
         var timeSince = nownow - firetable.song.started;
+        if (timeSince <= 0 ) timeSince = 0;
         var secSince = Math.floor(timeSince / 1000);
         var timeLeft = firetable.song.duration - secSince;
         if (firetable.song.type == 1) {
@@ -1013,9 +1023,12 @@ firetable.ui = {
       $("#albumArt").css("background-image", "url(" + data.image + ")")
       var nownow = Date.now();
       var timeSince = nownow - data.started;
+      if (timeSince <= 0 ) timeSince = 0;
       var secSince = Math.floor(timeSince / 1000);
       var timeLeft = data.duration - secSince;
       firetable.song = data;
+      console.log(data);
+      console.log(timeSince);
       if (data.type == 1 && firetable.ytLoaded) {
         if (!firetable.preview) {
           if (firetable.scLoaded) firetable.scwidget.pause();
@@ -1330,6 +1343,8 @@ firetable.ui = {
           //start regular song
           var nownow = Date.now();
           var timeSince = nownow - firetable.song.started;
+          if (timeSince <= 0 ) timeSince = 0;
+
           var secSince = Math.floor(timeSince / 1000);
           var timeLeft = firetable.song.duration - secSince;
           if (firetable.song.type == 1) {
@@ -1611,6 +1626,8 @@ firetable.ui = {
                   //start regular song
                   var nownow = Date.now();
                   var timeSince = nownow - firetable.song.started;
+                  if (timeSince <= 0 ) timeSince = 0;
+
                   var secSince = Math.floor(timeSince / 1000);
                   var timeLeft = firetable.song.duration - secSince;
                   if (firetable.song.type == 1) {
@@ -1663,6 +1680,8 @@ firetable.ui = {
                 //start regular song
                 var nownow = Date.now();
                 var timeSince = nownow - firetable.song.started;
+                if (timeSince <= 0 ) timeSince = 0;
+
                 var secSince = Math.floor(timeSince / 1000);
                 var timeLeft = firetable.song.duration - secSince;
                 if (firetable.song.type == 1) {
