@@ -6,6 +6,17 @@ body {
   overflow: hidden;
 }
 
+body.blog{
+  overflow-y: scroll !important;
+}
+
+div#blog {
+    padding: 20px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 ::-webkit-scrollbar {
   width: 3px;
   height: 10px;
@@ -401,7 +412,7 @@ i#refreshSong {
   width: 100%;
   height: 5px;
   border-bottom: 1px solid #ccc;
-  margin-bottom: 9px;
+  margin-bottom: 0;
 }
 
 #track {
@@ -962,15 +973,11 @@ div#usertabs {
 }
 
 @keyframes MoveUpDown {
-  0% {
-    bottom: 0px;
-  }
   50% {
-    bottom: -5px;
-  }
-  100% {
-    bottom: 0px;
-  }
+    -webkit-transform: translateY(5px);
+    transform: translateY(5px);
+    will-change:transform;
+   }
 }
 
 @media only screen and (max-width: 799px) {
