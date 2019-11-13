@@ -27,7 +27,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.04.23";
+firetable.version = "00.04.21";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1011,19 +1011,6 @@ firetable.ui = {
     var s2p = firebase.database().ref("songToPlay");
     s2p.on('value', function(dataSnapshot) {
       var data = dataSnapshot.val();
-      var alreadyplaying = false;
-      if (firetable.song){
-        if (data.started == firetable.song.started) alreadyplaying = true;
-        //only do this on tag fixes
-        $( ".npmsg" ).last().find(".npmtrack").text(data.title);
-        $( ".npmsg" ).last().find(".npmartist").text(data.artist);
-      }
-      $("#track").text(data.title);
-      $("#artist").text(data.artist);
-      $("#albumArt").css("background-image", "url(" + data.image + ")");
-      firetable.song = data;
-      if (alreadyplaying) return; //if this is just a tagfix, we're done.
-
       $("#timr").countdown("destroy");
       if (firetable.moveBar != null) {
         clearInterval(firetable.moveBar);
@@ -1031,11 +1018,15 @@ firetable.ui = {
       }
       $("#prgbar").css("background", "#ccc");
       $("#grab").removeClass("grabbed");
+      $("#track").text(data.title);
+      $("#artist").text(data.artist);
+      $("#albumArt").css("background-image", "url(" + data.image + ")")
       var nownow = Date.now();
       var timeSince = nownow - data.started;
       if (timeSince <= 0 ) timeSince = 0;
       var secSince = Math.floor(timeSince / 1000);
       var timeLeft = data.duration - secSince;
+      firetable.song = data;
       console.log(data);
       console.log(timeSince);
       if (data.type == 1 && firetable.ytLoaded) {
@@ -1072,7 +1063,7 @@ firetable.ui = {
           scrollDown = false;
           var objDiv = document.getElementById("actualChat");
           if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
-          $("#actualChat").append("<div class=\"newChat nowplayn\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong class=\"npmtrack\">" + data.title + "</strong> by <strong class=\"npmartist\">" + data.artist + "</strong></div>")
+          $("#actualChat").append("<div class=\"newChat nowplayn\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
 
           if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
           firetable.lastChatPerson = false;
