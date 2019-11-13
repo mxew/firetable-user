@@ -27,7 +27,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.04.1";
+firetable.version = "00.04.21";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1244,9 +1244,7 @@ firetable.ui = {
         if (firetable.users[chatData.id].mod) utitle = "cop";
         if (firetable.users[chatData.id].supermod) utitle = "supercop";
       }
-      var txtOut = firetable.ui.textToLinks(chatData.txt);
-      txtOut = emojione.shortnameToImage(txtOut);
-      txtOut = emojione.unicodeToImage(txtOut);
+
       var badoop = false;
       if (chatData.txt.match("@" + you, 'i') || chatData.txt.match(/\@everyone/)) {
         var oknow = Date.now();
@@ -1258,13 +1256,40 @@ firetable.ui = {
       scrollDown = false;
       if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
       if (chatData.id == firetable.lastChatPerson && !badoop) {
-        $("#chat" + firetable.lastChatId).append("<div>" + txtOut + "</div>");
+        $("#chat" + firetable.lastChatId).append("<div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
         $("#chatTime" + firetable.lastChatId).text(firetable.utilities.format_time(chatData.time));
+        $("#chattxt"+childSnapshot.key).text(chatData.txt);
+        var txtOut = firetable.ui.textToLinks($("#chattxt"+childSnapshot.key).text());
+        txtOut = emojione.shortnameToImage(txtOut);
+        txtOut = emojione.unicodeToImage(txtOut);
+        var res = txtOut.replace(/\`(.*?)\`/g, function (x) {
+          return "<code>"+x.replace(/\`/g, "") +"</code>";
+        });
+        $("#chattxt"+childSnapshot.key).html(res);
       } else {
         if (badoop) {
-          $("#actualChat").append("<div class=\"newChat badoop\"><div class=\"chatName\">" + namebo + " <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chat" + childSnapshot.key + "\" class=\"chatText\">" + txtOut + "</div>")
+          var thing = $("#actualChat").append("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat badoop\"><div class=\"chatName\"><span class=\"chatNameName\"></span> <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
+          $("#chat"+childSnapshot.key).find(".chatNameName").text(namebo);
+          $("#chat"+childSnapshot.key).find(".chatText").text(chatData.txt);
+          var txtOut = firetable.ui.textToLinks($("#chattxt"+childSnapshot.key).text());
+          txtOut = emojione.shortnameToImage(txtOut);
+          txtOut = emojione.unicodeToImage(txtOut);
+          var res = txtOut.replace(/\`(.*?)\`/g, function (x) {
+            return "<code>"+x.replace(/\`/g, "") +"</code>";
+          });
+          $("#chattxt"+childSnapshot.key).html(res);
         } else {
-          $("#actualChat").append("<div class=\"newChat\"><div class=\"chatName\">" + namebo + " <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chat" + childSnapshot.key + "\" class=\"chatText\">" + txtOut + "</div>")
+          var thing = $("#actualChat").append("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat\"><div class=\"chatName\"><span class=\"chatNameName\"></span> <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
+          $("#chat"+childSnapshot.key).find(".chatNameName").text(namebo);
+          $("#chat"+childSnapshot.key).find(".chatText").text(chatData.txt);
+          var txtOut = firetable.ui.textToLinks($("#chattxt"+childSnapshot.key).text());
+          txtOut = emojione.shortnameToImage(txtOut);
+          txtOut = emojione.unicodeToImage(txtOut);
+          var res = txtOut.replace(/\`(.*?)\`/g, function (x) {
+            return "<code>"+x.replace(/\`/g, "") +"</code>";
+          });
+          $("#chattxt"+childSnapshot.key).html(res);
+
         }
         firetable.lastChatPerson = chatData.id;
         firetable.lastChatId = childSnapshot.key;

@@ -17,6 +17,14 @@ div#blog {
     margin-right: auto;
 }
 
+code {
+    background-color: #cccccc;
+    color: #262626;
+    font: 12px Monaco,Consolas,"Andale Mono","DejaVu Sans Mono",monospace;
+    padding: 1px;
+    padding-bottom: 0;
+}
+
 ::-webkit-scrollbar {
   width: 3px;
   height: 10px;
