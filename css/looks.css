@@ -25,6 +25,11 @@ code {
     padding-bottom: 0;
 }
 
+#searchin{
+  text-align:center;
+  margin-top:55px;
+}
+
 ::-webkit-scrollbar {
   width: 3px;
   height: 10px;

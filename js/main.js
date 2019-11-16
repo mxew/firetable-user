@@ -27,7 +27,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.04.21";
+firetable.version = "00.04.23";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1629,6 +1629,8 @@ firetable.ui = {
 
           function makeRequest() {
             var q = $('#qsearch').val();
+            $('#searchResults').html("<div id=\"seachin\">Searching...</div>");
+
             var request = gapi.client.youtube.search.list({
               q: q,
               type: 'video',
@@ -1636,7 +1638,7 @@ firetable.ui = {
               maxResults: 15
             });
             request.execute(function(response) {
-              $("#qsearch").val("");
+              //  $("#qsearch").val("");
               $('#searchResults').html("");
 
               if (firetable.preview) {
@@ -1686,11 +1688,12 @@ firetable.ui = {
 
         } else if (firetable.searchSelectsChoice == 2) {
           var q = $('#qsearch').val();
+          $('#searchResults').html("<div id=\"seachin\">Searching...</div>");
           SC.get('/tracks', {
             q: q
           }).then(function(tracks) {
             console.log(tracks);
-            $("#qsearch").val("");
+            // $("#qsearch").val("");
             $('#searchResults').html("");
 
             if (firetable.preview) {
