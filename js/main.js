@@ -27,7 +27,7 @@ var firetable = {
   playlimit: 2
 }
 
-firetable.version = "00.04.23";
+firetable.version = "00.04.24";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -135,6 +135,8 @@ firetable.init = function() {
       $("#actualChat").css("height", "441px");
 
     }
+    var histheight = height - 175;
+    $("#recentHistory").css("height", histheight+ "px");
   } else if (w > 799) {
     var newh = height - 262;
     if (height > 520) {
@@ -152,6 +154,8 @@ firetable.init = function() {
       $("#actualChat").css("height", "441px");
 
     }
+    var histheight = height - 175;
+    $("#recentHistory").css("height", histheight+ "px");
   } else {
     var chah = height - 283;
     var newu = height - 91;
@@ -159,6 +163,8 @@ firetable.init = function() {
     $("#actualChat").css("height", chah + "px");
     $("#queuelist").css("height", newu + "px");
     $("#userslist").css("height", newu + "px");
+    var histheight = height - 205;
+    $("#recentHistory").css("height", histheight+ "px");
   }
   $(window).resize(function() {
     // This will execute whenever the window is resized
@@ -179,6 +185,9 @@ firetable.init = function() {
         $("#actualChat").css("height", "441px");
 
       }
+      var histheight = height - 175;
+      console.log(histheight);
+      $("#recentHistory").css("height", histheight+ "px");
     } else if (w > 799) {
       var newh = height - 262;
       if (height > 520) {
@@ -196,6 +205,8 @@ firetable.init = function() {
         $("#actualChat").css("height", "441px");
 
       }
+      var histheight = height - 175;
+      $("#recentHistory").css("height", histheight+ "px");
     } else {
       var chah = height - 283;
       var newu = height - 91;
@@ -203,6 +214,8 @@ firetable.init = function() {
       $("#actualChat").css("height", chah + "px");
       $("#queuelist").css("height", newu + "px");
       $("#userslist").css("height", newu + "px");
+      var histheight = height - 205;
+      $("#recentHistory").css("height", histheight+ "px");
     }
   });
   var widgetIframe = document.getElementById('sc-widget');
@@ -895,12 +908,13 @@ firetable.actions = {
       name: name,
       cid: cid
     };
-
+    $("#apv" + type + cid).text("check");
+    $("#apv" + type + cid).css("color", "green");
+    $("#apv" + type + cid).css("pointer-events", "none");
     var cuteid = firetable.queueRef.push(info, function() {
       console.log(cuteid.key);
       if (!tobottom) firetable.actions.bumpSongInQueue(cuteid.key);
     });
-
 
     if (firetable.preview) {
       if (firetable.preview.slice(0, 5) == "ytcid" || firetable.preview.slice(0, 5) == "sccid") {
@@ -974,7 +988,7 @@ firetable.utilities = {
     var day = date.getDate();
     var year = date.getFullYear();
 
-    var formatted_date = month + "-" + day + "-" + year;
+    var formatted_date = month + "/" + day + "/" + year;
     return formatted_date;
   },
   format_time: function(d) {
@@ -1007,6 +1021,21 @@ firetable.ui = {
     return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
   },
   init: function() {
+    var recentz = firebase.database().ref("songHistory");
+    recentz.on('child_added', function(dataSnapshot, prev) {
+        var data = dataSnapshot.val();
+        var key = dataSnapshot.key;
+        console.log("NEW HISTORY", data);
+
+        var firstpart = "yt";
+        if (data.type == 2) firstpart == "sc";
+        var pkey = firstpart +"cid" + data.cid;
+
+        $("#thehistory").prepend("<div id=\"recentthing"+key+"\" class=\"historyItem qresult\"><div class=\"histart\"><i id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, "+data.type+")\">&#xE037;</i></div><div class=\"pvbar\" id=\"pvbar" + pkey + "\"> <div class=\"qtxt\"><span class=\"listwords\">" + data.artist + " - "+data.title + "</span><div id=\"histmoreinfo\">played by "+data.dj+" on "+firetable.utilities.format_date(data.when)+" at "+firetable.utilities.format_time(data.when)+"</div></div><div class=\"delete\"><i id=\"apv" +data.type + data.cid + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + data.cid + "', '"+firetable.utilities.htmlEscape(data.artist + " - "+ data.title)+"', "+data.type+", true)\">&#xE03B;</i></div></div><div class=\"clear\"></div></div>");
+
+        $($("#recentthing" + key).find(".histart")[0]).css("background-image", "url(" + data.img + ")");
+
+    });
 
     var s2p = firebase.database().ref("songToPlay");
     s2p.on('value', function(dataSnapshot) {
@@ -1095,6 +1124,15 @@ firetable.ui = {
         $("#volandthings").animate({
           'bottom': '123px'
         }, 1000);
+        $("#volandthings").animate({
+          'bottom': '123px'
+        }, 1000);
+        $("#volplace").animate({
+          'padding-left': '55px'
+        }, 1000);
+        $("#recentHistory").animate({
+          'top': '55px'
+        }, 1000);
       } else {
         $("#playerArea").animate({
           'top': '-300px'
@@ -1102,6 +1140,12 @@ firetable.ui = {
         $("#volandthings").animate({
           'bottom': '0'
         }, 2000);
+        $("#volplace").animate({
+          'padding-left': '15px'
+        }, 1000);
+        $("#recentHistory").animate({
+          'top': '175px'
+        }, 1000);
       }
     });
     var wl = firebase.database().ref("waitlist");
@@ -1395,6 +1439,14 @@ firetable.ui = {
       $("#resetscreen").css("display", "block");
     });
     $("#grab").bind("click", firetable.actions.grab);
+    $("#history").bind("click", function() {
+       var isHidden = $("#recentHistory").is( ":hidden" );
+       if (isHidden){
+         $( "#recentHistory" ).show();
+       } else {
+         $( "#recentHistory" ).hide();
+       }
+    });
     $("#reloadtrack").bind("click", firetable.actions.reloadtrack);
     $("#loginlink").bind("click", function() {
       $("#logscreen").css("display", "block");
