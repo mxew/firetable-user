@@ -139,7 +139,17 @@ div#upperlay {
   display: none;
 }
 
+div#scScreen {
+    width: 500px;
+    height: 268px;
+    position: absolute;
+}
+
 #playerArea {
+
+}
+
+#screenBox{
   position: absolute;
   top: -300px;
   border: 2px solid #777;
@@ -1138,7 +1148,7 @@ div#usertabs {
   .avtr {
     display: none;
   }
-  #playerArea {
+  #screenBox {
     top: -320px !important;
   }
   #volandthings {
