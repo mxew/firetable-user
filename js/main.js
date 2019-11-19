@@ -28,7 +28,7 @@ var firetable = {
   scImg: ""
 }
 
-firetable.version = "00.04.26";
+firetable.version = "00.04.27";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1064,9 +1064,9 @@ firetable.ui = {
       } else if (data.type ==2){
         $("#scScreen").show();
         var biggerImg = data.image.replace('-large', '-t500x500');
-        firetable.scImg = data.image;
+        firetable.scImg = biggerImg;
         try{
-          setup(data.image);
+          setup(biggerImg);
         } catch (e){
           console.log(e)
         }
