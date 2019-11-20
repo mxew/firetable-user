@@ -28,7 +28,7 @@ var firetable = {
   scImg: ""
 }
 
-firetable.version = "00.04.27";
+firetable.version = "00.04.31";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -158,8 +158,8 @@ firetable.init = function() {
     var histheight = height - 175;
     $("#recentHistory").css("height", histheight+ "px");
   } else {
-    var chah = height - 283;
-    var newu = height - 91;
+    var chah = height - 286;
+    var newu = height - 94;
 
     $("#actualChat").css("height", chah + "px");
     $("#queuelist").css("height", newu + "px");
@@ -209,8 +209,8 @@ firetable.init = function() {
       var histheight = height - 175;
       $("#recentHistory").css("height", histheight+ "px");
     } else {
-      var chah = height - 283;
-      var newu = height - 91;
+      var chah = height - 286;
+      var newu = height - 94;
 
       $("#actualChat").css("height", chah + "px");
       $("#queuelist").css("height", newu + "px");
@@ -553,7 +553,7 @@ firetable.actions = {
       firetable.movePvBar = setInterval(function() {
         var pcnt = (firetable.pvCount / 29) * 100;
         firetable.pvCount += 0.2;
-        $("#pvbar" + firetable.preview).css("background", "linear-gradient(90deg, #d7edf9 " + pcnt + "%, #fff " + pcnt + "%)");
+        $("#pvbar" + firetable.preview).css("background", "linear-gradient(90deg, #2c4e61 " + pcnt + "%, #212121 " + pcnt + "%)");
       }, 200);
       if (type == 1) {
         if (firetable.scLoaded) firetable.scwidget.pause();
@@ -1046,7 +1046,7 @@ firetable.ui = {
         clearInterval(firetable.moveBar);
         firetable.moveBar = null;
       }
-      $("#prgbar").css("background", "#ccc");
+      $("#prgbar").css("background", "#151515");
       $("#grab").removeClass("grabbed");
       $("#track").text(data.title);
       $("#artist").text(data.artist);
@@ -1123,7 +1123,7 @@ firetable.ui = {
         var now = Date.now();
         var sofar = now - firetable.song.started;
         var pcnt = (sofar / (firetable.song.duration * 1000)) * 100;
-        $("#prgbar").css("background", "linear-gradient(90deg, " + firetable.color + " " + pcnt + "%, #ccc " + pcnt + "%)");
+        $("#prgbar").css("background", "linear-gradient(90deg, " + firetable.color + " " + pcnt + "%, #151515 " + pcnt + "%)");
       }, 500);
     });
     var thescreen = firebase.database().ref("thescreen");
@@ -1208,8 +1208,8 @@ firetable.ui = {
       $("#deck").html(ok1);
       for (var i = 0; i < 4; i++) {
         if (i != firetable.playdex) {
-          $("#djthing" + i).css("background-color", "#ccc");
-          $("#djthing" + i).css("color", "#000");
+          $("#djthing" + i).css("background-color", "#151515");
+          $("#djthing" + i).css("color", "#eee");
           $("#avtr" + i).css("animation", "none");
 
         } else {
@@ -1225,8 +1225,8 @@ firetable.ui = {
       firetable.playdex = data;
       for (var i = 0; i < 4; i++) {
         if (i != data) {
-          $("#djthing" + i).css("background-color", "#ccc");
-          $("#djthing" + i).css("color", "#000");
+          $("#djthing" + i).css("background-color", "#151515");
+          $("#djthing" + i).css("color", "#eee");
           $("#avtr" + i).css("animation", "none");
 
         } else {
@@ -1899,8 +1899,18 @@ firetable.ui = {
       firetable.countcolor = data.txt;
       if (data.color == "#fff") {
         firetable.color = "#F4810B";
+        //firetable.countcolor = "#000";
       }
       $("#upperpart").css("background-color", data.color);
+      /*
+      if (firetable.countcolor == "#fff"){
+        firetable.countcolor = "#ffffffc9";
+      } else if (firetable.countcolor == "#000"){
+        console.log("a")
+        firetable.countcolor = "#000000c9";
+      }
+      $("#upperpart").css("color", firetable.countcolor);
+      */
       $("#djthing" + firetable.playdex).css("background-color", firetable.color);
       $("#djthing" + firetable.playdex).css("color", firetable.countcolor);
       $("#volstylebox").html("<style>.ui-slider-horizontal .ui-slider-range-min{ background-color: " + firetable.color + "; } .grabbed { color: " + firetable.color + " !important; } </style>");

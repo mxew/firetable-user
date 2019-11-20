@@ -2,7 +2,8 @@ body {
   margin: 0;
   font-family: "Open Sans", helvetica, arial, sans-serif;
   font-size: 14px;
-  color: #000;
+  color: #ffffffc7;
+  background-color: #212121;
   overflow: hidden;
 }
 
@@ -69,9 +70,9 @@ float: right;
     margin-top:10px
 }
 #recentHistory #thehistory{
-      background-color: #fff;
+      background-color: #212121;
       height: 100%;
-          overflow-y: scroll;
+      overflow-y: scroll;
 }
 
 .histart {
@@ -104,8 +105,7 @@ div#historyarrow {
     height: 0;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
-    border-bottom: 10px solid #fff;
-
+    border-bottom: 10px solid #212121;
 }
 
 ::-webkit-scrollbar {
@@ -114,11 +114,11 @@ div#historyarrow {
 }
 
 ::-webkit-scrollbar-track {
-  background: #ccc;
+  background: #111;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #999;
+  background: #888;
 }
 
 div#usrarea {
@@ -131,9 +131,10 @@ div#otherpart {
 }
 
 div#upperlay {
-  background: linear-gradient(rgba(0, 0, 0, 0.49019607843137253), rgba(0, 0, 0, 0.9294117647058824));
+  background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.55));
   padding-top: 15px;
 }
+
 
 #scArea {
   display: none;
@@ -162,11 +163,14 @@ div#scScreen {
 #grab, #reloadtrack, #history {
   cursor: pointer;
   font-size: 12px;
-  color: #ccc;
 }
 
 #grab, #reloadtrack{
   margin-right: 15px;
+}
+
+.badoop a {
+    color: #fff;
 }
 
 span#ytsearchSelect {
@@ -185,7 +189,7 @@ div#searchSelects {
   cursor: pointer;
   font-size: 12px;
   line-height: 25px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #111;
 }
 
 .searchSelectsSelected {
@@ -207,8 +211,10 @@ div#searchSelects {
 select#deletepicker {
   width: 98%;
   font-size: 14px;
-  border: 1px solid #ccc;
+  border: 1px solid #111;
   font-family: "Open Sans", helvetica, arial, sans-serif;
+  background-color: #151515;
+  color: #eee;
   white-space: nowrap;
 }
 
@@ -225,11 +231,13 @@ div#pldeleteButton {
 select#listpicker {
   width: 245px;
   font-size: 14px;
-  border: 1px solid #ccc;
+  border: 1px solid #111;
   font-family: "Open Sans", helvetica, arial, sans-serif;
   border-bottom: none;
+  background-color: #151515;
   padding-left:5px;
   border-left:none;
+  color: #eee;
   height: 24px;
   white-space: nowrap;
 }
@@ -239,7 +247,7 @@ select#listpicker {
 }
 
 .nowplayn {
-  background-color: #ccc !important;
+  background-color: #333 !important;
 }
 
 .chatName {
@@ -247,7 +255,7 @@ select#listpicker {
 }
 
 .newChat:nth-child(even) {
-  background-color: #eee;
+  background-color: #151515;
 }
 
 #signOut {
@@ -283,7 +291,7 @@ select#listpicker {
 }
 
 .badoop {
-  background-color: #d7edf9 !important;
+  background-color: #2c4e61 !important;
 }
 
 .chatTime {
@@ -291,31 +299,30 @@ select#listpicker {
   float: right;
   font-weight: 400;
   font-size: 10px;
-  color: #888;
+  color: #ffffff73;
 }
 
 .minimodeopt {
   display: inline-block;
   width: calc(33.33% - 1px);
   cursor: pointer;
-  border-right: 1px solid #666;
+  border-right: 1px solid #111;
   line-height: 30px;
   font-size: 12px;
-  color: #666;
+  color: #999;
   text-align: center;
 }
 
 .mmselected {
-  font-weight: 700;
-  color: #000;
+  color: #ffffff;
 }
 
 div#minimodeoptions {
-  background-color: #ccc;
+  background-color: #212121;
   display: none;
+  border-bottom: 1px solid #111;
   white-space: nowrap;
 }
-
 a {
   color: #0084B4;
 }
@@ -350,7 +357,7 @@ a {
 
 #welcomeInfo {
   padding-bottom: 25px;
-  border-bottom: 1px dotted #ccc;
+  border-bottom: 1px solid #111;
 }
 
 #login button {
@@ -374,14 +381,14 @@ div#notloggedin {
   margin-top: 25px;
   padding: 15px;
   margin-left: 15px;
-  border: 1px solid #E6DB55;
-  background-color: #FFFFE0;
 }
 
 input {
   font-size: 14px;
   font-family: "Open Sans", helvetica, arial, sans-serif;
-  border: 1px solid #ccc;
+  color: #eee;
+  border: 1px solid #111;
+  background-color: #212121;
 }
 
 .previewicon {
@@ -480,7 +487,7 @@ i#refreshSong {
   position: absolute;
   bottom: 0;
   left: 10px;
-  background-color: #ccc;
+  background-color: #151515;
   width: 130px;
   transition: background-color 0.5s ease;
   height: 18px;
@@ -516,7 +523,7 @@ i#refreshSong {
 #prgbar {
   width: 100%;
   height: 5px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #333;
   margin-bottom: 0;
 }
 
@@ -622,7 +629,7 @@ input#plMachine {
 
 #importSources {
   line-height: 30px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #111;
   cursor: pointer;
   font-size: 12px;
 }
@@ -724,7 +731,7 @@ div#cancelqsearch {
 }
 
 #upperpart {
-  color: rgba(255, 255, 255, 0.9019607843137255);
+  color: #ffffffcc;
   transition: background-color 0.5s ease;
 }
 
@@ -753,11 +760,11 @@ div#cancelqsearch {
 
 div.importResult {
   padding: 5px 3px 5px 5px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #111;
 }
 
 div.qresult {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #111;
 }
 
 .ui-widget.ui-widget-content {
@@ -766,7 +773,7 @@ div.qresult {
 }
 
 a.importLinkCheck {
-  color: #000;
+  color: #eee;
 }
 
 #albumArt {
@@ -789,12 +796,12 @@ a.importLinkCheck {
 }
 
 div.qitem {
-  background-color: #fff;
+  background-color: #212121;
   cursor: move;
   /* fallback if grab cursor is unsupported */
   cursor: grab;
   cursor: -moz-grab;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #111;
   cursor: -webkit-grab;
 }
 
@@ -814,7 +821,7 @@ div.pvbar {
 }
 
 .prson:nth-child(even) {
-  background-color: #eee;
+  background-color: #151515;
 }
 
 .clear {
@@ -859,7 +866,7 @@ div.pvbar {
 #userslist {
   height: 340px;
   overflow-y: scroll;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #111;
 }
 
 .usertab {
@@ -891,7 +898,7 @@ div#tagPromptOverlay {
 }
 
 div#tagPromptBox {
-  background-color: #fff;
+  background-color: #212121;
   width: 500px;
   margin-left: auto;
   margin-right: auto;
@@ -922,7 +929,7 @@ div#deletePromptOverlay {
 }
 
 div#deletePromptBox {
-  background-color: #fff;
+  background-color: #212121;
   width: 500px;
   margin-left: auto;
   margin-right: auto;
@@ -949,17 +956,17 @@ div#plimportLauncher {
   cursor: pointer;
   text-align: center;
   line-height: 30px;
-  border-top: 1px solid #ccc;
-  background-color: #eee;
+  border-top: 1px solid #000;
+  background-color: #151515;
 }
 
 div#pldeleteLauncher {
   cursor: pointer;
   text-align: center;
   line-height: 30px;
-  border-top: 1px solid #ccc;
-  background-color: #eee;
-  border-bottom: 1px solid #ccc;
+  border-top: 1px solid #000;
+  background-color: #151515;
+  border-bottom: 1px solid #000;
 }
 
 div#importPromptOverlay {
@@ -974,7 +981,7 @@ div#importPromptOverlay {
 }
 
 div#importPromptBox {
-  background-color: #fff;
+  background-color: #212121;
   width: 500px;
   margin-left: auto;
   margin-right: auto;
@@ -1062,14 +1069,14 @@ div#usertabs {
 #queuelist {
   height: 330px;
   overflow-y: scroll;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #111;
 }
 
 #bottomInfo {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background-color: #fff;
+  background-color: #000;
   padding-left: 2px;
   padding-right: 2px;
   left: 0;
