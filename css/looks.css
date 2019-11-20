@@ -194,7 +194,7 @@ div#searchSelects {
 
 .searchSelectsSelected {
   color: #fff;
-  background-color: #000;
+  background-color: #151515;
 }
 
 .grabbed {
@@ -387,8 +387,15 @@ input {
   font-size: 14px;
   font-family: "Open Sans", helvetica, arial, sans-serif;
   color: #eee;
-  border: 1px solid #111;
-  background-color: #212121;
+  border: 1px solid #999;
+  background-color: #333;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
 }
 
 .previewicon {
@@ -410,10 +417,14 @@ span.listwords {
 }
 
 #newchat {
-  width: calc(100% - 16px);
-  padding-left: 15px;
-  line-height: 30px;
-  border-left: none;
+    width: calc(100% - 15px);
+    padding-left: 15px;
+    line-height: 30px;
+    border-left: none;
+    background-color: #212121;
+    border-top: 1px solid #111;
+    border-bottom: 1px solid #111;
+    border-right: none;
 }
 
 #tagPromptMain .left {
@@ -635,7 +646,7 @@ input#plMachine {
 }
 
 .importChoice {
-  background-color: #000;
+  background-color: #151515;
   color: #fff;
 }
 
@@ -1062,7 +1073,7 @@ div#usertabs {
 }
 
 #usertabs .selected {
-  background-color: #000;
+  background-color: #151515;
   color: #fff;
 }
 
