@@ -28,7 +28,7 @@ var firetable = {
   scImg: ""
 }
 
-firetable.version = "00.04.31";
+firetable.version = "00.04.32";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -993,15 +993,14 @@ firetable.utilities = {
     return formatted_date;
   },
   format_time: function(d) {
-
     var date = new Date(d);
 
     var hours1 = date.getHours();
     var ampm = "am";
     var hours = hours1;
-    if (hours1 > 12) {
+    if (hours1 >= 12) {
       ampm = "pm";
-      hours = hours1 - 12;
+      if (hours !== 12) hours = hours1 - 12;
     }
     if (hours == 0) hours = 12;
     var minutes = date.getMinutes();
