@@ -28,13 +28,13 @@ var firetable = {
   scImg: ""
 }
 
-firetable.version = "00.04.32";
+firetable.version = "00.04.33";
 var player;
 
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('playerArea', {
     width: 500,
-    height: 268,
+    height: 293,
     playerVars: {
       'autoplay': 1,
       'controls': 0
@@ -124,14 +124,14 @@ firetable.init = function() {
   if (w > 1199) {
     if (height > 520) {
       var morethan = height - 520;
-      var newh = 146 + morethan;
+      var newh = 128 + morethan;
       var chah = 451 + morethan;
-      var newu = 458 + morethan;
+      var newu = 455 + morethan;
       $("#queuelist").css("height", newh + "px");
       $("#userslist").css("height", newu + "px");
       $("#actualChat").css("height", chah + "px");
     } else {
-      $("#queuelist").css("height", "146px");
+      $("#queuelist").css("height", "128px");
       $("#userslist").css("height", "440px");
       $("#actualChat").css("height", "441px");
 
@@ -139,12 +139,12 @@ firetable.init = function() {
     var histheight = height - 175;
     $("#recentHistory").css("height", histheight+ "px");
   } else if (w > 799) {
-    var newh = height - 262;
+    var newh = height - 282;
     if (height > 520) {
       var morethan = height - 520;
 
       var chah = 451 + morethan;
-      var newu = 458 + morethan;
+      var newu = 455 + morethan;
       $("#queuelist").css("height", newh + "px");
       $("#userslist").css("height", newu + "px");
       $("#actualChat").css("height", chah + "px");
@@ -159,10 +159,11 @@ firetable.init = function() {
     $("#recentHistory").css("height", histheight+ "px");
   } else {
     var chah = height - 286;
-    var newu = height - 94;
+    var newu = height - 95;
+    var newq = height - 124;
 
     $("#actualChat").css("height", chah + "px");
-    $("#queuelist").css("height", newu + "px");
+    $("#queuelist").css("height", newq + "px");
     $("#userslist").css("height", newu + "px");
     var histheight = height - 205;
     $("#recentHistory").css("height", histheight+ "px");
@@ -174,28 +175,30 @@ firetable.init = function() {
     if (w > 1199) {
       if (height > 520) {
         var morethan = height - 520;
-        var newh = 146 + morethan;
+        var newh = 128 + morethan;
         var chah = 451 + morethan;
-        var newu = 458 + morethan;
+        var newu = 455 + morethan;
         $("#queuelist").css("height", newh + "px");
         $("#userslist").css("height", newu + "px");
         $("#actualChat").css("height", chah + "px");
       } else {
-        $("#queuelist").css("height", "146px");
+        $("#queuelist").css("height", "128px");
         $("#userslist").css("height", "458px");
         $("#actualChat").css("height", "441px");
 
       }
       var histheight = height - 175;
-      console.log(histheight);
+    //  console.log(histheight);
       $("#recentHistory").css("height", histheight+ "px");
+      windowW =  $(window).width() * 0.75 - (($(window).width() * 0.75) * 0.25);
+      setup();
     } else if (w > 799) {
-      var newh = height - 262;
+      var newh = height - 282;
       if (height > 520) {
         var morethan = height - 520;
 
         var chah = 451 + morethan;
-        var newu = 458 + morethan;
+        var newu = 455 + morethan;
         $("#queuelist").css("height", newh + "px");
         $("#userslist").css("height", newu + "px");
         $("#actualChat").css("height", chah + "px");
@@ -210,10 +213,10 @@ firetable.init = function() {
       $("#recentHistory").css("height", histheight+ "px");
     } else {
       var chah = height - 286;
-      var newu = height - 94;
-
+      var newu = height - 95;
+      var newq = height - 124;
       $("#actualChat").css("height", chah + "px");
-      $("#queuelist").css("height", newu + "px");
+      $("#queuelist").css("height", newq + "px");
       $("#userslist").css("height", newu + "px");
       var histheight = height - 205;
       $("#recentHistory").css("height", histheight+ "px");
@@ -1145,6 +1148,13 @@ firetable.ui = {
         $("#recentHistory").animate({
           'top': '55px'
         }, 1000);
+        $("#track").animate({
+          'margin-left': '-120px'
+        }, 2500);
+        $("#artist").animate({
+          'margin-left': '-120px'
+        }, 2500);
+        $("head").append("<style id=\"screenStyles\">#artist, #track, #timr, .djname{text-shadow: 1px 1px 0 black;}</style>")
       } else {
         $("#screenBox").animate({
           'top': '-300px'
@@ -1158,6 +1168,13 @@ firetable.ui = {
         $("#recentHistory").animate({
           'top': '175px'
         }, 1000);
+        $("#track").animate({
+          'margin-left': '0'
+        }, 1000);
+        $("#artist").animate({
+          'margin-left': '0'
+        }, 1000);
+        $("#screenStyles").remove();
       }
     });
     var wl = firebase.database().ref("waitlist");
@@ -1999,8 +2016,8 @@ firetable.ui = {
 
 }
 
-let windowW = 500;
-let windowH = 268;
+let windowW =  $(window).width() * 0.75 - (($(window).width() * 0.75) * 0.25);
+let windowH = 293;
 let isLoaded = false;
 let glitch;
 let imgSrc = '';
