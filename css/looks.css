@@ -2,7 +2,7 @@ body {
   margin: 0;
   font-family: "Open Sans", helvetica, arial, sans-serif;
   font-size: 14px;
-  color: #ffffffc7;
+  color: #bbbbbb;
   background-color: #212121;
   overflow: hidden;
 }
@@ -153,10 +153,8 @@ div#scScreen {
 #screenBox{
   position: absolute;
   top: -300px;
-  border: 2px solid #777;
-  border-top: 0;
   left: calc(50% - 300px);
-  z-index: 20;
+  z-index: 0;
   pointer-events: none;
 }
 
@@ -171,6 +169,11 @@ div#scScreen {
 
 .badoop a {
     color: #fff;
+}
+
+#addbox,
+#searchResults {
+  background-color: #212121;
 }
 
 span#ytsearchSelect {
@@ -229,6 +232,7 @@ div#pldeleteButton {
 }
 
 select#listpicker {
+  float: left;
   width: 245px;
   font-size: 14px;
   border: 1px solid #111;
@@ -348,11 +352,19 @@ a {
 }
 
 #addToQueueBttn {
-  font-weight: 700;
-  padding: 5px;
-  color: #999;
-  cursor: pointer;
+  float: left;
+  padding: 4px 10px;
   font-size: 12px;
+  font-weight: 700;
+  color: white;
+  background-color: #F4810B;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#addToQueueBttn,
+select#listpicker {
+  margin: 15px;
 }
 
 #welcomeInfo {
@@ -572,6 +584,7 @@ i#refreshSong {
 
 .djname {
   text-align: center;
+  text-shadow: 1px 1px 0 black;
 }
 
 #deck .spot {
@@ -657,10 +670,15 @@ input#plMachine {
 }
 
 div#cancelqsearch {
+  position: absolute;
+  top: 0.9rem;
+  right: 1rem;
+  padding: 5px 10px;
   font-size: 12px;
   color: #999;
+  background-color: #222;
+  border-radius: 4px;
   cursor: pointer;
-  margin-bottom: 10px;
 }
 
 #plmanager {
@@ -840,7 +858,7 @@ div.pvbar {
 }
 
 #niceboxes {
-  margin-top: 15px;
+  background-color: black;
 }
 
 #usersbox {
@@ -849,6 +867,7 @@ div.pvbar {
 }
 
 #queuebox {
+  position: relative;
   width: 100%;
 }
 
@@ -887,6 +906,18 @@ div.pvbar {
   line-height: 25px;
   cursor: pointer;
   text-align: center;
+}
+
+.usertab,
+#searchSelects span {
+  flex: 1;
+  margin: 1px 1px 0 1px;
+  width: auto;
+  line-height: 2;
+  color: #bbb;
+  background-color: #181818;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 .chatline {
@@ -1072,12 +1103,24 @@ div#usertabs {
   white-space: nowrap;
 }
 
-#usertabs .selected {
-  background-color: #151515;
-  color: #fff;
+div#usertabs,
+#searchSelects {
+  background-color: black;
+  display: flex;
+  padding: 1px 1px 0 1px;
+}
+
+div#usertabs .selected,
+#searchSelects .searchSelectsSelected {
+  margin-bottom: -1px;
+  font-weight: bold;
+  color: white;
+  background-color: #212121;
+  border-bottom: 1px solid #212121;
 }
 
 #queuelist {
+  clear: both;
   height: 330px;
   overflow-y: scroll;
   border-top: 1px solid #111;
