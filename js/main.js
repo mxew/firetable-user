@@ -16,6 +16,7 @@ var firetable = {
   scLoaded: null,
   selectedListThing: "0",
   queueBind: null,
+  parser: null,
   songTagToEdit: null,
   scwidget: null,
   searchSelectsChoice: 1,
@@ -28,7 +29,7 @@ var firetable = {
   scImg: ""
 }
 
-firetable.version = "00.04.33";
+firetable.version = "00.04.34";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -118,6 +119,7 @@ firetable.init = function() {
     authDomain: "firetable-e10fd.firebaseapp.com",
     databaseURL: "https://firetable-e10fd.firebaseio.com"
   };
+  firetable.parser = new DOMParser();
   var height = $(window).height(); // New height
   var w = $(window).width();
   console.log(w);
@@ -1019,9 +1021,12 @@ firetable.utilities = {
 
 firetable.ui = {
   textToLinks: function(text) {
-
     var re = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
     return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
+  },
+  strip: function(html){
+    var doc = firetable.parser.parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
   },
   init: function() {
     var recentz = firebase.database().ref("songHistory");
@@ -1331,8 +1336,8 @@ firetable.ui = {
       if (chatData.id == firetable.lastChatPerson && !badoop) {
         $("#chat" + firetable.lastChatId).append("<div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
         $("#chatTime" + firetable.lastChatId).text(firetable.utilities.format_time(chatData.time));
-        $("#chattxt"+childSnapshot.key).text(chatData.txt);
-        var txtOut = firetable.ui.textToLinks($("#chattxt"+childSnapshot.key).text());
+
+        var txtOut = firetable.ui.textToLinks(firetable.ui.strip(chatData.txt));
         txtOut = emojione.shortnameToImage(txtOut);
         txtOut = emojione.unicodeToImage(txtOut);
         var res = txtOut.replace(/\`(.*?)\`/g, function (x) {
@@ -1343,8 +1348,7 @@ firetable.ui = {
         if (badoop) {
           var thing = $("#actualChat").append("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat badoop\"><div class=\"chatName\"><span class=\"chatNameName\"></span> <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
           $("#chat"+childSnapshot.key).find(".chatNameName").text(namebo);
-          $("#chat"+childSnapshot.key).find(".chatText").text(chatData.txt);
-          var txtOut = firetable.ui.textToLinks($("#chattxt"+childSnapshot.key).text());
+          var txtOut = firetable.ui.textToLinks(firetable.ui.strip(chatData.txt));
           txtOut = emojione.shortnameToImage(txtOut);
           txtOut = emojione.unicodeToImage(txtOut);
           var res = txtOut.replace(/\`(.*?)\`/g, function (x) {
@@ -1354,8 +1358,8 @@ firetable.ui = {
         } else {
           var thing = $("#actualChat").append("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat\"><div class=\"chatName\"><span class=\"chatNameName\"></span> <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
           $("#chat"+childSnapshot.key).find(".chatNameName").text(namebo);
-          $("#chat"+childSnapshot.key).find(".chatText").text(chatData.txt);
-          var txtOut = firetable.ui.textToLinks($("#chattxt"+childSnapshot.key).text());
+          var txtOut = firetable.ui.textToLinks(firetable.ui.strip(chatData.txt));
+
           txtOut = emojione.shortnameToImage(txtOut);
           txtOut = emojione.unicodeToImage(txtOut);
           var res = txtOut.replace(/\`(.*?)\`/g, function (x) {
@@ -1824,6 +1828,7 @@ firetable.ui = {
     $("#newchat").bind("keyup", function(e) {
       if (e.which == 13) {
         var txt = $("#newchat").val();
+        if (txt == "") return;
         var matches = txt.match(/^(?:[\/])(\w+)\s*(.*)/i);
         if (matches) {
           var command = matches[1].toLowerCase();
