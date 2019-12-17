@@ -29,7 +29,7 @@ var firetable = {
   scImg: ""
 }
 
-firetable.version = "00.04.34";
+firetable.version = "00.04.35";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1556,6 +1556,8 @@ firetable.ui = {
       if (e.which == 13) {
         var email = $("#loginemail").val();
         var pass = $("#loginpass").val();
+        $("#loginemail").val("");
+        $("#loginpass").val("");
         firetable.actions.logIn(email, pass);
       }
     });
@@ -1590,6 +1592,8 @@ firetable.ui = {
     $("#createAccountBttn").bind("click", function() {
       var email = $("#newemail").val();
       var pass = $("#newpass").val();
+      $("#newemail").val("");
+      $("#newpass").val("");
       firetable.actions.signUp(email, pass);
 
     });
@@ -1610,6 +1614,8 @@ firetable.ui = {
     $("#loginBttn").bind("click", function() {
       var email = $("#loginemail").val();
       var pass = $("#loginpass").val();
+      $("#loginemail").val("");
+      $("#loginpass").val("");
       firetable.actions.logIn(email, pass);
     });
     $("#ytsearchSelect").bind("click", function() {

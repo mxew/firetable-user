@@ -388,6 +388,7 @@ div#notloggedin {
   margin-top: 75px;
   color: #999;
   font-weight: 700;
+  background-color: #212121;
 }
 
 #login {
@@ -438,6 +439,14 @@ span.listwords {
     border-top: 1px solid #111;
     border-bottom: 1px solid #111;
     border-right: none;
+}
+
+div#screenover {
+    width: 100%;
+    height: 293px;
+    position: absolute;
+    top: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.88) , rgba(0, 0, 0, 0.49) 20%,  rgba(255, 255, 255, 0.25) );
 }
 
 #tagPromptMain .left {
