@@ -29,7 +29,7 @@ var firetable = {
   scImg: ""
 }
 
-firetable.version = "00.04.35";
+firetable.version = "00.04.36";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1044,7 +1044,20 @@ firetable.ui = {
         $($("#recentthing" + key).find(".histart")[0]).css("background-image", "url(" + data.img + ")");
 
     });
-
+    var themeChange = firebase.database().ref("theme");
+    themeChange.on('value', function(dataSnapshot) {
+      var data = dataSnapshot.val();
+      if (!data){
+        //no theme
+        $("#currentTheme").text("none");
+        $("#actualChat").removeClass("themeTime");
+        $("#themebox").hide();
+      } else {
+        $("#currentTheme").text(data);
+        $("#actualChat").addClass("themeTime");
+        $("#themebox").show();
+      }
+    });
     var s2p = firebase.database().ref("songToPlay");
     s2p.on('value', function(dataSnapshot) {
       var data = dataSnapshot.val();

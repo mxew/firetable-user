@@ -430,6 +430,30 @@ span.listwords {
   width: 95%;
 }
 
+div#themebox {
+  display:none;
+    position: absolute;
+    width: 25%;
+    font-size: 12px;
+    background-color: #333;
+    text-align: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #111;
+}
+
+div#currentTheme {
+    padding-left: 15px;
+    padding-right: 15px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.themeTime > :nth-child(2) {
+    margin-top: 45px;
+}
+
 #newchat {
     width: calc(100% - 15px);
     padding-left: 15px;
@@ -1175,7 +1199,7 @@ div#usertabs .selected,
   #tagMachine {
     width: calc(100% - 12px) !important;
   }
-  #mainThing #rightbox {
+  #mainThing #rightbox, #themebox {
     width: 100% !important;
   }
   #mainThing #leftbox {
@@ -1327,7 +1351,7 @@ div#usertabs .selected,
   div#otherpart {
     width: 75% !important;
   }
-  #mainThing #rightbox {
+  #mainThing #rightbox, #themebox {
     width: 25% !important;
   }
   div#usrarea {
