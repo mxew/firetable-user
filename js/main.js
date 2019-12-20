@@ -29,7 +29,7 @@ var firetable = {
   scImg: ""
 }
 
-firetable.version = "00.04.36";
+firetable.version = "00.04.37";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -621,7 +621,15 @@ firetable.actions = {
       var listComments = function(tracks) {
         console.log(tracks);
         if (tracks) {
-          firetable.actions.queueTrack(tracks.id, tracks.title, 2);
+          var yargo = tracks.title.split(" - ");
+          var sartist = yargo[0];
+          var stitle = yargo[1];
+          if (!stitle) {
+            stitle = sartist;
+            sartist = tracks.user.username;
+          }
+          var goodTitle = sartist + " - " + stitle;
+          firetable.actions.queueTrack(tracks.id, goodTitle, 2);
         }
       };
       SC.resolve(link).then(getComments).then(listComments);
@@ -760,9 +768,17 @@ firetable.actions = {
         $("#listpicker").append("<option id=\"pdopt" + listid + "\" value=\"" + listid + "\">" + name + "</option>");
         var nref = firebase.database().ref("playlists/" + firetable.uid + "/" + listid + "/list");
         for (var i = 0; i < listinfo.tracks.length; i++) {
+          var yargo = listinfo.tracks[i].title.split(" - ");
+          var sartist = yargo[0];
+          var stitle = yargo[1];
+          if (!stitle) {
+            stitle = sartist;
+            sartist = listinfo.tracks[i].user.username;
+          }
+          var goodTitle = sartist +" - "+stitle;
           var info = {
             type: 2,
-            name: listinfo.tracks[i].title,
+            name: goodTitle,
             cid: listinfo.tracks[i].id
           };
           nref.push(info);
@@ -1039,7 +1055,7 @@ firetable.ui = {
         if (data.type == 2) firstpart == "sc";
         var pkey = firstpart +"cid" + data.cid;
 
-        $("#thehistory").prepend("<div id=\"recentthing"+key+"\" class=\"historyItem qresult\"><div class=\"histart\"><i id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, "+data.type+")\">&#xE037;</i></div><div class=\"pvbar\" id=\"pvbar" + pkey + "\"> <div class=\"qtxt\"><span class=\"listwords\">" + data.artist + " - "+data.title + "</span><div id=\"histmoreinfo\">played by "+data.dj+" on "+firetable.utilities.format_date(data.when)+" at "+firetable.utilities.format_time(data.when)+"</div></div><div class=\"delete\"><i id=\"apv" +data.type + data.cid + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + data.cid + "', '"+firetable.utilities.htmlEscape(data.artist + " - "+ data.title)+"', "+data.type+", true)\">&#xE03B;</i></div></div><div class=\"clear\"></div></div>");
+        $("#thehistory").prepend("<div id=\"recentthing"+key+"\" class=\"historyItem qresult\"><div class=\"histart\"><i id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, "+data.type+")\">&#xE037;</i></div><div class=\"pvbar\" id=\"pvbar" + pkey + "\"> <div class=\"qtxt\"><span class=\"listwords\"><a target=\"_blank\" href=\"" + data.url + "\">" + data.artist + " - "+data.title + "</a></span><div id=\"histmoreinfo\">played by "+data.dj+" on "+firetable.utilities.format_date(data.when)+" at "+firetable.utilities.format_time(data.when)+"</div></div><div class=\"delete\"><i id=\"apv" +data.type + data.cid + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + data.cid + "', '"+firetable.utilities.htmlEscape(data.artist + " - "+ data.title)+"', "+data.type+", true)\">&#xE03B;</i></div></div><div class=\"clear\"></div></div>");
 
         $($("#recentthing" + key).find(".histart")[0]).css("background-image", "url(" + data.img + ")");
 
@@ -1835,7 +1851,14 @@ firetable.ui = {
             var srchItems = tracks;
             $.each(srchItems, function(index, item) {
               vidTitle = item.title;
-
+              var yargo = item.title.split(" - ");
+              var sartist = yargo[0];
+              var stitle = yargo[1];
+              if (!stitle) {
+                stitle = sartist;
+                sartist = item.user.username;
+              }
+              vidTitle = sartist + " - " + stitle;
               var pkey = "sccid" + item.id;
 
               $("#searchResults").append("<div class=\"qresult\"><div class=\"pvbar\" id=\"pvbar" + pkey + "\"><div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, 2)\">&#xE037;</i><span class=\"listwords\">" + vidTitle + "</span></div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 2)\">&#xE03B;</i></div></div></div>");

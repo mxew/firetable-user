@@ -426,6 +426,12 @@ span.listwords {
   width: calc(100% - 25px);
 }
 
+span.listwords a {
+    color: #bbbbbb;
+    text-decoration: none;
+}
+
+
 #login input {
   width: 95%;
 }
