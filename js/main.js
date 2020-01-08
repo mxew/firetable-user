@@ -24,12 +24,13 @@ var firetable = {
   queueRef: null,
   lastChatPerson: false,
   lastChatId: false,
+  tagUpdate: null,
   nonpmsg: true,
   playlimit: 2,
   scImg: ""
 }
 
-firetable.version = "00.04.37";
+firetable.version = "00.04.39";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1074,9 +1075,38 @@ firetable.ui = {
         $("#themebox").show();
       }
     });
+    var tagUpdate = firebase.database().ref("tagUpdate");
+    tagUpdate.on('value', function(dataSnapshot) {
+      var data = dataSnapshot.val();
+      console.log("TAG UPDATE", data);
+      firetable.tagUpdate = data;
+      if (firetable.song){
+      if (firetable.song.cid == data.cid){
+          $("#track").text(data.adamData.track_name);
+          $("#artist").text(data.adamData.artist);
+          var nicename = firetable.song.djname;
+          var objDiv = document.getElementById("actualChat");
+          scrollDown = false;
+          if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
+          var showPlaycount = false;
+          if (data.adamData.playcount){
+            if (data.adamData.playcount > 0){
+              showPlaycount = true;
+            }
+          }
+          if (showPlaycount){
+            $(".npmsg"+data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong><br/>This song has been played "+data.adamData.playcount+" times.</div>");
+          } else {
+            $(".npmsg"+data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong></div>");
+          }
+          if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+        }
+      }
+    });
     var s2p = firebase.database().ref("songToPlay");
     s2p.on('value', function(dataSnapshot) {
       var data = dataSnapshot.val();
+
       $("#timr").countdown("destroy");
       if (firetable.moveBar != null) {
         clearInterval(firetable.moveBar);
@@ -1084,6 +1114,18 @@ firetable.ui = {
       }
       $("#prgbar").css("background", "#151515");
       $("#grab").removeClass("grabbed");
+      var showPlaycount = false;
+      if (firetable.tagUpdate){
+        if (data.cid == firetable.tagUpdate.cid){
+          data.title = firetable.tagUpdate.adamData.track_name;
+          data.artist = firetable.tagUpdate.adamData.artist;
+          if (firetable.tagUpdate.adamData.playcount){
+            if (firetable.tagUpdate.adamData.playcount > 0){
+              showPlaycount = true;
+            }
+          }
+        }
+      }
       $("#track").text(data.title);
       $("#artist").text(data.artist);
       $("#albumArt").css("background-image", "url(" + data.image + ")")
@@ -1093,7 +1135,7 @@ firetable.ui = {
       var secSince = Math.floor(timeSince / 1000);
       var timeLeft = data.duration - secSince;
       firetable.song = data;
-      console.log(data);
+      console.log("NEW TRACK", data);
       console.log(timeSince);
       if (data.type == 1){
           $("#scScreen").hide();
@@ -1141,8 +1183,11 @@ firetable.ui = {
           scrollDown = false;
           var objDiv = document.getElementById("actualChat");
           if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
-          $("#actualChat").append("<div class=\"newChat nowplayn\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
-
+          if (showPlaycount){
+            $("#actualChat").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong><br/>This song has been played "+firetable.tagUpdate.adamData.playcount+" times.</div>")
+          } else {
+            $("#actualChat").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
+          }
           if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
           firetable.lastChatPerson = false;
           firetable.lastChatId = false;
