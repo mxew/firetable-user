@@ -9,6 +9,7 @@ var firetable = {
   movePvBar: null,
   moveBar: null,
   song: null,
+  playBadoop: true,
   scSeek: false,
   color: "#F4810B",
   countcolor: "#fff",
@@ -30,7 +31,7 @@ var firetable = {
   scImg: ""
 }
 
-firetable.version = "00.04.39";
+firetable.version = "00.04.40";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -977,7 +978,9 @@ firetable.actions = {
 
 firetable.utilities = {
   playSound: function(filename) {
-    document.getElementById("alert").innerHTML = '<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename + '.mp3" /></audio>';
+    if (firetable.playBadoop){
+      document.getElementById("alert").innerHTML = '<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename + '.mp3" /></audio>';
+    }
   },
   isChatPrettyMuchAtBottom: function() {
     var objDiv = document.getElementById("actualChat");
@@ -1046,6 +1049,16 @@ firetable.ui = {
     return doc.body.textContent || "";
   },
   init: function() {
+    var playBadoop = localStorage["firetableBadoop"];
+    if (typeof playBadoop == "undefined") {
+      localStorage["firetableBadoop"] = true;
+      firetable.playBadoop = true;
+      $( "#badoopToggle" ).prop( "checked", true );
+    } else {
+      playBadoop = JSON.parse(playBadoop);
+      firetable.playBadoop = playBadoop;
+      $( "#badoopToggle" ).prop( "checked", playBadoop );
+    }
     var recentz = firebase.database().ref("songHistory");
     recentz.on('child_added', function(dataSnapshot, prev) {
         var data = dataSnapshot.val();
@@ -1573,6 +1586,27 @@ firetable.ui = {
       $("#deletePromptOverlay").css("display", "none");
       $("#deletepicker").html("");
     });
+    $("#settingsClose").bind("click", function() {
+      $("#settingsOverlay").css("display", "none");
+    });
+    $("#ftSettings").bind("click", function() {
+      $("#settingsOverlay").toggle();
+    });
+    //SETTINGS TOGGLES
+$('#badoopToggle').change(function() {
+    if (this.checked) {
+        // the checkbox is now checked
+        console.log("badoop on");
+        localStorage["firetableBadoop"] = true;
+        firetable.playBadoop = true;
+    } else {
+        // the checkbox is now no longer checked
+        console.log("badoop off");
+        localStorage["firetableBadoop"] = false;
+        firetable.playBadoop = false;
+
+    }
+});
     $("#pldeleteButton").bind("click", function() {
       var val = $("#deletepicker").val();
       console.log(val);
