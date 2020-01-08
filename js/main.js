@@ -33,7 +33,7 @@ var firetable = {
   scImg: ""
 }
 
-firetable.version = "00.04.41";
+firetable.version = "00.04.42";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1164,7 +1164,7 @@ firetable.ui = {
       console.log("TAG UPDATE", data);
       firetable.tagUpdate = data;
       if (firetable.song){
-      if (firetable.song.cid == data.cid){
+      if (firetable.song.cid == data.cid && data.adamData.track_name){
           $("#track").text(data.adamData.track_name);
           $("#artist").text(data.adamData.artist);
           var nicename = firetable.song.djname;
