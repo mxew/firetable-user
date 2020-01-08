@@ -10,6 +10,8 @@ var firetable = {
   moveBar: null,
   song: null,
   playBadoop: true,
+  screenControl: "sync",
+  screenSyncPos: false,
   scSeek: false,
   color: "#F4810B",
   countcolor: "#fff",
@@ -31,7 +33,7 @@ var firetable = {
   scImg: ""
 }
 
-firetable.version = "00.04.40";
+firetable.version = "00.04.41";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -982,6 +984,53 @@ firetable.utilities = {
       document.getElementById("alert").innerHTML = '<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename + '.mp3" /></audio>';
     }
   },
+  screenUp: function(){
+    $("#screenBox").animate({
+      'top': '-300px'
+    }, 2000);
+    $("#volandthings").animate({
+      'bottom': '0'
+    }, 2000);
+    $("#volplace").animate({
+      'padding-left': '15px'
+    }, 1000);
+    $("#recentHistory").animate({
+      'top': '175px'
+    }, 1000);
+    $("#track").animate({
+      'margin-left': '0'
+    }, 1000);
+    $("#artist").animate({
+      'margin-left': '0'
+    }, 1000);
+    $("#screenStyles").remove();
+  },
+  screenDown: function(){
+    $("#screenBox").animate({
+      'top': '36px'
+    }, 5000);
+    $("#volandthings").animate({
+      'bottom': '123px'
+    }, 1000);
+    $("#volandthings").animate({
+      'bottom': '123px'
+    }, 1000);
+    $("#volplace").animate({
+      'padding-left': '55px'
+    }, 1000);
+    $("#recentHistory").animate({
+      'top': '55px'
+    }, 1000);
+    $("#track").animate({
+      'margin-left': '-120px'
+    }, 2500);
+    $("#artist").animate({
+      'margin-left': '-120px'
+    }, 2500);
+    if($('#screenStyles').length == 0) {
+      $("head").append("<style id=\"screenStyles\">#artist, #track, #timr, .djname{text-shadow: 1px 1px 0 black;}</style>")
+    }
+  },
   isChatPrettyMuchAtBottom: function() {
     var objDiv = document.getElementById("actualChat");
     var answr = false;
@@ -1049,6 +1098,7 @@ firetable.ui = {
     return doc.body.textContent || "";
   },
   init: function() {
+    //GET SETTINGS FROM LOCALSTORAGE
     var playBadoop = localStorage["firetableBadoop"];
     if (typeof playBadoop == "undefined") {
       localStorage["firetableBadoop"] = true;
@@ -1058,6 +1108,26 @@ firetable.ui = {
       playBadoop = JSON.parse(playBadoop);
       firetable.playBadoop = playBadoop;
       $( "#badoopToggle" ).prop( "checked", playBadoop );
+    }
+    var screenControl = localStorage["firetableScreenControl"];
+    if (typeof screenControl == "undefined") {
+      localStorage["firetableScreenControl"] = "sync";
+      firetable.screenControl = "sync";
+      $( "#screenControlTog"+firetable.screenControl ).prop( "checked", true );
+    } else {
+      firetable.screenControl = screenControl;
+      $( "#screenControlTog"+firetable.screenControl ).prop( "checked", true );
+      if (screenControl == "on"){
+        firetable.utilities.screenDown();
+      } else if (screenControl == "off"){
+        firetable.utilities.screenUp();
+      } else if (screenControl == "sync"){
+        if (firetable.screenSyncPos){
+          firetable.utilities.screenDown();
+        } else {
+          firetable.utilities.screenUp();
+        }
+      }
     }
     var recentz = firebase.database().ref("songHistory");
     recentz.on('child_added', function(dataSnapshot, prev) {
@@ -1224,50 +1294,14 @@ firetable.ui = {
     thescreen.on('value', function(dataSnapshot) {
       var data = dataSnapshot.val();
       console.log(data);
+      firetable.screenSyncPos = data;
+      if (firetable.screenControl == "sync"){
       if (data) {
-        $("#screenBox").animate({
-          'top': '36px'
-        }, 5000);
-        $("#volandthings").animate({
-          'bottom': '123px'
-        }, 1000);
-        $("#volandthings").animate({
-          'bottom': '123px'
-        }, 1000);
-        $("#volplace").animate({
-          'padding-left': '55px'
-        }, 1000);
-        $("#recentHistory").animate({
-          'top': '55px'
-        }, 1000);
-        $("#track").animate({
-          'margin-left': '-120px'
-        }, 2500);
-        $("#artist").animate({
-          'margin-left': '-120px'
-        }, 2500);
-        $("head").append("<style id=\"screenStyles\">#artist, #track, #timr, .djname{text-shadow: 1px 1px 0 black;}</style>")
+        firetable.utilities.screenDown();
       } else {
-        $("#screenBox").animate({
-          'top': '-300px'
-        }, 2000);
-        $("#volandthings").animate({
-          'bottom': '0'
-        }, 2000);
-        $("#volplace").animate({
-          'padding-left': '15px'
-        }, 1000);
-        $("#recentHistory").animate({
-          'top': '175px'
-        }, 1000);
-        $("#track").animate({
-          'margin-left': '0'
-        }, 1000);
-        $("#artist").animate({
-          'margin-left': '0'
-        }, 1000);
-        $("#screenStyles").remove();
+        firetable.utilities.screenUp();
       }
+    }
     });
     var wl = firebase.database().ref("waitlist");
     wl.on('value', function(dataSnapshot) {
@@ -1595,17 +1629,31 @@ firetable.ui = {
     //SETTINGS TOGGLES
 $('#badoopToggle').change(function() {
     if (this.checked) {
-        // the checkbox is now checked
         console.log("badoop on");
         localStorage["firetableBadoop"] = true;
         firetable.playBadoop = true;
     } else {
-        // the checkbox is now no longer checked
         console.log("badoop off");
         localStorage["firetableBadoop"] = false;
         firetable.playBadoop = false;
 
     }
+});
+$('input[type=radio][name=screenControl]').change(function() {
+  console.log(this.value);
+  localStorage["firetableScreenControl"] = this.value;
+  firetable.screenControl = this.value;
+  if (this.value == "off"){
+    firetable.utilities.screenUp();
+  } else if (this.value == "on"){
+    firetable.utilities.screenDown();
+  } else if (this.value == "sync"){
+    if (firetable.screenSyncPos){
+      firetable.utilities.screenDown();
+    } else {
+      firetable.utilities.screenUp();
+    }
+  }
 });
     $("#pldeleteButton").bind("click", function() {
       var val = $("#deletepicker").val();
