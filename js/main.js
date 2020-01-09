@@ -13,6 +13,7 @@ var firetable = {
   screenControl: "sync",
   screenSyncPos: false,
   scSeek: false,
+  desktopNotifyMentions: false,
   color: "#F4810B",
   countcolor: "#fff",
   ytLoaded: null,
@@ -33,7 +34,7 @@ var firetable = {
   scImg: ""
 }
 
-firetable.version = "00.04.42";
+firetable.version = "00.04.43";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -984,6 +985,18 @@ firetable.utilities = {
       document.getElementById("alert").innerHTML = '<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename + '.mp3" /></audio>';
     }
   },
+  desktopNotify: function(chatData, namebo){
+      if (Notification) {
+        if (Notification.permission !== "granted") {
+          Notification.requestPermission();
+        } else {
+            var notification = new Notification(namebo, {
+              icon: "https://robohash.org/"+chatData.id + namebo +".png?size=110x110",
+              body: chatData.txt,
+            });
+        }
+      }
+  },
   screenUp: function(){
     $("#screenBox").animate({
       'top': '-300px'
@@ -1109,6 +1122,16 @@ firetable.ui = {
       firetable.playBadoop = playBadoop;
       $( "#badoopToggle" ).prop( "checked", playBadoop );
     }
+    var dtnmt = localStorage["firetableDTNM"];
+    if (typeof dtnmt == "undefined") {
+      localStorage["firetableDTNM"] = false;
+      firetable.desktopNotifyMentions = false;
+      $( "#desktopNotifyMentionsToggle" ).prop( "checked", false);
+    } else {
+      dtnmt = JSON.parse(dtnmt);
+      firetable.desktopNotifyMentions = dtnmt;
+      $( "#desktopNotifyMentionsToggle" ).prop( "checked", dtnmt );
+    }
     var screenControl = localStorage["firetableScreenControl"];
     if (typeof screenControl == "undefined") {
       localStorage["firetableScreenControl"] = "sync";
@@ -1199,7 +1222,7 @@ firetable.ui = {
       $("#grab").removeClass("grabbed");
       var showPlaycount = false;
       if (firetable.tagUpdate){
-        if (data.cid == firetable.tagUpdate.cid){
+        if (data.cid == firetable.tagUpdate.cid && firetable.tagUpdate.adamData.track_name){
           data.title = firetable.tagUpdate.adamData.track_name;
           data.artist = firetable.tagUpdate.adamData.artist;
           if (firetable.tagUpdate.adamData.playcount){
@@ -1449,6 +1472,7 @@ firetable.ui = {
         var oknow = Date.now();
         if (oknow - chatData.time < (10 * 1000)) {
           firetable.utilities.playSound("sound");
+          if (firetable.desktopNotifyMentions) firetable.utilities.desktopNotify(chatData, namebo);
           badoop = true;
         }
       }
@@ -1639,6 +1663,24 @@ $('#badoopToggle').change(function() {
 
     }
 });
+$('#desktopNotifyMentionsToggle').change(function() {
+    if (this.checked) {
+        console.log("dtnm on");
+        localStorage["firetableDTNM"] = true;
+        firetable.desktopNotifyMentions = true;
+        if (Notification) {
+          if (Notification.permission !== "granted") {
+            Notification.requestPermission();
+          }
+        }
+    } else {
+        console.log("dtnm off");
+        localStorage["firetableDTNM"] = false;
+        firetable.desktopNotifyMentions = false;
+
+    }
+});
+
 $('input[type=radio][name=screenControl]').change(function() {
   console.log(this.value);
   localStorage["firetableScreenControl"] = this.value;
