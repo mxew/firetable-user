@@ -35,7 +35,7 @@ var firetable = {
   superCopBanUpdates: null,
 }
 
-firetable.version = "00.04.44";
+firetable.version = "00.04.45";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1450,6 +1450,7 @@ firetable.ui = {
           if (firetable.users[firetable.uid].username) $("#loggedInEmail").text(firetable.users[firetable.uid].username);
         }
       }
+      if (firetable.uid){
       if (firetable.users[firetable.uid].supermod){
         if ($("#ftSuperCopButton").is(":hidden")){
           $("#ftSuperCopButton").show();
@@ -1480,6 +1481,7 @@ firetable.ui = {
             });
           });
         }
+      }
       }
       var newlist = "";
       var count = 0;
