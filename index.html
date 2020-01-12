@@ -6,7 +6,7 @@
 	<title>Indie Discotheque's Basement | firetable</title>
 	<meta name="viewport" content="width=device-width; initial-scale = 1.0; maximum-scale=1.0; user-scalable=no" />
 	<link rel="shortcut icon" href="favicon.png">
-	<link rel="stylesheet" href="css/looks.css?v=00.04.43" type="text/css" />
+	<link rel="stylesheet" href="css/looks.css?v=00.04.44" type="text/css" />
 	<script src="https://cdn.jsdelivr.net/emojione/2.2.7/lib/js/emojione.min.js"></script>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/emojione/2.2.7/assets/css/emojione.min.css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.7/p5.min.js"></script>
@@ -92,6 +92,26 @@
 			</div>
 		</div>
 	</div>
+	<div id="supercopOverlay">
+		<div id="supercopBox">
+			<div id="supercopHeader">
+				<div class="left">
+					<span class="ftlogo">firetable</span> Supercop Control Panel
+				</div>
+				<div class="right">
+					<span id="supercopClose">Close</span>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div id="supercopMain">
+				Suspend a user's account, or manage active suspentions.<br/><br/>
+				<input type="text" placeholder="Enter Username to Suspend User's Account" id="supercopSearch"></input>
+				<div id="supercopResponse"></div>
+				<h3>Active Suspentions</h3>
+				<div id="activeSuspentions"></div>
+			</div>
+		</div>
+	</div>
 	<div id="importPromptOverlay">
 		<div id="importPromptBox">
 			<div id="importPromptHeader">
@@ -117,7 +137,7 @@
 		<div id="topbar">
 			<div class="inr">
 				<div class="left">
-					<span class="fire">fire</span>table <span id="idtitle">Indie Discotheque's Basement</span> <a id="infobutton" target="_blank" href="about"><i class="material-icons">&#xE887;</i></a><span id="ftSettings"><i class="material-icons">settings</i></span>
+					<span class="fire">fire</span>table <span id="idtitle">Indie Discotheque's Basement</span> <a id="infobutton" target="_blank" href="about"><i class="material-icons">&#xE887;</i></a><span id="ftSettings"><i class="material-icons">settings</i></span><span id="ftSuperCopButton"><i class="material-icons">security</i></span>
 				</div>
 				<div class="right">
 				<span id="loggedInEmail">Not Logged In</span><span id="signOut"> </span>
@@ -302,7 +322,7 @@
 </script>
 <script src="https://w.soundcloud.com/player/api.js" type="text/javascript"></script>
 
-<script type="text/javascript" src="js/main.js?v=00.04.43"></script>
+<script type="text/javascript" src="js/main.js?v=00.04.44"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 
 </html>

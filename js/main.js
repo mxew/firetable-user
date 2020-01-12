@@ -31,10 +31,11 @@ var firetable = {
   tagUpdate: null,
   nonpmsg: true,
   playlimit: 2,
-  scImg: ""
+  scImg: "",
+  superCopBanUpdates: null,
 }
 
-firetable.version = "00.04.43";
+firetable.version = "00.04.44";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -279,9 +280,33 @@ firetable.init = function() {
       } else {
         $("#loggedInEmail").text(user.uid);
       }
+
       var ref0 = firebase.database().ref("users/" + user.uid + "/status");
       ref0.set(true);
       ref0.onDisconnect().set(false);
+      var banCheck = firebase.database().ref("banned/"+firetable.uid);
+      banCheck.on('value', function(dataSnapshot) {
+        var data = dataSnapshot.val();
+        console.log("BANCHECK", data)
+        if (data){
+          console.log("ban detected.");
+          $("body").remove();
+          if (document.getElementById("notice") == null){
+          var usrname2use = firetable.uid;
+          if (firetable.users[firetable.uid]){
+            if (firetable.users[firetable.uid].username) usrname2use = firetable.users[firetable.uid].username;
+          }
+          $("html").append("<div id=\"notice\"><div class=\"inner\"><span class=\"ftlogo\">firetable</span><br/><br/><br/>"+usrname2use+",<br/><br/>Your account has been suspended due to a perceived violation of our <a href=\"terms\">Terms of Service</a>. <br/><br/>If you believe your account has been suspended by mistake or as the result of a misunderstanding, please contact chris@indiediscotheque.com.<br/><br/>We reserve the right to modify, suspend, or terminate the Service for any reason, without notice, at any time.</div></div>");
+          var ref0 = firebase.database().ref("users/" + firetable.uid + "/status");
+          firetable.uid = null;
+          ref0.set(false);
+        }
+      } else {
+        if (document.getElementById("notice") !== null){
+          window.location.reload();
+        }
+      }
+      });
       var getSelect = firebase.database().ref("users/" + firetable.uid + "/selectedList");
       var allQueues = firebase.database().ref("playlists/" + firetable.uid);
       allQueues.once('value')
@@ -907,6 +932,10 @@ firetable.actions = {
       $("#grab").addClass("grabbed");
     }
   },
+  unban: function(userid){
+    var ref = firebase.database().ref("banned/"+userid);
+    ref.set(false);
+  },
   reloadtrack: function() {
     //start regular song
     var nownow = Date.now();
@@ -1209,6 +1238,8 @@ firetable.ui = {
         }
       }
     });
+
+
     var s2p = firebase.database().ref("songToPlay");
     s2p.on('value', function(dataSnapshot) {
       var data = dataSnapshot.val();
@@ -1417,6 +1448,37 @@ firetable.ui = {
       if ($("#loggedInEmail").text() == firetable.uid) {
         if (firetable.users[firetable.uid]) {
           if (firetable.users[firetable.uid].username) $("#loggedInEmail").text(firetable.users[firetable.uid].username);
+        }
+      }
+      if (firetable.users[firetable.uid].supermod){
+        if ($("#ftSuperCopButton").is(":hidden")){
+          $("#ftSuperCopButton").show();
+        }
+        if (!firetable.superCopBanUpdates){
+          //begin event listener for ban updates
+          var ref = firebase.database().ref("banned");
+          firetable.superCopBanUpdates = ref.on('value', function(dataSnapshot) {
+            $("#activeSuspentions").html("");
+            dataSnapshot.forEach(function(childSnapshot) {
+                var key = childSnapshot.key;
+                var childData = childSnapshot.val();
+                if (childData){
+                var name = key;
+                var niceref2 = firebase.database().ref("users/" + name);
+
+                niceref2.once("value")
+                  .then(function(snapshot2) {
+                      var childData2 = snapshot2.val();
+                      if (childData2) {
+                        if (childData2.username){
+                          name = childData2.username;
+                        }
+                      }
+                  $("#activeSuspentions").append("<div class=\"importResult\"><div class=\"imtxt\">" + name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.unban('" + key + "')\" class=\"material-icons\" title=\"Unsuspend\">&#xE5C9;</i></div><div class=\"clear\"></div></div>");
+                  });
+                }
+            });
+          });
         }
       }
       var newlist = "";
@@ -1647,8 +1709,14 @@ firetable.ui = {
     $("#settingsClose").bind("click", function() {
       $("#settingsOverlay").css("display", "none");
     });
+    $("#supercopClose").bind("click", function() {
+      $("#supercopOverlay").css("display", "none");
+    });
     $("#ftSettings").bind("click", function() {
       $("#settingsOverlay").toggle();
+    });
+    $("#ftSuperCopButton").bind("click", function() {
+      $("#supercopOverlay").toggle();
     });
     //SETTINGS TOGGLES
 $('#badoopToggle').change(function() {
@@ -1853,6 +1921,55 @@ $('input[type=radio][name=screenControl]').change(function() {
           }
         }
       }
+    });
+    $("#supercopSearch").bind("keyup", function(e) {
+      if (e.which == 13) {
+          var val = $("#supercopSearch").val();
+          $("#supercopResponse").html("");
+          if (val != "") {
+            //begin user search...
+            var ppl = [];
+            var name = val;
+            var niceref = firebase.database().ref("users");
+            niceref.orderByChild('username').equalTo(name).once("value")
+                .then(function(snapshot) {
+                  snapshot.forEach(function(childSnapshot) {
+                      var key = childSnapshot.key;
+                      var childData = childSnapshot.val();
+                      childData.userid = key;
+                      ppl.push(childData);
+                    });
+                    var niceref2 = firebase.database().ref("users/" + name);
+
+                    niceref2.once("value")
+                      .then(function(snapshot2) {
+                          var childData2 = snapshot2.val();
+                          if (childData2) {
+                              var key2 = snapshot2.key;
+                              childData2.userid = key2;
+                              ppl.push(childData2);
+                          }
+                          //check search results
+                          if (ppl.length){
+                            //found something!
+                            if (!ppl[0].supermod){
+                              var ref = firebase.database().ref("banned/"+ppl[0].userid);
+                              ref.set(true);
+                              $("#supercopResponse").html("<span style=\"color: green;\">"+name+" suspended.</span>");
+
+                            } else {
+                                $("#supercopResponse").html("<span style=\"color: red; \">Can not suspend that (or any) supercop.</span>");
+                            }
+
+                          } else {
+                            $("#supercopResponse").html("<span style=\"color: red;\">"+name+" not found...</span>");
+                          }
+                      });
+                });
+
+
+          }
+        }
     });
     $("#plMachine").bind("keyup", function(e) {
       if (e.which == 13) {
