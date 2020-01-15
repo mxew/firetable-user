@@ -33,9 +33,11 @@ var firetable = {
   playlimit: 2,
   scImg: "",
   superCopBanUpdates: null,
+  emojiMap: null,
+  pickerInit: false
 }
 
-firetable.version = "00.04.46";
+firetable.version = "00.04.47";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -125,6 +127,7 @@ firetable.init = function() {
     authDomain: "firetable-e10fd.firebaseapp.com",
     databaseURL: "https://firetable-e10fd.firebaseio.com"
   };
+  firetable.utilities.getEmojiMap();
   firetable.parser = new DOMParser();
   var height = $(window).height(); // New height
   var w = $(window).width();
@@ -1008,7 +1011,86 @@ firetable.actions = {
   }
 };
 
+firetable.emojis = {
+  h: function() {
+          $(".pickerResult").show();
+          $("#pickerResults h3").show();
+      },
+  n: function (p, q) {
+          var e = p.attr("data-alternative-name");
+          return ($(p).text().toLowerCase().indexOf(q) >= 0) || (e != null && e.toLowerCase().indexOf(q) >= 0)
+      },
+  sec: function(sec){
+    console.log(sec);
+    var selectedSec = $(".pickerSecSelected");
+    var thething = sec.substr(1);
+
+    if (selectedSec.length){
+      console.log("already selected sec");
+      if (selectedSec[0].id == sec){
+        console.log("toggle selected... back to FULL LIST");
+        $("#"+selectedSec[0].id).removeClass("pickerSecSelected");
+        $("#pickerResults div").show();
+      } else {
+        //new sec selected
+        $("#"+selectedSec[0].id).removeClass("pickerSecSelected");
+        $("#"+selectedSec[0].id.substr(1)).hide();
+        $("#"+sec).addClass("pickerSecSelected");
+        $("#"+thething).show();
+
+      }
+    } else {
+      console.log("first select");
+      $("#"+sec).addClass("pickerSecSelected");
+      $("#pickerResults div").hide();
+      $("#"+thething).show();
+    }
+  },
+  niceSearch: function (val){
+    if (val.length == 0) {
+              firetable.emojis.h();
+              return
+          } else {
+             var isvisible = $("#pickerResults h3").is(":visible");
+             if (isvisible) $("#pickerResults h3").hide();
+          }
+          val = val.toLowerCase();
+          $(".pickerResult").each(function(p, q) {
+              if (firetable.emojis.n($(q), val)) {
+                  $(q).show()
+              } else {
+                  $(q).hide()
+              }
+          })
+  }
+};
+
 firetable.utilities = {
+  getEmojiMap: function(){
+    firetable.emojiMap = {};
+    fetch("https://unpkg.com/emojilib@^2.0.0/emojis.json").then(data => data.json()).then(json => {
+      for (key in json) {
+        var emoji = json[key]
+        firetable.emojiMap[key] = emoji.char;
+        var words = key;
+        for (var i=0; i<emoji.keywords.length; i++){
+          words += ", "+emoji.keywords[i];
+        }
+        $("#picker"+emoji.category).append("<span class=\"pickerResult\" title=\""+key+"\" data-alternative-name=\""+words+"\">"+emoji.char+"</span>");
+      }
+    });
+  },
+  emojiShortnamestoUnicode : function(str){
+    var res = str.replace(/\:(.*?)\:/g, function (x) {
+      var response = x;
+      var shortname = x.replace(/\:/g, "");
+      if (firetable.emojiMap[shortname]){
+        response = "<span title=\""+x+"\">"+firetable.emojiMap[shortname]+"</span>";
+      }
+      return response;
+    });
+    return res;
+  },
   playSound: function(filename) {
     if (firetable.playBadoop){
       document.getElementById("alert").innerHTML = '<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename + '.mp3" /></audio>';
@@ -1547,34 +1629,35 @@ firetable.ui = {
         $("#chatTime" + firetable.lastChatId).text(firetable.utilities.format_time(chatData.time));
 
         var txtOut = firetable.ui.textToLinks(firetable.ui.strip(chatData.txt));
-        txtOut = emojione.shortnameToImage(txtOut);
-        txtOut = emojione.unicodeToImage(txtOut);
+        txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
         var res = txtOut.replace(/\`(.*?)\`/g, function (x) {
           return "<code>"+x.replace(/\`/g, "") +"</code>";
         });
         $("#chattxt"+childSnapshot.key).html(res);
+        twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
+
       } else {
         if (badoop) {
           var thing = $("#actualChat").append("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat badoop\"><div class=\"chatName\"><span class=\"chatNameName\"></span> <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
           $("#chat"+childSnapshot.key).find(".chatNameName").text(namebo);
           var txtOut = firetable.ui.textToLinks(firetable.ui.strip(chatData.txt));
-          txtOut = emojione.shortnameToImage(txtOut);
-          txtOut = emojione.unicodeToImage(txtOut);
+          txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
           var res = txtOut.replace(/\`(.*?)\`/g, function (x) {
             return "<code>"+x.replace(/\`/g, "") +"</code>";
           });
           $("#chattxt"+childSnapshot.key).html(res);
+          twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
+
         } else {
           var thing = $("#actualChat").append("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat\"><div class=\"chatName\"><span class=\"chatNameName\"></span> <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
           $("#chat"+childSnapshot.key).find(".chatNameName").text(namebo);
           var txtOut = firetable.ui.textToLinks(firetable.ui.strip(chatData.txt));
-
-          txtOut = emojione.shortnameToImage(txtOut);
-          txtOut = emojione.unicodeToImage(txtOut);
+          txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
           var res = txtOut.replace(/\`(.*?)\`/g, function (x) {
             return "<code>"+x.replace(/\`/g, "") +"</code>";
           });
           $("#chattxt"+childSnapshot.key).html(res);
+          twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
 
         }
         firetable.lastChatPerson = chatData.id;
@@ -1720,6 +1803,29 @@ firetable.ui = {
     $("#ftSuperCopButton").bind("click", function() {
       $("#supercopOverlay").toggle();
     });
+    $("#pickerNav").on("click", "i", function() {
+       try {
+         var sec =$(this)[0].id;
+         firetable.emojis.sec(sec);
+       } catch (s) {}
+   });
+    $("#pickEmoji").bind("click", function() {
+      //toggle emoji picker
+      if ($("#emojiPicker").is(":hidden")){
+        $("#emojiPicker").show();
+
+        if (!firetable.pickerInit){
+          const makeRequest = async () => {
+            twemoji.parse(document.getElementById("pickerResults"));
+return true;
+}
+
+makeRequest()
+        }
+      } else {
+        $("#emojiPicker").hide();
+      }
+    });
     //SETTINGS TOGGLES
 $('#badoopToggle').change(function() {
     if (this.checked) {
@@ -1806,6 +1912,17 @@ $('input[type=radio][name=screenControl]').change(function() {
           $("#deletePromptOverlay").css("display", "block");
         });
     });
+    $("#pickerSearch").on("change paste keyup", function() {
+            firetable.emojis.niceSearch($("#pickerSearch").val());
+     });
+     $("#pickerResults").on("click", "span", function() {
+       try {
+         var oldval = $("#newchat").val();
+         var newval = oldval + ":"+ $(this).attr("title").trim() + ":";
+         $("#newchat").focus().val(newval);
+
+       } catch (s) {}
+   });
     $("#importPromptClose").bind("click", function() {
       $("#importPromptOverlay").css("display", "none");
       $("#plMachine").val("");

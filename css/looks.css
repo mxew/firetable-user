@@ -503,14 +503,82 @@ div#currentTheme {
 }
 
 #newchat {
-    width: calc(100% - 15px);
+    width: calc(100% - 65px);
     padding-left: 15px;
+    padding-right:50px;
     line-height: 30px;
     border-left: none;
     background-color: #212121;
     border-top: 1px solid #111;
     border-bottom: 1px solid #111;
     border-right: none;
+}
+
+div#pickerResults {
+    overflow-y: scroll;
+    height: 155px;
+    overflow-x: hidden;
+    padding-left: 15px;
+    padding-right: 15px;
+    text-align:center;
+}
+
+.pickerResult{
+  cursor: pointer;
+}
+
+.pickerSecSelected{
+  color: #fff;
+}
+
+#pickerResults span {
+    margin-right: 5px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+#pickerResults h3 {
+    margin-bottom: 10px;
+    margin-top: 5px;
+    text-align: center;
+}
+div#chatMaker {
+    position: relative;
+}
+
+div#pickEmoji {
+    position: absolute;
+    right: 15px;
+    top: 4px;
+    cursor: pointer;
+}
+
+div#emojiPicker {
+    position: absolute;
+    bottom: 34px;
+    height: 250px;
+    display:none;
+    width: 100%;
+    background-color: #000000f7;
+}
+
+div#pickerNav {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 15px;
+    overflow-x:hidden;
+    white-space:nowrap;
+}
+
+input#pickerSearch {
+  width: calc(100% - 40px);
+  margin: 15px;
+  margin-top:5px;
+  padding: 5px;
+}
+
+div#pickerNav i {
+    cursor: pointer;
+    margin-right: 5px;
 }
 
 div#screenover {
@@ -1011,6 +1079,18 @@ div.pvbar {
 
 .chatline .from {
   font-weight: 700;
+}
+
+img.emoji {
+    font-size: inherit;
+    height: 3ex;
+    width: 3.1ex;
+    min-height: 20px;
+    min-width: 20px;
+    display: inline-block;
+    margin: 0ex .15em .2ex;
+    line-height: normal;
+    vertical-align: middle;
 }
 
 div#tagPromptOverlay {
