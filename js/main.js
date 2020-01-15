@@ -37,7 +37,7 @@ var firetable = {
   pickerInit: false
 }
 
-firetable.version = "00.04.47";
+firetable.version = "00.04.48";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -416,7 +416,7 @@ firetable.init = function() {
       $("#login").css("display", "none");
       $("#queuebox").css("display", "block");
       $("#actualChat").css("display", "block");
-      $("#newchat").css("display", "block");
+      $("#chatMaker").css("display", "block");
       $("#grab").css("display", "inline-block");
       $("#notloggedin").css("display", "none");
     } else {
@@ -426,7 +426,7 @@ firetable.init = function() {
       $("#login").css("display", "block");
       $("#queuebox").css("display", "none");
       $("#actualChat").css("display", "none");
-      $("#newchat").css("display", "none");
+      $("#chatMaker").css("display", "none");
       $("#grab").css("display", "none");
       $("#notloggedin").css("display", "block");
 
