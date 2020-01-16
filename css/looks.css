@@ -506,21 +506,17 @@ i#refreshSong {
   cursor: pointer;
 }
 
-.playcount {
-  position: absolute;
-  bottom: 0;
-  left: 10px;
-  background-color: #151515;
-  width: 130px;
-  transition: background-color 0.5s ease;
-  height: 18px;
+.djplaque {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
   text-align: center;
-  -webkit-border-top-left-radius: 10px;
-  -webkit-border-top-right-radius: 10px;
-  -moz-border-radius-topleft: 10px;
-  -moz-border-radius-topright: 10px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  background-color: #151515;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
 }
 
 .delete {
@@ -578,25 +574,39 @@ i#refreshSong {
 }
 
 #deck {
+  display: flex;
   margin-top: 25px;
-  height: 150px;
+  height: 140px;
+}
+
+.djplaque {
+  min-width: 0;
+}
+
+.djplaque.empty {
+  color: rgba(255,2556,255,0.5);
 }
 
 .djname {
-  text-align: center;
-  text-shadow: 1px 1px 0 black;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.playcount {
+  white-space: nowrap;
 }
 
 #deck .spot {
+  flex: 1;
   position: relative;
-  width: 140px;
-  padding: 5px;
-  margin-right: 8.5px;
-  margin-left: 8.5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin-right: 1vw;
+  margin-left: 1vw;
   height: 140px;
   overflow-y: hidden;
   overflow-x: hidden;
-  display: inline-block;
 }
 
 #mainThing #leftbox {
@@ -1085,10 +1095,13 @@ div#importPromptHeader {
 }
 
 .avtr {
-  height: 140px;
   position: absolute;
+  z-index: 0;
   bottom: 0;
-  width: 140px;
+  width: 100%;
+  height: 140px;
+  background-repeat: no-repeat;
+  background-position: bottom 18px center;
 }
 
 #importPromptHeader .left {
@@ -1221,14 +1234,12 @@ div#usertabs .selected,
   .rh{
     top: 175px !important;
   }
-  div#deck {
-    height: 46px !important;
+  #deck {
+    height: 36px !important;
     overflow: hidden;
     margin-top: 0 !important;
     white-space: nowrap;
     vertical-align: top;
-  }
-  #deck {
     width: 100% !important;
     font-size: 12px;
     margin-left: auto !important;
@@ -1246,21 +1257,10 @@ div#usertabs .selected,
   }
   .spot {
     height: 36px !important;
-    margin: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
     width: 25% !important;
     vertical-align: top;
-  }
-  .playcount {
-    left: 0 !important;
-    width: 100%;
-    -webkit-border-top-left-radius: 0 !important;
-    -webkit-border-top-right-radius: 0 !important;
-    -moz-border-radius-topleft: 0 !important;
-    -moz-border-radius-topright: 0 !important;
-    border-top-left-radius: 0 !important;
-    border-top-right-radius: 0 !important;
   }
   #npbox {
     padding-bottom: 15px;
@@ -1268,22 +1268,6 @@ div#usertabs .selected,
   #albumArt {
     height: 50px !important;
     width: 50px !important;
-  }
-  #deck {
-    width: 100% !important;
-    font-size: 12px;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-  #volandthings {
-    width: calc(100% + 65px);
-    margin-left: -65px;
-  }
-  #nowplaying {
-    width: calc(100% - 65px) !important;
-  }
-  #track, #artist {
-    width: calc(100% - 80px) !important;
   }
 }
 
@@ -1298,9 +1282,8 @@ div#usertabs .selected,
 
 @media only screen and (min-width: 1200px) {
   #deck {
-    width: 680px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
+    margin-left: 5vw !important;
+    margin-right: 5vw !important;
   }
   #nowplaying {
     width: calc(100% - 120px) !important;
