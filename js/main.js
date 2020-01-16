@@ -9,13 +9,18 @@ var firetable = {
   movePvBar: null,
   moveBar: null,
   song: null,
+  playBadoop: true,
+  screenControl: "sync",
+  screenSyncPos: false,
   scSeek: false,
+  desktopNotifyMentions: false,
   color: "#F4810B",
   countcolor: "#fff",
   ytLoaded: null,
   scLoaded: null,
   selectedListThing: "0",
   queueBind: null,
+  parser: null,
   songTagToEdit: null,
   scwidget: null,
   searchSelectsChoice: 1,
@@ -23,18 +28,22 @@ var firetable = {
   queueRef: null,
   lastChatPerson: false,
   lastChatId: false,
+  tagUpdate: null,
   nonpmsg: true,
   playlimit: 2,
-  scImg: ""
+  scImg: "",
+  superCopBanUpdates: null,
+  emojiMap: null,
+  pickerInit: false
 }
 
-firetable.version = "00.04.32";
+firetable.version = "00.04.48";
 var player;
 
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('playerArea', {
     width: 500,
-    height: 268,
+    height: 293,
     playerVars: {
       'autoplay': 1,
       'controls': 0
@@ -118,20 +127,22 @@ firetable.init = function() {
     authDomain: "firetable-e10fd.firebaseapp.com",
     databaseURL: "https://firetable-e10fd.firebaseio.com"
   };
+  firetable.utilities.getEmojiMap();
+  firetable.parser = new DOMParser();
   var height = $(window).height(); // New height
   var w = $(window).width();
   console.log(w);
   if (w > 1199) {
     if (height > 520) {
       var morethan = height - 520;
-      var newh = 146 + morethan;
+      var newh = 128 + morethan;
       var chah = 451 + morethan;
-      var newu = 458 + morethan;
+      var newu = 455 + morethan;
       $("#queuelist").css("height", newh + "px");
       $("#userslist").css("height", newu + "px");
       $("#actualChat").css("height", chah + "px");
     } else {
-      $("#queuelist").css("height", "146px");
+      $("#queuelist").css("height", "128px");
       $("#userslist").css("height", "440px");
       $("#actualChat").css("height", "441px");
 
@@ -139,12 +150,12 @@ firetable.init = function() {
     var histheight = height - 175;
     $("#recentHistory").css("height", histheight+ "px");
   } else if (w > 799) {
-    var newh = height - 262;
+    var newh = height - 282;
     if (height > 520) {
       var morethan = height - 520;
 
       var chah = 451 + morethan;
-      var newu = 458 + morethan;
+      var newu = 455 + morethan;
       $("#queuelist").css("height", newh + "px");
       $("#userslist").css("height", newu + "px");
       $("#actualChat").css("height", chah + "px");
@@ -159,10 +170,11 @@ firetable.init = function() {
     $("#recentHistory").css("height", histheight+ "px");
   } else {
     var chah = height - 286;
-    var newu = height - 94;
+    var newu = height - 95;
+    var newq = height - 124;
 
     $("#actualChat").css("height", chah + "px");
-    $("#queuelist").css("height", newu + "px");
+    $("#queuelist").css("height", newq + "px");
     $("#userslist").css("height", newu + "px");
     var histheight = height - 205;
     $("#recentHistory").css("height", histheight+ "px");
@@ -174,28 +186,30 @@ firetable.init = function() {
     if (w > 1199) {
       if (height > 520) {
         var morethan = height - 520;
-        var newh = 146 + morethan;
+        var newh = 128 + morethan;
         var chah = 451 + morethan;
-        var newu = 458 + morethan;
+        var newu = 455 + morethan;
         $("#queuelist").css("height", newh + "px");
         $("#userslist").css("height", newu + "px");
         $("#actualChat").css("height", chah + "px");
       } else {
-        $("#queuelist").css("height", "146px");
+        $("#queuelist").css("height", "128px");
         $("#userslist").css("height", "458px");
         $("#actualChat").css("height", "441px");
 
       }
       var histheight = height - 175;
-      console.log(histheight);
+    //  console.log(histheight);
       $("#recentHistory").css("height", histheight+ "px");
+      windowW =  $(window).width() * 0.75 - (($(window).width() * 0.75) * 0.25);
+      setup();
     } else if (w > 799) {
-      var newh = height - 262;
+      var newh = height - 282;
       if (height > 520) {
         var morethan = height - 520;
 
         var chah = 451 + morethan;
-        var newu = 458 + morethan;
+        var newu = 455 + morethan;
         $("#queuelist").css("height", newh + "px");
         $("#userslist").css("height", newu + "px");
         $("#actualChat").css("height", chah + "px");
@@ -210,10 +224,10 @@ firetable.init = function() {
       $("#recentHistory").css("height", histheight+ "px");
     } else {
       var chah = height - 286;
-      var newu = height - 94;
-
+      var newu = height - 95;
+      var newq = height - 124;
       $("#actualChat").css("height", chah + "px");
-      $("#queuelist").css("height", newu + "px");
+      $("#queuelist").css("height", newq + "px");
       $("#userslist").css("height", newu + "px");
       var histheight = height - 205;
       $("#recentHistory").css("height", histheight+ "px");
@@ -269,9 +283,33 @@ firetable.init = function() {
       } else {
         $("#loggedInEmail").text(user.uid);
       }
+
       var ref0 = firebase.database().ref("users/" + user.uid + "/status");
       ref0.set(true);
       ref0.onDisconnect().set(false);
+      var banCheck = firebase.database().ref("banned/"+firetable.uid);
+      banCheck.on('value', function(dataSnapshot) {
+        var data = dataSnapshot.val();
+        console.log("BANCHECK", data)
+        if (data){
+          console.log("ban detected.");
+          $("body").remove();
+          if (document.getElementById("notice") == null){
+          var usrname2use = firetable.uid;
+          if (firetable.users[firetable.uid]){
+            if (firetable.users[firetable.uid].username) usrname2use = firetable.users[firetable.uid].username;
+          }
+          $("html").append("<div id=\"notice\"><div class=\"inner\"><span class=\"ftlogo\">firetable</span><br/><br/><br/>"+usrname2use+",<br/><br/>Your account has been suspended due to a perceived violation of our <a href=\"terms\">Terms of Service</a>. <br/><br/>If you believe your account has been suspended by mistake or as the result of a misunderstanding, please contact chris@indiediscotheque.com.<br/><br/>We reserve the right to modify, suspend, or terminate the Service for any reason, without notice, at any time.</div></div>");
+          var ref0 = firebase.database().ref("users/" + firetable.uid + "/status");
+          firetable.uid = null;
+          ref0.set(false);
+        }
+      } else {
+        if (document.getElementById("notice") !== null){
+          window.location.reload();
+        }
+      }
+      });
       var getSelect = firebase.database().ref("users/" + firetable.uid + "/selectedList");
       var allQueues = firebase.database().ref("playlists/" + firetable.uid);
       allQueues.once('value')
@@ -378,7 +416,7 @@ firetable.init = function() {
       $("#login").css("display", "none");
       $("#queuebox").css("display", "block");
       $("#actualChat").css("display", "block");
-      $("#newchat").css("display", "block");
+      $("#chatMaker").css("display", "block");
       $("#grab").css("display", "inline-block");
       $("#notloggedin").css("display", "none");
     } else {
@@ -388,7 +426,7 @@ firetable.init = function() {
       $("#login").css("display", "block");
       $("#queuebox").css("display", "none");
       $("#actualChat").css("display", "none");
-      $("#newchat").css("display", "none");
+      $("#chatMaker").css("display", "none");
       $("#grab").css("display", "none");
       $("#notloggedin").css("display", "block");
 
@@ -616,7 +654,15 @@ firetable.actions = {
       var listComments = function(tracks) {
         console.log(tracks);
         if (tracks) {
-          firetable.actions.queueTrack(tracks.id, tracks.title, 2);
+          var yargo = tracks.title.split(" - ");
+          var sartist = yargo[0];
+          var stitle = yargo[1];
+          if (!stitle) {
+            stitle = sartist;
+            sartist = tracks.user.username;
+          }
+          var goodTitle = sartist + " - " + stitle;
+          firetable.actions.queueTrack(tracks.id, goodTitle, 2);
         }
       };
       SC.resolve(link).then(getComments).then(listComments);
@@ -755,9 +801,17 @@ firetable.actions = {
         $("#listpicker").append("<option id=\"pdopt" + listid + "\" value=\"" + listid + "\">" + name + "</option>");
         var nref = firebase.database().ref("playlists/" + firetable.uid + "/" + listid + "/list");
         for (var i = 0; i < listinfo.tracks.length; i++) {
+          var yargo = listinfo.tracks[i].title.split(" - ");
+          var sartist = yargo[0];
+          var stitle = yargo[1];
+          if (!stitle) {
+            stitle = sartist;
+            sartist = listinfo.tracks[i].user.username;
+          }
+          var goodTitle = sartist +" - "+stitle;
           var info = {
             type: 2,
-            name: listinfo.tracks[i].title,
+            name: goodTitle,
             cid: listinfo.tracks[i].id
           };
           nref.push(info);
@@ -881,6 +935,10 @@ firetable.actions = {
       $("#grab").addClass("grabbed");
     }
   },
+  unban: function(userid){
+    var ref = firebase.database().ref("banned/"+userid);
+    ref.set(false);
+  },
   reloadtrack: function() {
     //start regular song
     var nownow = Date.now();
@@ -953,9 +1011,149 @@ firetable.actions = {
   }
 };
 
+firetable.emojis = {
+  h: function() {
+          $(".pickerResult").show();
+          $("#pickerResults h3").show();
+      },
+  n: function (p, q) {
+          var e = p.attr("data-alternative-name");
+          return ($(p).text().toLowerCase().indexOf(q) >= 0) || (e != null && e.toLowerCase().indexOf(q) >= 0)
+      },
+  sec: function(sec){
+    console.log(sec);
+    var selectedSec = $(".pickerSecSelected");
+    var thething = sec.substr(1);
+
+    if (selectedSec.length){
+      console.log("already selected sec");
+      if (selectedSec[0].id == sec){
+        console.log("toggle selected... back to FULL LIST");
+        $("#"+selectedSec[0].id).removeClass("pickerSecSelected");
+        $("#pickerResults div").show();
+      } else {
+        //new sec selected
+        $("#"+selectedSec[0].id).removeClass("pickerSecSelected");
+        $("#"+selectedSec[0].id.substr(1)).hide();
+        $("#"+sec).addClass("pickerSecSelected");
+        $("#"+thething).show();
+
+      }
+    } else {
+      console.log("first select");
+      $("#"+sec).addClass("pickerSecSelected");
+      $("#pickerResults div").hide();
+      $("#"+thething).show();
+    }
+  },
+  niceSearch: function (val){
+    if (val.length == 0) {
+              firetable.emojis.h();
+              return
+          } else {
+             var isvisible = $("#pickerResults h3").is(":visible");
+             if (isvisible) $("#pickerResults h3").hide();
+          }
+          val = val.toLowerCase();
+          $(".pickerResult").each(function(p, q) {
+              if (firetable.emojis.n($(q), val)) {
+                  $(q).show()
+              } else {
+                  $(q).hide()
+              }
+          })
+  }
+};
+
 firetable.utilities = {
+  getEmojiMap: function(){
+    firetable.emojiMap = {};
+    fetch("https://unpkg.com/emojilib@^2.0.0/emojis.json").then(data => data.json()).then(json => {
+      for (key in json) {
+        var emoji = json[key]
+        firetable.emojiMap[key] = emoji.char;
+        var words = key;
+        for (var i=0; i<emoji.keywords.length; i++){
+          words += ", "+emoji.keywords[i];
+        }
+        $("#picker"+emoji.category).append("<span class=\"pickerResult\" title=\""+key+"\" data-alternative-name=\""+words+"\">"+emoji.char+"</span>");
+      }
+    });
+  },
+  emojiShortnamestoUnicode : function(str){
+    var res = str.replace(/\:(.*?)\:/g, function (x) {
+      var response = x;
+      var shortname = x.replace(/\:/g, "");
+      if (firetable.emojiMap[shortname]){
+        response = "<span title=\""+x+"\">"+firetable.emojiMap[shortname]+"</span>";
+      }
+      return response;
+    });
+    return res;
+  },
   playSound: function(filename) {
-    document.getElementById("alert").innerHTML = '<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename + '.mp3" /></audio>';
+    if (firetable.playBadoop){
+      document.getElementById("alert").innerHTML = '<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename + '.mp3" /></audio>';
+    }
+  },
+  desktopNotify: function(chatData, namebo){
+      if (Notification) {
+        if (Notification.permission !== "granted") {
+          Notification.requestPermission();
+        } else {
+            var notification = new Notification(namebo, {
+              icon: "https://indiediscotheque.com/robots/"+chatData.id + namebo +".png?size=110x110",
+              body: chatData.txt,
+            });
+        }
+      }
+  },
+  screenUp: function(){
+    $("#screenBox").animate({
+      'top': '-300px'
+    }, 2000);
+    $("#volandthings").animate({
+      'bottom': '0'
+    }, 2000);
+    $("#volplace").animate({
+      'padding-left': '15px'
+    }, 1000);
+    $("#recentHistory").animate({
+      'top': '175px'
+    }, 1000);
+    $("#track").animate({
+      'margin-left': '0'
+    }, 1000);
+    $("#artist").animate({
+      'margin-left': '0'
+    }, 1000);
+    $("#screenStyles").remove();
+  },
+  screenDown: function(){
+    $("#screenBox").animate({
+      'top': '36px'
+    }, 5000);
+    $("#volandthings").animate({
+      'bottom': '123px'
+    }, 1000);
+    $("#volandthings").animate({
+      'bottom': '123px'
+    }, 1000);
+    $("#volplace").animate({
+      'padding-left': '55px'
+    }, 1000);
+    $("#recentHistory").animate({
+      'top': '55px'
+    }, 1000);
+    $("#track").animate({
+      'margin-left': '-120px'
+    }, 2500);
+    $("#artist").animate({
+      'margin-left': '-120px'
+    }, 2500);
+    if($('#screenStyles').length == 0) {
+      $("head").append("<style id=\"screenStyles\">#artist, #track, #timr, .djname{text-shadow: 1px 1px 0 black;}</style>")
+    }
   },
   isChatPrettyMuchAtBottom: function() {
     var objDiv = document.getElementById("actualChat");
@@ -1016,11 +1214,55 @@ firetable.utilities = {
 
 firetable.ui = {
   textToLinks: function(text) {
-
     var re = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
     return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
   },
+  strip: function(html){
+    var doc = firetable.parser.parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
+  },
   init: function() {
+    //GET SETTINGS FROM LOCALSTORAGE
+    var playBadoop = localStorage["firetableBadoop"];
+    if (typeof playBadoop == "undefined") {
+      localStorage["firetableBadoop"] = true;
+      firetable.playBadoop = true;
+      $( "#badoopToggle" ).prop( "checked", true );
+    } else {
+      playBadoop = JSON.parse(playBadoop);
+      firetable.playBadoop = playBadoop;
+      $( "#badoopToggle" ).prop( "checked", playBadoop );
+    }
+    var dtnmt = localStorage["firetableDTNM"];
+    if (typeof dtnmt == "undefined") {
+      localStorage["firetableDTNM"] = false;
+      firetable.desktopNotifyMentions = false;
+      $( "#desktopNotifyMentionsToggle" ).prop( "checked", false);
+    } else {
+      dtnmt = JSON.parse(dtnmt);
+      firetable.desktopNotifyMentions = dtnmt;
+      $( "#desktopNotifyMentionsToggle" ).prop( "checked", dtnmt );
+    }
+    var screenControl = localStorage["firetableScreenControl"];
+    if (typeof screenControl == "undefined") {
+      localStorage["firetableScreenControl"] = "sync";
+      firetable.screenControl = "sync";
+      $( "#screenControlTog"+firetable.screenControl ).prop( "checked", true );
+    } else {
+      firetable.screenControl = screenControl;
+      $( "#screenControlTog"+firetable.screenControl ).prop( "checked", true );
+      if (screenControl == "on"){
+        firetable.utilities.screenDown();
+      } else if (screenControl == "off"){
+        firetable.utilities.screenUp();
+      } else if (screenControl == "sync"){
+        if (firetable.screenSyncPos){
+          firetable.utilities.screenDown();
+        } else {
+          firetable.utilities.screenUp();
+        }
+      }
+    }
     var recentz = firebase.database().ref("songHistory");
     recentz.on('child_added', function(dataSnapshot, prev) {
         var data = dataSnapshot.val();
@@ -1031,15 +1273,59 @@ firetable.ui = {
         if (data.type == 2) firstpart == "sc";
         var pkey = firstpart +"cid" + data.cid;
 
-        $("#thehistory").prepend("<div id=\"recentthing"+key+"\" class=\"historyItem qresult\"><div class=\"histart\"><i id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, "+data.type+")\">&#xE037;</i></div><div class=\"pvbar\" id=\"pvbar" + pkey + "\"> <div class=\"qtxt\"><span class=\"listwords\">" + data.artist + " - "+data.title + "</span><div id=\"histmoreinfo\">played by "+data.dj+" on "+firetable.utilities.format_date(data.when)+" at "+firetable.utilities.format_time(data.when)+"</div></div><div class=\"delete\"><i id=\"apv" +data.type + data.cid + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + data.cid + "', '"+firetable.utilities.htmlEscape(data.artist + " - "+ data.title)+"', "+data.type+", true)\">&#xE03B;</i></div></div><div class=\"clear\"></div></div>");
+        $("#thehistory").prepend("<div id=\"recentthing"+key+"\" class=\"historyItem qresult\"><div class=\"histart\"><i id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, "+data.type+")\">&#xE037;</i></div><div class=\"pvbar\" id=\"pvbar" + pkey + "\"> <div class=\"qtxt\"><span class=\"listwords\"><a target=\"_blank\" href=\"" + data.url + "\">" + data.artist + " - "+data.title + "</a></span><div id=\"histmoreinfo\">played by "+data.dj+" on "+firetable.utilities.format_date(data.when)+" at "+firetable.utilities.format_time(data.when)+"</div></div><div class=\"delete\"><i id=\"apv" +data.type + data.cid + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + data.cid + "', '"+firetable.utilities.htmlEscape(data.artist + " - "+ data.title)+"', "+data.type+", true)\">&#xE03B;</i></div></div><div class=\"clear\"></div></div>");
 
         $($("#recentthing" + key).find(".histart")[0]).css("background-image", "url(" + data.img + ")");
 
     });
+    var themeChange = firebase.database().ref("theme");
+    themeChange.on('value', function(dataSnapshot) {
+      var data = dataSnapshot.val();
+      if (!data){
+        //no theme
+        $("#currentTheme").text("none");
+        $("#actualChat").removeClass("themeTime");
+        $("#themebox").hide();
+      } else {
+        $("#currentTheme").text(data);
+        $("#actualChat").addClass("themeTime");
+        $("#themebox").show();
+      }
+    });
+    var tagUpdate = firebase.database().ref("tagUpdate");
+    tagUpdate.on('value', function(dataSnapshot) {
+      var data = dataSnapshot.val();
+      console.log("TAG UPDATE", data);
+      firetable.tagUpdate = data;
+      if (firetable.song){
+      if (firetable.song.cid == data.cid && data.adamData.track_name){
+          $("#track").text(data.adamData.track_name);
+          $("#artist").text(data.adamData.artist);
+          var nicename = firetable.song.djname;
+          var objDiv = document.getElementById("actualChat");
+          scrollDown = false;
+          if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
+          var showPlaycount = false;
+          if (data.adamData.playcount){
+            if (data.adamData.playcount > 0){
+              showPlaycount = true;
+            }
+          }
+          if (showPlaycount){
+            $(".npmsg"+data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong><br/>This song has been played "+data.adamData.playcount+" times.</div>");
+          } else {
+            $(".npmsg"+data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong></div>");
+          }
+          if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+        }
+      }
+    });
+
 
     var s2p = firebase.database().ref("songToPlay");
     s2p.on('value', function(dataSnapshot) {
       var data = dataSnapshot.val();
+
       $("#timr").countdown("destroy");
       if (firetable.moveBar != null) {
         clearInterval(firetable.moveBar);
@@ -1047,6 +1333,18 @@ firetable.ui = {
       }
       $("#prgbar").css("background", "#151515");
       $("#grab").removeClass("grabbed");
+      var showPlaycount = false;
+      if (firetable.tagUpdate){
+        if (data.cid == firetable.tagUpdate.cid && firetable.tagUpdate.adamData.track_name){
+          data.title = firetable.tagUpdate.adamData.track_name;
+          data.artist = firetable.tagUpdate.adamData.artist;
+          if (firetable.tagUpdate.adamData.playcount){
+            if (firetable.tagUpdate.adamData.playcount > 0){
+              showPlaycount = true;
+            }
+          }
+        }
+      }
       $("#track").text(data.title);
       $("#artist").text(data.artist);
       $("#albumArt").css("background-image", "url(" + data.image + ")")
@@ -1056,7 +1354,7 @@ firetable.ui = {
       var secSince = Math.floor(timeSince / 1000);
       var timeLeft = data.duration - secSince;
       firetable.song = data;
-      console.log(data);
+      console.log("NEW TRACK", data);
       console.log(timeSince);
       if (data.type == 1){
           $("#scScreen").hide();
@@ -1104,8 +1402,11 @@ firetable.ui = {
           scrollDown = false;
           var objDiv = document.getElementById("actualChat");
           if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
-          $("#actualChat").append("<div class=\"newChat nowplayn\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
-
+          if (showPlaycount){
+            $("#actualChat").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong><br/>This song has been played "+firetable.tagUpdate.adamData.playcount+" times.</div>")
+          } else {
+            $("#actualChat").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
+          }
           if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
           firetable.lastChatPerson = false;
           firetable.lastChatId = false;
@@ -1129,36 +1430,14 @@ firetable.ui = {
     thescreen.on('value', function(dataSnapshot) {
       var data = dataSnapshot.val();
       console.log(data);
+      firetable.screenSyncPos = data;
+      if (firetable.screenControl == "sync"){
       if (data) {
-        $("#screenBox").animate({
-          'top': '36px'
-        }, 5000);
-        $("#volandthings").animate({
-          'bottom': '123px'
-        }, 1000);
-        $("#volandthings").animate({
-          'bottom': '123px'
-        }, 1000);
-        $("#volplace").animate({
-          'padding-left': '55px'
-        }, 1000);
-        $("#recentHistory").animate({
-          'top': '55px'
-        }, 1000);
+        firetable.utilities.screenDown();
       } else {
-        $("#screenBox").animate({
-          'top': '-300px'
-        }, 2000);
-        $("#volandthings").animate({
-          'bottom': '0'
-        }, 2000);
-        $("#volplace").animate({
-          'padding-left': '15px'
-        }, 1000);
-        $("#recentHistory").animate({
-          'top': '175px'
-        }, 1000);
+        firetable.utilities.screenUp();
       }
+    }
     });
     var wl = firebase.database().ref("waitlist");
     wl.on('value', function(dataSnapshot) {
@@ -1253,6 +1532,39 @@ firetable.ui = {
           if (firetable.users[firetable.uid].username) $("#loggedInEmail").text(firetable.users[firetable.uid].username);
         }
       }
+      if (firetable.uid){
+      if (firetable.users[firetable.uid].supermod){
+        if ($("#ftSuperCopButton").is(":hidden")){
+          $("#ftSuperCopButton").show();
+        }
+        if (!firetable.superCopBanUpdates){
+          //begin event listener for ban updates
+          var ref = firebase.database().ref("banned");
+          firetable.superCopBanUpdates = ref.on('value', function(dataSnapshot) {
+            $("#activeSuspentions").html("");
+            dataSnapshot.forEach(function(childSnapshot) {
+                var key = childSnapshot.key;
+                var childData = childSnapshot.val();
+                if (childData){
+                var name = key;
+                var niceref2 = firebase.database().ref("users/" + name);
+
+                niceref2.once("value")
+                  .then(function(snapshot2) {
+                      var childData2 = snapshot2.val();
+                      if (childData2) {
+                        if (childData2.username){
+                          name = childData2.username;
+                        }
+                      }
+                  $("#activeSuspentions").append("<div class=\"importResult\"><div class=\"imtxt\">" + name + "</div><div class=\"delete\"><i onclick=\"firetable.actions.unban('" + key + "')\" class=\"material-icons\" title=\"Unsuspend\">&#xE5C9;</i></div><div class=\"clear\"></div></div>");
+                  });
+                }
+            });
+          });
+        }
+      }
+      }
       var newlist = "";
       var count = 0;
       for (var key in okdata) {
@@ -1306,6 +1618,7 @@ firetable.ui = {
         var oknow = Date.now();
         if (oknow - chatData.time < (10 * 1000)) {
           firetable.utilities.playSound("sound");
+          if (firetable.desktopNotifyMentions) firetable.utilities.desktopNotify(chatData, namebo);
           badoop = true;
         }
       }
@@ -1314,37 +1627,37 @@ firetable.ui = {
       if (chatData.id == firetable.lastChatPerson && !badoop) {
         $("#chat" + firetable.lastChatId).append("<div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
         $("#chatTime" + firetable.lastChatId).text(firetable.utilities.format_time(chatData.time));
-        $("#chattxt"+childSnapshot.key).text(chatData.txt);
-        var txtOut = firetable.ui.textToLinks($("#chattxt"+childSnapshot.key).text());
-        txtOut = emojione.shortnameToImage(txtOut);
-        txtOut = emojione.unicodeToImage(txtOut);
+
+        var txtOut = firetable.ui.textToLinks(firetable.ui.strip(chatData.txt));
+        txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
         var res = txtOut.replace(/\`(.*?)\`/g, function (x) {
           return "<code>"+x.replace(/\`/g, "") +"</code>";
         });
         $("#chattxt"+childSnapshot.key).html(res);
+        twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
+
       } else {
         if (badoop) {
           var thing = $("#actualChat").append("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat badoop\"><div class=\"chatName\"><span class=\"chatNameName\"></span> <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
           $("#chat"+childSnapshot.key).find(".chatNameName").text(namebo);
-          $("#chat"+childSnapshot.key).find(".chatText").text(chatData.txt);
-          var txtOut = firetable.ui.textToLinks($("#chattxt"+childSnapshot.key).text());
-          txtOut = emojione.shortnameToImage(txtOut);
-          txtOut = emojione.unicodeToImage(txtOut);
+          var txtOut = firetable.ui.textToLinks(firetable.ui.strip(chatData.txt));
+          txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
           var res = txtOut.replace(/\`(.*?)\`/g, function (x) {
             return "<code>"+x.replace(/\`/g, "") +"</code>";
           });
           $("#chattxt"+childSnapshot.key).html(res);
+          twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
+
         } else {
           var thing = $("#actualChat").append("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat\"><div class=\"chatName\"><span class=\"chatNameName\"></span> <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
           $("#chat"+childSnapshot.key).find(".chatNameName").text(namebo);
-          $("#chat"+childSnapshot.key).find(".chatText").text(chatData.txt);
-          var txtOut = firetable.ui.textToLinks($("#chattxt"+childSnapshot.key).text());
-          txtOut = emojione.shortnameToImage(txtOut);
-          txtOut = emojione.unicodeToImage(txtOut);
+          var txtOut = firetable.ui.textToLinks(firetable.ui.strip(chatData.txt));
+          txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
           var res = txtOut.replace(/\`(.*?)\`/g, function (x) {
             return "<code>"+x.replace(/\`/g, "") +"</code>";
           });
           $("#chattxt"+childSnapshot.key).html(res);
+          twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
 
         }
         firetable.lastChatPerson = chatData.id;
@@ -1478,6 +1791,88 @@ firetable.ui = {
       $("#deletePromptOverlay").css("display", "none");
       $("#deletepicker").html("");
     });
+    $("#settingsClose").bind("click", function() {
+      $("#settingsOverlay").css("display", "none");
+    });
+    $("#supercopClose").bind("click", function() {
+      $("#supercopOverlay").css("display", "none");
+    });
+    $("#ftSettings").bind("click", function() {
+      $("#settingsOverlay").toggle();
+    });
+    $("#ftSuperCopButton").bind("click", function() {
+      $("#supercopOverlay").toggle();
+    });
+    $("#pickerNav").on("click", "i", function() {
+       try {
+         var sec =$(this)[0].id;
+         firetable.emojis.sec(sec);
+       } catch (s) {}
+   });
+    $("#pickEmoji").bind("click", function() {
+      //toggle emoji picker
+      if ($("#emojiPicker").is(":hidden")){
+        $("#emojiPicker").show();
+
+        if (!firetable.pickerInit){
+          const makeRequest = async () => {
+            twemoji.parse(document.getElementById("pickerResults"));
+return true;
+}
+
+makeRequest()
+        }
+      } else {
+        $("#emojiPicker").hide();
+      }
+    });
+    //SETTINGS TOGGLES
+$('#badoopToggle').change(function() {
+    if (this.checked) {
+        console.log("badoop on");
+        localStorage["firetableBadoop"] = true;
+        firetable.playBadoop = true;
+    } else {
+        console.log("badoop off");
+        localStorage["firetableBadoop"] = false;
+        firetable.playBadoop = false;
+
+    }
+});
+$('#desktopNotifyMentionsToggle').change(function() {
+    if (this.checked) {
+        console.log("dtnm on");
+        localStorage["firetableDTNM"] = true;
+        firetable.desktopNotifyMentions = true;
+        if (Notification) {
+          if (Notification.permission !== "granted") {
+            Notification.requestPermission();
+          }
+        }
+    } else {
+        console.log("dtnm off");
+        localStorage["firetableDTNM"] = false;
+        firetable.desktopNotifyMentions = false;
+
+    }
+});
+
+$('input[type=radio][name=screenControl]').change(function() {
+  console.log(this.value);
+  localStorage["firetableScreenControl"] = this.value;
+  firetable.screenControl = this.value;
+  if (this.value == "off"){
+    firetable.utilities.screenUp();
+  } else if (this.value == "on"){
+    firetable.utilities.screenDown();
+  } else if (this.value == "sync"){
+    if (firetable.screenSyncPos){
+      firetable.utilities.screenDown();
+    } else {
+      firetable.utilities.screenUp();
+    }
+  }
+});
     $("#pldeleteButton").bind("click", function() {
       var val = $("#deletepicker").val();
       console.log(val);
@@ -1517,6 +1912,17 @@ firetable.ui = {
           $("#deletePromptOverlay").css("display", "block");
         });
     });
+    $("#pickerSearch").on("change paste keyup", function() {
+            firetable.emojis.niceSearch($("#pickerSearch").val());
+     });
+     $("#pickerResults").on("click", "span", function() {
+       try {
+         var oldval = $("#newchat").val();
+         var newval = oldval + ":"+ $(this).attr("title").trim() + ":";
+         $("#newchat").focus().val(newval);
+
+       } catch (s) {}
+   });
     $("#importPromptClose").bind("click", function() {
       $("#importPromptOverlay").css("display", "none");
       $("#plMachine").val("");
@@ -1535,6 +1941,8 @@ firetable.ui = {
       if (e.which == 13) {
         var email = $("#loginemail").val();
         var pass = $("#loginpass").val();
+        $("#loginemail").val("");
+        $("#loginpass").val("");
         firetable.actions.logIn(email, pass);
       }
     });
@@ -1569,6 +1977,8 @@ firetable.ui = {
     $("#createAccountBttn").bind("click", function() {
       var email = $("#newemail").val();
       var pass = $("#newpass").val();
+      $("#newemail").val("");
+      $("#newpass").val("");
       firetable.actions.signUp(email, pass);
 
     });
@@ -1589,6 +1999,8 @@ firetable.ui = {
     $("#loginBttn").bind("click", function() {
       var email = $("#loginemail").val();
       var pass = $("#loginpass").val();
+      $("#loginemail").val("");
+      $("#loginpass").val("");
       firetable.actions.logIn(email, pass);
     });
     $("#ytsearchSelect").bind("click", function() {
@@ -1628,6 +2040,55 @@ firetable.ui = {
           }
         }
       }
+    });
+    $("#supercopSearch").bind("keyup", function(e) {
+      if (e.which == 13) {
+          var val = $("#supercopSearch").val();
+          $("#supercopResponse").html("");
+          if (val != "") {
+            //begin user search...
+            var ppl = [];
+            var name = val;
+            var niceref = firebase.database().ref("users");
+            niceref.orderByChild('username').equalTo(name).once("value")
+                .then(function(snapshot) {
+                  snapshot.forEach(function(childSnapshot) {
+                      var key = childSnapshot.key;
+                      var childData = childSnapshot.val();
+                      childData.userid = key;
+                      ppl.push(childData);
+                    });
+                    var niceref2 = firebase.database().ref("users/" + name);
+
+                    niceref2.once("value")
+                      .then(function(snapshot2) {
+                          var childData2 = snapshot2.val();
+                          if (childData2) {
+                              var key2 = snapshot2.key;
+                              childData2.userid = key2;
+                              ppl.push(childData2);
+                          }
+                          //check search results
+                          if (ppl.length){
+                            //found something!
+                            if (!ppl[0].supermod){
+                              var ref = firebase.database().ref("banned/"+ppl[0].userid);
+                              ref.set(true);
+                              $("#supercopResponse").html("<span style=\"color: green;\">"+name+" suspended.</span>");
+
+                            } else {
+                                $("#supercopResponse").html("<span style=\"color: red; \">Can not suspend that (or any) supercop.</span>");
+                            }
+
+                          } else {
+                            $("#supercopResponse").html("<span style=\"color: red;\">"+name+" not found...</span>");
+                          }
+                      });
+                });
+
+
+          }
+        }
     });
     $("#plMachine").bind("keyup", function(e) {
       if (e.which == 13) {
@@ -1795,7 +2256,14 @@ firetable.ui = {
             var srchItems = tracks;
             $.each(srchItems, function(index, item) {
               vidTitle = item.title;
-
+              var yargo = item.title.split(" - ");
+              var sartist = yargo[0];
+              var stitle = yargo[1];
+              if (!stitle) {
+                stitle = sartist;
+                sartist = item.user.username;
+              }
+              vidTitle = sartist + " - " + stitle;
               var pkey = "sccid" + item.id;
 
               $("#searchResults").append("<div class=\"qresult\"><div class=\"pvbar\" id=\"pvbar" + pkey + "\"><div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, 2)\">&#xE037;</i><span class=\"listwords\">" + vidTitle + "</span></div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 2)\">&#xE03B;</i></div></div></div>");
@@ -1807,6 +2275,7 @@ firetable.ui = {
     $("#newchat").bind("keyup", function(e) {
       if (e.which == 13) {
         var txt = $("#newchat").val();
+        if (txt == "") return;
         var matches = txt.match(/^(?:[\/])(\w+)\s*(.*)/i);
         if (matches) {
           var command = matches[1].toLowerCase();
@@ -1999,8 +2468,8 @@ firetable.ui = {
 
 }
 
-let windowW = 500;
-let windowH = 268;
+let windowW =  $(window).width() * 0.75 - (($(window).width() * 0.75) * 0.25);
+let windowH = 293;
 let isLoaded = false;
 let glitch;
 let imgSrc = '';

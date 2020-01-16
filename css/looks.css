@@ -1,10 +1,37 @@
-body {
+html{
+  height: 100%;
+}
+
+body{
   margin: 0;
   font-family: "Open Sans", helvetica, arial, sans-serif;
   font-size: 14px;
   color: #bbbbbb;
   background-color: #212121;
   overflow: hidden;
+}
+
+#updated{
+  font-size:14px;
+  font-weight:400;
+}
+
+#notice {
+  margin: 0;
+  font-family: "Open Sans", helvetica, arial, sans-serif;
+  font-size: 14px;
+  color: #bbbbbb;
+  background-color: #212121;
+  overflow: hidden;
+  height: 100%;
+
+}
+
+#notice .inner{
+    padding: 50px;
+    max-width: 600px;
+    margin-left:auto;
+    margin-right: auto;
 }
 
 body.blog{
@@ -108,6 +135,21 @@ div#historyarrow {
     border-bottom: 10px solid #212121;
 }
 
+span#ftSettings i, span#ftSuperCopButton i {
+    vertical-align: middle;
+    font-size:16px;
+}
+span#ftSettings, span#ftSuperCopButton{
+    margin-left: 5px;
+    color: #999;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight:400;
+}
+#ftSuperCopButton{
+  display:none;
+}
+
 ::-webkit-scrollbar {
   width: 3px;
   height: 10px;
@@ -141,19 +183,20 @@ div#upperlay {
 }
 
 div#scScreen {
-    width: 500px;
-    height: 268px;
+    width: 100%;
+    height: 293px;
     position: absolute;
 }
 
 #playerArea {
-
+  width: 100%;
 }
 
 #screenBox{
   position: absolute;
   top: -300px;
-  left: calc(50% - 300px);
+  width: calc(75% - (75% * 0.25));
+  left: calc(75% - (75% * 0.75));
   z-index: 0;
   pointer-events: none;
 }
@@ -387,6 +430,7 @@ div#notloggedin {
   margin-top: 75px;
   color: #999;
   font-weight: 700;
+  background-color: #212121;
 }
 
 #login {
@@ -424,19 +468,127 @@ span.listwords {
   width: calc(100% - 25px);
 }
 
+span.listwords a {
+    color: #bbbbbb;
+    text-decoration: none;
+}
+
+
 #login input {
   width: 95%;
 }
 
-#newchat {
-    width: calc(100% - 15px);
+div#themebox {
+  display:none;
+    position: absolute;
+    width: 25%;
+    font-size: 12px;
+    background-color: #333;
+    text-align: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #111;
+}
+
+div#currentTheme {
     padding-left: 15px;
+    padding-right: 15px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.themeTime > :nth-child(2) {
+    margin-top: 45px;
+}
+
+#newchat {
+    width: calc(100% - 65px);
+    padding-left: 15px;
+    padding-right:50px;
     line-height: 30px;
     border-left: none;
     background-color: #212121;
     border-top: 1px solid #111;
     border-bottom: 1px solid #111;
     border-right: none;
+}
+
+div#pickerResults {
+    overflow-y: scroll;
+    height: 155px;
+    overflow-x: hidden;
+    padding-left: 15px;
+    padding-right: 15px;
+    text-align:center;
+}
+
+.pickerResult{
+  cursor: pointer;
+}
+
+.pickerSecSelected{
+  color: #fff;
+}
+
+#pickerResults span {
+    margin-right: 5px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+#pickerResults h3 {
+    margin-bottom: 10px;
+    margin-top: 5px;
+    text-align: center;
+}
+div#chatMaker {
+    position: relative;
+}
+
+div#pickEmoji {
+    position: absolute;
+    right: 15px;
+    top: 4px;
+    cursor: pointer;
+}
+
+div#emojiPicker {
+    position: absolute;
+    bottom: 34px;
+    height: 250px;
+    display:none;
+    width: 100%;
+    background-color: #000000;
+    opacity: 97.86%;
+}
+
+div#pickerNav {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 15px;
+    overflow-x:hidden;
+    overflow-y:hidden;
+    white-space:nowrap;
+}
+
+input#pickerSearch {
+  width: calc(100% - 40px);
+  margin: 15px;
+  margin-top:5px;
+  padding: 5px;
+}
+
+div#pickerNav i {
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+div#screenover {
+    width: 100%;
+    height: 293px;
+    position: absolute;
+    top: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.88) , rgba(0, 0, 0, 0.49) 20%,  rgba(255, 255, 255, 0.25) );
 }
 
 #tagPromptMain .left {
@@ -479,6 +631,7 @@ span.listwords {
 
 #info i, #infobutton i {
   font-size: 16px;
+  vertical-align:middle;
 }
 
 #info {
@@ -490,6 +643,7 @@ span.listwords {
   color: #999;
   font-size: 12px;
   text-decoration: none;
+  font-weight:400;
 }
 
 #volplace .material-icons {
@@ -644,19 +798,21 @@ input#plmaker {
   margin-top: 5px;
 }
 
-input#tagMachine {
+input#tagMachine, #supercopSearch {
   line-height: 30px;
   width: 470px;
   padding: 5px;
   margin-bottom: 15px;
 }
 
-input#plMachine {
+input#plMachine{
   line-height: 30px;
   width: 100%;
   padding: 5px;
 }
-
+div#supercopResponse {
+    margin-top: -15px;
+}
 #plmanager p, #plmanager strong {
   padding: 5px;
 }
@@ -938,6 +1094,18 @@ div.pvbar {
   font-weight: 700;
 }
 
+img.emoji {
+    font-size: inherit;
+    height: 3ex;
+    width: 3.1ex;
+    min-height: 20px;
+    min-width: 20px;
+    display: inline-block;
+    margin: 0ex .15em .2ex;
+    line-height: normal;
+    vertical-align: middle;
+}
+
 div#tagPromptOverlay {
   position: absolute;
   top: 0;
@@ -969,7 +1137,7 @@ div#tagPromptBox {
   padding: 10px;
 }
 
-div#deletePromptOverlay {
+div#deletePromptOverlay, #settingsOverlay, #supercopOverlay {
   position: absolute;
   top: 0;
   display: none;
@@ -980,7 +1148,7 @@ div#deletePromptOverlay {
   height: 100%;
 }
 
-div#deletePromptBox {
+div#deletePromptBox, #settingsBox, #supercopBox {
   background-color: #212121;
   width: 500px;
   margin-left: auto;
@@ -988,12 +1156,12 @@ div#deletePromptBox {
   margin-top: 150px;
 }
 
-#deletePromptClose {
+#deletePromptClose, #settingsClose, #supercopClose {
   cursor: pointer;
   color: #777;
 }
 
-#deletePromptMain {
+#deletePromptMain, #settingsMain, #supercopMain {
   height: 200px;
   overflow-y: hidden;
   overflow-x: hidden;
@@ -1045,10 +1213,14 @@ div#importPromptBox {
   color: #777;
 }
 
-#importPromptMain {
+#importPromptMain, #supercopMain {
   height: 300px;
   overflow-y: scroll;
   overflow-x: hidden;
+}
+
+div#activeSuspentions {
+    margin-top:-15px;
 }
 
 .ftlogo {
@@ -1072,18 +1244,18 @@ div#tagPromptHeader {
   float: right;
 }
 
-div#deletePromptHeader {
+div#deletePromptHeader, #settingsHeader, #supercopHeader {
   background-color: #000;
   padding: 0 10px 0 10px;
   line-height: 35px;
   color: #eee;
 }
 
-#deletePromptHeader .left {
+#deletePromptHeader .left, #settingsHeader .left, #supercopHeader .left {
   float: left;
 }
 
-#deletePromptHeader .right {
+#deletePromptHeader .right, #settingsHeader .right, #supercopHeader .right {
   float: right;
 }
 
@@ -1166,7 +1338,7 @@ div#usertabs .selected,
   body {
     overflow-y: auto !important;
   }
-  #deletePromptBox, #tagPromptBox, #importPromptBox {
+  #deletePromptBox, #tagPromptBox, #importPromptBox, #settingsBox, #supercopBox {
     width: 100% !important;
   }
 
@@ -1176,10 +1348,10 @@ div#usertabs .selected,
     border-top:none;
 
   }
-  #tagMachine {
+  #tagMachine, #supercopSearch {
     width: calc(100% - 12px) !important;
   }
-  #mainThing #rightbox {
+  #mainThing #rightbox, #themebox {
     width: 100% !important;
   }
   #mainThing #leftbox {
@@ -1231,6 +1403,10 @@ div#usertabs .selected,
   #volplace{
     padding-left:15px !important;
   }
+  #track, #artist{
+    margin-left: 0 !important;
+  }
+  #artist, #track, #timr, .djname{text-shadow: none !important;}
   .rh{
     top: 175px !important;
   }
@@ -1297,7 +1473,7 @@ div#usertabs .selected,
   div#otherpart {
     width: 75% !important;
   }
-  #mainThing #rightbox {
+  #mainThing #rightbox, #themebox {
     width: 25% !important;
   }
   div#usrarea {
