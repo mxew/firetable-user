@@ -1465,12 +1465,12 @@ firetable.ui = {
         var countr = 0;
         for (var key in data) {
           if (data.hasOwnProperty(key)) {
-            ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"djname\">" + data[key].name + "</div><div class=\"avtr\" id=\"avtr" + countr + "\" style=\"background-repeat: no-repeat; background-position: bottom 18px center; background-image: url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><div id=\"djthing" + countr + "\" class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div> ";
+            ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"avtr\" id=\"avtr" + countr + "\" style=\"background-image: url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><div id=\"djthing" + countr + "\" class=\"djplaque\"><div class=\"djname\">" + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div></div>";
             countr++;
           }
         }
         if (countr < 4) {
-          ok1 += "<div class=\"spot\"><div class=\"djname\"><br/><br/><strong>EMPTY seat!</strong> <br/>Type !addme to DJ right now.</div><div class=\"playcount\"></div></div> ";
+          ok1 += "<div class=\"spot\"><div class=\"djplaque empty\"><div class=\"djname\">[empty]</div><div class=\"playcount\">Type !addme</div></div></div> ";
           countr++;
           for (var i = countr; i < 4; i++) {
             ok1 += "<div class=\"spot\"><div class=\"playcount\"></div></div> ";
