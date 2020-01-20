@@ -1465,7 +1465,7 @@ firetable.ui = {
         var countr = 0;
         for (var key in data) {
           if (data.hasOwnProperty(key)) {
-            ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"avtr\" id=\"avtr" + countr + "\" style=\"background-image: url(https://robohash.org/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><div id=\"djthing" + countr + "\" class=\"djplaque\"><div class=\"djname\">" + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div></div>";
+            ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"avtr\" id=\"avtr" + countr + "\" style=\"background-image: url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><div id=\"djthing" + countr + "\" class=\"djplaque\"><div class=\"djname\">" + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div></div>";
             countr++;
           }
         }
