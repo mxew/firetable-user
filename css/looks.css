@@ -529,6 +529,7 @@ div#pickerResults {
 
 .pickerSecSelected{
   color: #fff;
+  border-bottom: 2px solid #fff;
 }
 
 #pickerResults span {

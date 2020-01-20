@@ -37,7 +37,7 @@ var firetable = {
   pickerInit: false
 }
 
-firetable.version = "00.04.48";
+firetable.version = "00.04.49";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -135,7 +135,7 @@ firetable.init = function() {
   if (w > 1199) {
     if (height > 520) {
       var morethan = height - 520;
-      var newh = 128 + morethan;
+      var newh = 138 + morethan;
       var chah = 451 + morethan;
       var newu = 455 + morethan;
       $("#queuelist").css("height", newh + "px");
@@ -150,7 +150,7 @@ firetable.init = function() {
     var histheight = height - 175;
     $("#recentHistory").css("height", histheight+ "px");
   } else if (w > 799) {
-    var newh = height - 282;
+    var newh = height - 268;
     if (height > 520) {
       var morethan = height - 520;
 
@@ -169,7 +169,7 @@ firetable.init = function() {
     var histheight = height - 175;
     $("#recentHistory").css("height", histheight+ "px");
   } else {
-    var chah = height - 286;
+    var chah = height - 276;
     var newu = height - 95;
     var newq = height - 124;
 
@@ -186,7 +186,7 @@ firetable.init = function() {
     if (w > 1199) {
       if (height > 520) {
         var morethan = height - 520;
-        var newh = 128 + morethan;
+        var newh = 138 + morethan;
         var chah = 451 + morethan;
         var newu = 455 + morethan;
         $("#queuelist").css("height", newh + "px");
@@ -204,7 +204,7 @@ firetable.init = function() {
       windowW =  $(window).width() * 0.75 - (($(window).width() * 0.75) * 0.25);
       setup();
     } else if (w > 799) {
-      var newh = height - 282;
+      var newh = height - 268;
       if (height > 520) {
         var morethan = height - 520;
 
@@ -223,7 +223,7 @@ firetable.init = function() {
       var histheight = height - 175;
       $("#recentHistory").css("height", histheight+ "px");
     } else {
-      var chah = height - 286;
+      var chah = height - 276;
       var newu = height - 95;
       var newq = height - 124;
       $("#actualChat").css("height", chah + "px");
@@ -1151,9 +1151,7 @@ firetable.utilities = {
     $("#artist").animate({
       'margin-left': '-120px'
     }, 2500);
-    if($('#screenStyles').length == 0) {
-      $("head").append("<style id=\"screenStyles\">#artist, #track, #timr {text-shadow: 1px 1px 0 black;}</style>")
-    }
+
   },
   isChatPrettyMuchAtBottom: function() {
     var objDiv = document.getElementById("actualChat");
@@ -1470,7 +1468,7 @@ firetable.ui = {
           }
         }
         if (countr < 4) {
-          ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\">[empty]</div><div class=\"playcount\">Type !addme</div></div></div>";
+          ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\"></div><div class=\"playcount\">Type !addme</div></div></div>";
           countr++;
           for (var i = countr; i < 4; i++) {
             ok1 += "<div class=\"spot empty\"><div class=\"djplaque\">&nbsp;</div></div>";
@@ -1478,7 +1476,7 @@ firetable.ui = {
         }
 
       } else {
-        ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\">[empty]</div><div class=\"playcount\">Type !addme</div></div></div>";
+        ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\"></div><div class=\"playcount\">Type !addme</div></div></div>";
         for (var i = 0; i < 3; i++) {
           ok1 += "<div class=\"spot empty\"><div class=\"djplaque\">&nbsp;</div></div>";
         }
