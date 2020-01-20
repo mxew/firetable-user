@@ -43,7 +43,7 @@ var player;
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('playerArea', {
     width: 500,
-    height: 293,
+    height: 283,
     playerVars: {
       'autoplay': 1,
       'controls': 0
@@ -1152,7 +1152,7 @@ firetable.utilities = {
       'margin-left': '-120px'
     }, 2500);
     if($('#screenStyles').length == 0) {
-      $("head").append("<style id=\"screenStyles\">#artist, #track, #timr, .djname{text-shadow: 1px 1px 0 black;}</style>")
+      $("head").append("<style id=\"screenStyles\">#artist, #track, #timr {text-shadow: 1px 1px 0 black;}</style>")
     }
   },
   isChatPrettyMuchAtBottom: function() {
@@ -1470,17 +1470,17 @@ firetable.ui = {
           }
         }
         if (countr < 4) {
-          ok1 += "<div class=\"spot\"><div class=\"djplaque empty\"><div class=\"djname\">[empty]</div><div class=\"playcount\">Type !addme</div></div></div> ";
+          ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\">[empty]</div><div class=\"playcount\">Type !addme</div></div></div>";
           countr++;
           for (var i = countr; i < 4; i++) {
-            ok1 += "<div class=\"spot\"><div class=\"playcount\"></div></div> ";
+            ok1 += "<div class=\"spot empty\"><div class=\"djplaque\">&nbsp;</div></div>";
           }
         }
 
       } else {
-        ok1 += "<div class=\"spot\"><div class=\"djname\"><br/><br/><strong>EMPTY seat!</strong><br/>Type !addme to DJ right now.</div><div class=\"playcount\"></div></div> ";
+        ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\">[empty]</div><div class=\"playcount\">Type !addme</div></div></div>";
         for (var i = 0; i < 3; i++) {
-          ok1 += "<div class=\"spot\"><div class=\"playcount\"></div></div> ";
+          ok1 += "<div class=\"spot empty\"><div class=\"djplaque\">&nbsp;</div></div>";
         }
       }
       $("#deck").html(ok1);
@@ -2469,7 +2469,7 @@ $('input[type=radio][name=screenControl]').change(function() {
 }
 
 let windowW =  $(window).width() * 0.75 - (($(window).width() * 0.75) * 0.25);
-let windowH = 293;
+let windowH = 283;
 let isLoaded = false;
 let glitch;
 let imgSrc = '';
