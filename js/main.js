@@ -1214,7 +1214,7 @@ firetable.utilities = {
 
 firetable.ui = {
   textToLinks: function(text) {
-    var re = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    var re = /(?<!href="|src=")(\b[\w]+:\/\/[\w-?&;#~=\.\/\@]+[\w\/])/ig;
     return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
   },
   strip: function(html){
@@ -1628,12 +1628,18 @@ firetable.ui = {
         $("#chat" + firetable.lastChatId).append("<div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
         $("#chatTime" + firetable.lastChatId).text(firetable.utilities.format_time(chatData.time));
 
-        var txtOut = firetable.ui.textToLinks(firetable.ui.strip(chatData.txt));
+        var imageUrlRegex = /(https?:\/\/\S+(\.png|\.jpe?g|\.gif))/g;
+        var txtOut = firetable.ui.strip(chatData.txt);
+        var hasImage = txtOut.search(imageUrlRegex) >= 0;
+        if (hasImage) {
+          txtOut = txtOut.replace(imageUrlRegex, '<a href="$1" target="_blank"><img src="$1" /></a>');
+        }
+        txtOut = firetable.ui.textToLinks(txtOut);
         txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
-        var res = txtOut.replace(/\`(.*?)\`/g, function (x) {
+        txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
           return "<code>"+x.replace(/\`/g, "") +"</code>";
         });
-        $("#chattxt"+childSnapshot.key).html(res);
+        $("#chattxt"+childSnapshot.key).html(txtOut);
         twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
 
       } else {
