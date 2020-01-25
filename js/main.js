@@ -37,7 +37,7 @@ var firetable = {
   pickerInit: false
 }
 
-firetable.version = "00.04.49";
+firetable.version = "00.04.50";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1583,6 +1583,7 @@ firetable.ui = {
             if (firetable.users[key]) {
               if (firetable.users[key].mod) utitle = "cop";
               if (firetable.users[key].supermod) utitle = "supercop";
+              if (firetable.users[key].hostbot) utitle = "robot";
               if (firetable.users[key].username) thename = firetable.users[key].username;
             }
             newlist += "<div class=\"prson\">" + thename + " <span class=\"utitle\">" + utitle + "</span></div>";
@@ -1609,6 +1610,7 @@ firetable.ui = {
         if (firetable.users[chatData.id].username) namebo = firetable.users[chatData.id].username;
         if (firetable.users[chatData.id].mod) utitle = "cop";
         if (firetable.users[chatData.id].supermod) utitle = "supercop";
+        if (firetable.users[chatData.id].hostbot) utitle = "robot";
       }
 
       var badoop = false;
