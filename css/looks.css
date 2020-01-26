@@ -276,7 +276,8 @@ div#pldeleteButton {
 
 select#listpicker {
   float: left;
-  width: 245px;
+  width: calc(100% - 183px);
+
   font-size: 14px;
   border: 1px solid #111;
   font-family: "Open Sans", helvetica, arial, sans-serif;
@@ -837,7 +838,7 @@ div#supercopResponse {
   display: inline-block;
 }
 
-div#cancelqsearch, #shuffleQueue {
+div#cancelqsearch{
   position: absolute;
   top: 0.9rem;
   right: 1rem;
@@ -847,6 +848,19 @@ div#cancelqsearch, #shuffleQueue {
   background-color: #222;
   border-radius: 4px;
   cursor: pointer;
+  width: 120px;
+  text-align: center;
+}
+
+#shuffleQueue {
+  padding: 5px 10px;
+  font-size: 12px;
+  color: #999;
+  background-color: #222;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  margin: 14px 0;
 }
 
 #shuffleQueue i.material-icons {
@@ -1355,7 +1369,6 @@ div#usertabs .selected,
     margin-left:0px;
     border-left:none;
     border-top:none;
-
   }
   #tagMachine, #supercopSearch {
     width: calc(100% - 12px) !important;
