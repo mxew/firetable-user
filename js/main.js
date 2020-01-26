@@ -37,7 +37,7 @@ var firetable = {
   pickerInit: false
 }
 
-firetable.version = "00.04.50";
+firetable.version = "00.04.51";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -699,6 +699,32 @@ firetable.actions = {
     if (changePv) firetable.preview = changePv;
     firetable.queueRef.set(newobj);
   },
+  shuffleQueue: function(){
+    var okdata = firetable.queue;
+    var ids = [];
+    var arr = [];
+    for (var key in okdata) {
+      if (okdata.hasOwnProperty(key)) {
+        ids.push(key);
+        arr.push(key);
+      }
+    }
+    firetable.utilities.shuffle(arr);
+    var changePv = false;
+    var newobj = {};
+    for (var i = 0; i < arr.length; i++) {
+      var songid = arr[i];
+      var newspot = ids[i];
+      var thisone = okdata[songid];
+      newobj[newspot] = thisone;
+      if (firetable.preview == songid) {
+        changePv = newspot;
+        console.log(changePv);
+      }
+    }
+    if (changePv) firetable.preview = changePv;
+    firetable.queueRef.set(newobj);
+  },
   editTagsPrompt: function(songid) {
     var song = firetable.queue[songid];
     $("#tagMachine").val(song.name);
@@ -1079,6 +1105,17 @@ firetable.utilities = {
         $("#picker"+emoji.category).append("<span class=\"pickerResult\" title=\""+key+"\" data-alternative-name=\""+words+"\">"+emoji.char+"</span>");
       }
     });
+  },
+  // Modern Fisher-Yates shuffle
+  shuffle: function(a) {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
   },
   emojiShortnamestoUnicode : function(str){
     var res = str.replace(/\:(.*?)\:/g, function (x) {
@@ -1764,6 +1801,7 @@ firetable.ui = {
       $("#resetscreen").css("display", "block");
     });
     $("#grab").bind("click", firetable.actions.grab);
+    $("#shuffleQueue").bind("click", firetable.actions.shuffleQueue);
     $("#history").bind("click", function() {
        var isHidden = $("#recentHistory").is( ":hidden" );
        if (isHidden){

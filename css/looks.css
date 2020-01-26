@@ -837,7 +837,7 @@ div#supercopResponse {
   display: inline-block;
 }
 
-div#cancelqsearch {
+div#cancelqsearch, #shuffleQueue {
   position: absolute;
   top: 0.9rem;
   right: 1rem;
@@ -847,6 +847,13 @@ div#cancelqsearch {
   background-color: #222;
   border-radius: 4px;
   cursor: pointer;
+}
+
+#shuffleQueue i.material-icons {
+  font-size: 14px !important;
+  vertical-align: middle;
+  overflow: hidden;
+  font-weight: 700;
 }
 
 #plmanager {
