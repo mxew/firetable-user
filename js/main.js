@@ -37,7 +37,7 @@ var firetable = {
   pickerInit: false
 }
 
-firetable.version = "00.04.48";
+firetable.version = "00.04.51";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -135,7 +135,7 @@ firetable.init = function() {
   if (w > 1199) {
     if (height > 520) {
       var morethan = height - 520;
-      var newh = 128 + morethan;
+      var newh = 138 + morethan;
       var chah = 451 + morethan;
       var newu = 455 + morethan;
       $("#queuelist").css("height", newh + "px");
@@ -150,7 +150,7 @@ firetable.init = function() {
     var histheight = height - 175;
     $("#recentHistory").css("height", histheight+ "px");
   } else if (w > 799) {
-    var newh = height - 282;
+    var newh = height - 268;
     if (height > 520) {
       var morethan = height - 520;
 
@@ -169,7 +169,7 @@ firetable.init = function() {
     var histheight = height - 175;
     $("#recentHistory").css("height", histheight+ "px");
   } else {
-    var chah = height - 286;
+    var chah = height - 276;
     var newu = height - 95;
     var newq = height - 124;
 
@@ -186,7 +186,7 @@ firetable.init = function() {
     if (w > 1199) {
       if (height > 520) {
         var morethan = height - 520;
-        var newh = 128 + morethan;
+        var newh = 138 + morethan;
         var chah = 451 + morethan;
         var newu = 455 + morethan;
         $("#queuelist").css("height", newh + "px");
@@ -204,7 +204,7 @@ firetable.init = function() {
       windowW =  $(window).width() * 0.75 - (($(window).width() * 0.75) * 0.25);
       setup();
     } else if (w > 799) {
-      var newh = height - 282;
+      var newh = height - 268;
       if (height > 520) {
         var morethan = height - 520;
 
@@ -223,7 +223,7 @@ firetable.init = function() {
       var histheight = height - 175;
       $("#recentHistory").css("height", histheight+ "px");
     } else {
-      var chah = height - 286;
+      var chah = height - 276;
       var newu = height - 95;
       var newq = height - 124;
       $("#actualChat").css("height", chah + "px");
@@ -699,6 +699,32 @@ firetable.actions = {
     if (changePv) firetable.preview = changePv;
     firetable.queueRef.set(newobj);
   },
+  shuffleQueue: function(){
+    var okdata = firetable.queue;
+    var ids = [];
+    var arr = [];
+    for (var key in okdata) {
+      if (okdata.hasOwnProperty(key)) {
+        ids.push(key);
+        arr.push(key);
+      }
+    }
+    firetable.utilities.shuffle(arr);
+    var changePv = false;
+    var newobj = {};
+    for (var i = 0; i < arr.length; i++) {
+      var songid = arr[i];
+      var newspot = ids[i];
+      var thisone = okdata[songid];
+      newobj[newspot] = thisone;
+      if (firetable.preview == songid) {
+        changePv = newspot;
+        console.log(changePv);
+      }
+    }
+    if (changePv) firetable.preview = changePv;
+    firetable.queueRef.set(newobj);
+  },
   editTagsPrompt: function(songid) {
     var song = firetable.queue[songid];
     $("#tagMachine").val(song.name);
@@ -1080,6 +1106,17 @@ firetable.utilities = {
       }
     });
   },
+  // Modern Fisher-Yates shuffle
+  shuffle: function(a) {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
+  },
   emojiShortnamestoUnicode : function(str){
     var res = str.replace(/\:(.*?)\:/g, function (x) {
       var response = x;
@@ -1151,9 +1188,7 @@ firetable.utilities = {
     $("#artist").animate({
       'margin-left': '-120px'
     }, 2500);
-    if($('#screenStyles').length == 0) {
-      $("head").append("<style id=\"screenStyles\">#artist, #track, #timr {text-shadow: 1px 1px 0 black;}</style>")
-    }
+
   },
   isChatPrettyMuchAtBottom: function() {
     var objDiv = document.getElementById("actualChat");
@@ -1470,7 +1505,7 @@ firetable.ui = {
           }
         }
         if (countr < 4) {
-          ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\">[empty]</div><div class=\"playcount\">Type !addme</div></div></div>";
+          ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\"></div><div class=\"playcount\">Type !addme</div></div></div>";
           countr++;
           for (var i = countr; i < 4; i++) {
             ok1 += "<div class=\"spot empty\"><div class=\"djplaque\">&nbsp;</div></div>";
@@ -1478,7 +1513,7 @@ firetable.ui = {
         }
 
       } else {
-        ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\">[empty]</div><div class=\"playcount\">Type !addme</div></div></div>";
+        ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\"></div><div class=\"playcount\">Type !addme</div></div></div>";
         for (var i = 0; i < 3; i++) {
           ok1 += "<div class=\"spot empty\"><div class=\"djplaque\">&nbsp;</div></div>";
         }
@@ -1585,6 +1620,7 @@ firetable.ui = {
             if (firetable.users[key]) {
               if (firetable.users[key].mod) utitle = "cop";
               if (firetable.users[key].supermod) utitle = "supercop";
+              if (firetable.users[key].hostbot) utitle = "robot";
               if (firetable.users[key].username) thename = firetable.users[key].username;
             }
             newlist += "<div class=\"prson\">" + thename + " <span class=\"utitle\">" + utitle + "</span></div>";
@@ -1611,6 +1647,7 @@ firetable.ui = {
         if (firetable.users[chatData.id].username) namebo = firetable.users[chatData.id].username;
         if (firetable.users[chatData.id].mod) utitle = "cop";
         if (firetable.users[chatData.id].supermod) utitle = "supercop";
+        if (firetable.users[chatData.id].hostbot) utitle = "robot";
       }
 
       var badoop = false;
@@ -1770,6 +1807,7 @@ firetable.ui = {
       $("#resetscreen").css("display", "block");
     });
     $("#grab").bind("click", firetable.actions.grab);
+    $("#shuffleQueue").bind("click", firetable.actions.shuffleQueue);
     $("#history").bind("click", function() {
        var isHidden = $("#recentHistory").is( ":hidden" );
        if (isHidden){
