@@ -16,6 +16,65 @@ body{
   font-weight:400;
 }
 
+div#mergeContain {
+    position: absolute;
+    width: calc(100% - 30px);
+    margin: 0 15px;
+    display:none;
+}
+
+div#mergeArrow {
+    margin-top: -5px;
+    margin-left: calc(100% - 65px);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #333;
+}
+
+#mergeBox{
+  background-color:#333;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+#mergeHappening{
+  display:none;
+}
+
+select#mergepicker, #mergepicker2 {
+    width: calc(50% - 50px);
+    font-size: 14px;
+    border: none;
+    font-family: "Open Sans", helvetica, arial, sans-serif;
+    background-color: #212121;
+    padding-left: 5px;
+    color: #eee;
+    height: 24px;
+    white-space: nowrap;
+}
+
+#mergeBox i.material-icons {
+    font-size: 17px !important;
+    font-weight: 700;
+    cursor: default;
+    vertical-align: middle;
+}
+
+span#startMerge, #mergeOK {
+    padding: 5px 10px;
+    font-size: 12px;
+    color: #999;
+    background-color: #222;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 10px;
+}
+#mergeCompleted{
+  display:none;
+}
 #notice {
   margin: 0;
   font-family: "Open Sans", helvetica, arial, sans-serif;
@@ -89,12 +148,13 @@ float: right;
 #recentHistory .previewicon {
     width: 30px;
     color: #fff;
-    background-color:#000000b5;
+    background-color:#000000;
     border-radius:15px;
     text-align:center;
     display: block;
     margin-left:10px;
-    margin-top:10px
+    margin-top:10px;
+    opacity: 0.75;
 }
 #recentHistory #thehistory{
       background-color: #212121;
@@ -276,7 +336,7 @@ div#pldeleteButton {
 
 select#listpicker {
   float: left;
-  width: calc(100% - 183px);
+  width: calc(100% - 190px);
 
   font-size: 14px;
   border: 1px solid #111;
@@ -852,7 +912,7 @@ div#cancelqsearch{
   text-align: center;
 }
 
-#shuffleQueue {
+#shuffleQueue, #mergeLists {
   padding: 5px 10px;
   font-size: 12px;
   color: #999;
@@ -863,7 +923,7 @@ div#cancelqsearch{
   margin: 14px 0;
 }
 
-#shuffleQueue i.material-icons {
+#shuffleQueue i.material-icons, #mergeLists i.material-icons  {
   font-size: 14px !important;
   vertical-align: middle;
   overflow: hidden;
@@ -1365,11 +1425,6 @@ div#usertabs .selected,
     width: 100% !important;
   }
 
-  select#listpicker {
-    margin-left:0px;
-    border-left:none;
-    border-top:none;
-  }
   #tagMachine, #supercopSearch {
     width: calc(100% - 12px) !important;
   }
