@@ -37,7 +37,7 @@ var firetable = {
   pickerInit: false
 }
 
-firetable.version = "00.04.51";
+firetable.version = "00.04.52";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -608,7 +608,74 @@ firetable.actions = {
     }
 
   },
-  queueFromLink(link) {
+  mergeLists: function(source, dest, sourceName){
+
+    // create new list if needed
+    if (dest == -1){
+      var plref = firebase.database().ref("playlists/" + firetable.uid);
+      var newlist = plref.push();
+      var listid = newlist.key;
+      dest = listid;
+      var newname = firetable.utilities.format_date(Date.now()) + " Copy of "+sourceName;
+      var obj = {
+        name: newname,
+        list: {}
+      };
+      newlist.set(obj);
+      $("#listpicker").append("<option id=\"pdopt" + listid + "\" value=\"" + listid + "\">" + newname + "</option>");
+    }
+    var destref;
+    if (dest == 0){
+      destref = firebase.database().ref("queues/" + firetable.uid);
+    } else {
+      destref = firebase.database().ref("playlists/" + firetable.uid + "/" + dest + "/list");
+    }
+
+    var sourceref;
+    if (source == 0){
+      sourceref = firebase.database().ref("queues/" + firetable.uid);
+    } else {
+      sourceref = firebase.database().ref("playlists/" + firetable.uid + "/" + source + "/list");
+    }
+    // create dest obj to check for duplicates
+    var destObj = {};
+    destref.once("value")
+      .then(function(snapshot2) {
+        snapshot2.forEach(function(childSnapshot) {
+            var key = childSnapshot.key;
+            var childData = childSnapshot.val();
+            if (childData){
+              if (childData.cid) destObj[childData.cid] = childData.type;
+            }
+        });
+        console.log(destObj);
+        sourceref.once("value")
+          .then(function(snapshot3) {
+            snapshot3.forEach(function(childSnapshot3) {
+                var key = childSnapshot3.key;
+                var childData = childSnapshot3.val();
+                if (childData){
+                  if (childData.cid) {
+                    var dupe = false;
+                    if (destObj[childData.cid]){
+                        if (childData.type == destObj[childData.cid]) dupe = true;
+                    }
+                    console.log(dupe, childData);
+                    if (!dupe){
+                      // NOT A DUPLICATE! GO GO GO
+                      destref.push(childData);
+                    }
+                  }
+                }
+
+            });
+            $("#mergeCompleted").show();
+            $("#mergeHappening").hide();
+        });
+    });
+
+  },
+  queueFromLink: function(link) {
     if (link.match(/youtube.com\/watch/)) {
       //youtube
       console.log("yt");
@@ -1814,6 +1881,50 @@ firetable.ui = {
          $( "#recentHistory" ).show();
        } else {
          $( "#recentHistory" ).hide();
+       }
+    });
+    $("#startMerge").bind("click", function() {
+        var source = $("#mergepicker").val();
+        var sourceName = $( "#mergepicker option:selected" ).text();
+        var dest = $("#mergepicker2").val();
+        var destName = $( "#mergepicker2 option:selected" ).text();
+        $("#mergeSetup").hide();
+        $("#mergeHappening").show();
+        console.log(sourceName + " -> " + destName);
+        firetable.actions.mergeLists(source, dest, sourceName);
+    });
+    $("#mergeOK").bind("click", function() {
+        $("#mergeSetup").show();
+        $("#mergeCompleted").hide();
+        $("#mergeHappening").hide();
+        $( "#mergeContain" ).hide();
+    });
+    $("#mergeLists").bind("click", function() {
+       var isHidden = $("#mergeContain").is( ":hidden" );
+       if (isHidden){
+         var allQueues = firebase.database().ref("playlists/" + firetable.uid);
+         allQueues.once('value')
+           .then(function(allQueuesSnap) {
+             var allPlaylists = allQueuesSnap.val();
+             $("#mergepicker").html("<option value=\"0\">Default Queue</option>");
+             $("#mergepicker2").html("<option value=\"-1\">Create New Copy</option><option value=\"0\">Default Queue</option>");
+             for (var key in allPlaylists) {
+               if (allPlaylists.hasOwnProperty(key)) {
+                 $("#mergepicker").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
+                 $("#mergepicker2").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
+               }
+             }
+             if (firetable.users[firetable.uid]) {
+               if (firetable.users[firetable.uid].selectedList) {
+                  $("#mergepicker").val(firetable.users[firetable.uid].selectedList).change();
+                  $("#mergepicker2").val(-1).change();
+               }
+             }
+            $( "#mergeContain" ).show();
+           });
+
+       } else {
+         $( "#mergeContain" ).hide();
        }
     });
     $("#reloadtrack").bind("click", firetable.actions.reloadtrack);
