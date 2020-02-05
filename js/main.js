@@ -1325,16 +1325,21 @@ firetable.ui = {
     return doc.body.textContent || "";
   },
   showImages: function(chatTxt) {
-    console.log('showImages');
     if (firetable.showImages){
-      console.log('showImages true');
-      console.log(chatTxt);
       var imageUrlRegex = /(https?:\/\/\S+(\.png|\.jpe?g|\.gif))/g;
       var hasImage = chatTxt.search(imageUrlRegex) >= 0;
       if (hasImage) {
-        chatTxt = chatTxt.replace(imageUrlRegex, '<a href="$1" target="_blank"><img src="$1" /></a>');
+        var imageUrl = chatTxt.replace(imageUrlRegex, function(chatImageUrl) { return chatImageUrl; });
+        var chatImage = new Image();
+        chatImage.onload = function() {
+          var objDiv = document.getElementById("actualChat");
+          var thing1 = objDiv.scrollHeight - objDiv.clientHeight;
+          var thing2 = objDiv.scrollTop;
+          if (Math.abs(thing1 - thing2) <= (parseInt(chatImage.height)+20)) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+        }
+        chatImage.src = imageUrl;
+        chatTxt = '<a href="'+imageUrl+'" target="_blank"><img src="'+imageUrl+'" /></a>'
       }
-      console.log(chatTxt);
     }
     return chatTxt;
   },
