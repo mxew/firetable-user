@@ -10,6 +10,7 @@ var firetable = {
   moveBar: null,
   song: null,
   playBadoop: true,
+  sbhowImages: true,
   screenControl: "sync",
   screenSyncPos: false,
   scSeek: false,
@@ -1323,8 +1324,32 @@ firetable.ui = {
     var doc = firetable.parser.parseFromString(html, 'text/html');
     return doc.body.textContent || "";
   },
+  showImages: function(chatTxt) {
+    console.log('showImages');
+    if (firetable.showImages){
+      console.log('showImages true');
+      console.log(chatTxt);
+      var imageUrlRegex = /(https?:\/\/\S+(\.png|\.jpe?g|\.gif))/g;
+      var hasImage = chatTxt.search(imageUrlRegex) >= 0;
+      if (hasImage) {
+        chatTxt = chatTxt.replace(imageUrlRegex, '<a href="$1" target="_blank"><img src="$1" /></a>');
+      }
+      console.log(chatTxt);
+    }
+    return chatTxt;
+  },
   init: function() {
     //GET SETTINGS FROM LOCALSTORAGE
+    var showImages = localStorage["firetableShowImages"];
+    if (typeof showImages == "undefined") {
+      localStorage["firetableShowImages"] = true;
+      firetable.showImages = true;
+      $( "#showImagesToggle" ).prop( "checked", true );
+    } else {
+      showImages = JSON.parse(showImages);
+      firetable.showImages = showImages;
+      $( "#showImagesToggle" ).prop( "checked", showImages );
+    }
     var playBadoop = localStorage["firetableBadoop"];
     if (typeof playBadoop == "undefined") {
       localStorage["firetableBadoop"] = true;
@@ -1731,13 +1756,8 @@ firetable.ui = {
       if (chatData.id == firetable.lastChatPerson && !badoop) {
         $("#chat" + firetable.lastChatId).append("<div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
         $("#chatTime" + firetable.lastChatId).text(firetable.utilities.format_time(chatData.time));
-
-        var imageUrlRegex = /(https?:\/\/\S+(\.png|\.jpe?g|\.gif))/g;
         var txtOut = firetable.ui.strip(chatData.txt);
-        var hasImage = txtOut.search(imageUrlRegex) >= 0;
-        if (hasImage) {
-          txtOut = txtOut.replace(imageUrlRegex, '<a href="$1" target="_blank"><img src="$1" /></a>');
-        }
+        txtOut = firetable.ui.showImages(txtOut);
         txtOut = firetable.ui.textToLinks(txtOut);
         txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
         txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
@@ -1750,25 +1770,29 @@ firetable.ui = {
         if (badoop) {
           var thing = $("#actualChat").append("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat badoop\"><div class=\"chatName\"><span class=\"chatNameName\"></span> <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
           $("#chat"+childSnapshot.key).find(".chatNameName").text(namebo);
-          var txtOut = firetable.ui.textToLinks(firetable.ui.strip(chatData.txt));
+          var txtOut = firetable.ui.strip(chatData.txt);
+          txtOut = firetable.ui.showImages(txtOut);
+          txtOut = firetable.ui.textToLinks(txtOut);
           txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
-          var res = txtOut.replace(/\`(.*?)\`/g, function (x) {
+          txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
             return "<code>"+x.replace(/\`/g, "") +"</code>";
           });
-          $("#chattxt"+childSnapshot.key).html(res);
+          $("#chattxt"+childSnapshot.key).html(txtOut);
           twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
-
+  
         } else {
           var thing = $("#actualChat").append("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat\"><div class=\"chatName\"><span class=\"chatNameName\"></span> <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
           $("#chat"+childSnapshot.key).find(".chatNameName").text(namebo);
-          var txtOut = firetable.ui.textToLinks(firetable.ui.strip(chatData.txt));
+          var txtOut = firetable.ui.strip(chatData.txt);
+          txtOut = firetable.ui.showImages(txtOut);
+          txtOut = firetable.ui.textToLinks(txtOut);
           txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
-          var res = txtOut.replace(/\`(.*?)\`/g, function (x) {
+          txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
             return "<code>"+x.replace(/\`/g, "") +"</code>";
           });
-          $("#chattxt"+childSnapshot.key).html(res);
+          $("#chattxt"+childSnapshot.key).html(txtOut);
           twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
-
+  
         }
         firetable.lastChatPerson = chatData.id;
         firetable.lastChatId = childSnapshot.key;
@@ -1993,6 +2017,18 @@ $('#badoopToggle').change(function() {
         firetable.playBadoop = false;
 
     }
+});
+$('#showImagesToggle').change(function() {
+  if (this.checked) {
+      console.log("show images on");
+      localStorage["firetableShowImages"] = true;
+      firetable.showImages = true;
+  } else {
+      console.log("show images off");
+      localStorage["firetableShowImages"] = false;
+      firetable.showImages = false;
+
+  }
 });
 $('#desktopNotifyMentionsToggle').change(function() {
     if (this.checked) {
