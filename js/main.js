@@ -38,7 +38,7 @@ var firetable = {
   pickerInit: false
 }
 
-firetable.version = "00.04.53";
+firetable.version = "00.04.54";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1347,8 +1347,8 @@ firetable.ui = {
     //GET SETTINGS FROM LOCALSTORAGE
     var showImages = localStorage["firetableShowImages"];
     if (typeof showImages == "undefined") {
-      localStorage["firetableShowImages"] = true;
-      firetable.showImages = true;
+      localStorage["firetableShowImages"] = false;
+      firetable.showImages = false;
       $( "#showImagesToggle" ).prop( "checked", true );
     } else {
       showImages = JSON.parse(showImages);
@@ -1419,7 +1419,14 @@ firetable.ui = {
         $("#actualChat").removeClass("themeTime");
         $("#themebox").hide();
       } else {
-        $("#currentTheme").text(data);
+        var txtOut = firetable.ui.strip(data);
+        txtOut = firetable.ui.textToLinks(txtOut);
+        txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
+        txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
+          return "<code>"+x.replace(/\`/g, "") +"</code>";
+        });
+        $("#currentTheme").html(txtOut);
+        twemoji.parse(document.getElementById("currentTheme"));
         $("#actualChat").addClass("themeTime");
         $("#themebox").show();
       }
