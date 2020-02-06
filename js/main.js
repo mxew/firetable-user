@@ -10,7 +10,7 @@ var firetable = {
   moveBar: null,
   song: null,
   playBadoop: true,
-  sbhowImages: true,
+  sbhowImages: false,
   screenControl: "sync",
   screenSyncPos: false,
   scSeek: false,
@@ -38,7 +38,7 @@ var firetable = {
   pickerInit: false
 }
 
-firetable.version = "00.04.52";
+firetable.version = "00.04.53";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1784,7 +1784,7 @@ firetable.ui = {
           });
           $("#chattxt"+childSnapshot.key).html(txtOut);
           twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
-  
+
         } else {
           var thing = $("#actualChat").append("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat\"><div class=\"chatName\"><span class=\"chatNameName\"></span> <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
           $("#chat"+childSnapshot.key).find(".chatNameName").text(namebo);
@@ -1797,7 +1797,7 @@ firetable.ui = {
           });
           $("#chattxt"+childSnapshot.key).html(txtOut);
           twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
-  
+
         }
         firetable.lastChatPerson = chatData.id;
         firetable.lastChatId = childSnapshot.key;
