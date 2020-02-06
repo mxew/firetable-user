@@ -1324,9 +1324,9 @@ firetable.ui = {
     var doc = firetable.parser.parseFromString(html, 'text/html');
     return doc.body.textContent || "";
   },
-  showImages: function(chatTxt) {
+  showImages: function(chatTxt,user) {
     if (firetable.showImages){
-      var imageUrlRegex = /(https?:\/\/\S+(\.png|\.jpe?g|\.gif))/g;
+      var imageUrlRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpe?g|gif|png)/g;
       var hasImage = chatTxt.search(imageUrlRegex) >= 0;
       if (hasImage) {
         var imageUrl = chatTxt.replace(imageUrlRegex, function(chatImageUrl) { return chatImageUrl; });
@@ -1338,7 +1338,12 @@ firetable.ui = {
           if (Math.abs(thing1 - thing2) <= (parseInt(chatImage.height)+20)) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
         }
         chatImage.src = imageUrl;
-        chatTxt = '<a href="'+imageUrl+'" target="_blank"><img src="'+imageUrl+'" /></a>'
+        if (user.mod || user.supermod) {
+          chatTxt = '<a href="'+imageUrl+'" target="_blank"><img src="'+imageUrl+'" class="inlineImage" /><span class="hideImage">&times;</span></a>'
+        }
+        else {
+          chatTxt = '<a href="'+imageUrl+'" target="_blank"><img src="'+imageUrl+'" class="inlineImage" /></a>'
+        }
       }
     }
     return chatTxt;
@@ -1762,7 +1767,7 @@ firetable.ui = {
         $("#chat" + firetable.lastChatId).append("<div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
         $("#chatTime" + firetable.lastChatId).text(firetable.utilities.format_time(chatData.time));
         var txtOut = firetable.ui.strip(chatData.txt);
-        txtOut = firetable.ui.showImages(txtOut);
+        txtOut = firetable.ui.showImages(txtOut,firetable.users[chatData.id]);
         txtOut = firetable.ui.textToLinks(txtOut);
         txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
         txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
@@ -1776,7 +1781,7 @@ firetable.ui = {
           var thing = $("#actualChat").append("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat badoop\"><div class=\"chatName\"><span class=\"chatNameName\"></span> <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
           $("#chat"+childSnapshot.key).find(".chatNameName").text(namebo);
           var txtOut = firetable.ui.strip(chatData.txt);
-          txtOut = firetable.ui.showImages(txtOut);
+          txtOut = firetable.ui.showImages(txtOut,firetable.users[chatData.id]);
           txtOut = firetable.ui.textToLinks(txtOut);
           txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
           txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
@@ -1789,7 +1794,7 @@ firetable.ui = {
           var thing = $("#actualChat").append("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat\"><div class=\"chatName\"><span class=\"chatNameName\"></span> <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
           $("#chat"+childSnapshot.key).find(".chatNameName").text(namebo);
           var txtOut = firetable.ui.strip(chatData.txt);
-          txtOut = firetable.ui.showImages(txtOut);
+          txtOut = firetable.ui.showImages(txtOut,firetable.users[chatData.id]);
           txtOut = firetable.ui.textToLinks(txtOut);
           txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
           txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
@@ -2034,6 +2039,11 @@ $('#showImagesToggle').change(function() {
       firetable.showImages = false;
 
   }
+});
+$(document).on('click', '.hideImage', function(e){
+  e.stopPropagation();
+  e.preventDefault();
+  $(this).closest('.chatText').toggleClass('hideImg');
 });
 $('#desktopNotifyMentionsToggle').change(function() {
     if (this.checked) {
