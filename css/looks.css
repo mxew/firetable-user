@@ -440,7 +440,7 @@ select#listpicker {
   opacity: 0;
   visibility: hidden;
 }
-.chatText.hideImg a::after {
+.chatText.hideImg a.inlineImgLink::after {
   content: 'image hidden';
   position: absolute;
   z-index: 1;
@@ -600,6 +600,7 @@ div#themebox {
     text-align: center;
     padding-top: 5px;
     padding-bottom: 5px;
+    z-index:15;
     border-bottom: 1px solid #111;
 }
 
@@ -859,6 +860,7 @@ i#refreshSong {
 .djname {
   text-overflow: ellipsis;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .playcount {

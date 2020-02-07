@@ -38,7 +38,7 @@ var firetable = {
   pickerInit: false
 }
 
-firetable.version = "00.04.54";
+firetable.version = "00.04.55";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1316,9 +1316,12 @@ firetable.utilities = {
 };
 
 firetable.ui = {
-  textToLinks: function(text) {
-    var re = /(?<!href="|src=")(\b[\w]+:\/\/[\w-?&;#~=\.\/\@]+[\w\/])/ig;
+  textToLinks: function(text, themeBox) {
+    var re = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    if (firetable.showImages && !themeBox) re = /(https?:\/\/(?![/|.|\w|\s|-]*(?:jpg|png|gif))[^" ]+)/g;
     return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
+
+return text;
   },
   strip: function(html){
     var doc = firetable.parser.parseFromString(html, 'text/html');
@@ -1326,19 +1329,21 @@ firetable.ui = {
   },
   showImages: function(chatTxt) {
     if (firetable.showImages){
-      var imageUrlRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpe?g|gif|png)/g;
+      var imageUrlRegex = /((http(s?):)([/|.|\w|\s|-])*\.(?:jpe?g|gif|png))/g;
       var hasImage = chatTxt.search(imageUrlRegex) >= 0;
       if (hasImage) {
-        var imageUrl = chatTxt.replace(imageUrlRegex, function(chatImageUrl) { return chatImageUrl; });
-        var chatImage = new Image();
-        chatImage.onload = function() {
-          var objDiv = document.getElementById("actualChat");
-          var thing1 = objDiv.scrollHeight - objDiv.clientHeight;
-          var thing2 = objDiv.scrollTop;
-          if (Math.abs(thing1 - thing2) <= (parseInt(chatImage.height)+20)) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
-        }
-        chatImage.src = imageUrl;
-        chatTxt = '<a href="'+imageUrl+'" target="_blank"><img src="'+imageUrl+'" class="inlineImage" /><span class="hideImage">&times;</span></a>'
+        chatTxt = chatTxt.replace(imageUrlRegex, function(imageUrl){
+            var chatImage = new Image();
+            chatImage.onload = function() {
+              var objDiv = document.getElementById("actualChat");
+              var thing1 = objDiv.scrollHeight - objDiv.clientHeight;
+              var thing2 = objDiv.scrollTop;
+              if (Math.abs(thing1 - thing2) <= (parseInt(chatImage.height)+20)) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+            }
+            chatImage.src = imageUrl;
+          return '<a class=\"inlineImgLink\" href="'+imageUrl+'" target="_blank"><img src="'+imageUrl+'" class="inlineImage" /><span class="hideImage">&times;</span></a>'
+        });
+
       }
     }
     return chatTxt;
@@ -1349,7 +1354,7 @@ firetable.ui = {
     if (typeof showImages == "undefined") {
       localStorage["firetableShowImages"] = false;
       firetable.showImages = false;
-      $( "#showImagesToggle" ).prop( "checked", true );
+      $( "#showImagesToggle" ).prop( "checked", false );
     } else {
       showImages = JSON.parse(showImages);
       firetable.showImages = showImages;
@@ -1420,7 +1425,7 @@ firetable.ui = {
         $("#themebox").hide();
       } else {
         var txtOut = firetable.ui.strip(data);
-        txtOut = firetable.ui.textToLinks(txtOut);
+        txtOut = firetable.ui.textToLinks(txtOut, true);
         txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
         txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
           return "<code>"+x.replace(/\`/g, "") +"</code>";
