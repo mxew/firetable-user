@@ -1326,7 +1326,7 @@ firetable.ui = {
   },
   showImages: function(chatTxt) {
     if (firetable.showImages){
-      var imageUrlRegex = /(https?:\/\/\S+(\.png|\.jpe?g|\.gif))/g;
+      var imageUrlRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpe?g|gif|png)/g;
       var hasImage = chatTxt.search(imageUrlRegex) >= 0;
       if (hasImage) {
         var imageUrl = chatTxt.replace(imageUrlRegex, function(chatImageUrl) { return chatImageUrl; });
@@ -1338,7 +1338,7 @@ firetable.ui = {
           if (Math.abs(thing1 - thing2) <= (parseInt(chatImage.height)+20)) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
         }
         chatImage.src = imageUrl;
-        chatTxt = '<a href="'+imageUrl+'" target="_blank"><img src="'+imageUrl+'" /></a>'
+        chatTxt = '<a href="'+imageUrl+'" target="_blank"><img src="'+imageUrl+'" class="inlineImage" /><span class="hideImage">&times;</span></a>'
       }
     }
     return chatTxt;
@@ -2041,6 +2041,11 @@ $('#showImagesToggle').change(function() {
       firetable.showImages = false;
 
   }
+});
+$(document).on('click', '.hideImage', function(e){
+  e.stopPropagation();
+  e.preventDefault();
+  $(this).closest('.chatText').toggleClass('hideImg');
 });
 $('#desktopNotifyMentionsToggle').change(function() {
     if (this.checked) {
