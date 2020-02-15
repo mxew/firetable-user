@@ -2303,6 +2303,53 @@ $('input[type=radio][name=screenControl]').change(function() {
           }
         }
     });
+    $("#importSources").bind( "click", function( e ) {
+      var searchFrom = firetable.importSelectsChoice;
+      if ( searchFrom == 2 ) {
+        $("#byId").hide();
+      } else {
+        $("#byId").show();
+      }
+    });
+    $("#plMachineById").bind( "change keyup input", function( e ) {
+      var searchFrom = firetable.importSelectsChoice;
+      // YouTube playlist IDs are 34 characters. Full URL is 72 characters
+      if ( (searchFrom == 1 && this.value.length === 34) || (searchFrom == 1 && this.value.length === 72) ) {
+        $("#plMachineById + button").prop( 'disabled', false );
+      } else {
+        $("#plMachineById + button").prop( 'disabled', true );
+      };
+    });
+    $("#plMachineById + button").bind( "click", function( e ) {
+      var ytPlId = $("#plMachineById").val();
+      function keyWordsearch() {
+        gapi.client.setApiKey('AIzaSyDCXzJ9gGLTF_BLcTzNUO2Zeh4HwPxgyds');
+        gapi.client.load('youtube', 'v3', function() {
+          makeRequest();
+        });
+      }
+
+      function makeRequest() {
+        var request = gapi.client.youtube.playlists.list({
+          id: ytPlId,
+          part: 'snippet'
+        });
+        request.execute(function(response) {
+          if (response.result) {
+            if (response.result.items) {
+              if (response.result.items.length === 1) {
+                var playlistTitle = response.result.items[0].snippet.title;
+                console.log(playlistTitle);
+                firetable.actions.importList( ytPlId, playlistTitle, 1);
+              } else {
+                alert("There is no YouTube playlist with that ID.");
+              }
+            }
+          }
+        })
+      }
+      keyWordsearch();
+    });
     $("#plMachine").bind("keyup", function(e) {
       if (e.which == 13) {
         var val = $("#plMachine").val();
