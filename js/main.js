@@ -2314,7 +2314,7 @@ $('input[type=radio][name=screenControl]').change(function() {
     $("#plMachineById").bind( "change keyup input", function( e ) {
       var searchFrom = firetable.importSelectsChoice;
       // YouTube playlist IDs are 34 characters. Full URL is 72 characters
-      if ( (searchFrom == 1 && this.value.length === 34) || (searchFrom == 1 && this.value.length === 72) ) {
+      if ( (searchFrom == 1 && this.value.length === 18) || (searchFrom == 1 && this.value.length === 34) || (searchFrom == 1 && this.value.length === 72) ) {
         $("#plMachineById + button").prop( 'disabled', false );
       } else {
         $("#plMachineById + button").prop( 'disabled', true );
