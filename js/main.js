@@ -2314,14 +2314,15 @@ $('input[type=radio][name=screenControl]').change(function() {
     $("#plMachineById").bind( "change keyup input", function( e ) {
       var searchFrom = firetable.importSelectsChoice;
       // YouTube playlist IDs are 34 characters. Full URL is 72 characters
-      if ( (searchFrom == 1 && this.value.length === 18) || (searchFrom == 1 && this.value.length === 34) || (searchFrom == 1 && this.value.length === 72) ) {
+      if ( (searchFrom == 1 && this.value.length === 18) || (searchFrom == 1 && this.value.length === 34) || (searchFrom == 1 && this.value.length === 56) || (searchFrom == 1 && this.value.length === 72) ) {
         $("#plMachineById + button").prop( 'disabled', false );
       } else {
         $("#plMachineById + button").prop( 'disabled', true );
       };
     });
     $("#plMachineById + button").bind( "click", function( e ) {
-      var ytPlId = $("#plMachineById").val();
+      var regex = /(?:list=)/
+      var ytPlId = $("#plMachineById").val().split(regex);
       function keyWordsearch() {
         gapi.client.setApiKey('AIzaSyDCXzJ9gGLTF_BLcTzNUO2Zeh4HwPxgyds');
         gapi.client.load('youtube', 'v3', function() {
@@ -2331,7 +2332,7 @@ $('input[type=radio][name=screenControl]').change(function() {
 
       function makeRequest() {
         var request = gapi.client.youtube.playlists.list({
-          id: ytPlId,
+          id: ytPlId[ytPlId.length - 1],
           part: 'snippet'
         });
         request.execute(function(response) {
@@ -2339,8 +2340,9 @@ $('input[type=radio][name=screenControl]').change(function() {
             if (response.result.items) {
               if (response.result.items.length === 1) {
                 var playlistTitle = response.result.items[0].snippet.title;
-                console.log(playlistTitle);
-                firetable.actions.importList( ytPlId, playlistTitle, 1);
+                confirm("Importing playlist: "+playlistTitle);
+                firetable.actions.importList( ytPlId[ytPlId.length - 1], playlistTitle, 1);
+                $("#plMachineById + button").prop( 'disabled', true );
               } else {
                 alert("There is no YouTube playlist with that ID.");
               }
