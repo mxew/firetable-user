@@ -38,7 +38,7 @@ var firetable = {
   pickerInit: false
 }
 
-firetable.version = "00.04.54";
+firetable.version = "00.04.56";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1316,9 +1316,12 @@ firetable.utilities = {
 };
 
 firetable.ui = {
-  textToLinks: function(text) {
-    var re = /(?<!href="|src=")(\b[\w]+:\/\/[\w-?&;#~=\.\/\@]+[\w\/])/ig;
+  textToLinks: function(text, themeBox) {
+    var re = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    if (firetable.showImages && !themeBox) re = /(https?:\/\/(?![/|.|\w|\s|-]*(?:jpg|png|gif))[^" ]+)/g;
     return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
+
+return text;
   },
   strip: function(html){
     var doc = firetable.parser.parseFromString(html, 'text/html');
@@ -1326,19 +1329,21 @@ firetable.ui = {
   },
   showImages: function(chatTxt) {
     if (firetable.showImages){
-      var imageUrlRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpe?g|gif|png)/g;
+      var imageUrlRegex = /((http(s?):)([/|.|\w|\s|-])*\.(?:jpe?g|gif|png))/g;
       var hasImage = chatTxt.search(imageUrlRegex) >= 0;
       if (hasImage) {
-        var imageUrl = chatTxt.replace(imageUrlRegex, function(chatImageUrl) { return chatImageUrl; });
-        var chatImage = new Image();
-        chatImage.onload = function() {
-          var objDiv = document.getElementById("actualChat");
-          var thing1 = objDiv.scrollHeight - objDiv.clientHeight;
-          var thing2 = objDiv.scrollTop;
-          if (Math.abs(thing1 - thing2) <= (parseInt(chatImage.height)+20)) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
-        }
-        chatImage.src = imageUrl;
-        chatTxt = '<a href="'+imageUrl+'" target="_blank"><img src="'+imageUrl+'" class="inlineImage" /><span class="hideImage">&times;</span></a>'
+        chatTxt = chatTxt.replace(imageUrlRegex, function(imageUrl){
+            var chatImage = new Image();
+            chatImage.onload = function() {
+              var objDiv = document.getElementById("actualChat");
+              var thing1 = objDiv.scrollHeight - objDiv.clientHeight;
+              var thing2 = objDiv.scrollTop;
+              if (Math.abs(thing1 - thing2) <= (parseInt(chatImage.height)+20)) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+            }
+            chatImage.src = imageUrl;
+          return '<a class=\"inlineImgLink\" href="'+imageUrl+'" target="_blank"><img src="'+imageUrl+'" class="inlineImage" /><span class="hideImage">&times;</span></a>'
+        });
+
       }
     }
     return chatTxt;
@@ -1349,7 +1354,7 @@ firetable.ui = {
     if (typeof showImages == "undefined") {
       localStorage["firetableShowImages"] = false;
       firetable.showImages = false;
-      $( "#showImagesToggle" ).prop( "checked", true );
+      $( "#showImagesToggle" ).prop( "checked", false );
     } else {
       showImages = JSON.parse(showImages);
       firetable.showImages = showImages;
@@ -1420,7 +1425,7 @@ firetable.ui = {
         $("#themebox").hide();
       } else {
         var txtOut = firetable.ui.strip(data);
-        txtOut = firetable.ui.textToLinks(txtOut);
+        txtOut = firetable.ui.textToLinks(txtOut, true);
         txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
         txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
           return "<code>"+x.replace(/\`/g, "") +"</code>";
@@ -2306,6 +2311,55 @@ $('input[type=radio][name=screenControl]').change(function() {
 
           }
         }
+    });
+    $("#importSources").bind( "click", function( e ) {
+      var searchFrom = firetable.importSelectsChoice;
+      if ( searchFrom == 2 ) {
+        $("#byId").hide();
+      } else {
+        $("#byId").show();
+      }
+    });
+    $("#plMachineById").bind( "change keyup input", function( e ) {
+      var searchFrom = firetable.importSelectsChoice;
+      // YouTube playlist IDs are 34 characters. Full URL is 72 characters
+      if ( (searchFrom == 1 && this.value.length === 18) || (searchFrom == 1 && this.value.length === 34) || (searchFrom == 1 && this.value.length === 56) || (searchFrom == 1 && this.value.length === 72) ) {
+        $("#plMachineById + button").prop( 'disabled', false );
+      } else {
+        $("#plMachineById + button").prop( 'disabled', true );
+      };
+    });
+    $("#plMachineById + button").bind( "click", function( e ) {
+      var regex = /(?:list=)/
+      var ytPlId = $("#plMachineById").val().split(regex);
+      function keyWordsearch() {
+        gapi.client.setApiKey('AIzaSyDCXzJ9gGLTF_BLcTzNUO2Zeh4HwPxgyds');
+        gapi.client.load('youtube', 'v3', function() {
+          makeRequest();
+        });
+      }
+
+      function makeRequest() {
+        var request = gapi.client.youtube.playlists.list({
+          id: ytPlId[ytPlId.length - 1],
+          part: 'snippet'
+        });
+        request.execute(function(response) {
+          if (response.result) {
+            if (response.result.items) {
+              if (response.result.items.length === 1) {
+                var playlistTitle = response.result.items[0].snippet.title;
+                confirm("Importing playlist: "+playlistTitle);
+                firetable.actions.importList( ytPlId[ytPlId.length - 1], playlistTitle, 1);
+                $("#plMachineById + button").prop( 'disabled', true );
+              } else {
+                alert("There is no YouTube playlist with that ID.");
+              }
+            }
+          }
+        })
+      }
+      keyWordsearch();
     });
     $("#plMachine").bind("keyup", function(e) {
       if (e.which == 13) {

@@ -440,7 +440,7 @@ select#listpicker {
   opacity: 0;
   visibility: hidden;
 }
-.chatText.hideImg a::after {
+.chatText.hideImg a.inlineImgLink::after {
   content: 'image hidden';
   position: absolute;
   z-index: 1;
@@ -594,7 +594,7 @@ span.listwords a {
 div#themebox {
   display:none;
   position: absolute;
-  z-index: 999;
+  z-index: 15;
   font-size: 12px;
   background-color: #333;
   text-align: center;
@@ -889,6 +889,7 @@ i#refreshSong {
 .djname {
   text-overflow: ellipsis;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .playcount {
@@ -950,11 +951,54 @@ input#tagMachine, #supercopSearch {
   margin-bottom: 15px;
 }
 
-input#plMachine{
+#byId {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+#byId button.material-icon {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: none;
+  border: none;
+  color: #bbbbbb;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 15px;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  text-align: center;
+  text-decoration: none;
+  top: 9px;
+  right: 5px;
+}
+#byId button.material-icon:disabled {
+  color: #444 !important;
+  cursor: not-allowed;
+}
+#byId button.material-icon:hover {
+  color: #999;
+}
+input#plMachine,
+input#plMachineById {
   line-height: 30px;
   width: 100%;
   padding: 5px;
 }
+input#plMachineById {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding-right: 40px;
+}
+div#byId > p {
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 div#supercopResponse {
     margin-top: -15px;
 }
@@ -1382,6 +1426,9 @@ div#importPromptBox {
   height: 300px;
   overflow-y: scroll;
   overflow-x: hidden;
+}
+#importPromptMain {
+  height: 450px;
 }
 
 div#activeSuspentions {
