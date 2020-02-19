@@ -594,6 +594,7 @@ span.listwords a {
 div#themebox {
   display:none;
   position: absolute;
+  z-index: 999;
   font-size: 12px;
   background-color: #333;
   text-align: center;
