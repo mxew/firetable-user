@@ -2008,18 +2008,22 @@ return text;
     $("#pickEmoji").bind("click", function() {
       //toggle emoji picker
       if ($("#emojiPicker").is(":hidden")){
-        $("#emojiPicker").show();
+        $("#emojiPicker").show(function(){
+          $('#pickerSearch').focus();
+        });
 
         if (!firetable.pickerInit){
           const makeRequest = async () => {
             twemoji.parse(document.getElementById("pickerResults"));
-return true;
-}
+            return true;
+          }
 
-makeRequest()
+          makeRequest()
         }
       } else {
-        $("#emojiPicker").hide();
+        $("#emojiPicker").hide(function(){
+          $('#newchat').focus();
+        });
       }
     });
     //SETTINGS TOGGLES
