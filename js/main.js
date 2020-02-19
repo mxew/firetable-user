@@ -2021,6 +2021,11 @@ firetable.ui = {
         });
       }
     });
+
+$(document).on('click','#themeflex button',function(){
+  $('#newchat').val(':'+$(this).attr('id')+':').trigger(jQuery.Event('keyup', { keycode: 13, which: 13 }));
+});
+
     //SETTINGS TOGGLES
 $('#badoopToggle').change(function() {
     if (this.checked) {
