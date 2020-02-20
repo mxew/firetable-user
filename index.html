@@ -6,7 +6,7 @@
 	<title>Indie Discotheque's Basement | firetable</title>
 	<meta name="viewport" content="width=device-width; initial-scale = 1.0; maximum-scale=1.0; user-scalable=no" />
 	<link rel="shortcut icon" href="favicon.png">
-	<link rel="stylesheet" href="css/looks.css?v=00.04.56" type="text/css" />
+	<link rel="stylesheet" href="css/looks.css?v=00.04.58" type="text/css" />
 	<script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.7/p5.min.js"></script>
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
@@ -94,6 +94,20 @@
 			</div>
 		</div>
 	</div>
+	<div id="cardsOverlay">
+		<div id="cardsBox">
+			<div id="cardsHeader">
+				<div class="left">
+					<span class="ftlogo">firetable</span> Your Card Case
+				</div>
+				<div class="right">
+					<span id="cardsClose">Close</span>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div id="cardsMain"></div>
+		</div>
+	</div>
 	<div id="supercopOverlay">
 		<div id="supercopBox">
 			<div id="supercopHeader">
@@ -149,7 +163,7 @@
 					<span class="fire">fire</span>table <span id="idtitle">Indie Discotheque's Basement</span> <a id="infobutton" target="_blank" href="about"><i class="material-icons">&#xE887;</i></a><span id="ftSettings"><i class="material-icons">settings</i></span><span id="ftSuperCopButton"><i class="material-icons">security</i></span>
 				</div>
 				<div class="right">
-				<span id="loggedInEmail">Not Logged In</span><span id="signOut"> </span>
+				<span id="cardCaseButton"><i class="material-icons"> business_center </i></span><span id="loggedInEmail">Not Logged In</span><span id="signOut"> </span>
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -343,7 +357,7 @@
 </script>
 <script src="https://w.soundcloud.com/player/api.js" type="text/javascript"></script>
 
-<script type="text/javascript" src="js/main.js?v=00.04.56"></script>
+<script type="text/javascript" src="js/main.js?v=00.04.58"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 
 </html>

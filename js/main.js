@@ -38,7 +38,7 @@ var firetable = {
   pickerInit: false
 }
 
-firetable.version = "00.04.56";
+firetable.version = "00.04.58";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -133,6 +133,8 @@ firetable.init = function() {
   var height = $(window).height(); // New height
   var w = $(window).width();
   console.log(w);
+  var caseHeight = height - 100;
+  $("#cardsMain").css("height", caseHeight + "px");
   if (w > 1199) {
     if (height > 520) {
       var morethan = height - 520;
@@ -183,6 +185,8 @@ firetable.init = function() {
   $(window).resize(function() {
     // This will execute whenever the window is resized
     var height = $(window).height(); // New height
+    var caseHeight = height - 100;
+    $("#cardsMain").css("height", caseHeight + "px");
     var w = $(window).width();
     if (w > 1199) {
       if (height > 520) {
@@ -275,6 +279,7 @@ firetable.init = function() {
     if (user) {
       firetable.uid = user.uid;
       console.log("user signed in!");
+      $("#cardCaseButton").show();
       if (firetable.users[firetable.uid]) {
         if (firetable.users[firetable.uid].username) {
           $("#loggedInEmail").text(firetable.users[firetable.uid].username);
@@ -454,6 +459,161 @@ firetable.actions = {
       }
       console.log(error);
     });
+  },
+  cardCase: function(){
+    var niceref = firebase.database().ref("cards");
+     $("#cardsMain").html("");
+     niceref.orderByChild('owner').equalTo(firetable.uid).once("value")
+       .then(function(snapshot) {
+         snapshot.forEach(function(childSnapshot) {
+           var key = childSnapshot.key;
+           var childData = childSnapshot.val();
+           console.log(childData);
+           $("#cardsMain").append("<canvas width=\"225\" height=\"300\" class=\"caseCard\" id=\"cardMaker"+key+"\"></canvas>");
+
+           firetable.actions.displayCard(childData, childSnapshot.key);
+           });
+    });
+  },
+  displayCard: function(data, chatid){
+    console.log("h");
+    var defaultScheme = false;
+    if (data.colors){
+    if (data.colors.color == "#fff") {
+      data.colors.color = "#F4810B";
+      data.colors.txt = "#000";
+      defaultScheme = true;
+    }
+  }
+    console.log("h2");
+
+    var canvas = document.getElementById('cardMaker'+chatid);
+
+    if (canvas.getContext) {
+      var ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, 225, 300);
+
+      ctx.fillStyle = data.colors.color;
+      if (defaultScheme) ctx.fillStyle = "#fff";
+      ctx.fillRect(1, 30, 223, 175);
+
+      var grd = ctx.createLinearGradient(0,0,0,175);
+      grd.addColorStop(0,"rgba(0, 0, 0, 0.75)");
+      grd.addColorStop(1,"rgba(0, 0, 0, 0.55)");
+
+      // Fill with gradient
+      ctx.fillStyle = grd;
+      ctx.fillRect(1,30,223,175);
+
+      ctx.fillStyle = data.colors.color;
+      ctx.fillRect(1, 205, 223, 10);
+
+      ctx.fillStyle = "#333333";
+      //ctx.fillRect(1, 205, 223, 1);
+      // ctx.fillRect(1, 215, 223, 1);
+
+      ctx.fillStyle = "#151515";
+      ctx.fillRect(1, 216, 223, 75);
+
+      //text go
+      ctx.fillStyle = "#eee";
+      ctx.font = "700 11px Helvetica, Arial, sans-serif";
+      ctx.fillText(data.djname, 10, 20);
+
+
+      ctx.font = "400 8px Helvetica, Arial, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("Printed "+firetable.utilities.format_date(data.date)+" | Indie Discotheque", 112.5, 299);
+
+      ctx.font = "700 10px Helvetica, Arial, sans-serif";
+      ctx.textAlign = "left";
+      var linez = firetable.utilities.wrapText(ctx, data.title, 66, 240, 160, 15);
+      console.log(linez);
+      ctx.font = "400 8px Helvetica, Arial, sans-serif";
+      ctx.textAlign = "left";
+      firetable.utilities.wrapText(ctx, data.artist, 66, 253 + (15 * linez), 160, 15);
+
+      ctx.fillStyle = data.colors.txt;
+      ctx.font = "400 9px Helvetica, Arial, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("Card No. "+data.cardnum+" | DJ Card | Max Operating Temp "+data.temp+"°", 112.5, 214);
+      ctx.beginPath();
+      ctx.arc(205, 15, 12, 0, 2 * Math.PI, false);
+      ctx.fillStyle = data.colors.color;
+      ctx.fill();
+
+      ctx.fillStyle = data.colors.txt;
+      ctx.font = "700 15px Helvetica, Arial, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText(data.num, 200.5, 20);
+
+      var doImages = function(){
+        var picboy = new Image;
+        picboy.xvalue = 0;
+        picboy.onload = function() {
+          ctx.drawImage(this, 20, 30, 175, 175);
+          var picboy2 = new Image;
+          picboy2.xvalue = 0;
+          picboy2.onload = function() {
+            var heighta = 50;
+            if (data.image.match(/ytimg.com/g)) heighta = 28;
+            ctx.drawImage(this, 10, 230, 50, heighta);
+            ctx = null;
+          };
+          picboy2.src = data.image;
+        };
+        picboy.src = 'https://indiediscotheque.com/robots/'+data.djid + data.djname+'.png?size=175x175';
+
+
+      };
+
+      // special styles
+
+      if (data.special){
+        if (data.special == "id8"){
+          ctx.fillStyle = data.colors.color;
+          ctx.fillRect(1, 30, 223, 10);
+
+          ctx.fillStyle = "#333333";
+          // ctx.fillRect(1, 29, 223, 1);
+          // ctx.fillRect(1, 40, 223, 1);
+
+          ctx.fillStyle = data.colors.txt;
+          ctx.font = "400 10px Helvetica, Arial, sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("Celebrating 8 Years of Indie Discotheque", 112.5, 38);
+
+          var cake = new Image;
+          cake.xvalue = 0;
+          cake.onload = function() {
+            ctx.drawImage(this, 10, 50, 35, 35);
+            var eight = new Image;
+            eight.xvalue = 0;
+            eight.onload = function() {
+              ctx.drawImage(this, 180, 50, 35, 35);
+              doImages();
+            };
+            eight.src = 'https://indiediscotheque.com/basement/img/8.png';
+          };
+          cake.src = 'https://indiediscotheque.com/basement/img/cake.png';
+
+        }
+      } else {
+        doImages();
+      }
+
+}
+  },
+  showCard: function(cardid, chatid){
+    // let's SHOW A CARD
+    var thecard = firebase.database().ref("cards/" + cardid);
+    thecard.once('value')
+      .then(function(allQueuesSnap) {
+        var data = allQueuesSnap.val();
+        firetable.actions.displayCard(data, chatid);
+      });
   },
   muteToggle: function(zeroMute) {
 
@@ -1174,6 +1334,28 @@ firetable.utilities = {
       }
     });
   },
+  wrapText: function (context, text, x, y, maxWidth, lineHeight) {
+          var words = text.split(' ');
+          var line = '';
+          var lines = 0;
+
+          for(var n = 0; n < words.length; n++) {
+            var testLine = line + words[n] + ' ';
+            var metrics = context.measureText(testLine);
+            var testWidth = metrics.width;
+            if (testWidth > maxWidth && n > 0) {
+              context.fillText(line, x, y);
+              line = words[n] + ' ';
+              y += lineHeight;
+              lines++;
+            }
+            else {
+              line = testLine;
+            }
+          }
+          context.fillText(line, x, y);
+          return lines;
+  },
   // Modern Fisher-Yates shuffle
   shuffle: function(a) {
     var j, x, i;
@@ -1815,8 +1997,13 @@ return text;
         firetable.lastChatId = childSnapshot.key;
       }
 
-      if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+      if (chatData.card){
+        $("#chattxt"+childSnapshot.key).append("<canvas width=\"225\" height=\"300\" class=\"chatCard\" id=\"cardMaker"+childSnapshot.key+"\"></canvas>");
 
+        firetable.actions.showCard(chatData.card, childSnapshot.key);
+        console.log("showin card");
+      }
+      if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
     });
 
     firetable.ui.LinkGrabber.start();
@@ -1993,11 +2180,18 @@ return text;
     $("#supercopClose").bind("click", function() {
       $("#supercopOverlay").css("display", "none");
     });
+    $("#cardsClose").bind("click", function() {
+      $("#cardsOverlay").css("display", "none");
+    });
     $("#ftSettings").bind("click", function() {
       $("#settingsOverlay").toggle();
     });
     $("#ftSuperCopButton").bind("click", function() {
       $("#supercopOverlay").toggle();
+    });
+    $("#cardCaseButton").bind("click", function() {
+      firetable.actions.cardCase();
+      $("#cardsOverlay").show();
     });
     $("#pickerNav").on("click", "i", function() {
        try {

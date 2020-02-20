@@ -1,7 +1,14 @@
 html{
   height: 100%;
 }
-
+.chatCard{
+  display:block;
+  margin-top:10px;
+  margin-bottom:10px;
+}
+.caseCard{
+  margin:10px;
+}
 body{
   margin: 0;
   font-family: "Open Sans", helvetica, arial, sans-serif;
@@ -195,9 +202,10 @@ div#historyarrow {
     border-bottom: 10px solid #212121;
 }
 
-span#ftSettings i, span#ftSuperCopButton i {
+span#ftSettings i, span#ftSuperCopButton i, span#cardCaseButton i {
     vertical-align: middle;
     font-size:16px;
+    margin-bottom:3px;
 }
 span#ftSettings, span#ftSuperCopButton{
     margin-left: 5px;
@@ -205,6 +213,14 @@ span#ftSettings, span#ftSuperCopButton{
     font-size: 12px;
     cursor: pointer;
     font-weight:400;
+}
+span#cardCaseButton{
+  margin-right:5px;
+  color: #999;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight:400;
+  display: none;
 }
 #ftSuperCopButton{
   display:none;
@@ -747,6 +763,7 @@ div#screenover {
 #info i, #infobutton i {
   font-size: 16px;
   vertical-align:middle;
+  margin-bottom: 3px;
 }
 
 #info {
@@ -1317,7 +1334,7 @@ div#tagPromptBox {
   padding: 10px;
 }
 
-div#deletePromptOverlay, #settingsOverlay, #supercopOverlay {
+div#deletePromptOverlay, #settingsOverlay, #supercopOverlay, #cardsOverlay {
   position: absolute;
   top: 0;
   display: none;
@@ -1336,12 +1353,21 @@ div#deletePromptBox, #settingsBox, #supercopBox {
   margin-top: 150px;
 }
 
-#deletePromptClose, #settingsClose, #supercopClose {
+#cardsBox {
+    background-color: #212121;
+    max-width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+    text-align: center;
+}
+
+#deletePromptClose, #settingsClose, #supercopClose, #cardsClose {
   cursor: pointer;
   color: #777;
 }
 
-#deletePromptMain, #settingsMain, #supercopMain {
+#deletePromptMain, #settingsMain, #supercopMain{
   height: 200px;
   overflow-y: hidden;
   overflow-x: hidden;
@@ -1393,11 +1419,12 @@ div#importPromptBox {
   color: #777;
 }
 
-#importPromptMain, #supercopMain {
+#importPromptMain, #supercopMain, #cardsMain {
   height: 300px;
   overflow-y: scroll;
   overflow-x: hidden;
 }
+
 #importPromptMain {
   height: 450px;
 }
@@ -1427,18 +1454,18 @@ div#tagPromptHeader {
   float: right;
 }
 
-div#deletePromptHeader, #settingsHeader, #supercopHeader {
+div#deletePromptHeader, #settingsHeader, #supercopHeader, #cardsHeader {
   background-color: #000;
   padding: 0 10px 0 10px;
   line-height: 35px;
   color: #eee;
 }
 
-#deletePromptHeader .left, #settingsHeader .left, #supercopHeader .left {
+#deletePromptHeader .left, #settingsHeader .left, #supercopHeader .left, #cardsHeader .left {
   float: left;
 }
 
-#deletePromptHeader .right, #settingsHeader .right, #supercopHeader .right {
+#deletePromptHeader .right, #settingsHeader .right, #supercopHeader .right, #cardsHeader .right {
   float: right;
 }
 
