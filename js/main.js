@@ -38,7 +38,7 @@ var firetable = {
   pickerInit: false
 }
 
-firetable.version = "00.04.60";
+firetable.version = "00.04.61";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -469,7 +469,7 @@ firetable.actions = {
            var key = childSnapshot.key;
            var childData = childSnapshot.val();
            console.log(childData);
-           $("#cardsMain").append("<span id=\"caseCardSpot\"><canvas width=\"225\" height=\"300\" class=\"caseCard\" id=\"cardMaker"+key+"\"></canvas><span onclick=\"firetable.actions.chatCard('"+key+"')\" class=\"cardShareChat\">Share In Chat</span></span>");
+           $("#cardsMain").append("<span id=\"caseCardSpot"+key+"\" class=\"caseCardSpot\"><canvas width=\"225\" height=\"300\" class=\"caseCard\" id=\"cardMaker"+key+"\"></canvas><span onclick=\"firetable.actions.giftCard('"+key+"')\" class=\"cardGiftChat\">Gift to DJ</span><span onclick=\"firetable.actions.chatCard('"+key+"')\" class=\"cardShareChat\">Share In Chat</span></span>");
 
            firetable.actions.displayCard(childData, childSnapshot.key);
            });
@@ -483,6 +483,18 @@ firetable.actions = {
       txt: "Check out my card...",
       card: cardid
     };
+    console.log(chooto);
+    chat.push(chooto);
+  },
+  giftCard: function(cardid){
+    var chat = firebase.database().ref("chat");
+    var chooto = {
+      time: firebase.database.ServerValue.TIMESTAMP,
+      id: firetable.uid,
+      txt: "!giftcard :gift:",
+      card: cardid
+    };
+    $("#caseCardSpot"+cardid).remove();
     console.log(chooto);
     chat.push(chooto);
   },

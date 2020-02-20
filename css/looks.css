@@ -544,7 +544,7 @@ select#listpicker {
   border-bottom: 1px solid #111;
 }
 
-span#caseCardSpot {
+.caseCardSpot {
     position: relative;
 }
 
@@ -560,7 +560,24 @@ span.cardShareChat {
     display: none;
 }
 
-span#caseCardSpot:hover .cardShareChat {
+span.cardGiftChat {
+    position: absolute;
+    right: 100px;
+    bottom: 200px;
+    font-size: 14px;
+    background-color: #000;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+}
+
+span.cardGiftChat:hover, span.cardShareChat:hover{
+  background-color:#F4810B;
+  color: #000;
+}
+
+.caseCardSpot:hover .cardShareChat, .caseCardSpot:hover .cardGiftChat {
     display:block;
 }
 
