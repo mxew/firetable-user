@@ -544,6 +544,26 @@ select#listpicker {
   border-bottom: 1px solid #111;
 }
 
+span#caseCardSpot {
+    position: relative;
+}
+
+span.cardShareChat {
+    position: absolute;
+    right: 85px;
+    bottom: 160px;
+    font-size: 14px;
+    background-color: #000;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+}
+
+span#caseCardSpot:hover .cardShareChat {
+    display:block;
+}
+
 #login button {
   background-color: #eee;
   color: #000;
@@ -1384,7 +1404,7 @@ div#deletePromptBox, #settingsBox, #supercopBox {
 
 #cardsBox {
     background-color: #212121;
-    max-width: 750px;
+    max-width: 900px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 50px;

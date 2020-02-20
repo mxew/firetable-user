@@ -38,7 +38,7 @@ var firetable = {
   pickerInit: false
 }
 
-firetable.version = "00.04.59";
+firetable.version = "00.04.60";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -469,11 +469,22 @@ firetable.actions = {
            var key = childSnapshot.key;
            var childData = childSnapshot.val();
            console.log(childData);
-           $("#cardsMain").append("<canvas width=\"225\" height=\"300\" class=\"caseCard\" id=\"cardMaker"+key+"\"></canvas>");
+           $("#cardsMain").append("<span id=\"caseCardSpot\"><canvas width=\"225\" height=\"300\" class=\"caseCard\" id=\"cardMaker"+key+"\"></canvas><span onclick=\"firetable.actions.chatCard('"+key+"')\" class=\"cardShareChat\">Share In Chat</span></span>");
 
            firetable.actions.displayCard(childData, childSnapshot.key);
            });
     });
+  },
+  chatCard: function(cardid){
+    var chat = firebase.database().ref("chat");
+    var chooto = {
+      time: firebase.database.ServerValue.TIMESTAMP,
+      id: firetable.uid,
+      txt: "Check out my card...",
+      card: cardid
+    };
+    console.log(chooto);
+    chat.push(chooto);
   },
   displayCard: function(data, chatid){
     console.log("h");
