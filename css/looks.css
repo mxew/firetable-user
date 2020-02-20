@@ -631,7 +631,7 @@ div#themeflex button {
   width: 2rem;
   height: 2rem;
   padding: 0;
-  font-size: 1rem;
+  font-size: 0.5rem;
   background: #444;
   border: 1px solid transparent;
   border-top: 1px solid #555;
@@ -642,7 +642,7 @@ div#themeflex button {
   cursor: pointer;
 }
 div#themeflex button:hover {
-  background: #F4810B;
+  background: #666;
 }
 div#themeflex > div {
   flex: 1;

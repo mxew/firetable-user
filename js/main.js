@@ -38,7 +38,7 @@ var firetable = {
   pickerInit: false
 }
 
-firetable.version = "00.04.58";
+firetable.version = "00.04.59";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1531,6 +1531,10 @@ return text;
     return chatTxt;
   },
   init: function() {
+
+    //emojify those buttons
+    twemoji.parse(document.getElementById("fire"));
+    twemoji.parse(document.getElementById("cloud_with_rain"));
     //GET SETTINGS FROM LOCALSTORAGE
     var showImages = localStorage["firetableShowImages"];
     if (typeof showImages == "undefined") {
