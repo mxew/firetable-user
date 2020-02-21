@@ -143,11 +143,9 @@ firetable.init = function() {
       var newu = 455 + morethan;
       $("#queuelist").css("height", newh + "px");
       $("#userslist").css("height", newu + "px");
-//      $("#actualChat").css("height", chah + "px");
     } else {
       $("#queuelist").css("height", "128px");
       $("#userslist").css("height", "440px");
-//      $("#actualChat").css("height", "441px");
 
     }
     var histheight = height - 175;
@@ -161,12 +159,10 @@ firetable.init = function() {
       var newu = 455 + morethan;
       $("#queuelist").css("height", newh + "px");
       $("#userslist").css("height", newu + "px");
-//      $("#actualChat").css("height", chah + "px");
     } else {
 
       $("#queuelist").css("height", "146px");
       $("#queuelist").css("height", newh + "px");
-//      $("#actualChat").css("height", "441px");
 
     }
     var histheight = height - 175;
@@ -176,7 +172,6 @@ firetable.init = function() {
     var newu = height - 95;
     var newq = height - 124;
 
-//    $("#actualChat").css("height", chah + "px");
     $("#queuelist").css("height", newq + "px");
     $("#userslist").css("height", newu + "px");
     var histheight = height - 205;
@@ -196,11 +191,9 @@ firetable.init = function() {
         var newu = 455 + morethan;
         $("#queuelist").css("height", newh + "px");
         $("#userslist").css("height", newu + "px");
-//        $("#actualChat").css("height", chah + "px");
       } else {
         $("#queuelist").css("height", "128px");
         $("#userslist").css("height", "458px");
-//        $("#actualChat").css("height", "441px");
 
       }
       var histheight = height - 175;
@@ -217,12 +210,10 @@ firetable.init = function() {
         var newu = 455 + morethan;
         $("#queuelist").css("height", newh + "px");
         $("#userslist").css("height", newu + "px");
-//        $("#actualChat").css("height", chah + "px");
       } else {
 
         $("#queuelist").css("height", "128px");
         $("#queuelist").css("height", newh + "px");
-//        $("#actualChat").css("height", "441px");
 
       }
       var histheight = height - 175;
@@ -231,7 +222,6 @@ firetable.init = function() {
       var chah = height - 276;
       var newu = height - 95;
       var newq = height - 124;
-//      $("#actualChat").css("height", chah + "px");
       $("#queuelist").css("height", newq + "px");
       $("#userslist").css("height", newu + "px");
       var histheight = height - 205;
