@@ -410,6 +410,7 @@ firetable.init = function() {
         });
       $("#signOut").html("<span onclick=\"firetable.actions.logOut()\" id=\"logOutButton\">Log Out</span>");
       $("#login").css("display", "none");
+      $("#themebox").css("display", "block");
       $("#queuebox").css("display", "block");
       $("#actualChat").css("display", "block");
       $("#chatMaker").css("display", "block");
@@ -420,6 +421,7 @@ firetable.init = function() {
       $("#loggedInEmail").text("Not Logged In");
       $("#signOut").html("");
       $("#login").css("display", "block");
+      $("#themebox").css("display", "none");
       $("#queuebox").css("display", "none");
       $("#actualChat").css("display", "none");
       $("#chatMaker").css("display", "none");
