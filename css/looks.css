@@ -1,4 +1,6 @@
-html{
+html,
+body,
+#mainThing {
   height: 100%;
 }
 
@@ -9,6 +11,12 @@ body{
   color: #bbbbbb;
   background-color: #212121;
   overflow: hidden;
+}
+
+#contain {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 #updated{
@@ -393,7 +401,7 @@ select#listpicker {
 }
 
 #actualChat {
-  height: 560px;
+  flex: 1;
   overflow-x: hidden;
   overflow-y: scroll;
 }
@@ -498,9 +506,11 @@ a {
 }
 
 #middleContain {
+  flex: 1;
   width: 1190px;
   margin-left: auto;
   margin-right: auto;
+  overflow: hidden;
 }
 
 .inputline {
@@ -592,12 +602,11 @@ span.listwords a {
 }
 
 div#themebox {
-  display:none;
-  position: absolute;
   z-index: 15;
   font-size: 12px;
   background-color: #333;
   text-align: center;
+  width: 100%;
   padding-top: 5px;
   padding-bottom: 5px;
   border-bottom: 1px solid #111;
@@ -639,10 +648,6 @@ div#currentTheme {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-}
-
-.themeTime > :nth-child(2) {
-    margin-top: 45px;
 }
 
 #newchat {
@@ -760,7 +765,10 @@ div#screenover {
 
 #mainThing #rightbox {
   float: right;
+  display: flex;
+  flex-direction: column;
   width: 270px;
+  height: 100%;
 }
 
 #queuebox .material-icons {
@@ -1557,8 +1565,11 @@ div#usertabs .selected,
   #tagMachine, #supercopSearch {
     width: calc(100% - 12px) !important;
   }
-  #mainThing #rightbox, #themebox {
+  #mainThing #rightbox {
+    flex: 1;
     width: 100% !important;
+    height: auto;
+    overflow: hidden;
   }
   #mainThing #leftbox {
     width: 100% !important;
@@ -1590,6 +1601,10 @@ div#usertabs .selected,
   }
   #middleContain {
     width: 100% !important;
+  }
+  #mainThing {
+    display: flex;
+    flex-direction: column;
   }
   #usersbox {
     width: 100% !important;
@@ -1679,7 +1694,7 @@ div#usertabs .selected,
   div#otherpart {
     width: 75% !important;
   }
-  #mainThing #rightbox, #themebox {
+  #mainThing #rightbox {
     width: 25% !important;
   }
   div#usrarea {
