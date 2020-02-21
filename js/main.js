@@ -148,8 +148,6 @@ firetable.init = function() {
       $("#userslist").css("height", "440px");
 
     }
-    var histheight = height - 175;
-    $("#recentHistory").css("height", histheight+ "px");
   } else if (w > 799) {
     var newh = height - 268;
     if (height > 520) {
@@ -165,8 +163,6 @@ firetable.init = function() {
       $("#queuelist").css("height", newh + "px");
 
     }
-    var histheight = height - 175;
-    $("#recentHistory").css("height", histheight+ "px");
   } else {
     var chah = height - 276;
     var newu = height - 95;
@@ -174,8 +170,6 @@ firetable.init = function() {
 
     $("#queuelist").css("height", newq + "px");
     $("#userslist").css("height", newu + "px");
-    var histheight = height - 205;
-    $("#recentHistory").css("height", histheight+ "px");
   }
   $(window).resize(function() {
     // This will execute whenever the window is resized
@@ -196,9 +190,6 @@ firetable.init = function() {
         $("#userslist").css("height", "458px");
 
       }
-      var histheight = height - 175;
-    //  console.log(histheight);
-      $("#recentHistory").css("height", histheight+ "px");
       windowW =  $(window).width() * 0.75 - (($(window).width() * 0.75) * 0.25);
       setup();
     } else if (w > 799) {
@@ -216,16 +207,12 @@ firetable.init = function() {
         $("#queuelist").css("height", newh + "px");
 
       }
-      var histheight = height - 175;
-      $("#recentHistory").css("height", histheight+ "px");
     } else {
       var chah = height - 276;
       var newu = height - 95;
       var newq = height - 124;
       $("#queuelist").css("height", newq + "px");
       $("#userslist").css("height", newu + "px");
-      var histheight = height - 205;
-      $("#recentHistory").css("height", histheight+ "px");
     }
   });
   var widgetIframe = document.getElementById('sc-widget');
@@ -1414,9 +1401,6 @@ firetable.utilities = {
     $("#screenBox").animate({
       'top': '-300px'
     }, 2000);
-    $("#recentHistory").animate({
-      'top': '175px'
-    }, 1000);
     $("#track").animate({
       'margin-left': '0'
     }, 1000);
@@ -1429,9 +1413,6 @@ firetable.utilities = {
     $("#screenBox").animate({
       'top': '36px'
     }, 5000);
-    $("#recentHistory").animate({
-      'top': '55px'
-    }, 1000);
     $("#track").animate({
       'margin-left': '-120px'
     }, 2500);
