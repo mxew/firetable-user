@@ -1414,12 +1414,6 @@ firetable.utilities = {
     $("#screenBox").animate({
       'top': '-300px'
     }, 2000);
-    $("#volandthings").animate({
-      'bottom': '0'
-    }, 2000);
-    $("#volplace").animate({
-      'padding-left': '15px'
-    }, 1000);
     $("#recentHistory").animate({
       'top': '175px'
     }, 1000);
@@ -1435,15 +1429,6 @@ firetable.utilities = {
     $("#screenBox").animate({
       'top': '36px'
     }, 5000);
-    $("#volandthings").animate({
-      'bottom': '123px'
-    }, 1000);
-    $("#volandthings").animate({
-      'bottom': '123px'
-    }, 1000);
-    $("#volplace").animate({
-      'padding-left': '55px'
-    }, 1000);
     $("#recentHistory").animate({
       'top': '55px'
     }, 1000);
