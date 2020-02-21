@@ -3,7 +3,14 @@ body,
 #mainThing {
   height: 100%;
 }
-
+.chatCard{
+  display:block;
+  margin-top:10px;
+  margin-bottom:10px;
+}
+.caseCard{
+  margin:10px;
+}
 body{
   margin: 0;
   font-family: "Open Sans", helvetica, arial, sans-serif;
@@ -203,9 +210,10 @@ div#historyarrow {
     border-bottom: 10px solid #212121;
 }
 
-span#ftSettings i, span#ftSuperCopButton i {
+span#ftSettings i, span#ftSuperCopButton i, span#cardCaseButton i {
     vertical-align: middle;
     font-size:16px;
+    margin-bottom:3px;
 }
 span#ftSettings, span#ftSuperCopButton{
     margin-left: 5px;
@@ -213,6 +221,14 @@ span#ftSettings, span#ftSuperCopButton{
     font-size: 12px;
     cursor: pointer;
     font-weight:400;
+}
+span#cardCaseButton{
+  margin-right:5px;
+  color: #999;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight:400;
+  display: none;
 }
 #ftSuperCopButton{
   display:none;
@@ -538,6 +554,43 @@ select#listpicker {
   border-bottom: 1px solid #111;
 }
 
+.caseCardSpot {
+    position: relative;
+}
+
+span.cardShareChat {
+    position: absolute;
+    right: 85px;
+    bottom: 160px;
+    font-size: 14px;
+    background-color: #000;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+}
+
+span.cardGiftChat {
+    position: absolute;
+    right: 100px;
+    bottom: 200px;
+    font-size: 14px;
+    background-color: #000;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+}
+
+span.cardGiftChat:hover, span.cardShareChat:hover{
+  background-color:#F4810B;
+  color: #000;
+}
+
+.caseCardSpot:hover .cardShareChat, .caseCardSpot:hover .cardGiftChat {
+    display:block;
+}
+
 #login button {
   background-color: #eee;
   color: #000;
@@ -624,7 +677,7 @@ div#themeflex button {
   width: 2rem;
   height: 2rem;
   padding: 0;
-  font-size: 1rem;
+  font-size: 0.5rem;
   background: #444;
   border: 1px solid transparent;
   border-top: 1px solid #555;
@@ -635,7 +688,7 @@ div#themeflex button {
   cursor: pointer;
 }
 div#themeflex button:hover {
-  background: #F4810B;
+  background: #666;
 }
 div#themeflex > div {
   flex: 1;
@@ -784,6 +837,7 @@ div#screenover {
 #info i, #infobutton i {
   font-size: 16px;
   vertical-align:middle;
+  margin-bottom: 3px;
 }
 
 #info {
@@ -1354,7 +1408,7 @@ div#tagPromptBox {
   padding: 10px;
 }
 
-div#deletePromptOverlay, #settingsOverlay, #supercopOverlay {
+div#deletePromptOverlay, #settingsOverlay, #supercopOverlay, #cardsOverlay {
   position: absolute;
   top: 0;
   display: none;
@@ -1373,12 +1427,21 @@ div#deletePromptBox, #settingsBox, #supercopBox {
   margin-top: 150px;
 }
 
-#deletePromptClose, #settingsClose, #supercopClose {
+#cardsBox {
+    background-color: #212121;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+    text-align: center;
+}
+
+#deletePromptClose, #settingsClose, #supercopClose, #cardsClose {
   cursor: pointer;
   color: #777;
 }
 
-#deletePromptMain, #settingsMain, #supercopMain {
+#deletePromptMain, #settingsMain, #supercopMain{
   height: 200px;
   overflow-y: hidden;
   overflow-x: hidden;
@@ -1430,11 +1493,12 @@ div#importPromptBox {
   color: #777;
 }
 
-#importPromptMain, #supercopMain {
+#importPromptMain, #supercopMain, #cardsMain {
   height: 300px;
   overflow-y: scroll;
   overflow-x: hidden;
 }
+
 #importPromptMain {
   height: 450px;
 }
@@ -1464,18 +1528,18 @@ div#tagPromptHeader {
   float: right;
 }
 
-div#deletePromptHeader, #settingsHeader, #supercopHeader {
+div#deletePromptHeader, #settingsHeader, #supercopHeader, #cardsHeader {
   background-color: #000;
   padding: 0 10px 0 10px;
   line-height: 35px;
   color: #eee;
 }
 
-#deletePromptHeader .left, #settingsHeader .left, #supercopHeader .left {
+#deletePromptHeader .left, #settingsHeader .left, #supercopHeader .left, #cardsHeader .left {
   float: left;
 }
 
-#deletePromptHeader .right, #settingsHeader .right, #supercopHeader .right {
+#deletePromptHeader .right, #settingsHeader .right, #supercopHeader .right, #cardsHeader .right {
   float: right;
 }
 
