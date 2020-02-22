@@ -1754,9 +1754,10 @@ return text;
       if (data) {
         var countr = 1;
         for (var key in data) {
+          console.log('waitlist',data);
           if (data.hasOwnProperty(key)) {
             lbl = "Waitlist (" + countr + ")";
-            ok1 += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + key + "" + data[key].name + ".png?size=110x110);\"></div>" + countr + ". " + data[key].name + "</div>";
+            ok1 += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div>" + countr + ". " + data[key].name + "</div>";
             countr++;
           }
         }
