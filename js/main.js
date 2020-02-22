@@ -758,10 +758,10 @@ firetable.actions = {
       }, 200);
       if (type == 1) {
         if (firetable.scLoaded) firetable.scwidget.pause();
-        player.loadVideoById(cid, "large")
+        player.loadVideoById(cid, 90, "large")
       } else if (type == 2) {
         if (firetable.ytLoaded) player.stopVideo();
-        firetable.scSeek = false;
+        firetable.scSeek = 90000;
         firetable.scwidget.load("http://api.soundcloud.com/tracks/" + cid, {
           auto_play: true
         });
@@ -1754,9 +1754,10 @@ return text;
       if (data) {
         var countr = 1;
         for (var key in data) {
+          console.log('waitlist',data);
           if (data.hasOwnProperty(key)) {
             lbl = "Waitlist (" + countr + ")";
-            ok1 += "<div class=\"prson\">" + countr + ". " + data[key].name + "</div>";
+            ok1 += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div>" + countr + ". " + data[key].name + "</div>";
             countr++;
           }
         }
@@ -1895,7 +1896,7 @@ return text;
               if (firetable.users[key].hostbot) utitle = "robot";
               if (firetable.users[key].username) thename = firetable.users[key].username;
             }
-            newlist += "<div class=\"prson\">" + thename + " <span class=\"utitle\">" + utitle + "</span></div>";
+            newlist += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + key + "" + okdata[key].username + ".png?size=110x110);\"></div>" + thename + " <span class=\"utitle\">" + utitle + "</span></div>";
           }
         }
       }

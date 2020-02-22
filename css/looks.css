@@ -133,14 +133,12 @@ code {
 }
 
 div#recentHistory {
-    height: calc( 100vh - 354px );
-    width: calc(75% - (75% * 0.25));
-    position: absolute;
-    z-index: 25;
-    top: 354px;
-    display:none;
-
-
+  height: calc( 100vh - 354px );
+  width: calc(75% - (75% * 0.25));
+  position: absolute;
+  z-index: 25;
+  top: 354px;
+  display:none;
 }
 #recentHistory .qtxt{
   width: calc(100% - 30px) !important;
@@ -153,28 +151,28 @@ div#histmoreinfo {
     float: right;
     width: calc(100% - 10px);
 }
-#recentHistory .listwords{
+#recentHistory .listwords {
   width: calc(100% - 10px) !important;
   overflow-x: hidden;
-white-space: nowrap;
-text-overflow: ellipsis;
-float: right;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  float: right;
 }
 #recentHistory .previewicon {
-    width: 30px;
-    color: #fff;
-    background-color:#000000;
-    border-radius:15px;
-    text-align:center;
-    display: block;
-    margin-left:10px;
-    margin-top:10px;
-    opacity: 0.75;
+  width: 30px;
+  color: #fff;
+  background-color:#000000;
+  border-radius:15px;
+  text-align:center;
+  display: block;
+  margin-left:10px;
+  margin-top:10px;
+  opacity: 0.75;
 }
 #recentHistory #thehistory{
-      background-color: #212121;
-      height: 100%;
-      overflow-y: scroll;
+  background-color: #212121;
+  height: 100%;
+  overflow-y: scroll;
 }
 
 .histart {
@@ -838,6 +836,7 @@ div#screenover {
 
 #info {
   font-weight: 700;
+  white-space: nowrap;
 }
 
 #infobutton {
@@ -1118,8 +1117,9 @@ div#cancelqsearch{
   position: absolute;
   z-index: 2;
   width: 1em;
-  height: .5em;
+  height: .8em;
   cursor: grab;
+  border-radius: 0.2em;
   -ms-touch-action: none;
   touch-action: none;
 }
@@ -1147,8 +1147,10 @@ div#cancelqsearch{
   background-color: #333;
 }
 #volplace {
+  flex: 1;
   display: flex;
   align-items: center;
+  padding-right: 5vw;
   white-space: nowrap;
 }
 #volstatus {
@@ -1156,7 +1158,8 @@ div#cancelqsearch{
 }
 #volplace #slider {
   margin-bottom: 0;
-  width: calc( 5rem + 10vw );
+  width: 100%;
+  max-width: 20rem;
 }
 #volplace .material-icons {
   font-size: 16px !important;
@@ -1204,7 +1207,7 @@ div#cancelqsearch{
 }
 
 .ui-slider-horizontal .ui-slider-handle {
-  top: -.25em;
+  top: -.4em;
   margin-left: -.6em;
 }
 
@@ -1282,14 +1285,35 @@ div.pvbar {
 }
 
 .prson {
-    padding: 5px 10px 5px 10px;
-    white-space: nowrap;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  padding: 5px 10px 5px 10px;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 
 .prson:nth-child(even) {
   background-color: #151515;
+}
+
+.prson .utitle {
+  margin-left: auto;
+  color: #666;
+  font-size: 0.6rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.botson {
+  margin-right: 0.25em;
+  width: 2em;
+  height: 2em;
+  background-color: black;
+  background-size: auto 160%;
+  background-position: center 55%;
+  background-repeat: no-repeat;
 }
 
 .clear {
@@ -1640,9 +1664,10 @@ div#usertabs .selected,
   #mainThing #leftbox {
     width: 100% !important;
   }
-  #recentHistory{
+  div#recentHistory{
+    top: 295px;
     width: 100% !important;
-    top: 205px !important;
+    height: calc( 100vh - 295px );
   }
   #prgbar {
     margin-bottom: 0 !important;
@@ -1688,9 +1713,6 @@ div#usertabs .selected,
     margin-left: 0 !important;
   }
   #artist, #track, #timr {text-shadow: none !important;}
-  .rh{
-    top: 175px !important;
-  }
   #deck {
     height: 36px !important;
     overflow: hidden;
@@ -1721,6 +1743,10 @@ div#usertabs .selected,
   #albumArt {
     height: 50px !important;
     width: 50px !important;
+  }
+  div#recentHistory{
+    top: 240px;
+    height: calc( 100vh - 240px );
   }
 }
 
