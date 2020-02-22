@@ -1285,14 +1285,35 @@ div.pvbar {
 }
 
 .prson {
-    padding: 5px 10px 5px 10px;
-    white-space: nowrap;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  padding: 5px 10px 5px 10px;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 
 .prson:nth-child(even) {
   background-color: #151515;
+}
+
+.prson .utitle {
+  margin-left: auto;
+  color: #666;
+  font-size: 0.6rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.botson {
+  margin-right: 0.25em;
+  width: 2em;
+  height: 2em;
+  background-color: black;
+  background-size: auto 160%;
+  background-position: center 55%;
+  background-repeat: no-repeat;
 }
 
 .clear {
