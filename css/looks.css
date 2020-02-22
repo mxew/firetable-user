@@ -1641,67 +1641,6 @@ div#usertabs .selected,
    }
 }
 
-@media only screen and (max-width: 799px) {
-  div#usrarea {
-    width: 100% !important;
-  }
-  body {
-    overflow-y: auto !important;
-  }
-  #deletePromptBox, #tagPromptBox, #importPromptBox, #settingsBox, #supercopBox {
-    width: 100% !important;
-  }
-
-  #tagMachine, #supercopSearch {
-    width: calc(100% - 12px) !important;
-  }
-  #mainThing #rightbox {
-    flex: 1;
-    width: 100% !important;
-    height: auto;
-    overflow: hidden;
-  }
-  #mainThing #leftbox {
-    width: 100% !important;
-  }
-  div#recentHistory{
-    top: 295px;
-    width: 100% !important;
-    height: calc( 100vh - 295px );
-  }
-  #prgbar {
-    margin-bottom: 0 !important;
-  }
-  #niceboxes {
-    margin-top: 0 !important;
-  }
-  #idtitle {
-    display: none !important;
-  }
-  #bottomInfo {
-    display: none !important;
-  }
-  div#otherpart {
-    width: 100% !important;
-  }
-  .mmhidden {
-    display: none !important;
-  }
-  div#minimodeoptions {
-    display: block !important;
-  }
-  #middleContain {
-    width: 100% !important;
-  }
-  #mainThing {
-    display: flex;
-    flex-direction: column;
-  }
-  #usersbox {
-    width: 100% !important;
-  }
-}
-
 @media only screen and (max-width: 1199px) {
   .avtr {
     display: none;
@@ -1747,6 +1686,67 @@ div#usertabs .selected,
   div#recentHistory{
     top: 240px;
     height: calc( 100vh - 240px );
+  }
+}
+
+@media only screen and (max-width: 799px) {
+  div#usrarea {
+    width: 100% !important;
+  }
+  body {
+    overflow-y: auto !important;
+  }
+  #deletePromptBox, #tagPromptBox, #importPromptBox, #settingsBox, #supercopBox {
+    width: 100% !important;
+  }
+
+  #tagMachine, #supercopSearch {
+    width: calc(100% - 12px) !important;
+  }
+  #mainThing #rightbox {
+    flex: 1;
+    width: 100% !important;
+    height: auto;
+    overflow: hidden;
+  }
+  #mainThing #leftbox {
+    width: 100% !important;
+  }
+  div#recentHistory{
+    top: 270px;
+    width: 100% !important;
+    height: calc( 100vh - 270px );
+  }
+  #prgbar {
+    margin-bottom: 0 !important;
+  }
+  #niceboxes {
+    margin-top: 0 !important;
+  }
+  #idtitle {
+    display: none !important;
+  }
+  #bottomInfo {
+    display: none !important;
+  }
+  div#otherpart {
+    width: 100% !important;
+  }
+  .mmhidden {
+    display: none !important;
+  }
+  div#minimodeoptions {
+    display: block !important;
+  }
+  #middleContain {
+    width: 100% !important;
+  }
+  #mainThing {
+    display: flex;
+    flex-direction: column;
+  }
+  #usersbox {
+    width: 100% !important;
   }
 }
 
