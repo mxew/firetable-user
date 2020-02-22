@@ -836,6 +836,7 @@ div#screenover {
 
 #info {
   font-weight: 700;
+  white-space: nowrap;
 }
 
 #infobutton {
@@ -1116,8 +1117,9 @@ div#cancelqsearch{
   position: absolute;
   z-index: 2;
   width: 1em;
-  height: .5em;
+  height: .8em;
   cursor: grab;
+  border-radius: 0.2em;
   -ms-touch-action: none;
   touch-action: none;
 }
@@ -1145,8 +1147,10 @@ div#cancelqsearch{
   background-color: #333;
 }
 #volplace {
+  flex: 1;
   display: flex;
   align-items: center;
+  padding-right: 5vw;
   white-space: nowrap;
 }
 #volstatus {
@@ -1154,7 +1158,8 @@ div#cancelqsearch{
 }
 #volplace #slider {
   margin-bottom: 0;
-  width: calc( 5rem + 10vw );
+  width: 100%;
+  max-width: 20rem;
 }
 #volplace .material-icons {
   font-size: 16px !important;
@@ -1202,7 +1207,7 @@ div#cancelqsearch{
 }
 
 .ui-slider-horizontal .ui-slider-handle {
-  top: -.25em;
+  top: -.4em;
   margin-left: -.6em;
 }
 
@@ -1717,6 +1722,10 @@ div#usertabs .selected,
   #albumArt {
     height: 50px !important;
     width: 50px !important;
+  }
+  div#recentHistory{
+    top: 240px;
+    height: calc( 100vh - 240px );
   }
 }
 
