@@ -39,7 +39,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "00.04.62";
+firetable.version = "00.04.63";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -667,7 +667,7 @@ firetable.actions = {
     $("#volstatus").html(icon);
     localStorage["firetableMute"] = muted;
   },
-  pview: function(id, fromSearch, type) {
+  pview: function(id, fromSearch, type, fromHist) {
     if (firetable.preview == id) {
       //already previewing this. stop and resume regular song
       clearTimeout(firetable.ptimeout);
@@ -755,7 +755,9 @@ firetable.actions = {
       firetable.movePvBar = setInterval(function() {
         var pcnt = (firetable.pvCount / 29) * 100;
         firetable.pvCount += 0.2;
-        $("#pvbar" + firetable.preview).css("background", "linear-gradient(90deg, #2c4e61 " + pcnt + "%, #212121 " + pcnt + "%)");
+        var pvcolr = "#212121";
+        if (fromHist) pvcolr = "#151515";
+        $("#pvbar" + firetable.preview).css("background", "linear-gradient(90deg, #2c4e61 " + pcnt + "%, "+ pvcolr +" " + pcnt + "%)");
       }, 200);
       if (type == 1) {
         if (firetable.scLoaded) firetable.scwidget.pause();
@@ -1591,7 +1593,7 @@ return text;
         if (data.type == 2) firstpart == "sc";
         var pkey = firstpart +"cid" + data.cid;
 
-        $("#thehistory").prepend("<div id=\"recentthing"+key+"\" class=\"historyItem qresult\"><div class=\"histart\"><i id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, "+data.type+")\">&#xE037;</i></div><div class=\"pvbar\" id=\"pvbar" + pkey + "\"> <div class=\"qtxt\"><span class=\"listwords\"><a target=\"_blank\" href=\"" + data.url + "\">" + data.artist + " - "+data.title + "</a></span><div id=\"histmoreinfo\">played by "+data.dj+" on "+firetable.utilities.format_date(data.when)+" at "+firetable.utilities.format_time(data.when)+"</div></div><div class=\"delete\"><i id=\"apv" +data.type + data.cid + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + data.cid + "', '"+firetable.utilities.htmlEscape(data.artist + " - "+ data.title)+"', "+data.type+", true)\">&#xE03B;</i></div></div><div class=\"clear\"></div></div>");
+        $("#thehistory").prepend("<div id=\"recentthing"+key+"\" class=\"historyItem qresult\"><div class=\"histart\"><i id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, "+data.type+", true)\">&#xE037;</i></div><div class=\"pvbar\" id=\"pvbar" + pkey + "\"> <div class=\"qtxt\"><span class=\"listwords\"><a target=\"_blank\" href=\"" + data.url + "\">" + data.artist + " - "+data.title + "</a></span><div id=\"histmoreinfo\">played by "+data.dj+" on "+firetable.utilities.format_date(data.when)+" at "+firetable.utilities.format_time(data.when)+"</div></div><div class=\"delete\"><i id=\"apv" +data.type + data.cid + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + data.cid + "', '"+firetable.utilities.htmlEscape(data.artist + " - "+ data.title)+"', "+data.type+", true)\">&#xE03B;</i></div></div><div class=\"clear\"></div></div>");
 
         $($("#recentthing" + key).find(".histart")[0]).css("background-image", "url(" + data.img + ")");
 
@@ -2026,6 +2028,7 @@ return text;
       if (oldthingid == "mmchat") {
         $("#rightbox").addClass("mmhidden");
         $("#upperpart").addClass("mmhidden");
+        $("#recentHistory").addClass("mmhidden");
       } else if (oldthingid == "mmqueue") {
         $("#queuebox").addClass("mmhidden");
       } else if (oldthingid == "mmusrs") {
@@ -2034,6 +2037,7 @@ return text;
       if (thingid == "mmchat") {
         $("#rightbox").removeClass("mmhidden");
         $("#upperpart").removeClass("mmhidden");
+        $("#recentHistory").removeClass("mmhidden");
       } else if (thingid == "mmqueue") {
         $("#queuebox").removeClass("mmhidden");
       } else if (thingid == "mmusrs") {

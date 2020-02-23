@@ -147,7 +147,7 @@ div#recentHistory {
 div#histmoreinfo {
     font-weight: 400;
     font-size: 10px;
-    color: #888;
+    color: #ffffff73;
     float: right;
     width: calc(100% - 10px);
 }
@@ -170,9 +170,13 @@ div#histmoreinfo {
   opacity: 0.75;
 }
 #recentHistory #thehistory{
-  background-color: #212121;
+  background-color: #151515;
   height: 100%;
   overflow-y: scroll;
+}
+
+#thehistory .qresult {
+    border-bottom: 1px solid #000;
 }
 
 .histart {
@@ -205,7 +209,7 @@ div#historyarrow {
     height: 0;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
-    border-bottom: 10px solid #212121;
+    border-bottom: 10px solid #151515;
 }
 
 span#ftSettings i, span#ftSuperCopButton i, span#cardCaseButton i {
@@ -1167,7 +1171,7 @@ div#cancelqsearch{
 #volplace #slider {
   margin-bottom: 0;
   width: 100%;
-  max-width: 20rem;
+  max-width: 10rem;
 }
 #volplace .material-icons {
   font-size: 16px !important;
