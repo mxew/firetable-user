@@ -1,6 +1,7 @@
 var firetable = {
   started: false,
   uid: null,
+  uname: null,
   pvCount: 0,
   playdex: 0,
   users: {},
@@ -39,7 +40,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "00.04.64";
+firetable.version = "00.04.65";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -256,11 +257,13 @@ firetable.init = function() {
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
       firetable.uid = user.uid;
+      firetable.uname = user.uid;
       firetable.debug && console.log("user signed in!");
       $("#cardCaseButton").show();
       if (firetable.users[firetable.uid]) {
         if (firetable.users[firetable.uid].username) {
           $("#loggedInEmail").text(firetable.users[firetable.uid].username);
+          firetable.uname = firetable.users[firetable.uid].username;
         } else {
           $("#loggedInEmail").text(user.uid);
         }
@@ -461,7 +464,8 @@ firetable.actions = {
       time: firebase.database.ServerValue.TIMESTAMP,
       id: firetable.uid,
       txt: "Check out my card...",
-      card: cardid
+      card: cardid,
+      name: firetable.uname
     };
     firetable.debug && console.log(chooto);
     chat.push(chooto);
@@ -472,7 +476,8 @@ firetable.actions = {
       time: firebase.database.ServerValue.TIMESTAMP,
       id: firetable.uid,
       txt: "!giftcard :gift:",
-      card: cardid
+      card: cardid,
+      name: firetable.uname
     };
     $("#caseCardSpot"+cardid).remove();
     firetable.debug && console.log(chooto);
@@ -1852,15 +1857,29 @@ return text;
       }
     });
     var ref2 = firebase.database().ref("users");
-    ref2.on('value', function(dataSnapshot) {
+    ref2.orderByChild('status').equalTo(true).on('value', function(dataSnapshot) {
       var okdata = dataSnapshot.val();
       firetable.users = okdata;
+
       if ($("#loggedInEmail").text() == firetable.uid) {
         if (firetable.users[firetable.uid]) {
-          if (firetable.users[firetable.uid].username) $("#loggedInEmail").text(firetable.users[firetable.uid].username);
+          if (firetable.users[firetable.uid].username){
+            $("#loggedInEmail").text(firetable.users[firetable.uid].username);
+          }
+        }
+      }
+      if (firetable.users[firetable.uid]) {
+        if (firetable.users[firetable.uid].username){
+          firetable.uname = firetable.users[firetable.uid].username;
         }
       }
       if (firetable.uid){
+        if (!firetable.users[firetable.uid]){
+            //Firebase thinks you are not here (but you are totally here!)
+            var ref0 = firebase.database().ref("users/" + firetable.uid + "/status");
+            ref0.set(true);
+            return;
+        }
       if (firetable.users[firetable.uid].supermod){
         if ($("#ftSuperCopButton").is(":hidden")){
           $("#ftSuperCopButton").show();
@@ -1894,31 +1913,45 @@ return text;
       }
       }
       var newlist = "";
+      var listBuild = [];
       var count = 0;
-      for (var key in okdata) {
+      for (var key in firetable.users) {
         if (okdata.hasOwnProperty(key)) {
-          var thisone = okdata[key];
+          var thisone = firetable.users[key];
           var utitle = "";
-          if (key == firetable.uid) {
-            if (!thisone.status) {
-              //Firebase thinks you are not here (but you are totally here!)
-              var ref0 = firebase.database().ref("users/" + firetable.uid + "/status");
-              ref0.set(true);
-            }
-          }
-          if (thisone.status || key == firetable.uid) {
-            //THIS PERSON IS HERE
             var thename = key;
+            var rolenum = 0;
             count++;
             if (firetable.users[key]) {
-              if (firetable.users[key].mod) utitle = "cop";
-              if (firetable.users[key].supermod) utitle = "supercop";
-              if (firetable.users[key].hostbot) utitle = "robot";
+              if (firetable.users[key].mod) {
+                utitle = "cop";
+                rolenum = 1;
+              }
+              if (firetable.users[key].supermod) {
+                utitle = "supercop";
+                rolenum = 2;
+              }
+              if (firetable.users[key].hostbot){
+                utitle = "robot";
+                rolenum = 3;
+              }
               if (firetable.users[key].username) thename = firetable.users[key].username;
             }
-            newlist += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + key + "" + okdata[key].username + ".png?size=110x110);\"></div><span class=\"prsnName\">" + thename + "</span><span class=\"utitle\">" + utitle + "</span></div>";
-          }
+            var pguy = {
+              id: key,
+              name: thename,
+              rolename: utitle,
+              rolenum: rolenum
+            };
+            listBuild.push(pguy);
+
         }
+      }
+      listBuild.sort(function(a, b) {
+            return b.rolenum - a.rolenum;
+      });
+      for (var i=0; i<listBuild.length; i++){
+        newlist += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + listBuild[i].id + "" + listBuild[i].name + ".png?size=110x110);\"></div><span class=\"prsnName\">" + listBuild[i].name + "</span><span class=\"utitle\">" + listBuild[i].rolename + "</span></div>";
       }
       $("#allusers").html(newlist);
       $("#label1").text("Everyone (" + count + ")");
@@ -1941,6 +1974,8 @@ return text;
         if (firetable.users[chatData.id].mod) utitle = "cop";
         if (firetable.users[chatData.id].supermod) utitle = "supercop";
         if (firetable.users[chatData.id].hostbot) utitle = "robot";
+      } else if (chatData.name){
+        namebo = chatData.name;
       }
 
       var badoop = false;
@@ -2766,7 +2801,8 @@ $('input[type=radio][name=screenControl]').change(function() {
             var chooto = {
               time: firebase.database.ServerValue.TIMESTAMP,
               id: firetable.uid,
-              txt: ":fire:"
+              txt: ":fire:",
+              name: firetable.uname
             };
             firetable.debug && console.log(chooto);
             chat.push(chooto);
@@ -2775,7 +2811,8 @@ $('input[type=radio][name=screenControl]').change(function() {
             var chooto = {
               time: firebase.database.ServerValue.TIMESTAMP,
               id: firetable.uid,
-              txt: ":cloud_with_rain:"
+              txt: ":cloud_with_rain:",
+              name: firetable.uname
             };
             firetable.debug && console.log(chooto);
             chat.push(chooto);
@@ -2786,7 +2823,8 @@ $('input[type=radio][name=screenControl]').change(function() {
             var chooto = {
               time: firebase.database.ServerValue.TIMESTAMP,
               id: firetable.uid,
-              txt: thingtosay
+              txt: thingtosay,
+              name: firetable.uname
             };
             firetable.debug && console.log(chooto);
             chat.push(chooto);
@@ -2797,7 +2835,8 @@ $('input[type=radio][name=screenControl]').change(function() {
             var chooto = {
               time: firebase.database.ServerValue.TIMESTAMP,
               id: firetable.uid,
-              txt: thingtosay
+              txt: thingtosay,
+              name: firetable.uname
             };
             firetable.debug && console.log(chooto);
             chat.push(chooto);
@@ -2808,7 +2847,8 @@ $('input[type=radio][name=screenControl]').change(function() {
             var chooto = {
               time: firebase.database.ServerValue.TIMESTAMP,
               id: firetable.uid,
-              txt: thingtosay
+              txt: thingtosay,
+              name: firetable.uname
             };
             firetable.debug && console.log(chooto);
             chat.push(chooto);
@@ -2818,7 +2858,8 @@ $('input[type=radio][name=screenControl]').change(function() {
           var chooto = {
             time: firebase.database.ServerValue.TIMESTAMP,
             id: firetable.uid,
-            txt: txt
+            txt: txt,
+            name: firetable.uname
           };
           firetable.debug && console.log(chooto);
           chat.push(chooto);

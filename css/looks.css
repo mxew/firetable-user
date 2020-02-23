@@ -392,8 +392,9 @@ select#listpicker {
   padding: 10px 15px 10px 15px;
 }
 
-.nowplayn {
-  background-color: #333 !important;
+.newChat.nowplayn {
+    background-color: #333 !important;
+    padding: 5px 15px 5px 15px;
 }
 
 .chatName {
