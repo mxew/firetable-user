@@ -39,7 +39,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "00.04.63";
+firetable.version = "00.04.64";
 var player;
 
 function onYouTubeIframeAPIReady() {

@@ -389,7 +389,7 @@ select#listpicker {
 }
 
 .newChat {
-  padding: 5px 15px 5px 15px;
+  padding: 10px 15px 10px 15px;
 }
 
 .nowplayn {
@@ -398,6 +398,7 @@ select#listpicker {
 
 .chatName {
   font-weight: 700;
+  margin-bottom: 5px;
 }
 
 .newChat:nth-child(even) {
@@ -1625,6 +1626,7 @@ div#usertabs,
 #searchSelects {
   background-color: black;
   display: flex;
+  font-weight:700;
   padding: 1px 1px 0 1px;
 }
 
