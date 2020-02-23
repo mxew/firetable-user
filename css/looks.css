@@ -147,7 +147,7 @@ div#recentHistory {
 div#histmoreinfo {
     font-weight: 400;
     font-size: 10px;
-    color: #ffffff73;
+    color: rgba(255, 255, 255, 0.47);
     float: right;
     width: calc(100% - 10px);
 }
@@ -301,7 +301,7 @@ div#npbottom {
 a#songlink {
     margin-left: 15px;
     text-decoration:none;
-    color: #ffffffcc;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 #reloadtrack{
@@ -447,7 +447,7 @@ select#listpicker {
   float: right;
   font-weight: 400;
   font-size: 10px;
-  color: #ffffff73;
+  color: rgba(255, 255, 255, 0.47);
 }
 
 .chatText a {
@@ -776,8 +776,7 @@ div#emojiPicker {
     height: 250px;
     display:none;
     width: 100%;
-    background-color: #000000;
-    opacity: 97.86%;
+    background-color: rgba(0, 0, 0, 97.86);
 }
 
 div#pickerNav {
@@ -1216,7 +1215,7 @@ div#cancelqsearch{
 }
 
 #upperpart {
-  color: #ffffffcc;
+  color: rgba(255, 255, 255, 0.8);
   transition: background-color 0.5s ease;
 }
 
@@ -1254,7 +1253,7 @@ div.qresult {
 
 .ui-widget.ui-widget-content {
   border: none;
-  background-color: #cccccc6e;
+  background-color: rgba(204, 204, 204, 0.43137254901960786);
 }
 
 a.importLinkCheck {
@@ -1312,7 +1311,7 @@ div.pvbar {
 }
 
 .utitle {
-  color: #ffffff73;
+  color: rgba(255, 255, 255, 0.47);
   font-size: 0.55rem;
   font-weight: 700;
   text-transform: uppercase;
