@@ -40,7 +40,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "00.04.67";
+firetable.version = "00.04.68";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -783,7 +783,9 @@ firetable.actions = {
     if (source == dest){
       //source and dest are the same, let's remove the duplicates
       firetable.actions.removeDupesFromQueue();
-    } else if (dest == -1){
+      return;
+    }
+    if (dest == -1){
       // create new list if needed
       var plref = firebase.database().ref("playlists/" + firetable.uid);
       var newlist = plref.push();
@@ -981,6 +983,8 @@ firetable.actions = {
     for (var i=0; i<dupes.length; i++){
       firetable.actions.deleteSong(dupes[i].key);
     }
+    $("#mergeCompleted").show();
+    $("#mergeHappening").hide();
   },
   editTagsPrompt: function(songid) {
     var song = firetable.queue[songid];
@@ -2159,7 +2163,28 @@ return text;
       $("#createscreen").css("display", "none");
       $("#resetscreen").css("display", "block");
     });
-    $("#grab").bind("click", firetable.actions.grab);
+    $("#grab").bind("click", function(){
+      var isHidden = $("#stealContain").is( ":hidden" );
+      if (isHidden){
+        var allQueues = firebase.database().ref("playlists/" + firetable.uid);
+        allQueues.once('value')
+          .then(function(allQueuesSnap) {
+            var allPlaylists = allQueuesSnap.val();
+            $("#grab").removeClass("grabbed");
+            $("#stealpicker").html("<option value=\"-1\">Where to?</option><option value=\"0\">Default Queue</option>");
+            for (var key in allPlaylists) {
+              if (allPlaylists.hasOwnProperty(key)) {
+                $("#stealpicker").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
+              }
+            }
+
+           $( "#stealContain" ).show();
+          });
+
+      } else {
+        $( "#stealContain" ).hide();
+      }
+    });
     $("#shuffleQueue").bind("click", firetable.actions.shuffleQueue);
     $("#history").bind("click", function() {
        var isHidden = $("#recentHistory").is( ":hidden" );
@@ -2347,6 +2372,31 @@ $('input[type=radio][name=screenControl]').change(function() {
     }
   }
 });
+
+
+$("#stealpicker").change(function() {
+  var dest = $("#stealpicker").val();
+  if (dest == "-1") return;
+  var destref;
+  if (dest == 0){
+    destref = firebase.database().ref("queues/" + firetable.uid);
+  } else {
+    destref = firebase.database().ref("playlists/" + firetable.uid + "/" + dest + "/list");
+  }
+  if (firetable.song.cid != 0) {
+    var title = firetable.song.artist + " - " + firetable.song.title;
+    $("#grab").addClass("grabbed");
+    var info = {
+      type: firetable.song.type,
+      name: title,
+      cid: firetable.song.cid
+    };
+    destref.push(info);
+    $( "#stealContain" ).hide();
+  }
+
+});
+
     $("#pldeleteButton").bind("click", function() {
       var val = $("#deletepicker").val();
       firetable.debug && console.log(val);
