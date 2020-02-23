@@ -283,12 +283,24 @@ div#scScreen {
   pointer-events: none;
 }
 
-#grab, #reloadtrack, #history {
+#grab, #reloadtrack, #history, #songlink {
   cursor: pointer;
   font-size: 12px;
 }
 
-#grab, #reloadtrack{
+div#npbottom {
+    margin-left: 15px;
+    bottom: 0;
+    position: absolute;
+}
+
+a#songlink {
+    margin-left: 15px;
+    text-decoration:none;
+    color: #ffffffcc;
+}
+
+#reloadtrack{
   margin-right: 15px;
 }
 
@@ -828,7 +840,7 @@ div#screenover {
 }
 
 
-#info i, #infobutton i {
+#info i, #infobutton i, #grab i, #songlink i {
   font-size: 16px;
   vertical-align:middle;
   margin-bottom: 3px;
@@ -969,10 +981,6 @@ i#refreshSong {
   font-weight: 700;
 }
 
-span.utitle {
-  font-size: 12px;
-  font-weight: 400;
-}
 
 input#qsearch {
   width: calc(100% - 12px);
@@ -1144,7 +1152,7 @@ div#cancelqsearch{
   align-items: center;
   justify-content: space-between;
   padding: 0.2rem 1rem;
-  background-color: #333;
+  background-color: #212121;
 }
 #volplace {
   flex: 1;
@@ -1297,21 +1305,32 @@ div.pvbar {
   background-color: #151515;
 }
 
-.prson .utitle {
-  margin-left: auto;
-  color: #666;
-  font-size: 0.6rem;
-  font-weight: bold;
+.utitle {
+  color: #ffffff73;
+  font-size: 0.55rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
+.prson .utitle{
+    margin-left: auto;
+}
+
+span.prsnName {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
 
 .botson {
-  margin-right: 0.25em;
+  margin-right: 0.5em;
   width: 2em;
   height: 2em;
-  background-color: black;
-  background-size: auto 160%;
+  background-color: #000;
+  background-size: auto 100%;
+  border-radius: 1em;
   background-position: center 55%;
   background-repeat: no-repeat;
 }
@@ -1458,7 +1477,7 @@ div#deletePromptBox, #settingsBox, #supercopBox {
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 50px;
+    margin-top: 25px;
     text-align: center;
 }
 
@@ -1608,7 +1627,6 @@ div#usertabs,
 div#usertabs .selected,
 #searchSelects .searchSelectsSelected {
   margin-bottom: -1px;
-  font-weight: bold;
   color: white;
   background-color: #212121;
   border-bottom: 1px solid #212121;
@@ -1666,6 +1684,12 @@ div#usertabs .selected,
   #nowplaying {
     width: calc(100% - 65px) !important;
   }
+
+  div#npbottom {
+      margin-left: -50px !important;
+      bottom: 15px !important;
+  }
+
   #track, #artist {
     width: calc(100% - 80px) !important;
   }

@@ -39,7 +39,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "00.04.61";
+firetable.version = "00.04.62";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -139,7 +139,7 @@ firetable.init = function() {
   if (w > 1199) {
     if (height > 520) {
       var morethan = height - 520;
-      var newh = 138 + morethan;
+      var newh = 111 + morethan;
       var chah = 451 + morethan;
       var newu = 455 + morethan;
       $("#queuelist").css("height", newh + "px");
@@ -150,7 +150,7 @@ firetable.init = function() {
 
     }
   } else if (w > 799) {
-    var newh = height - 268;
+    var newh = height - 295;
     if (height > 520) {
       var morethan = height - 520;
 
@@ -181,7 +181,7 @@ firetable.init = function() {
     if (w > 1199) {
       if (height > 520) {
         var morethan = height - 520;
-        var newh = 138 + morethan;
+        var newh = 111 + morethan;
         var chah = 451 + morethan;
         var newu = 455 + morethan;
         $("#queuelist").css("height", newh + "px");
@@ -194,7 +194,7 @@ firetable.init = function() {
       windowW =  $(window).width() * 0.75 - (($(window).width() * 0.75) * 0.25);
       setup();
     } else if (w > 799) {
-      var newh = height - 268;
+      var newh = height - 295;
       if (height > 520) {
         var morethan = height - 520;
 
@@ -1408,6 +1408,12 @@ firetable.utilities = {
     $("#artist").animate({
       'margin-left': '0'
     }, 1000);
+    $("#npbottom").animate({
+      'margin-left': '15px'
+    }, 500);
+    $("#npbottom").animate({
+      'bottom': '0'
+    }, 500);
     $("#screenStyles").remove();
   },
   screenDown: function(){
@@ -1420,6 +1426,13 @@ firetable.utilities = {
     $("#artist").animate({
       'margin-left': '-120px'
     }, 2500);
+    $("#npbottom").animate({
+      'margin-left': '-105px'
+    }, 2500);
+
+    $("#npbottom").animate({
+      'bottom': '30px'
+    }, 1000);
 
   },
   isChatPrettyMuchAtBottom: function() {
@@ -1655,6 +1668,10 @@ return text;
       }
       $("#track").text(data.title);
       $("#artist").text(data.artist);
+      $("#songlink").attr("href", data.url);
+      var typeLabel = "Youtube";
+      if (data.type == 2) typeLabel = "Soundcloud";
+      $("#songlinkTxt").text(typeLabel);
       $("#albumArt").css("background-image", "url(" + data.image + ")")
       var nownow = Date.now();
       var timeSince = nownow - data.started;
@@ -1758,7 +1775,7 @@ return text;
           firetable.debug && console.log('waitlist',data);
           if (data.hasOwnProperty(key)) {
             lbl = "Waitlist (" + countr + ")";
-            ok1 += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div>" + countr + ". " + data[key].name + "</div>";
+            ok1 += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><span class=\"prsnName\">" + countr + ". " + data[key].name + "</span></div>";
             countr++;
           }
         }
@@ -1897,7 +1914,7 @@ return text;
               if (firetable.users[key].hostbot) utitle = "robot";
               if (firetable.users[key].username) thename = firetable.users[key].username;
             }
-            newlist += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + key + "" + okdata[key].username + ".png?size=110x110);\"></div>" + thename + " <span class=\"utitle\">" + utitle + "</span></div>";
+            newlist += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + key + "" + okdata[key].username + ".png?size=110x110);\"></div><span class=\"prsnName\">" + thename + "</span><span class=\"utitle\">" + utitle + "</span></div>";
           }
         }
       }
