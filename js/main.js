@@ -40,7 +40,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "00.04.66";
+firetable.version = "00.04.67";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -780,9 +780,11 @@ firetable.actions = {
 
   },
   mergeLists: function(source, dest, sourceName){
-
-    // create new list if needed
-    if (dest == -1){
+    if (source == dest){
+      //source and dest are the same, let's remove the duplicates
+      firetable.actions.removeDupesFromQueue();
+    } else if (dest == -1){
+      // create new list if needed
       var plref = firebase.database().ref("playlists/" + firetable.uid);
       var newlist = plref.push();
       var listid = newlist.key;
@@ -962,6 +964,23 @@ firetable.actions = {
     }
     if (changePv) firetable.preview = changePv;
     firetable.queueRef.set(newobj);
+  },
+  removeDupesFromQueue: function(){
+    var okdata = firetable.queue;
+    var arr = [];
+    for (var key in okdata) {
+      if (okdata.hasOwnProperty(key)) {
+        var entry = firetable.queue[key];
+        entry.key = key;
+        arr.push(entry);
+      }
+    }
+    var dupes = arr.filter((obj, pos, arr2) => {
+        return arr2.map(mapObj => mapObj.cid).indexOf(obj.cid) !== pos;
+    });
+    for (var i=0; i<dupes.length; i++){
+      firetable.actions.deleteSong(dupes[i].key);
+    }
   },
   editTagsPrompt: function(songid) {
     var song = firetable.queue[songid];
