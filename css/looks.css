@@ -330,6 +330,10 @@ div#scScreen {
   font-size: 12px;
 }
 
+#grab{
+  margin-right: 15px;
+}
+
 div#npbottom {
     margin-left: 15px;
     bottom: 0;
@@ -337,7 +341,6 @@ div#npbottom {
 }
 
 a#songlink {
-    margin-left: 15px;
     text-decoration:none;
     color: rgba(255, 255, 255, 0.8);
 }
