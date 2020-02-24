@@ -53,7 +53,10 @@ function onYouTubeIframeAPIReady() {
     },
     videoId: '0',
     events: {
-      onReady: initialize
+      onReady: initialize,
+      onStateChange: function(){
+        $('#reloadtrack').removeClass('working');
+      }
     }
   });
 }
@@ -123,7 +126,7 @@ function onPlayerStateChange(event) {
 }
 
 firetable.init = function() {
-  firetable.debug && console.log("Yo sup welcome to firetable my name is chris rohn.")
+  console.log("Yo sup welcome to firetable my name is chris rohn.");
   firetable.started = true;
   var config = {
     apiKey: "AIzaSyDdshWtOPnY_0ACt6uJKmcI_qPpTfO4sJ4",
@@ -143,12 +146,9 @@ firetable.init = function() {
       var newh = 111 + morethan;
       var chah = 451 + morethan;
       var newu = 455 + morethan;
-      $("#queuelist").css("height", newh + "px");
       $("#userslist").css("height", newu + "px");
     } else {
-      $("#queuelist").css("height", "128px");
       $("#userslist").css("height", "440px");
-
     }
   } else if (w > 799) {
     var newh = height - 295;
@@ -157,20 +157,13 @@ firetable.init = function() {
 
       var chah = 451 + morethan;
       var newu = 455 + morethan;
-      $("#queuelist").css("height", newh + "px");
       $("#userslist").css("height", newu + "px");
-    } else {
-
-      $("#queuelist").css("height", "146px");
-      $("#queuelist").css("height", newh + "px");
-
     }
   } else {
     var chah = height - 276;
     var newu = height - 95;
     var newq = height - 124;
 
-    $("#queuelist").css("height", newq + "px");
     $("#userslist").css("height", newu + "px");
   }
   $(window).resize(function() {
@@ -185,10 +178,8 @@ firetable.init = function() {
         var newh = 111 + morethan;
         var chah = 451 + morethan;
         var newu = 455 + morethan;
-        $("#queuelist").css("height", newh + "px");
         $("#userslist").css("height", newu + "px");
       } else {
-        $("#queuelist").css("height", "128px");
         $("#userslist").css("height", "458px");
 
       }
@@ -201,19 +192,12 @@ firetable.init = function() {
 
         var chah = 451 + morethan;
         var newu = 455 + morethan;
-        $("#queuelist").css("height", newh + "px");
         $("#userslist").css("height", newu + "px");
-      } else {
-
-        $("#queuelist").css("height", "128px");
-        $("#queuelist").css("height", newh + "px");
-
       }
     } else {
       var chah = height - 276;
       var newu = height - 95;
       var newq = height - 124;
-      $("#queuelist").css("height", newq + "px");
       $("#userslist").css("height", newu + "px");
     }
   });
@@ -402,7 +386,7 @@ firetable.init = function() {
       $("#signOut").html("<span onclick=\"firetable.actions.logOut()\" id=\"logOutButton\">Log Out</span>");
       $("#login").css("display", "none");
       $("#themebox").css("display", "block");
-      $("#queuebox").css("display", "block");
+      $("#queuebox").css("display", "flex");
       $("#actualChat").css("display", "block");
       $("#chatMaker").css("display", "block");
       $("#grab").css("display", "inline-block");
@@ -1223,6 +1207,7 @@ firetable.actions = {
     ref.set(false);
   },
   reloadtrack: function() {
+    $('#reloadtrack').addClass('working');
     //start regular song
     var nownow = Date.now();
     var timeSince = nownow - firetable.song.started;
@@ -1240,6 +1225,8 @@ firetable.actions = {
         firetable.scSeek = timeSince;
         firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
           auto_play: true
+        },function(){
+          $('#reloadtrack').removeClass('working');
         });
       }
     }
@@ -2165,8 +2152,10 @@ return text;
        var isHidden = $("#recentHistory").is( ":hidden" );
        if (isHidden){
          $( "#recentHistory" ).show();
+         $(this).addClass('on');
        } else {
          $( "#recentHistory" ).hide();
+         $(this).removeClass('on');
        }
     });
     $("#startMerge").bind("click", function() {
@@ -2911,6 +2900,8 @@ $('input[type=radio][name=screenControl]').change(function() {
       $("#djthing" + firetable.playdex).css("background-color", firetable.color);
       $("#djthing" + firetable.playdex).css("color", firetable.countcolor);
       $("#volstylebox").html("<style>.ui-slider-horizontal .ui-slider-range-min{ background-color: " + firetable.color + "; } .grabbed { color: " + firetable.color + " !important; } </style>");
+      $('.customColorStyles').remove();
+      $("head").append("<style class='customColorStyles'>.ftlogo{color: " + firetable.color + ";} button.icontogg.on {color: " + firetable.color + ";border-bottom: 1px solid " + firetable.color + "88;}</style>");
     });
   },
   usertab1: function() {

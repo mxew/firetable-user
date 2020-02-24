@@ -160,7 +160,7 @@
 		<div id="topbar">
 			<div class="inr">
 				<div class="left">
-					<span class="fire">fire</span>table <span id="idtitle">Indie Discotheque's Basement</span> <a id="infobutton" target="_blank" href="about"><i class="material-icons">&#xE887;</i></a><span id="ftSettings"><i class="material-icons">settings</i></span><span id="ftSuperCopButton"><i class="material-icons">security</i></span>
+					<span class="ftlogo">firetable</span> <span id="idtitle">Indie Discotheque's Basement</span> <a id="infobutton" target="_blank" href="about"><i class="material-icons">&#xE887;</i></a><span id="ftSettings"><i class="material-icons">settings</i></span><span id="ftSuperCopButton"><i class="material-icons">security</i></span>
 				</div>
 				<div class="right">
 				<span id="cardCaseButton"><i class="material-icons"> business_center </i></span><span id="loggedInEmail">Not Logged In</span><span id="signOut"> </span>
@@ -226,20 +226,16 @@
 								<div id="deck"></div>
 								<div id="prgbar"></div>
 								<div id="volandthings">
+									<button role="button" class="iconbutt" id="reloadtrack" title="reload audio">
+										<i class="material-icons">refresh</i>
+									</button>
 									<div id="volplace">
 										<i id="volstatus" class="material-icons">&#xE050;</i>
 										<div id="slider"></div>
 									</div>
-									<div id="shareinfo">
-										<span id="info">
-											<span id="reloadtrack">
-												<i class="material-icons">refresh</i> Reload
-											</span>
-											<span id="history">
-												<i class="material-icons">history</i> History
-											</span>
-										</span>
-									</div>
+									<button role="button" class="icontogg" id="history" title="show/hide track history">
+										<i class="material-icons">history</i>
+									</button>
 								</div>
 								<div class="clear"></div>
 							</div>
@@ -250,21 +246,23 @@
 								Log In or Sign Up to Join The Party!
 							</div>
 							<div id="queuebox" class="mmhidden">
-								<select id="listpicker">
-							<option value="1">Add/Delete Playlist</option>
-  						<option value="0">Default Queue</option>
-						</select>
-								<span id="addToQueueBttn">Add</span>
-								<span id="mergeLists"><i class="material-icons"> merge_type </i></span>
-								<span id="shuffleQueue"><i class="material-icons"> shuffle </i></span>
-								<div id="mergeContain">
-									<div id="mergeArrow"></div>
-									<div id="mergeBox">
-										<div id="mergeSetup">
-											<select id="mergepicker"> <option value="0">Default Queue</option> </select> <i class="material-icons"> arrow_right_alt </i> <select id="mergepicker2"> <option value="0">Default Queue</option> </select> <span id="startMerge">Merge</span>
+								<div class="queuetop">
+									<select id="listpicker">
+										<option value="1">Add/Delete Playlist</option>
+										  <option value="0">Default Queue</option>
+									</select>
+									<span id="addToQueueBttn">Add</span>
+									<span id="mergeLists"><i class="material-icons"> merge_type </i></span>
+									<span id="shuffleQueue"><i class="material-icons"> shuffle </i></span>
+									<div id="mergeContain">
+										<div id="mergeArrow"></div>
+										<div id="mergeBox">
+											<div id="mergeSetup">
+												<select id="mergepicker"> <option value="0">Default Queue</option> </select> <i class="material-icons"> arrow_right_alt </i> <select id="mergepicker2"> <option value="0">Default Queue</option> </select> <span id="startMerge">Merge</span>
+											</div>
+											<div id="mergeHappening">Merge in progress... Please stand by...</div>
+											<div id="mergeCompleted">Congratulations! Merge completed. <span id="mergeOK">Ok Fine</span></div>
 										</div>
-										<div id="mergeHappening">Merge in progress... Please stand by...</div>
-										<div id="mergeCompleted">Congratulations! Merge completed. <span id="mergeOK">Ok Fine</span></div>
 									</div>
 								</div>
 								<div id="queuelist">
@@ -341,9 +339,9 @@
 					</div>
 					<div id="themebox">
 						<div id="themeflex">
-							<button role="button" id="fire">🔥</button>
+							<button role="button" class="iconbutt" id="fire">🔥</button>
 							<div id="currentTheme"></div>
-							<button role="button" id="cloud_with_rain">🌧</button>
+							<button role="button" class="iconbutt" id="cloud_with_rain">🌧</button>
 						</div>
 					</div>
 					<div id="actualChat">
