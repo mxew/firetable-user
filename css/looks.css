@@ -127,10 +127,48 @@ body.blog{
   overflow-y: scroll !important;
 }
 
+div#stealContain {
+    position: absolute;
+    z-index: 59;
+    margin-top: 3px;
+    display:none;
+}
+
+div#stealBox {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 5px;
+    width: 200px;
+}
+
+div#stealArrow {
+    margin-top: -5px;
+    margin-left: calc(100% - 210px);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #333;
+}
+
+select#stealpicker {
+    width: 100%;
+    font-size: 14px;
+    border: none;
+    font-family: "Open Sans", helvetica, arial, sans-serif;
+    background-color: #212121;
+    padding-left: 5px;
+    color: #eee;
+    height: 24px;
+    white-space: nowrap;
+}
+
+
 div#blog {
     padding: 20px;
     max-width: 1200px;
     margin-left: auto;
+      position:absolute;
     margin-right: auto;
 }
 
@@ -325,6 +363,10 @@ div#scScreen {
   font-size: 12px;
 }
 
+#grab{
+  margin-right: 15px;
+}
+
 div#npbottom {
     margin-left: 15px;
     bottom: 0;
@@ -332,7 +374,6 @@ div#npbottom {
 }
 
 a#songlink {
-    margin-left: 15px;
     text-decoration:none;
     color: rgba(255, 255, 255, 0.8);
 }
