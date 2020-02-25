@@ -6,7 +6,7 @@
 	<title>Indie Discotheque's Basement | firetable</title>
 	<meta name="viewport" content="width=device-width; initial-scale = 1.0; maximum-scale=1.0; user-scalable=no" />
 	<link rel="shortcut icon" href="favicon.png">
-	<link rel="stylesheet" href="css/looks.css?v=00.04.68" type="text/css" />
+	<link rel="stylesheet" href="css/looks.css?v=00.04.69" type="text/css" />
 	<script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.7/p5.min.js"></script>
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
@@ -253,13 +253,20 @@
 							</div>
 							<div id="queuebox" class="mmhidden">
 								<div class="queuetop">
+									<div id="queueControls">
 									<select id="listpicker">
 										<option value="1">Add/Delete Playlist</option>
 										  <option value="0">Default Queue</option>
 									</select>
-									<span id="addToQueueBttn">Add</span>
-									<span id="mergeLists"><i class="material-icons"> merge_type </i></span>
-									<span id="shuffleQueue"><i class="material-icons"> shuffle </i></span>
+									<div id="qControlButtons">
+										<button class="iconbutt" id="addToQueueBttn">Add</button>
+										<button class="iconbutt" id="mergeLists"><i class="material-icons"> merge_type </i></button>
+										<button class="iconbutt" id="shuffleQueue"><i class="material-icons"> shuffle </i></button>
+									</div>
+									<button class="iconbutt" id="cancelqsearch">
+										Cancel
+									</button>
+								</div>
 									<div id="mergeContain">
 										<div id="mergeArrow"></div>
 										<div id="mergeBox">
@@ -286,9 +293,6 @@
 										<input type="text" placeholder="Add a thing to the your queue now" id="qsearch"></input>
 										<div id="searchSelects">
 											<span class="searchSelectsSelected" id="ytsearchSelect">Youtube</span><span id="scsearchSelect">Soundcloud</span>
-										</div>
-										<div id="cancelqsearch">
-											Cancel
 										</div>
 										<div id="searchResults">
 										</div>
@@ -345,9 +349,9 @@
 					</div>
 					<div id="themebox">
 						<div id="themeflex">
-							<button role="button" class="iconbutt" id="fire">🔥</button>
+							<button role="button" class="iconbutt" id="fire"><i class="material-icons"> thumb_up </i></button>
 							<div id="currentTheme"></div>
-							<button role="button" class="iconbutt" id="cloud_with_rain">🌧</button>
+							<button role="button" class="iconbutt" id="cloud_with_rain"><i class="material-icons"> thumb_down </i></button>
 						</div>
 					</div>
 					<div id="actualChat">
@@ -366,7 +370,7 @@
 </script>
 <script src="https://w.soundcloud.com/player/api.js" type="text/javascript"></script>
 
-<script type="text/javascript" src="js/main.js?v=00.04.68"></script>
+<script type="text/javascript" src="js/main.js?v=00.04.69"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 
 </html>

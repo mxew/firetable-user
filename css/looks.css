@@ -55,7 +55,7 @@ div#mergeContain {
 
 div#mergeArrow {
     margin-top: -5px;
-    margin-left: calc(100% - 65px);
+    margin-left: calc(100% - 67px);
     width: 0;
     height: 0;
     border-left: 1rem solid transparent;
@@ -227,7 +227,7 @@ div#histmoreinfo {
   opacity: 0.75;
 }
 #recentHistory #thehistory{
-  background-color: #151515;
+  background-color: #333;
   height: 100%;
   overflow-y: scroll;
 }
@@ -277,7 +277,7 @@ div#historyarrow::after {
   position: absolute;
   top: 2px;
   left: -1rem;
-  border-bottom: 1rem solid #151515;
+  border-bottom: 1rem solid #333;
 }
 
 span#ftSettings i, span#ftSuperCopButton i, span#cardCaseButton i {
@@ -449,16 +449,13 @@ div#pldeleteButton {
 select#listpicker {
   float: left;
   width: calc(100% - 190px);
-
   font-size: 14px;
-  border: 1px solid #111;
   font-family: "Open Sans", helvetica, arial, sans-serif;
-  border-bottom: none;
-  background-color: #151515;
+  background-color: #333;
+  border: none;
   padding-left:5px;
-  border-left:none;
   color: #eee;
-  height: 24px;
+  height: 30px;
   white-space: nowrap;
 }
 
@@ -624,19 +621,16 @@ a {
 }
 
 #addToQueueBttn {
-  float: left;
-  padding: 4px 10px;
-  font-size: 12px;
-  font-weight: 700;
-  color: white;
-  background-color: #F4810B;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#addToQueueBttn,
-select#listpicker {
-  margin: 15px;
+    float: left;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    flex: 1;
+    margin-left: 1em;
+    color: white;
+    background-color: #F4810B;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 #welcomeInfo {
@@ -942,7 +936,7 @@ div#screenover {
   display: flex;
   flex-direction: column;
 }
-#queuebox .material-icons {
+#queuelist .material-icons {
   font-size: 15px !important;
   cursor: pointer;
 }
@@ -1183,36 +1177,26 @@ div#supercopResponse {
   display: inline-block;
 }
 
-div#cancelqsearch{
-  position: absolute;
-  top: 0.9rem;
-  right: 1rem;
-  padding: 5px 10px;
-  font-size: 12px;
-  color: #999;
-  background-color: #222;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 120px;
-  text-align: center;
+#qControlButtons{
+  display:flex;
+  flex: 1;
 }
 
-#shuffleQueue, #mergeLists {
-  padding: 5px 10px;
-  font-size: 12px;
-  color: #999;
-  background-color: #222;
-  border-radius: 4px;
-  cursor: pointer;
-  display: inline-block;
-  margin: 14px 0;
+button#cancelqsearch {
+    padding: 5px 10px;
+    font-size: 12px;
+    background: #222;
+    border-radius: 4px;
+    cursor: pointer;
+    flex: 1;
+    margin-left: 0.5em;
+    margin-right:0.5em;
+    text-align: center;
+    display:none;
 }
 
-#shuffleQueue i.material-icons, #mergeLists i.material-icons  {
-  font-size: 14px !important;
-  vertical-align: middle;
-  overflow: hidden;
-  font-weight: 700;
+#mergeLists, #shuffleQueue{
+  margin-left:1em;
 }
 
 #plmanager {
@@ -1250,11 +1234,17 @@ div#cancelqsearch{
   margin-left: 5px;
 }
 
-#volandthings {
+#volandthings, #queueControls {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0.4rem 0.5rem;
+}
+#volandthings{
+  background-color: #151515;
+  border-bottom: 1px solid #333;
+}
+#queueControls{
   background-color: #212121;
 }
 #volplace {
@@ -1346,7 +1336,7 @@ div.importResult {
 }
 
 div.qresult {
-  border-bottom: 1px solid #111;
+  border-bottom: 1px solid #212121;
 }
 
 .ui-widget.ui-widget-content {

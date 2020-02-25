@@ -40,7 +40,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "00.04.68";
+firetable.version = "00.04.69";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -310,6 +310,9 @@ firetable.init = function() {
                   //ADD PLAYLIST SCREEN
                   $("#mainqueue").css("display", "none");
                   $("#addbox").css("display", "none");
+                  $("#cancelqsearch").show();
+                  $("#qControlButtons").hide();
+
                   $("#plmanager").css("display", "block");
 
                 } else if (val != firetable.selectedListThing) {
@@ -317,6 +320,9 @@ firetable.init = function() {
                   //change selected list in user obj
                   $("#mainqueue").css("display", "block");
                   $("#addbox").css("display", "none");
+                  $("#cancelqsearch").hide();
+                  $("#qControlButtons").show();
+
                   $("#plmanager").css("display", "none");
                   var uref = firebase.database().ref("users/" + firetable.uid + "/selectedList");
                   uref.set(val);
@@ -349,6 +355,8 @@ firetable.init = function() {
                   //you selected the thing you already had selected.
                   $("#mainqueue").css("display", "block");
                   $("#addbox").css("display", "none");
+                  $("#cancelqsearch").hide();
+                  $("#qControlButtons").show();
                   $("#plmanager").css("display", "none");
                 }
               });
@@ -471,7 +479,7 @@ firetable.actions = {
     firetable.debug && console.log("h");
     var defaultScheme = false;
     if (data.colors){
-    if (data.colors.color == "#fff") {
+    if (data.colors.color == "#fff" || data.colors.color == "#7f7f7f") {
       data.colors.color = "#F4810B";
       data.colors.txt = "#000";
       defaultScheme = true;
@@ -745,7 +753,7 @@ firetable.actions = {
         var pcnt = (firetable.pvCount / 29) * 100;
         firetable.pvCount += 0.2;
         var pvcolr = "#212121";
-        if (fromHist) pvcolr = "#151515";
+        if (fromHist) pvcolr = "#333";
         $("#pvbar" + firetable.preview).css("background", "linear-gradient(90deg, #2c4e61 " + pcnt + "%, "+ pvcolr +" " + pcnt + "%)");
       }, 200);
       if (type == 1) {
@@ -1242,7 +1250,7 @@ firetable.actions = {
       cid: cid
     };
     $("#apv" + type + cid).text("check");
-    $("#apv" + type + cid).css("color", "green");
+    $("#apv" + type + cid).css("color", "#F4810B");
     $("#apv" + type + cid).css("pointer-events", "none");
     var cuteid = firetable.queueRef.push(info, function() {
       firetable.debug && console.log(cuteid.key);
@@ -1282,6 +1290,8 @@ firetable.actions = {
     }
     $("#mainqueue").css("display", "block");
     $("#addbox").css("display", "none");
+    $("#cancelqsearch").hide();
+    $("#qControlButtons").show();
   }
 };
 
@@ -2060,6 +2070,9 @@ return text;
     $("#addToQueueBttn").bind("click", function() {
       $("#mainqueue").css("display", "none");
       $("#addbox").css("display", "block");
+      $("#cancelqsearch").show();
+      $("#qControlButtons").hide();
+
       $("#plmanager").css("display", "none");
     });
 
@@ -2111,6 +2124,9 @@ return text;
     });
     $("#cancelqsearch").bind("click", function() {
       $("#mainqueue").css("display", "block");
+      $("#cancelqsearch").hide();
+      $("#qControlButtons").show();
+
       $("#addbox").css("display", "none");
       if (firetable.preview) {
         if (firetable.preview.slice(0, 5) == "ytcid" || firetable.preview.slice(0, 5) == "sccid") {
@@ -2587,7 +2603,7 @@ $("#stealpicker").change(function() {
                             if (!ppl[0].supermod){
                               var ref = firebase.database().ref("banned/"+ppl[0].userid);
                               ref.set(true);
-                              $("#supercopResponse").html("<span style=\"color: green;\">"+name+" suspended.</span>");
+                              $("#supercopResponse").html("<span style=\"color: #F4810B;\">"+name+" suspended.</span>");
 
                             } else {
                                 $("#supercopResponse").html("<span style=\"color: red; \">Can not suspend that (or any) supercop.</span>");
@@ -2933,11 +2949,13 @@ $("#stealpicker").change(function() {
 
       firetable.color = data.color;
       firetable.countcolor = data.txt;
-      if (data.color == "#fff") {
+      if (data.color == "#fff" || data.color == "#7f7f7f") {
         firetable.color = "#F4810B";
-        //firetable.countcolor = "#000";
+        firetable.countcolor = "#fff";
+        $("#upperpart").css("background-color", "#fff");
+      } else {
+        $("#upperpart").css("background-color", data.color);
       }
-      $("#upperpart").css("background-color", data.color);
       /*
       if (firetable.countcolor == "#fff"){
         firetable.countcolor = "#ffffffc9";
@@ -2951,7 +2969,7 @@ $("#stealpicker").change(function() {
       $("#djthing" + firetable.playdex).css("color", firetable.countcolor);
       $("#volstylebox").html("<style>.ui-slider-horizontal .ui-slider-range-min{ background-color: " + firetable.color + "; } .grabbed { color: " + firetable.color + " !important; } </style>");
       $('.customColorStyles').remove();
-      $("head").append("<style class='customColorStyles'>.ftlogo{color: " + firetable.color + ";} button.icontogg.on {color: " + firetable.color + ";border-bottom: 1px solid " + firetable.color + "88;}</style>");
+      $("head").append("<style class='customColorStyles'>button.icontogg.on {color: " + firetable.color + ";border-bottom: 1px solid " + firetable.color + "88;}</style>");
     });
   },
   usertab1: function() {
