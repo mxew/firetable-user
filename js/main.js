@@ -74,12 +74,13 @@ function initialize(event) {
   if (typeof muted == "undefined") {
     localStorage["firetableMute"] = false;
     muted = "false";
+    $("#volstatus").removeClass('on');
   }
 
   if (muted != "false") {
     var icon = "&#xE04E;";
-    $("#volstatus").html(icon);
-
+    $("#volstatus i").html(icon);
+    $("#volstatus").addClass('on');
   }
 
   $("#slider").slider({
@@ -97,9 +98,11 @@ function initialize(event) {
       if (muted != "false") {
         localStorage["firetableMute"] = false;
         var icon = "&#xE050;";
-        $("#volstatus").html(icon);
+        $("#volstatus i").html(icon);
+        $("#volstatus").removeClass('on');
       } else if (ui.value == 0) {
         firetable.actions.muteToggle(true);
+        $("#volstatus").addClass('on');
       }
     }
   });
@@ -660,8 +663,9 @@ firetable.actions = {
       localStorage["firetableVol"] = 0;
     }
 
-
-    $("#volstatus").html(icon);
+    if ( muted ) $("#volstatus").addClass('on');
+    else $("#volstatus").removeClass('on');
+    $("#volstatus i").html(icon);
     localStorage["firetableMute"] = muted;
   },
   pview: function(id, fromSearch, type, fromHist) {
@@ -1795,19 +1799,19 @@ return text;
     wl.on('value', function(dataSnapshot) {
       var data = dataSnapshot.val();
       var ok1 = "";
-      var lbl = "Waitlist (0)";
+      var cnt = "0";
       if (data) {
         var countr = 1;
         for (var key in data) {
           firetable.debug && console.log('waitlist',data);
           if (data.hasOwnProperty(key)) {
-            lbl = "Waitlist (" + countr + ")";
+            cnt = countr;
             ok1 += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><span class=\"prsnName\">" + countr + ". " + data[key].name + "</span></div>";
             countr++;
           }
         }
       }
-      $("#label2").text(lbl);
+      $("#label2 .count").text(" (" + cnt + ")");
       $("#justwaitlist").html(ok1);
     });
     var tbl = firebase.database().ref("table");
@@ -1974,7 +1978,7 @@ return text;
         newlist += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + listBuild[i].id + "" + listBuild[i].name + ".png?size=110x110);\"></div><span class=\"prsnName\">" + listBuild[i].name + "</span><span class=\"utitle\">" + listBuild[i].rolename + "</span></div>";
       }
       $("#allusers").html(newlist);
-      $("#label1").text("Everyone (" + count + ")");
+      $("#label1 .count").text(" (" + count + ")");
       firetable.debug && console.log(okdata);
     });
     var ref = firebase.database().ref("chat");
@@ -2180,11 +2184,13 @@ return text;
                 $("#stealpicker").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
               }
             }
-
-           $( "#stealContain" ).show();
+            $('#grab').addClass('on');
+            console.log($('#grab').offset().top + $('#grab').height());
+           $( "#stealContain" ).css({ 'top': $('#grab').offset().top + $('#grab').height(), 'left': $('#grab').offset().left - 14 }).show();
           });
 
       } else {
+        $('#grab').removeClass('on');
         $( "#stealContain" ).hide();
       }
     });
