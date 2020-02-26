@@ -360,7 +360,7 @@ div#scScreen {
   pointer-events: none;
 }
 
-#reloadtrack, #history, #songlink {
+#reloadtrack, #history {
   cursor: pointer;
   font-size: 12px;
 }
@@ -369,12 +369,14 @@ div#npbottom {
     margin-left: 15px;
     bottom: 0;
     position: absolute;
+    font-size: 0.7rem;;
 }
 
 a#songlink {
     text-decoration:none;
-    color: rgba(255, 255, 255, 0.8);
-}
+    cursor: pointer;
+    box-sizing: border-box;
+  }
 
 .badoop a {
     color: #fff;
@@ -747,8 +749,7 @@ div#themeflex {
   align-items: center;
   padding: 0 0.5rem;
 }
-button.iconbutt,
-button.icontogg {
+.iconbutt {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -767,19 +768,13 @@ button.icontogg {
   transition: background 100ms ease-in-out;
   cursor: pointer;
 }
-button.iconbutt:hover {
+.iconbutt:hover {
   background: #666;
 }
-button.iconbutt:focus {
+.iconbutt:focus {
   background: rgba(255,255,255,0.1);
 }
-button.icontogg {
-  color: #666;
-  background: rgba(0,0,0,0.25);
-  border-top: 1px solid black;
-  border-bottom: 1px solid #383838;
-}
-button.iconbutt.on {
+.iconbutt.on {
   color: #F4810B;
   background: black;
   border: 0;
@@ -937,7 +932,7 @@ div#screenover {
 }
 
 
-#info i, #infobutton i, #songlink i {
+#info i, #infobutton i {
   font-size: 16px;
   vertical-align:middle;
   margin-bottom: 3px;
