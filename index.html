@@ -182,7 +182,7 @@
 					<div id="usrarea" class="mmhidden">
 						<div id="usersbox">
 							<div id="usertabs">
-								<span class="usertab selected" id="label1">Users</span> <span class="usertab" id="label2">Waitlist</span>
+								<span class="usertab selected" id="label1">Everyone<span class="count"></span></span> <span class="usertab" id="label2">Waitlist<span class="count"></span></span>
 							</div>
 							<div id="userslist">
 								<div id="allusers" class="innr">
@@ -213,18 +213,7 @@
 											<div id="artist">Playing</div>
 										</div>
 										<div id="npbottom">
-											<span id="grab">
-												<i class="material-icons">&#xE03B;</i> Steal
-											</span>
-											<div id="stealContain">
-												<div id="stealArrow"></div>
-												<div id="stealBox">
-														<select id="stealpicker"> <option value="0">Default Queue</option> </select>
-												</div>
-											</div>
-											<a target="_blank" id="songlink">
-												<i class="material-icons"> link </i> <span id="songlinkTxt">Source</span>
-											</a>
+											<span id="songlinkTxt">Source</span>
 										</div>
 									</div>
 									<div class="clear"></div>
@@ -232,14 +221,30 @@
 								<div id="deck"></div>
 								<div id="prgbar"></div>
 								<div id="volandthings">
-									<button role="button" class="iconbutt" id="reloadtrack" title="reload audio">
-										<i class="material-icons">refresh</i>
-									</button>
-									<div id="volplace">
-										<i id="volstatus" class="material-icons">&#xE050;</i>
-										<div id="slider"></div>
+									<div id="songthings">
+										<button role="button" class="iconbutt" id="fire">
+											<i class="material-icons"> thumb_up </i>
+										</button>
+										<button role="button" class="iconbutt" id="cloud_with_rain">
+											<i class="material-icons"> thumb_down </i>
+										</button>
+										<button role="button" class="iconbutt" id="grab">
+											<i class="material-icons"> &#xE03B; </i>
+										</button>
+										<a target="_blank" role="button" class="iconbutt"  id="songlink">
+											<i class="material-icons"> link </i>
+										</a>
+										<button role="button" class="iconbutt" id="reloadtrack" title="reload audio">
+											<i class="material-icons"> refresh </i>
+										</button>
+										<button role="button" class="iconbutt" id="volstatus" title="mute">
+											<i class="material-icons"> &#xE050; </i>
+										</button>
+										<div id="volplace">
+											<div id="slider"></div>
+										</div>
 									</div>
-									<button role="button" class="icontogg" id="history" title="show/hide track history">
+									<button role="button" class="iconbutt" id="history">
 										<i class="material-icons">history</i>
 									</button>
 								</div>
@@ -349,9 +354,7 @@
 					</div>
 					<div id="themebox">
 						<div id="themeflex">
-							<button role="button" class="iconbutt" id="fire"><i class="material-icons"> thumb_up </i></button>
 							<div id="currentTheme"></div>
-							<button role="button" class="iconbutt" id="cloud_with_rain"><i class="material-icons"> thumb_down </i></button>
 						</div>
 					</div>
 					<div id="actualChat">
@@ -363,6 +366,13 @@
 
 		</div>
 	</div>
+	</div>
+
+	<div id="stealContain">
+		<div id="stealArrow"></div>
+		<div id="stealBox">
+				<select id="stealpicker"> <option value="0">Default Queue</option> </select>
+		</div>
 	</div>
 
 </body>

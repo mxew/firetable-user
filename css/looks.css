@@ -128,10 +128,12 @@ body.blog{
 }
 
 div#stealContain {
-    position: absolute;
-    z-index: 59;
-    margin-top: 3px;
-    display:none;
+  display: none;
+  position: fixed;
+  z-index: 59;
+  top: 50%;
+  left: 50%;
+  box-shadow: 0 0.25rem 1rem -0.25rem rgba(0,0,0,0.5);
 }
 
 div#stealBox {
@@ -358,29 +360,23 @@ div#scScreen {
   pointer-events: none;
 }
 
-#grab, #reloadtrack, #history, #songlink {
+#reloadtrack, #history {
   cursor: pointer;
   font-size: 12px;
-}
-
-#grab{
-  margin-right: 15px;
 }
 
 div#npbottom {
     margin-left: 15px;
     bottom: 0;
     position: absolute;
+    font-size: 0.7rem;;
 }
 
 a#songlink {
     text-decoration:none;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-#reloadtrack{
-  margin-right: 15px;
-}
+    cursor: pointer;
+    box-sizing: border-box;
+  }
 
 .badoop a {
     color: #fff;
@@ -753,8 +749,7 @@ div#themeflex {
   align-items: center;
   padding: 0 0.5rem;
 }
-button.iconbutt,
-button.icontogg {
+.iconbutt {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -773,21 +768,16 @@ button.icontogg {
   transition: background 100ms ease-in-out;
   cursor: pointer;
 }
-button.iconbutt:hover {
+.iconbutt:hover {
   background: #666;
 }
-button.iconbutt:focus {
+.iconbutt:focus {
   background: rgba(255,255,255,0.1);
 }
-button.icontogg {
-  color: #666;
-  background: rgba(0,0,0,0.25);
-  border-top: 1px solid black;
-  border-bottom: 1px solid #383838;
-}
-button.icontogg.on {
+.iconbutt.on {
   color: #F4810B;
   background: black;
+  border: 0;
   border-bottom: 1px solid #F4810B88;
 }
 div#themeflex > div {
@@ -942,7 +932,7 @@ div#screenover {
 }
 
 
-#info i, #infobutton i, #grab i, #songlink i {
+#info i, #infobutton i {
   font-size: 16px;
   vertical-align:middle;
   margin-bottom: 3px;
@@ -1211,14 +1201,15 @@ button#cancelqsearch {
 .ui-slider .ui-slider-handle {
   position: absolute;
   z-index: 2;
-  width: 1em;
-  height: .8em;
+  width: 1rem;
+  height: 1.6em;
   cursor: grab;
+  background-color: #333;
+  border: 0;
   border-radius: 0.2em;
   -ms-touch-action: none;
   touch-action: none;
 }
-
 .ui-slider .ui-slider-range {
   position: absolute;
   z-index: 1;
@@ -1241,8 +1232,16 @@ button#cancelqsearch {
   padding: 0.4rem 0.5rem;
 }
 #volandthings{
+  position: relative;
   background-color: #151515;
   border-bottom: 1px solid #333;
+}
+#songthings {
+  flex: 1;
+  display: flex;
+}
+#songthings .iconbutt{
+  margin-right: 0.25rem;
 }
 #queueControls{
   background-color: #212121;
@@ -1251,6 +1250,7 @@ button#cancelqsearch {
   flex: 1;
   display: flex;
   align-items: center;
+  padding-left: 0.5rem;
   padding-right: 5vw;
   white-space: nowrap;
 }
@@ -1275,10 +1275,11 @@ button#cancelqsearch {
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
-  border: 1px solid #c5c5c5;
-  background: #f6f6f6;
+  border: 0.1rem solid #888;
+  background: #444;
   font-weight: normal;
-  color: #454545;
+  color: #bbb;
+  box-shadow: inset 0 0 .33rem rgba(0,0,0,0.75);
 }
 
 .ui-widget.ui-widget-content {
@@ -1308,7 +1309,7 @@ button#cancelqsearch {
 }
 
 .ui-slider-horizontal .ui-slider-handle {
-  top: -.4em;
+  top: -.7rem;
   margin-left: -.6em;
 }
 
@@ -1388,14 +1389,14 @@ div.pvbar {
 .prson {
   display: flex;
   align-items: center;
-  padding: 5px 10px 5px 10px;
+  padding: calc( .25rem + .25vw ) calc( .6rem + .6vw );
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
 }
 
 .prson:nth-child(even) {
-  background-color: #151515;
+//  background-color: #151515;
 }
 
 .utitle {
@@ -1426,6 +1427,7 @@ span.prsnName {
   border-radius: 1em;
   background-position: center 55%;
   background-repeat: no-repeat;
+  border-bottom: 1px solid #888;
 }
 
 .clear {
