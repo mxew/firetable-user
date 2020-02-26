@@ -40,7 +40,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "00.04.69";
+firetable.version = "00.04.72";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1651,8 +1651,8 @@ return text;
       firetable.tagUpdate = data;
       if (firetable.song){
       if (firetable.song.cid == data.cid && data.adamData.track_name){
-          $("#track").text(data.adamData.track_name);
-          $("#artist").text(data.adamData.artist);
+          $("#track").text(firetable.ui.strip(data.adamData.track_name));
+          $("#artist").text(firetable.ui.strip(data.adamData.artist));
           var nicename = firetable.song.djname;
           var objDiv = document.getElementById("actualChat");
           scrollDown = false;
@@ -1664,8 +1664,10 @@ return text;
             }
           }
           if (showPlaycount){
+            $("#playCount").text(data.adamData.playcount+" plays");
             $(".npmsg"+data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong><br/>This song has been played "+data.adamData.playcount+" times.</div>");
           } else {
+            $("#playCount").text("");
             $(".npmsg"+data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong></div>");
           }
           if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
@@ -1677,7 +1679,9 @@ return text;
     var s2p = firebase.database().ref("songToPlay");
     s2p.on('value', function(dataSnapshot) {
       var data = dataSnapshot.val();
-
+      $("#playCount").text("");
+      $("#cloud_with_rain").removeClass("on");
+      $("#fire").removeClass("on");
       $("#timr").countdown("destroy");
       if (firetable.moveBar != null) {
         clearInterval(firetable.moveBar);
@@ -1693,15 +1697,16 @@ return text;
           if (firetable.tagUpdate.adamData.playcount){
             if (firetable.tagUpdate.adamData.playcount > 0){
               showPlaycount = true;
+              $("#playCount").text(firetable.tagUpdate.adamData.playcount+" plays");
             }
           }
         }
       }
-      $("#track").text(data.title);
-      $("#artist").text(data.artist);
+      $("#track").text(firetable.ui.strip(data.title));
+      $("#artist").text(firetable.ui.strip(data.artist));
       $("#songlink").attr("href", data.url);
-      var typeLabel = "Youtube";
-      if (data.type == 2) typeLabel = "Soundcloud";
+      var typeLabel = "Video";
+      if (data.type == 2) typeLabel = "Audio";
       $("#songlinkTxt").text(typeLabel);
       $("#albumArt").css("background-image", "url(" + data.image + ")")
       var nownow = Date.now();
@@ -2315,9 +2320,34 @@ return text;
       }
     });
 
-$(document).on('click','#themeflex button',function(){
-  $('#newchat').val(':'+$(this).attr('id')+':').trigger(jQuery.Event('keyup', { keycode: 13, which: 13 }));
-});
+    $("#fire").bind("click", function() {
+      var chat = firebase.database().ref("chat");
+      var chooto = {
+        time: firebase.database.ServerValue.TIMESTAMP,
+        id: firetable.uid,
+        txt: ":fire:",
+        name: firetable.uname
+      };
+      firetable.debug && console.log(chooto);
+      $("#cloud_with_rain").removeClass("on");
+      $("#fire").addClass("on");
+      chat.push(chooto);
+    });
+
+    $("#cloud_with_rain").bind("click", function() {
+      var chat = firebase.database().ref("chat");
+      var chooto = {
+        time: firebase.database.ServerValue.TIMESTAMP,
+        id: firetable.uid,
+        txt: ":cloud_with_rain:",
+        name: firetable.uname
+      };
+      firetable.debug && console.log(chooto);
+      $("#cloud_with_rain").addClass("on");
+      $("#fire").removeClass("on");
+      chat.push(chooto);
+    });
+
 
     //SETTINGS TOGGLES
 $('#badoopToggle').change(function() {
@@ -2861,6 +2891,13 @@ $("#stealpicker").change(function() {
         var txt = $("#newchat").val();
         if (txt == "") return;
         var matches = txt.match(/^(?:[\/])(\w+)\s*(.*)/i);
+        if (txt == ":fire:" || txt == "🔥"){
+          $("#cloud_with_rain").removeClass("on");
+          $("#fire").addClass("on");
+        } else if (txt == ":cloud_with_rain:" || txt == "🌧"){
+          $("#cloud_with_rain").addClass("on");
+          $("#fire").removeClass("on");
+        }
         if (matches) {
           var command = matches[1].toLowerCase();
           var args = matches[2];
@@ -2885,6 +2922,8 @@ $("#stealpicker").change(function() {
               name: firetable.uname
             };
             firetable.debug && console.log(chooto);
+            $("#cloud_with_rain").removeClass("on");
+            $("#fire").addClass("on");
             chat.push(chooto);
           } else if (command == "storm") {
             var chat = firebase.database().ref("chat");
@@ -2895,6 +2934,8 @@ $("#stealpicker").change(function() {
               name: firetable.uname
             };
             firetable.debug && console.log(chooto);
+            $("#cloud_with_rain").addClass("on");
+            $("#fire").removeClass("on");
             chat.push(chooto);
           } else if (command == "shrug") {
             var chat = firebase.database().ref("chat");
@@ -2973,9 +3014,9 @@ $("#stealpicker").change(function() {
       */
       $("#djthing" + firetable.playdex).css("background-color", firetable.color);
       $("#djthing" + firetable.playdex).css("color", firetable.countcolor);
-      $("#volstylebox").html("<style>.ui-slider-horizontal .ui-slider-range-min{ background-color: " + firetable.color + "; } .grabbed { color: " + firetable.color + " !important; } </style>");
+      $("#volstylebox").html("<style>.ui-slider-horizontal .ui-slider-range-min{ background-color: " + firetable.color + "; } .grabbed { color: " + firetable.color + " !important; border-bottom: 1px solid " + firetable.color + "!important;} </style>");
       $('.customColorStyles').remove();
-      $("head").append("<style class='customColorStyles'>button.icontogg.on {color: " + firetable.color + ";border-bottom: 1px solid " + firetable.color + "88;}</style>");
+      $("head").append("<style class='customColorStyles'>button.iconbutt.on {color: " + firetable.color + "; border-bottom: 1px solid " + firetable.color + ";}</style>");
     });
   },
   usertab1: function() {

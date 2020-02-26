@@ -55,7 +55,7 @@ div#mergeContain {
 
 div#mergeArrow {
     margin-top: -5px;
-    margin-left: calc(100% - 67px);
+    margin-left: calc(100% - 64px);
     width: 0;
     height: 0;
     border-left: 1rem solid transparent;
@@ -774,11 +774,15 @@ div#themeflex {
 .iconbutt:focus {
   background: rgba(255,255,255,0.1);
 }
-.iconbutt.on {
-  color: #F4810B;
+.icontogg.on {
+  color: #fff;
   background: black;
   border: 0;
   border-bottom: 1px solid #F4810B88;
+}
+#grab.on{
+  color: #fff;
+  border-bottom: 1px solid #ffffff;
 }
 div#themeflex > div {
   flex: 1;
@@ -1161,6 +1165,10 @@ div#supercopResponse {
   color: #fff;
 }
 
+span#playCount {
+    margin-left: 15px;
+}
+
 #importSources span {
   width: 50%;
   text-align: center;
@@ -1172,6 +1180,11 @@ div#supercopResponse {
   flex: 1;
 }
 
+#songActions{
+  display: flex;
+  margin-left:1rem;
+}
+
 button#cancelqsearch {
     padding: 5px 10px;
     font-size: 12px;
@@ -1179,7 +1192,7 @@ button#cancelqsearch {
     border-radius: 4px;
     cursor: pointer;
     flex: 1;
-    margin-left: 0.5em;
+    margin-left: 1em;
     margin-right:0.5em;
     text-align: center;
     display:none;
@@ -1202,11 +1215,12 @@ button#cancelqsearch {
   position: absolute;
   z-index: 2;
   width: 1rem;
-  height: 1.6em;
+  height: 1rem;
   cursor: grab;
+  margin-top: .25rem;
   background-color: #333;
   border: 0;
-  border-radius: 0.2em;
+  border-radius: .5rem;
   -ms-touch-action: none;
   touch-action: none;
 }
@@ -1246,11 +1260,16 @@ button#cancelqsearch {
 #queueControls{
   background-color: #212121;
 }
+div#playerControls {
+    display: flex;
+    flex: 1;
+    margin-left: 1rem;
+}
 #volplace {
   flex: 1;
   display: flex;
   align-items: center;
-  padding-left: 0.5rem;
+  padding-left: 0.25rem;
   padding-right: 5vw;
   white-space: nowrap;
 }
@@ -1275,11 +1294,8 @@ button#cancelqsearch {
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
-  border: 0.1rem solid #888;
-  background: #444;
+  background: #bbbbbb;
   font-weight: normal;
-  color: #bbb;
-  box-shadow: inset 0 0 .33rem rgba(0,0,0,0.75);
 }
 
 .ui-widget.ui-widget-content {
@@ -1509,15 +1525,10 @@ span.prsnName {
 }
 
 img.emoji {
-    font-size: inherit;
-    height: 3ex;
-    width: 3.1ex;
-    min-height: 20px;
-    min-width: 20px;
-    display: inline-block;
-    margin: 0ex .15em .2ex;
-    line-height: normal;
-    vertical-align: middle;
+  height: 1.25em;
+  width: 1.25em;
+  margin: 0 .05em 0 .1em;
+  vertical-align: -0.1em;
 }
 
 div#tagPromptOverlay {
