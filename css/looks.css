@@ -1164,8 +1164,12 @@ div#supercopResponse {
   color: #fff;
 }
 
-span#playCount {
-    margin-left: 15px;
+span#playCount, #firstPlay{
+  margin-right:15px;
+}
+
+#firstPlay:empty, #playCount:empty, #lastPlay:empty{
+  display:none;
 }
 
 #importSources span {

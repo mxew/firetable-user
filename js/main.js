@@ -40,7 +40,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "00.04.72";
+firetable.version = "00.04.74";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1663,6 +1663,16 @@ return text;
               showPlaycount = true;
             }
           }
+          if (data.adamData.last_play){
+            $("#lastPlay").text("last "+firetable.utilities.format_date(data.adamData.last_play)+" by "+data.adamData.last_play_dj);
+          } else {
+            $("#lastPlay").text("");
+          }
+          if (data.adamData.first_play){
+            $("#firstPlay").text("first "+firetable.utilities.format_date(data.adamData.first_play)+" by "+data.adamData.first_play_dj);
+          } else {
+            $("#firstPlay").text("");
+          }
           if (showPlaycount){
             $("#playCount").text(data.adamData.playcount+" plays");
             $(".npmsg"+data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong><br/>This song has been played "+data.adamData.playcount+" times.</div>");
@@ -1680,6 +1690,8 @@ return text;
     s2p.on('value', function(dataSnapshot) {
       var data = dataSnapshot.val();
       $("#playCount").text("");
+      $("lastPlay").text("");
+      $("firstPlay").text("");
       $("#cloud_with_rain").removeClass("on");
       $("#fire").removeClass("on");
       $("#timr").countdown("destroy");
@@ -1694,6 +1706,12 @@ return text;
         if (data.cid == firetable.tagUpdate.cid && firetable.tagUpdate.adamData.track_name){
           data.title = firetable.tagUpdate.adamData.track_name;
           data.artist = firetable.tagUpdate.adamData.artist;
+          if (firetable.tagUpdate.adamData.last_play){
+            $("#lastPlay").text("last "+firetable.utilities.format_date(firetable.tagUpdate.adamData.last_play)+" by "+firetable.tagUpdate.adamData.last_play_dj);
+          }
+          if (firetable.tagUpdate.adamData.first_play){
+            $("#firstPlay").text("first "+firetable.utilities.format_date(firetable.tagUpdate.adamData.first_play)+" by "+firetable.tagUpdate.adamData.first_play_dj);
+          }
           if (firetable.tagUpdate.adamData.playcount){
             if (firetable.tagUpdate.adamData.playcount > 0){
               showPlaycount = true;
@@ -1705,9 +1723,7 @@ return text;
       $("#track").text(firetable.ui.strip(data.title));
       $("#artist").text(firetable.ui.strip(data.artist));
       $("#songlink").attr("href", data.url);
-      var typeLabel = "Video";
-      if (data.type == 2) typeLabel = "Audio";
-      $("#songlinkTxt").text(typeLabel);
+
       $("#albumArt").css("background-image", "url(" + data.image + ")")
       var nownow = Date.now();
       var timeSince = nownow - data.started;
