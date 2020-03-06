@@ -527,7 +527,7 @@ code {
   text-overflow: ellipsis;
 }
 #source,
-#playCount {
+#plays {
   font-size: 0.75rem;
   font-weight: 700;
   color: rgba(255,255,255,0.4);
@@ -536,9 +536,20 @@ code {
   grid-area: source;
   padding-right: 1em;
 }
-#playCount {
+#plays {
   grid-area: plays;
 }
+#playCount,
+#firstPlay {
+  margin-right: var(--pad2);
+}
+
+#playCount:empty,
+#firstPlay:empty,
+#lastPlay:empty {
+  display: none;
+}
+
 
 #deck {
   grid-area: deck;
@@ -655,7 +666,6 @@ code {
 #shareinfo {
   text-align: right;
 }
-
 #stealContain {
   display: none;
   position: fixed;
