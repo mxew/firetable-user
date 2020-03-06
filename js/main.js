@@ -37,7 +37,7 @@ var firetable = {
   superCopBanUpdates: null,
   emojiMap: null,
   pickerInit: false,
-  debug: false
+  debug: true
 }
 
 firetable.version = "00.04.74";
@@ -45,8 +45,8 @@ var player;
 
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('playerArea', {
-    width: 500,
-    height: 283,
+    width: $('#djStage').outerHeight()*1.7777,
+    height: $('#djStage').outerHeight(),
     playerVars: {
       'autoplay': 1,
       'controls': 0
@@ -55,7 +55,7 @@ function onYouTubeIframeAPIReady() {
     events: {
       onReady: initialize,
       onStateChange: function(){
-        $('#reloadtrack').removeClass('working');
+        $('#reloadtrack').removeClass('on working');
       }
     }
   });
@@ -138,71 +138,11 @@ firetable.init = function() {
   };
   firetable.utilities.getEmojiMap();
   firetable.parser = new DOMParser();
-  var height = $(window).height(); // New height
-  var w = $(window).width();
-  firetable.debug && console.log(w);
-  var caseHeight = height - 100;
-  $("#cardsMain").css("height", caseHeight + "px");
-  if (w > 1199) {
-    if (height > 520) {
-      var morethan = height - 520;
-      var newh = 111 + morethan;
-      var chah = 451 + morethan;
-      var newu = 455 + morethan;
-      $("#userslist").css("height", newu + "px");
-    } else {
-      $("#userslist").css("height", "440px");
-    }
-  } else if (w > 799) {
-    var newh = height - 295;
-    if (height > 520) {
-      var morethan = height - 520;
-
-      var chah = 451 + morethan;
-      var newu = 455 + morethan;
-      $("#userslist").css("height", newu + "px");
-    }
-  } else {
-    var chah = height - 276;
-    var newu = height - 95;
-    var newq = height - 124;
-
-    $("#userslist").css("height", newu + "px");
-  }
   $(window).resize(function() {
     // This will execute whenever the window is resized
-    var height = $(window).height(); // New height
-    var caseHeight = height - 100;
-    $("#cardsMain").css("height", caseHeight + "px");
-    var w = $(window).width();
-    if (w > 1199) {
-      if (height > 520) {
-        var morethan = height - 520;
-        var newh = 111 + morethan;
-        var chah = 451 + morethan;
-        var newu = 455 + morethan;
-        $("#userslist").css("height", newu + "px");
-      } else {
-        $("#userslist").css("height", "458px");
-
-      }
-      windowW =  $(window).width() * 0.75 - (($(window).width() * 0.75) * 0.25);
-      setup();
-    } else if (w > 799) {
-      var newh = height - 295;
-      if (height > 520) {
-        var morethan = height - 520;
-
-        var chah = 451 + morethan;
-        var newu = 455 + morethan;
-        $("#userslist").css("height", newu + "px");
-      }
-    } else {
-      var chah = height - 276;
-      var newu = height - 95;
-      var newq = height - 124;
-      $("#userslist").css("height", newu + "px");
-    }
+    $("#thehistory").css('top', $('#stage').outerHeight() + $('#topbar').outerHeight());
+    $('#playerArea,#scScreen').width($('#djStage').outerWidth()).height($('#djStage').outerHeight());
+    $( "#stealContain" ).css({ 'top': $('#grab').offset().top + $('#grab').height(), 'left': $('#grab').offset().left - 16 })
   });
   var widgetIframe = document.getElementById('sc-widget');
   firetable.scwidget = SC.Widget(widgetIframe);
@@ -242,20 +182,20 @@ firetable.init = function() {
     client_id: "27028829630d95b0f9d362951de3ba2c"
   });
   firebase.auth().onAuthStateChanged(function(user) {
+    firetable.debug && console.log('user:',user);
     if (user) {
       firetable.uid = user.uid;
       firetable.uname = user.uid;
       firetable.debug && console.log("user signed in!");
-      $("#cardCaseButton").show();
       if (firetable.users[firetable.uid]) {
         if (firetable.users[firetable.uid].username) {
-          $("#loggedInEmail").text(firetable.users[firetable.uid].username);
+          $("#loggedInName").text(firetable.users[firetable.uid].username);
           firetable.uname = firetable.users[firetable.uid].username;
         } else {
-          $("#loggedInEmail").text(user.uid);
+          $("#loggedInName").text(user.uid);
         }
       } else {
-        $("#loggedInEmail").text(user.uid);
+        $("#loggedInName").text(user.uid);
       }
 
       var ref0 = firebase.database().ref("users/" + user.uid + "/status");
@@ -269,20 +209,19 @@ firetable.init = function() {
           firetable.debug && console.log("ban detected.");
           $("body").remove();
           if (document.getElementById("notice") == null){
-          var usrname2use = firetable.uid;
-          if (firetable.users[firetable.uid]){
-            if (firetable.users[firetable.uid].username) usrname2use = firetable.users[firetable.uid].username;
+            var usrname2use = firetable.uid;
+            if (firetable.users[firetable.uid]){
+              if (firetable.users[firetable.uid].username) usrname2use = firetable.users[firetable.uid].username;
+            }
+            $('.notice').attr('id','notice');
+            $("#troublemaker").text(usrname2use);
+            var ref0 = firebase.database().ref("users/" + firetable.uid + "/status");
+            firetable.uid = null;
+            ref0.set(false);
           }
-          $("html").append("<div id=\"notice\"><div class=\"inner\"><span class=\"ftlogo\">firetable</span><br/><br/><br/>"+usrname2use+",<br/><br/>Your account has been suspended due to a perceived violation of our <a href=\"terms\">Terms of Service</a>. <br/><br/>If you believe your account has been suspended by mistake or as the result of a misunderstanding, please contact chris@indiediscotheque.com.<br/><br/>We reserve the right to modify, suspend, or terminate the Service for any reason, without notice, at any time.</div></div>");
-          var ref0 = firebase.database().ref("users/" + firetable.uid + "/status");
-          firetable.uid = null;
-          ref0.set(false);
-        }
-      } else {
-        if (document.getElementById("notice") !== null){
+        } else if (document.getElementById("notice") !== null){
           window.location.reload();
         }
-      }
       });
       var getSelect = firebase.database().ref("users/" + firetable.uid + "/selectedList");
       var allQueues = firebase.database().ref("playlists/" + firetable.uid);
@@ -316,7 +255,7 @@ firetable.init = function() {
                   $("#cancelqsearch").show();
                   $("#qControlButtons").hide();
 
-                  $("#plmanager").css("display", "block");
+                  $("#plmanager").css("display", "flex");
 
                 } else if (val != firetable.selectedListThing) {
                   //LOAD SELECTED LIST
@@ -340,7 +279,7 @@ firetable.init = function() {
                     var okdata = dataSnapshot.val();
                     firetable.queue = okdata;
                     var newlist = "";
-                    firetable.debug && console.log(okdata);
+                    firetable.debug && console.log('queue',okdata);
                     for (var key in okdata) {
                       if (okdata.hasOwnProperty(key)) {
                         var thisone = okdata[key];
@@ -348,7 +287,7 @@ firetable.init = function() {
                         if (key == firetable.preview) {
                           psign = "&#xE034;";
                         }
-                        newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"pvbar\" id=\"pvbar" + key + "\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + key + "', false,  " + thisone.type + ")\">" + psign + "</i> <span class=\"listwords\">" + thisone.name + "</span></div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div></div>";
+                        newlist += "<div class=\"pvbar\" id=\"pvbar" + key + "\"><i id=\"pv" + key + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + key + "', false,  " + thisone.type + ")\">" + psign + "</i> <div class=\"listwords\">" + thisone.name + "</div><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div>";
                       }
                     }
                     $("#mainqueue").html(newlist);
@@ -374,7 +313,7 @@ firetable.init = function() {
                     if (key == firetable.preview) {
                       psign = "&#xE034;";
                     }
-                    newlist += "<div id=\"qid" + key + "\" class=\"qitem\"><div class=\"pvbar\" id=\"pvbar" + key + "\"><div class=\"qtxt\"><i id=\"pv" + key + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + key + "', false,  " + thisone.type + ")\">" + psign + "</i> <span class=\"listwords\">" + thisone.name + "</span></div><div class=\"delete\"><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div><div class=\"clear\"></div></div></div>";
+                    newlist += "<div class=\"pvbar\" id=\"pvbar" + key + "\"><i id=\"pv" + key + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + key + "', false,  " + thisone.type + ")\">" + psign + "</i> <div class=\"listwords\">" + thisone.name + "</div><i onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div>";
                   }
                 }
                 $('#mainqueue').sortable({
@@ -394,26 +333,19 @@ firetable.init = function() {
               });
             });
         });
-      $("#signOut").html("<span onclick=\"firetable.actions.logOut()\" id=\"logOutButton\">Log Out</span>");
-      $("#login").css("display", "none");
-      $("#themebox").css("display", "block");
-      $("#queuebox").css("display", "flex");
-      $("#actualChat").css("display", "block");
-      $("#chatMaker").css("display", "block");
+      $("#cardCaseButton").show();
+      $("#loggedInName").show();
+      $("#logOutButton").show().on('click',firetable.actions.logOut);
+      firetable.debug && console.log('remove login class from mainGrid');
+      $('#mainGrid').removeClass('login').addClass('mmchat');
       $("#grab").css("display", "inline-block");
-      $("#notloggedin").css("display", "none");
     } else {
       firetable.uid = null;
-      $("#loggedInEmail").text("Not Logged In");
-      $("#signOut").html("");
-      $("#login").css("display", "block");
-      $("#themebox").css("display", "none");
-      $("#queuebox").css("display", "none");
-      $("#actualChat").css("display", "none");
-      $("#chatMaker").css("display", "none");
+      $("#cardCaseButton").hide();
+      $("#loggedInName").hide();
+      $("#logOutButton").hide().off();
+      $('#mainGrid').removeClass().addClass('login');
       $("#grab").css("display", "none");
-      $("#notloggedin").css("display", "block");
-
     }
   });
   firetable.ui.init();
@@ -424,9 +356,11 @@ firetable.actions = {
     var ref0 = firebase.database().ref("users/" + firetable.uid + "/status");
     firetable.uid = null;
     ref0.set(false);
+    firetable.debug && console.log("logout");
     firebase.auth().signOut();
   },
   logIn: function(email, password) {
+    firetable.debug && console.log("login");
     firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
       var errorCode = error.code;
       var errorMessage = error.message;
@@ -435,7 +369,7 @@ firetable.actions = {
       } else {
         alert(errorMessage);
       }
-      firetable.debug && console.log(error);
+      firetable.debug && console.log("log in error:",error);
     });
   },
   cardCase: function(){
@@ -446,7 +380,7 @@ firetable.actions = {
          snapshot.forEach(function(childSnapshot) {
            var key = childSnapshot.key;
            var childData = childSnapshot.val();
-           firetable.debug && console.log(childData);
+           firetable.debug && console.log('card:',childData);
            $("#cardsMain").append("<span id=\"caseCardSpot"+key+"\" class=\"caseCardSpot\"><canvas width=\"225\" height=\"300\" class=\"caseCard\" id=\"cardMaker"+key+"\"></canvas><span onclick=\"firetable.actions.giftCard('"+key+"')\" class=\"cardGiftChat\">Gift to DJ</span><span onclick=\"firetable.actions.chatCard('"+key+"')\" class=\"cardShareChat\">Share In Chat</span></span>");
 
            firetable.actions.displayCard(childData, childSnapshot.key);
@@ -462,7 +396,7 @@ firetable.actions = {
       card: cardid,
       name: firetable.uname
     };
-    firetable.debug && console.log(chooto);
+    firetable.debug && console.log('chat card:',chooto);
     chat.push(chooto);
   },
   giftCard: function(cardid){
@@ -475,20 +409,19 @@ firetable.actions = {
       name: firetable.uname
     };
     $("#caseCardSpot"+cardid).remove();
-    firetable.debug && console.log(chooto);
+    firetable.debug && console.log('card case:',chooto);
     chat.push(chooto);
   },
   displayCard: function(data, chatid){
-    firetable.debug && console.log("h");
+    firetable.debug && console.log("display card");
     var defaultScheme = false;
     if (data.colors){
-    if (data.colors.color == "#fff" || data.colors.color == "#7f7f7f") {
-      data.colors.color = "#F4810B";
-      data.colors.txt = "#000";
-      defaultScheme = true;
+      if (data.colors.color == "#fff" || data.colors.color == "#7f7f7f") {
+        data.colors.color = "#F4810B";
+        data.colors.txt = "#000";
+        defaultScheme = true;
+      }
     }
-  }
-    firetable.debug && console.log("h2");
 
     var canvas = document.getElementById('cardMaker'+chatid);
 
@@ -533,7 +466,7 @@ firetable.actions = {
       ctx.font = "700 10px Helvetica, Arial, sans-serif";
       ctx.textAlign = "left";
       var linez = firetable.utilities.wrapText(ctx, data.title, 66, 240, 160, 15);
-      firetable.debug && console.log(linez);
+      firetable.debug && console.log('linez:',linez);
       ctx.font = "400 8px Helvetica, Arial, sans-serif";
       ctx.textAlign = "left";
       firetable.utilities.wrapText(ctx, data.artist, 66, 253 + (15 * linez), 160, 15);
@@ -606,8 +539,7 @@ firetable.actions = {
       } else {
         doImages();
       }
-
-}
+    }
   },
   showCard: function(cardid, chatid){
     // let's SHOW A CARD
@@ -622,7 +554,7 @@ firetable.actions = {
 
     var muted = localStorage["firetableMute"];
     var icon = "&#xE050;";
-    firetable.debug && console.log(muted);
+    firetable.debug && console.log('muted:',muted);
     if (zeroMute) {
       icon = "&#xE04E;";
       muted = 0;
@@ -819,7 +751,7 @@ firetable.actions = {
               if (childData.cid) destObj[childData.cid] = childData.type;
             }
         });
-        firetable.debug && console.log(destObj);
+        firetable.debug && console.log('merge dest:',destObj);
         sourceref.once("value")
           .then(function(snapshot3) {
             snapshot3.forEach(function(childSnapshot3) {
@@ -831,7 +763,7 @@ firetable.actions = {
                     if (destObj[childData.cid]){
                         if (childData.type == destObj[childData.cid]) dupe = true;
                     }
-                    firetable.debug && console.log(dupe, childData);
+                    firetable.debug && console.log('dupe:',dupe, childData);
                     if (!dupe){
                       // NOT A DUPLICATE! GO GO GO
                       destref.push(childData);
@@ -870,7 +802,7 @@ firetable.actions = {
             maxResults: 1
           });
           request.execute(function(response) {
-            firetable.debug && console.log(response);
+            firetable.debug && console.log('queue from link:',response);
             if (response.result) {
               if (response.result.items) {
                 if (response.result.items.length) {
@@ -890,7 +822,7 @@ firetable.actions = {
       };
 
       var listComments = function(tracks) {
-        firetable.debug && console.log(tracks);
+        firetable.debug && console.log('sc tracks for comments:',tracks);
         if (tracks) {
           var yargo = tracks.title.split(" - ");
           var sartist = yargo[0];
@@ -931,7 +863,7 @@ firetable.actions = {
       newobj[newspot] = thisone;
       if (firetable.preview == songid) {
         changePv = newspot;
-        firetable.debug && console.log(changePv);
+        firetable.debug && console.log('update queue:',changePv);
       }
     }
     if (changePv) firetable.preview = changePv;
@@ -957,7 +889,7 @@ firetable.actions = {
       newobj[newspot] = thisone;
       if (firetable.preview == songid) {
         changePv = newspot;
-        firetable.debug && console.log(changePv);
+        firetable.debug && console.log('shuffle queue:',changePv);
       }
     }
     if (changePv) firetable.preview = changePv;
@@ -999,16 +931,18 @@ firetable.actions = {
       });
     }
 
-    firetable.debug && console.log(songid);
+    firetable.debug && console.log('edit tags song id:',songid);
     firetable.songToEdit = {
       song: song,
       key: songid
     };
-    $("#tagPromptOverlay").css("display", "block");
+    $("#overlay").css("display", "flex");
+    $(".modalThing").hide();
+    $('#tagPromptBox').show();
   },
   importList(id, name, type) {
     //time to IMPORT SOME LISTS!
-    $("#importPromptOverlay").css("display", "none");
+    $("#overlay").hide();
     $("#importResults").html("");
     $("#plMachine").val("");
     if (type == 1) {
@@ -1072,7 +1006,7 @@ firetable.actions = {
 
     } else if (type == 2) {
       SC.get('/playlists/' + id).then(function(listinfo) {
-        firetable.debug && console.log(listinfo.tracks);
+        firetable.debug && console.log('sc tracks:',listinfo.tracks);
         var plref = firebase.database().ref("playlists/" + firetable.uid);
         var newlist = plref.push();
         var listid = newlist.key;
@@ -1166,7 +1100,7 @@ firetable.actions = {
       //we have to do it this way (i think) because firebase orders based on its ids
       for (var i = 0; i < qtemp.length; i++) {
         var theid = ids[i];
-        firetable.debug && console.log(theid);
+        firetable.debug && console.log('bump song id:',theid);
         if (firetable.preview == qtemp[i].key) {
           changePv = theid;
         }
@@ -1179,6 +1113,7 @@ firetable.actions = {
 
   },
   signUp: function(email, password) {
+    firetable.debug && console.log("signup");
     firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
       var errorCode = error.code;
       var errorMessage = error.message;
@@ -1215,7 +1150,6 @@ firetable.actions = {
     if (firetable.song.cid != 0) {
       var title = firetable.song.artist + " - " + firetable.song.title;
       firetable.actions.queueTrack(firetable.song.cid, title, firetable.song.type, true);
-      $("#grab").addClass("grabbed");
     }
   },
   unban: function(userid){
@@ -1223,7 +1157,7 @@ firetable.actions = {
     ref.set(false);
   },
   reloadtrack: function() {
-    $('#reloadtrack').addClass('working');
+    $('#reloadtrack').addClass('on working');
     //start regular song
     var nownow = Date.now();
     var timeSince = nownow - firetable.song.started;
@@ -1242,7 +1176,7 @@ firetable.actions = {
         firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
           auto_play: true
         },function(){
-          $('#reloadtrack').removeClass('working');
+          $('#reloadtrack').removeClass('on working');
         });
       }
     }
@@ -1257,7 +1191,7 @@ firetable.actions = {
     $("#apv" + type + cid).css("color", "#F4810B");
     $("#apv" + type + cid).css("pointer-events", "none");
     var cuteid = firetable.queueRef.push(info, function() {
-      firetable.debug && console.log(cuteid.key);
+      firetable.debug && console.log('queue track id:',cuteid.key);
       if (!tobottom) firetable.actions.bumpSongInQueue(cuteid.key);
     });
 
@@ -1301,55 +1235,54 @@ firetable.actions = {
 
 firetable.emojis = {
   h: function() {
-          $(".pickerResult").show();
-          $("#pickerResults h3").show();
-      },
+    $(".pickerResult").show();
+    $("#pickerResults h3").show();
+  },
   n: function (p, q) {
-          var e = p.attr("data-alternative-name");
-          return ($(p).text().toLowerCase().indexOf(q) >= 0) || (e != null && e.toLowerCase().indexOf(q) >= 0)
-      },
+    var e = p.attr("data-alternative-name");
+    return ($(p).text().toLowerCase().indexOf(q) >= 0) || (e != null && e.toLowerCase().indexOf(q) >= 0)
+  },
   sec: function(sec){
-    firetable.debug && console.log(sec);
-    var selectedSec = $(".pickerSecSelected");
+    firetable.debug && console.log('emoji sec:',sec);
+    var selectedSec = $("#pickerNav > .on");
     var thething = sec.substr(1);
 
     if (selectedSec.length){
       firetable.debug && console.log("already selected sec");
       if (selectedSec[0].id == sec){
         firetable.debug && console.log("toggle selected... back to FULL LIST");
-        $("#"+selectedSec[0].id).removeClass("pickerSecSelected");
+        $("#"+selectedSec[0].id).removeClass("on");
         $("#pickerResults div").show();
       } else {
         //new sec selected
-        $("#"+selectedSec[0].id).removeClass("pickerSecSelected");
+        $("#"+selectedSec[0].id).removeClass("on");
         $("#"+selectedSec[0].id.substr(1)).hide();
-        $("#"+sec).addClass("pickerSecSelected");
+        $("#"+sec).addClass("on");
         $("#"+thething).show();
-
       }
     } else {
       firetable.debug && console.log("first select");
-      $("#"+sec).addClass("pickerSecSelected");
+      $("#"+sec).addClass("on");
       $("#pickerResults div").hide();
       $("#"+thething).show();
     }
   },
   niceSearch: function (val){
     if (val.length == 0) {
-              firetable.emojis.h();
-              return
-          } else {
-             var isvisible = $("#pickerResults h3").is(":visible");
-             if (isvisible) $("#pickerResults h3").hide();
-          }
-          val = val.toLowerCase();
-          $(".pickerResult").each(function(p, q) {
-              if (firetable.emojis.n($(q), val)) {
-                  $(q).show()
-              } else {
-                  $(q).hide()
-              }
-          })
+      firetable.emojis.h();
+      return
+    } else {
+      var isvisible = $("#pickerResults h3").is(":visible");
+      if (isvisible) $("#pickerResults h3").hide();
+    }
+    val = val.toLowerCase();
+    $(".pickerResult").each(function(p, q) {
+      if (firetable.emojis.n($(q), val)) {
+        $(q).show()
+      } else {
+        $(q).hide()
+      }
+    })
   }
 };
 
@@ -1414,7 +1347,9 @@ firetable.utilities = {
   },
   playSound: function(filename) {
     if (firetable.playBadoop){
-      document.getElementById("alert").innerHTML = '<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename + '.mp3" /></audio>';
+      document.getElementById("audilert_mp3").setAttribute('src',filename+".mp3");
+      document.getElementById("audilert_ogg").setAttribute('src',filename+".ogg");
+      document.getElementById("audilert_embed").setAttribute('src',filename+".mp3");
     }
   },
   desktopNotify: function(chatData, namebo){
@@ -1431,47 +1366,23 @@ firetable.utilities = {
   },
   screenUp: function(){
     $("#screenBox").animate({
-      'top': '-300px'
+      'top': '-100%'
     }, 2000);
-    $("#track").animate({
-      'margin-left': '0'
-    }, 1000);
-    $("#artist").animate({
-      'margin-left': '0'
-    }, 1000);
-    $("#npbottom").animate({
-      'margin-left': '15px'
-    }, 500);
-    $("#npbottom").animate({
-      'bottom': '0'
-    }, 500);
-    $("#screenStyles").remove();
+    $('body').removeClass('screen');
   },
   screenDown: function(){
     $("#screenBox").animate({
-      'top': '36px'
+      'top': '0'
     }, 5000);
-    $("#track").animate({
-      'margin-left': '-120px'
-    }, 2500);
-    $("#artist").animate({
-      'margin-left': '-120px'
-    }, 2500);
-    $("#npbottom").animate({
-      'margin-left': '-105px'
-    }, 2500);
-
-    $("#npbottom").animate({
-      'bottom': '30px'
-    }, 1000);
-
+    $('body').addClass('screen');
   },
   isChatPrettyMuchAtBottom: function() {
-    var objDiv = document.getElementById("actualChat");
+    var objDiv = document.getElementById("chats");
     var answr = false;
     var thing1 = objDiv.scrollHeight - objDiv.clientHeight;
     var thing2 = objDiv.scrollTop;
     if (Math.abs(thing1 - thing2) <= 5) answr = true;
+    firetable.debug && console.log('pretty much at bottom',answr);
     return answr;
   },
   htmlEscape: function(s, preserveCR) {
@@ -1543,7 +1454,7 @@ return text;
         chatTxt = chatTxt.replace(imageUrlRegex, function(imageUrl){
             var chatImage = new Image();
             chatImage.onload = function() {
-              var objDiv = document.getElementById("actualChat");
+              var objDiv = document.getElementById("chats");
               var thing1 = objDiv.scrollHeight - objDiv.clientHeight;
               var thing2 = objDiv.scrollTop;
               if (Math.abs(thing1 - thing2) <= (parseInt(chatImage.height)+20)) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
@@ -1613,6 +1524,7 @@ return text;
       }
     }
     var recentz = firebase.database().ref("songHistory");
+    var $historyItem = $('.historyItem').remove();
     recentz.on('child_added', function(dataSnapshot, prev) {
         var data = dataSnapshot.val();
         var key = dataSnapshot.key;
@@ -1622,10 +1534,17 @@ return text;
         if (data.type == 2) firstpart == "sc";
         var pkey = firstpart +"cid" + data.cid;
 
-        $("#thehistory").prepend("<div id=\"recentthing"+key+"\" class=\"historyItem qresult\"><div class=\"histart\"><i id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, "+data.type+", true)\">&#xE037;</i></div><div class=\"pvbar\" id=\"pvbar" + pkey + "\"> <div class=\"qtxt\"><span class=\"listwords\"><a target=\"_blank\" href=\"" + data.url + "\">" + data.artist + " - "+data.title + "</a></span><div id=\"histmoreinfo\">played by "+data.dj+" on "+firetable.utilities.format_date(data.when)+" at "+firetable.utilities.format_time(data.when)+"</div></div><div class=\"delete\"><i id=\"apv" +data.type + data.cid + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + data.cid + "', '"+firetable.utilities.htmlEscape(data.artist + " - "+ data.title)+"', "+data.type+", true)\">&#xE03B;</i></div></div><div class=\"clear\"></div></div>");
-
-        $($("#recentthing" + key).find(".histart")[0]).css("background-image", "url(" + data.img + ")");
-
+        var $histItem = $historyItem.clone();
+        $histItem.attr('id', "histthing"+key);
+        $histItem.find('.previewicon').attr('id', "pv"+pkey).on('click', function(){ firetable.actions.pview(pkey, true, data.type, true) });
+        $histItem.find('.pvbar').attr('id', "pvbar"+pkey);
+        $histItem.find('.histlink').attr('href', data.url).text(data.artist + " - "+ data.title);
+        $histItem.find('.histdj').text(data.dj);
+        $histItem.find('.histdate').text(firetable.utilities.format_date(data.when));
+        $histItem.find('.histtime').text(firetable.utilities.format_time(data.when));
+        $histItem.find('.histeal').attr('id', "apv" + data.type + data.cid).on('click', function() { firetable.actions.queueTrack(data.cid, firetable.utilities.htmlEscape(data.artist + " - " + data.title), data.type, true) });
+        $histItem.find('.histart').css('background-image', 'url(' + data.img + ')');
+        $histItem.prependTo("#thehistory");
     });
     var themeChange = firebase.database().ref("theme");
     themeChange.on('value', function(dataSnapshot) {
@@ -1654,7 +1573,7 @@ return text;
           $("#track").text(firetable.ui.strip(data.adamData.track_name));
           $("#artist").text(firetable.ui.strip(data.adamData.artist));
           var nicename = firetable.song.djname;
-          var objDiv = document.getElementById("actualChat");
+          var objDiv = document.getElementById("chats");
           scrollDown = false;
           if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
           var showPlaycount = false;
@@ -1680,6 +1599,7 @@ return text;
             $("#playCount").text("");
             $(".npmsg"+data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong></div>");
           }
+          scrollits['chats'].update();
           if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
         }
       }
@@ -1700,7 +1620,6 @@ return text;
         firetable.moveBar = null;
       }
       $("#prgbar").css("background", "#151515");
-      $("#grab").removeClass("grabbed");
       var showPlaycount = false;
       if (firetable.tagUpdate){
         if (data.cid == firetable.tagUpdate.cid && firetable.tagUpdate.adamData.track_name){
@@ -1723,7 +1642,6 @@ return text;
       $("#track").text(firetable.ui.strip(data.title));
       $("#artist").text(firetable.ui.strip(data.artist));
       $("#songlink").attr("href", data.url);
-
       $("#albumArt").css("background-image", "url(" + data.image + ")")
       var nownow = Date.now();
       var timeSince = nownow - data.started;
@@ -1732,7 +1650,7 @@ return text;
       var timeLeft = data.duration - secSince;
       firetable.song = data;
       firetable.debug && console.log("NEW TRACK", data);
-      firetable.debug && console.log(timeSince);
+      firetable.debug && console.log('time since:',timeSince);
       if (data.type == 1){
           $("#scScreen").hide();
       } else if (data.type ==2){
@@ -1742,7 +1660,7 @@ return text;
         try{
           setup(biggerImg);
         } catch (e){
-          firetable.debug && console.log(e)
+          firetable.debug && console.log('big image error:',e)
         }
       }
       if (data.type == 1 && firetable.ytLoaded) {
@@ -1777,13 +1695,14 @@ return text;
           firetable.nonpmsg = false;
         } else {
           scrollDown = false;
-          var objDiv = document.getElementById("actualChat");
+          var objDiv = document.getElementById("chats");
           if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
           if (showPlaycount){
-            $("#actualChat").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong><br/>This song has been played "+firetable.tagUpdate.adamData.playcount+" times.</div>")
+            $("#chats").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong><br/>This song has been played "+firetable.tagUpdate.adamData.playcount+" times.</div>")
           } else {
-            $("#actualChat").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
+            $("#chats").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
           }
+          scrollits['chats'].update();
           if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
           firetable.lastChatPerson = false;
           firetable.lastChatId = false;
@@ -1806,7 +1725,7 @@ return text;
     var thescreen = firebase.database().ref("thescreen");
     thescreen.on('value', function(dataSnapshot) {
       var data = dataSnapshot.val();
-      firetable.debug && console.log(data);
+      firetable.debug && console.log('thescreen:',data);
       firetable.screenSyncPos = data;
       if (firetable.screenControl == "sync"){
       if (data) {
@@ -1866,12 +1785,12 @@ return text;
         if (i != firetable.playdex) {
           $("#djthing" + i).css("background-color", "#151515");
           $("#djthing" + i).css("color", "#eee");
-          $("#avtr" + i).css("animation", "none");
+          $("#avtr" + i).removeClass("animate");
 
         } else {
           $("#djthing" + i).css("background-color", firetable.color);
           $("#djthing" + i).css("color", firetable.countcolor);
-          $("#avtr" + i).css("animation", "MoveUpDown 1s linear infinite");
+          $("#avtr" + i).addClass("animate");
         }
       }
     });
@@ -1883,13 +1802,12 @@ return text;
         if (i != data) {
           $("#djthing" + i).css("background-color", "#151515");
           $("#djthing" + i).css("color", "#eee");
-          $("#avtr" + i).css("animation", "none");
+          $("#avtr" + i).removeClass("animate");
 
         } else {
           $("#djthing" + i).css("background-color", firetable.color);
           $("#djthing" + i).css("color", "#fff");
-          $("#avtr" + i).css("animation", "MoveUpDown 1s linear infinite");
-
+          $("#avtr" + i).addClass("animate");
         }
       }
     });
@@ -1906,10 +1824,10 @@ return text;
       var okdata = dataSnapshot.val();
       firetable.users = okdata;
 
-      if ($("#loggedInEmail").text() == firetable.uid) {
+      if ($("#loggedInName").text() == firetable.uid) {
         if (firetable.users[firetable.uid]) {
           if (firetable.users[firetable.uid].username){
-            $("#loggedInEmail").text(firetable.users[firetable.uid].username);
+            $("#loggedInName").text(firetable.users[firetable.uid].username);
           }
         }
       }
@@ -2000,13 +1918,13 @@ return text;
       }
       $("#allusers").html(newlist);
       $("#label1 .count").text(" (" + count + ")");
-      firetable.debug && console.log(okdata);
+      firetable.debug && console.log('users:',okdata);
     });
     var ref = firebase.database().ref("chat");
     ref.on('child_added', function(childSnapshot, prevChildKey) {
       var chatData = childSnapshot.val();
       var namebo = chatData.id;
-      var objDiv = document.getElementById("actualChat");
+      var objDiv = document.getElementById("chats");
       var utitle = "";
 
       var you = firetable.uid;
@@ -2035,7 +1953,7 @@ return text;
       scrollDown = false;
       if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
       if (chatData.id == firetable.lastChatPerson && !badoop) {
-        $("#chat" + firetable.lastChatId).append("<div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
+        $("#chat" + firetable.lastChatId+" .chatContent").append("<div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
         $("#chatTime" + firetable.lastChatId).text(firetable.utilities.format_time(chatData.time));
         var txtOut = firetable.ui.strip(chatData.txt);
         txtOut = firetable.ui.showImages(txtOut);
@@ -2048,33 +1966,18 @@ return text;
         twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
 
       } else {
-        if (badoop) {
-          var thing = $("#actualChat").append("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat badoop\"><div class=\"chatName\"><span class=\"chatNameName\"></span> <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
-          $("#chat"+childSnapshot.key).find(".chatNameName").text(namebo);
-          var txtOut = firetable.ui.strip(chatData.txt);
-          txtOut = firetable.ui.showImages(txtOut);
-          txtOut = firetable.ui.textToLinks(txtOut);
-          txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
-          txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
-            return "<code>"+x.replace(/\`/g, "") +"</code>";
-          });
-          $("#chattxt"+childSnapshot.key).html(txtOut);
-          twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
-
-        } else {
-          var thing = $("#actualChat").append("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat\"><div class=\"chatName\"><span class=\"chatNameName\"></span> <span class=\"utitle\">" + utitle + "</span><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div><divclass=\"clear\"></dov></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
-          $("#chat"+childSnapshot.key).find(".chatNameName").text(namebo);
-          var txtOut = firetable.ui.strip(chatData.txt);
-          txtOut = firetable.ui.showImages(txtOut);
-          txtOut = firetable.ui.textToLinks(txtOut);
-          txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
-          txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
-            return "<code>"+x.replace(/\`/g, "") +"</code>";
-          });
-          $("#chattxt"+childSnapshot.key).html(txtOut);
-          twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
-
-        }
+        var $chatthing = $("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat\"><div class=\"chatContent\"><div class=\"chatHead\"><div class=\"chatName\"></div><div class=\"utitle\">" + utitle + "</div></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div></div><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div></div>");
+        var txtOut = firetable.ui.strip(chatData.txt);
+        txtOut = firetable.ui.showImages(txtOut);
+        txtOut = firetable.ui.textToLinks(txtOut);
+        txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
+        txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
+          return "<code>"+x.replace(/\`/g, "") +"</code>";
+        });
+        $chatthing.find(".chatText").html(txtOut);
+        $chatthing.find(".chatName").text(namebo);
+        twemoji.parse($chatthing.find(".chatText")[0]);
+        $chatthing.appendTo("#chats");
         firetable.lastChatPerson = chatData.id;
         firetable.lastChatId = childSnapshot.key;
       }
@@ -2085,7 +1988,9 @@ return text;
         firetable.actions.showCard(chatData.card, childSnapshot.key);
         firetable.debug && console.log("showin card");
       }
+      scrollits['chats'].update();
       if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+      firetable.debug && console.log('scroll on chat', objDiv.scrollHeight, objDiv.clientHeight, objDiv.scrollTop);
     });
 
     firetable.ui.LinkGrabber.start();
@@ -2094,38 +1999,17 @@ return text;
     $("#label2").bind("click.lb2tab", firetable.ui.usertab2);
     $("#addToQueueBttn").bind("click", function() {
       $("#mainqueue").css("display", "none");
-      $("#addbox").css("display", "block");
+      $("#addbox").css("display", "flex");
       $("#cancelqsearch").show();
       $("#qControlButtons").hide();
 
       $("#plmanager").css("display", "none");
     });
 
-    $("#minimodeoptions").bind("click", function(event) {
-      var oldthingid = $("#minimodeoptions").find(".mmselected").attr('id');
-      $("#minimodeoptions").find(".mmselected").removeClass("mmselected");
-      $(event.target).addClass("mmselected");
-      var thingid = $(event.target).attr('id');
-
-
-      if (oldthingid == "mmchat") {
-        $("#rightbox").addClass("mmhidden");
-        $("#upperpart").addClass("mmhidden");
-        $("#recentHistory").addClass("mmhidden");
-      } else if (oldthingid == "mmqueue") {
-        $("#queuebox").addClass("mmhidden");
-      } else if (oldthingid == "mmusrs") {
-        $("#usrarea").addClass("mmhidden")
-      }
-      if (thingid == "mmchat") {
-        $("#rightbox").removeClass("mmhidden");
-        $("#upperpart").removeClass("mmhidden");
-        $("#recentHistory").removeClass("mmhidden");
-      } else if (thingid == "mmqueue") {
-        $("#queuebox").removeClass("mmhidden");
-      } else if (thingid == "mmusrs") {
-        $("#usrarea").removeClass("mmhidden");
-      }
+    $("#minimodeoptions .tab").bind("click", function(event) {
+      $("#mainGrid").removeClass().addClass($(this).attr('id'));
+      $("#minimodeoptions .tab").removeClass('on');
+      $(this).addClass('on');
     });
 
     $("#plmaker").bind("keyup", function(e) {
@@ -2198,7 +2082,6 @@ return text;
         allQueues.once('value')
           .then(function(allQueuesSnap) {
             var allPlaylists = allQueuesSnap.val();
-            $("#grab").removeClass("grabbed");
             $("#stealpicker").html("<option value=\"-1\">Where to?</option><option value=\"0\">Default Queue</option>");
             for (var key in allPlaylists) {
               if (allPlaylists.hasOwnProperty(key)) {
@@ -2206,8 +2089,7 @@ return text;
               }
             }
             $('#grab').addClass('on');
-            console.log($('#grab').offset().top + $('#grab').height());
-           $( "#stealContain" ).css({ 'top': $('#grab').offset().top + $('#grab').height(), 'left': $('#grab').offset().left - 14 }).show();
+            $( "#stealContain" ).css({ 'top': $('#grab').offset().top + $('#grab').height(), 'left': $('#grab').offset().left - 16 }).show();
           });
 
       } else {
@@ -2217,14 +2099,8 @@ return text;
     });
     $("#shuffleQueue").bind("click", firetable.actions.shuffleQueue);
     $("#history").bind("click", function() {
-       var isHidden = $("#recentHistory").is( ":hidden" );
-       if (isHidden){
-         $( "#recentHistory" ).show();
-         $(this).addClass('on');
-       } else {
-         $( "#recentHistory" ).hide();
-         $(this).removeClass('on');
-       }
+      $("#thehistory").slideToggle().css('top', $('#stage').outerHeight() + $('#topbar').outerHeight());
+      $(this).toggleClass('on');
     });
     $("#startMerge").bind("click", function() {
         var source = $("#mergepicker").val();
@@ -2243,6 +2119,7 @@ return text;
         $( "#mergeContain" ).hide();
     });
     $("#mergeLists").bind("click", function() {
+      var $this = $(this);
        var isHidden = $("#mergeContain").is( ":hidden" );
        if (isHidden){
          var allQueues = firebase.database().ref("playlists/" + firetable.uid);
@@ -2264,11 +2141,13 @@ return text;
                }
              }
             $( "#mergeContain" ).show();
+            $this.addClass('on');
            });
 
        } else {
          $( "#mergeContain" ).hide();
-       }
+         $this.removeClass('on');
+        }
     });
     $("#reloadtrack").bind("click", firetable.actions.reloadtrack);
     $("#loginlink").bind("click", function() {
@@ -2279,30 +2158,20 @@ return text;
     $("#volstatus").bind("click", function() {
       firetable.actions.muteToggle();
     });
-    $("#tagPromptClose").bind("click", function() {
-      $("#tagPromptOverlay").css("display", "none");
+    $(".openModal").bind("click", function() {
+      var modalContentID = $(this).attr('data-modal');
+      $(".modalThing").hide();
+      $("#overlay").css("display","flex");      
+      $("#"+modalContentID).show();      
+    });
+    $(".closeModal").bind("click", function() {
+      $("#overlay").hide();
       $("#tagMachine").val("");
       $("#tagSongLink").attr("href", "https://youtube.com");
       firetable.songTagToEdit = null;
-    });
-    $("#deletePromptClose").bind("click", function() {
-      $("#deletePromptOverlay").css("display", "none");
       $("#deletepicker").html("");
-    });
-    $("#settingsClose").bind("click", function() {
-      $("#settingsOverlay").css("display", "none");
-    });
-    $("#supercopClose").bind("click", function() {
-      $("#supercopOverlay").css("display", "none");
-    });
-    $("#cardsClose").bind("click", function() {
-      $("#cardsOverlay").css("display", "none");
-    });
-    $("#ftSettings").bind("click", function() {
-      $("#settingsOverlay").toggle();
-    });
-    $("#ftSuperCopButton").bind("click", function() {
-      $("#supercopOverlay").toggle();
+      firetable.actions.cardCase();
+      $("#plMachine").val("");
     });
     $("#cardCaseButton").bind("click", function() {
       firetable.actions.cardCase();
@@ -2313,11 +2182,12 @@ return text;
          var sec =$(this)[0].id;
          firetable.emojis.sec(sec);
        } catch (s) {}
-   });
+    });
     $("#pickEmoji").bind("click", function() {
       //toggle emoji picker
       if ($("#emojiPicker").is(":hidden")){
-        $("#emojiPicker").show(function(){
+        $(this).addClass('on');
+        $("#emojiPicker").slideDown(function(){
           $('#pickerSearch').focus();
         });
 
@@ -2330,7 +2200,8 @@ return text;
           makeRequest()
         }
       } else {
-        $("#emojiPicker").hide(function(){
+        $(this).removeClass('on');
+        $("#emojiPicker").slideUp(function(){
           $('#newchat').focus();
         });
       }
@@ -2344,7 +2215,7 @@ return text;
         txt: ":fire:",
         name: firetable.uname
       };
-      firetable.debug && console.log(chooto);
+      firetable.debug && console.log('fire:',chooto);
       $("#cloud_with_rain").removeClass("on");
       $("#fire").addClass("on");
       chat.push(chooto);
@@ -2358,7 +2229,7 @@ return text;
         txt: ":cloud_with_rain:",
         name: firetable.uname
       };
-      firetable.debug && console.log(chooto);
+      firetable.debug && console.log('rain:',chooto);
       $("#cloud_with_rain").addClass("on");
       $("#fire").removeClass("on");
       chat.push(chooto);
@@ -2414,7 +2285,7 @@ $('#desktopNotifyMentionsToggle').change(function() {
 });
 
 $('input[type=radio][name=screenControl]').change(function() {
-  firetable.debug && console.log(this.value);
+  firetable.debug && console.log('screen control:',this.value);
   localStorage["firetableScreenControl"] = this.value;
   firetable.screenControl = this.value;
   if (this.value == "off"){
@@ -2442,7 +2313,7 @@ $("#stealpicker").change(function() {
   }
   if (firetable.song.cid != 0) {
     var title = firetable.song.artist + " - " + firetable.song.title;
-    $("#grab").addClass("grabbed");
+    $("#grab").removeClass('on');
     var info = {
       type: firetable.song.type,
       name: title,
@@ -2456,7 +2327,7 @@ $("#stealpicker").change(function() {
 
     $("#pldeleteButton").bind("click", function() {
       var val = $("#deletepicker").val();
-      firetable.debug && console.log(val);
+      firetable.debug && console.log('playlist delete:',val);
       if (firetable.users[firetable.uid]) {
         if (firetable.users[firetable.uid].selectedList) {
           if (firetable.users[firetable.uid].selectedList == val) {
@@ -2474,10 +2345,12 @@ $("#stealpicker").change(function() {
         .catch(function(error) {
           firetable.debug && console.log("pl Remove failed: " + error.message);
         });
-      $("#deletePromptOverlay").css("display", "none");
+      $("#overlay").hide();
     });
     $("#plimportLauncher").bind("click", function() {
-      $("#importPromptOverlay").css("display", "block");
+      $("#overlay").css("display", "flex");
+      $(".modalThing").hide();
+      $('#importPromptBox').show();
     });
     $("#pldeleteLauncher").bind("click", function() {
       var allQueues = firebase.database().ref("playlists/" + firetable.uid);
@@ -2490,7 +2363,9 @@ $("#stealpicker").change(function() {
               $("#deletepicker").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
             }
           }
-          $("#deletePromptOverlay").css("display", "block");
+          $("#overlay").css("display", "flex");
+          $(".modalThing").hide();
+          $('#deletePromptBox').show();
         });
     });
     $("#pickerSearch").on("change paste keyup", function() {
@@ -2504,15 +2379,6 @@ $("#stealpicker").change(function() {
 
        } catch (s) {}
    });
-    $("#importPromptClose").bind("click", function() {
-      $("#importPromptOverlay").css("display", "none");
-      $("#plMachine").val("");
-    });
-    $("#loginlink2").bind("click", function() {
-      $("#logscreen").css("display", "block");
-      $("#createscreen").css("display", "none");
-      $("#resetscreen").css("display", "none");
-    });
     $("#signuplink").bind("click", function() {
       $("#logscreen").css("display", "none");
       $("#createscreen").css("display", "block");
@@ -2542,6 +2408,7 @@ $("#stealpicker").change(function() {
     $("#theAddress").bind("keyup", function(e) {
       if (e.which == 13) {
         var email = $("#theAddress").val();
+        firetable.debug && console.log("reset email return");
         firebase.auth().sendPasswordResetEmail(email).catch(function(error) {
           var errorCode = error.code;
           var errorMessage = error.message;
@@ -2550,7 +2417,7 @@ $("#stealpicker").change(function() {
           } else {
             alert(errorMessage);
           }
-          firetable.debug && console.log(error);
+          firetable.debug && console.log('send pass reset error:',error);
         });
         alert("Reset email sent. Click the reset link when it arrives thanks.");
       }
@@ -2565,6 +2432,7 @@ $("#stealpicker").change(function() {
     });
     $("#resetPassBttn").bind("click", function() {
       var email = $("#theAddress").val();
+      firetable.debug && console.log("reset email click button");
       firebase.auth().sendPasswordResetEmail(email).catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -2573,7 +2441,7 @@ $("#stealpicker").change(function() {
         } else {
           alert(errorMessage);
         }
-        firetable.debug && console.log(error);
+        firetable.debug && console.log('send pass reset error:',error);
       });
       alert("Reset email sent. Click the reset link when it arrives thanks.");
     });
@@ -2585,25 +2453,21 @@ $("#stealpicker").change(function() {
       firetable.actions.logIn(email, pass);
     });
     $("#ytsearchSelect").bind("click", function() {
-      $("#scsearchSelect").removeClass("searchSelectsSelected");
-      $("#ytsearchSelect").addClass("searchSelectsSelected");
+      $("#scsearchSelect").removeClass("on");
+      $("#ytsearchSelect").addClass("on");
       firetable.searchSelectsChoice = 1;
     });
     $("#scsearchSelect").bind("click", function() {
-      $("#ytsearchSelect").removeClass("searchSelectsSelected");
-      $("#scsearchSelect").addClass("searchSelectsSelected");
+      $("#ytsearchSelect").removeClass("on");
+      $("#scsearchSelect").addClass("on");
       firetable.searchSelectsChoice = 2;
     });
     $("#ytimportchoice").bind("click", function() {
-      firetable.debug && console.log("a");
-      $("#scimportchoice").removeClass("importChoice");
-      $("#ytimportchoice").addClass("importChoice");
+      firetable.debug && console.log("yt import");
       firetable.importSelectsChoice = 1;
     });
     $("#scimportchoice").bind("click", function() {
-      firetable.debug && console.log("b");
-      $("#ytimportchoice").removeClass("importChoice");
-      $("#scimportchoice").addClass("importChoice");
+      firetable.debug && console.log("sc import");
       firetable.importSelectsChoice = 2;
     });
     $("#tagMachine").bind("keyup", function(e) {
@@ -2617,7 +2481,7 @@ $("#stealpicker").change(function() {
             firetable.songToEdit = null;
             $("#tagMachine").val("");
             $("#tagSongLink").attr("href", "https://youtube.com");
-            $("#tagPromptOverlay").css("display", "none");
+            $("#overlay").hide();
           }
         }
       }
@@ -2671,13 +2535,15 @@ $("#stealpicker").change(function() {
           }
         }
     });
-    $("#importSources").bind( "click", function( e ) {
+    $("#importSources .tab").bind( "click", function( e ) {
       var searchFrom = firetable.importSelectsChoice;
       if ( searchFrom == 2 ) {
         $("#byId").hide();
       } else {
         $("#byId").show();
       }
+      $(this).siblings().removeClass('on');
+      $(this).addClass('on');
     });
     $("#plMachineById").bind( "change keyup input", function( e ) {
       var searchFrom = firetable.importSelectsChoice;
@@ -2745,7 +2611,7 @@ $("#stealpicker").change(function() {
               });
               request.execute(function(response) {
                 var srchItems = response.result.items;
-                firetable.debug && console.log(response);
+                firetable.debug && console.log('import search results:',response);
                 $.each(srchItems, function(index, item) {
                   vidTitle = item.snippet.title;
                   $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.snippet.title + " by " + item.snippet.channelTitle + "</div><div class=\"delete\"><a target=\"_blank\" href=\"https://www.youtube.com/playlist?list=" + item.id.playlistId + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i onclick=\"firetable.actions.importList('" + item.id.playlistId + "', '" + firetable.utilities.htmlEscape(item.snippet.title) + "', 1)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div><div class=\"clear\"></div></div>");
@@ -2784,7 +2650,7 @@ $("#stealpicker").change(function() {
 
           function makeRequest() {
             var q = $('#qsearch').val();
-            $('#searchResults').html("<div id=\"seachin\">Searching...</div>");
+            $('#searchResults').html("Searching...");
 
             var request = gapi.client.youtube.search.list({
               q: q,
@@ -2829,7 +2695,7 @@ $("#stealpicker").change(function() {
                 }
               }
               var srchItems = response.result.items;
-              firetable.debug && console.log(response);
+              firetable.debug && console.log('queue search:',response);
               $.each(srchItems, function(index, item) {
                 vidTitle = item.snippet.title;
 
@@ -2843,11 +2709,11 @@ $("#stealpicker").change(function() {
 
         } else if (firetable.searchSelectsChoice == 2) {
           var q = $('#qsearch').val();
-          $('#searchResults').html("<div id=\"seachin\">Searching...</div>");
+          $('#searchResults').html("Searching...");
           SC.get('/tracks', {
             q: q
           }).then(function(tracks) {
-            firetable.debug && console.log(tracks);
+            firetable.debug && console.log('sc tracks:',tracks);
             // $("#qsearch").val("");
             $('#searchResults').html("");
 
@@ -2937,7 +2803,7 @@ $("#stealpicker").change(function() {
               txt: ":fire:",
               name: firetable.uname
             };
-            firetable.debug && console.log(chooto);
+            firetable.debug && console.log('hot:',chooto);
             $("#cloud_with_rain").removeClass("on");
             $("#fire").addClass("on");
             chat.push(chooto);
@@ -2949,7 +2815,7 @@ $("#stealpicker").change(function() {
               txt: ":cloud_with_rain:",
               name: firetable.uname
             };
-            firetable.debug && console.log(chooto);
+            firetable.debug && console.log("storm:",chooto);
             $("#cloud_with_rain").addClass("on");
             $("#fire").removeClass("on");
             chat.push(chooto);
@@ -2963,7 +2829,7 @@ $("#stealpicker").change(function() {
               txt: thingtosay,
               name: firetable.uname
             };
-            firetable.debug && console.log(chooto);
+            firetable.debug && console.log('shrug:',chooto);
             chat.push(chooto);
           } else if (command == "tableflip") {
             var chat = firebase.database().ref("chat");
@@ -2975,7 +2841,7 @@ $("#stealpicker").change(function() {
               txt: thingtosay,
               name: firetable.uname
             };
-            firetable.debug && console.log(chooto);
+            firetable.debug && console.log('flip:',chooto);
             chat.push(chooto);
           } else if (command == "unflip") {
             var chat = firebase.database().ref("chat");
@@ -2987,7 +2853,7 @@ $("#stealpicker").change(function() {
               txt: thingtosay,
               name: firetable.uname
             };
-            firetable.debug && console.log(chooto);
+            firetable.debug && console.log('unflip:',chooto);
             chat.push(chooto);
           }
         } else {
@@ -2998,7 +2864,7 @@ $("#stealpicker").change(function() {
             txt: txt,
             name: firetable.uname
           };
-          firetable.debug && console.log(chooto);
+          firetable.debug && console.log('chat:',chooto);
           chat.push(chooto);
         }
         $("#newchat").val("");
@@ -3015,9 +2881,9 @@ $("#stealpicker").change(function() {
       if (data.color == "#fff" || data.color == "#7f7f7f") {
         firetable.color = "#F4810B";
         firetable.countcolor = "#fff";
-        $("#upperpart").css("background-color", "#fff");
+        $("#stage").css("background-color", "#fff");
       } else {
-        $("#upperpart").css("background-color", data.color);
+        $("#stage").css("background-color", data.color);
       }
       /*
       if (firetable.countcolor == "#fff"){
@@ -3026,24 +2892,23 @@ $("#stealpicker").change(function() {
         firetable.debug && console.log("a")
         firetable.countcolor = "#000000c9";
       }
-      $("#upperpart").css("color", firetable.countcolor);
+      $("#stage").css("color", firetable.countcolor);
       */
       $("#djthing" + firetable.playdex).css("background-color", firetable.color);
       $("#djthing" + firetable.playdex).css("color", firetable.countcolor);
-      $("#volstylebox").html("<style>.ui-slider-horizontal .ui-slider-range-min{ background-color: " + firetable.color + "; } .grabbed { color: " + firetable.color + " !important; border-bottom: 1px solid " + firetable.color + "!important;} </style>");
       $('.customColorStyles').remove();
-      $("head").append("<style class='customColorStyles'>button.iconbutt.on {color: " + firetable.color + "; border-bottom: 1px solid " + firetable.color + ";}</style>");
+      $("head").append("<style class='customColorStyles'>a {color: " + firetable.color + ";} .iconbutt.on {color: " + firetable.color + "; border-bottom: 1px solid " + firetable.color + "66;box-shadow: inset 0 0 1rem " + firetable.color + "33;} #addToQueueBttn {background:" + firetable.color + ";}.ui-slider-horizontal .ui-slider-range-min{ background-color: " + firetable.color + ";}</style>");
     });
   },
   usertab1: function() {
     $("#allusers").css("display", "block");
     $("#justwaitlist").css("display", "none");
-    $("#usertabs").find(".selected").removeClass("selected");
-    $("#label1").addClass("selected");
+    $("#usertabs").find(".on").removeClass("on");
+    $("#label1").addClass("on");
   },
   usertab2: function() {
-    $("#usertabs").find(".selected").removeClass("selected");
-    $("#label2").addClass("selected");
+    $("#usertabs").find(".on").removeClass("on");
+    $("#label2").addClass("on");
     $("#allusers").css("display", "none");
     $("#justwaitlist").css("display", "block");
 
@@ -3119,8 +2984,13 @@ $("#stealpicker").change(function() {
 
 }
 
-let windowW =  $(window).width() * 0.75 - (($(window).width() * 0.75) * 0.25);
-let windowH = 283;
+var scrollits = [];
+$('.scrollit').each(function(){
+  scrollits[$(this).attr('id')] = new PerfectScrollbar($(this)[0], { minScrollbarLength: 30 });
+});
+firetable.debug && console.log('scrollits',scrollits);
+
+
 let isLoaded = false;
 let glitch;
 let imgSrc = '';
@@ -3128,7 +2998,7 @@ let imgSrc = '';
 function setup(useThis) {
     if (!useThis) useThis = firetable.scImg;
     background(0);
-    let cnv = createCanvas(windowW, windowH);
+    let cnv = createCanvas($('#djStage').outerWidth(), $('#djStage').outerHeight());
     cnv.parent('scScreen');
     loadImage(useThis, function(img) {
         glitch = new Glitch(img);

@@ -6,387 +6,430 @@
 	<title>Indie Discotheque's Basement | firetable</title>
 	<meta name="viewport" content="width=device-width; initial-scale = 1.0; maximum-scale=1.0; user-scalable=no" />
 	<link rel="shortcut icon" href="favicon.png">
-	<link rel="stylesheet" href="css/looks.css?v=00.04.73" type="text/css" />
-	<script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.7/p5.min.js"></script>
-	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="css/reset.css" type="text/css" />
+	<link rel="stylesheet" href="https://unpkg.com/perfect-scrollbar@latest/css/perfect-scrollbar.css" />
+  	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' type='text/css'>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-	<script src="https://connect.soundcloud.com/sdk/sdk-3.2.1.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
-	<script src="js/jquery.countdown.min.js"></script>
-
+	<link rel="stylesheet" href="css/looks.css?v=00.04.73" type="text/css" />
 </head>
 
 <body>
-	<div id="volstylebox"></div>
-	<div id="tagPromptOverlay">
-		<div id="tagPromptBox">
-			<div id="tagPromptHeader">
-				<div class="left">
-					<span class="ftlogo">firetable</span> Tag Editor
+
+	<header id="topbar">
+		<h1 class="ftlogo">firetable</h1>
+		<div id="idtitle">Indie Discotheque's Basement</div>
+		<a class="header_icon" target="_blank" href="about"><i class="material-icons">&#xE887;</i></a>
+		<button class="header_icon openModal" data-modal="settingsBox" id="ftSettings"><i class="material-icons">settings</i></button>
+		<button class="header_icon openModal" data-modal="supercopBox" id="ftSuperCopButton"><i class="material-icons">security</i></button>
+		<div class="flexpacer"></div>
+		<button class="header_icon openModal" data-modal="cardsBox" id="cardCaseButton"><i class="material-icons"> business_center </i></button>
+		<div id="loggedInName"></div>
+		<button class="header_icon" id="logOutButton"><i class="material-icons"> exit_to_app </i></button>
+	</header>
+	
+	<div id="mainGrid" class="mmchat">
+
+		<div id="stage">
+			<div id="djStage">
+				<div id="screenBox">
+					<div id="playerArea"></div>
+					<div id="scScreen"></div>
+					<div id="screenover"></div>
 				</div>
-				<div class="right">
-					<span id="tagPromptClose">Cancel</span>
+				<div id="nowplaying">
+					<div id="albumArt"></div>
+					<div id="track">Nothing</div>
+					<div id="timr"></div>
+					<div id="artist">Playing</div>
+					<div id="source">Source</div>
+					<div id="plays">
+						<div id="playCount"></div>
+						<div id="firstPlay"></div>
+						<div id="lastPlay"></div>
+					</div>
 				</div>
-				<div class="clear"></div>
+				<div id="deck"></div>
 			</div>
-			<div id="tagPromptMain">
-				<div class="inputline">
-					<div class="left">Edit the song tag + hit enter to save.</div>
-					<div class="right"><a target="_blank" href="https://youtube.com" id="tagSongLink">Track Link</a></div>
-					<div class="clear"></div>
-					<input type="text" placeholder="Artist - Song Title" id="tagMachine"></input>
+			<div id="prgbar"></div>
+			<div id="volandthings">
+				<div id="songthings">
+					<div id="voteActions">
+						<button role="button" class="butt graybutt iconbutt" id="fire">
+							<i class="material-icons"> thumb_up </i>
+						</button>
+						<button role="button" class="butt graybutt iconbutt" id="cloud_with_rain">
+							<i class="material-icons"> thumb_down </i>
+						</button>
+					</div>
+					<div id="songActions">
+						<button role="button" class="butt graybutt iconbutt" id="grab">
+							<i class="material-icons"> &#xE03B; </i>
+						</button>
+						<a target="_blank" role="button" class="butt graybutt iconbutt"  id="songlink">
+							<i class="material-icons"> link </i>
+						</a>
+					</div>
+					<div id="playerControls">
+						<button role="button" class="butt graybutt iconbutt" id="reloadtrack" title="reload audio">
+							<i class="material-icons"> refresh </i>
+						</button>
+						<button role="button" class="butt graybutt iconbutt" id="volstatus" title="mute">
+							<i class="material-icons"> &#xE050; </i>
+						</button>
+						<div id="volplace">
+							<div id="slider"></div>
+						</div>
+					</div>
 				</div>
-				<strong>Tag Formatting Guidelines</strong><br/> Standard: <i>Artist - Song Title</i><br/> Remix: <i>Artist - Song Title (Remixartist Remix)</i><br/> Featuring: <i>Artist - Song Title feat. Subartist</i><br/> Featuring + Remix: <i>Artist - Song Title feat. Subartist (Remixartist Remix)</i>
-				<div id="rsnCredit">Rohn Standard Notation 2015</div>
-			</div>
-		</div>
-	</div>
-	<div id="deletePromptOverlay">
-		<div id="deletePromptBox">
-			<div id="deletePromptHeader">
-				<div class="left">
-					<span class="ftlogo">firetable</span> Playlist Deletion Zone
-				</div>
-				<div class="right">
-					<span id="deletePromptClose">Cancel</span>
-				</div>
-				<div class="clear"></div>
-			</div>
-			<div id="deletePromptMain">
-				So you want to delete a playlist huh? This action is <strong>irreversible.</strong><br/> If you're super sure you want to do this, pick a playlist to delete below.
-				<br/><br/>
-				<div class="inputline">
-					<select placeholder="Pick a Playlist To Delete" id="deletepicker"></select>
-					<div id="pldeleteButton">Delete This Playlist</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div id="settingsOverlay">
-		<div id="settingsBox">
-			<div id="settingsHeader">
-				<div class="left">
-					<span class="ftlogo">firetable</span> Setthings
-				</div>
-				<div class="right">
-					<span id="settingsClose">Close</span>
-				</div>
-				<div class="clear"></div>
-			</div>
-			<div id="settingsMain">
-				Set all of the things here on the table.
-				<br/><br/>
-				<div class="inputline">
-					<input type="checkbox" id="badoopToggle" name="badoopToggle"> <label for="badoopToggle">Badoop sound for @mentions</label>
-				</div>
-				<div class="inputline">
-					<input type="checkbox" id="desktopNotifyMentionsToggle" name="DTNMToggle"> <label for="DTNMToggle">Desktop notifications for @mentions</label>
-				</div>
-				<div class="inputline">
-					<input type="checkbox" id="showImagesToggle" name="showImagesToggle"> <label for="showImagesToggle">Show images in chat</label>
-				</div>
-				<div class="inputline">
-					<input id="screenControlTogsync" type="radio" name="screenControl" value="sync">Screen Sync <input id="screenControlTogon" type="radio" name="screenControl" value="on">Screen Always <input id="screenControlTogoff" type="radio" name="screenControl" value="off">Screen Disabled
-				</div>
-			</div>
-		</div>
-	</div>
-	<div id="cardsOverlay">
-		<div id="cardsBox">
-			<div id="cardsHeader">
-				<div class="left">
-					<span class="ftlogo">firetable</span> Your Card Case
-				</div>
-				<div class="right">
-					<span id="cardsClose">Close</span>
-				</div>
-				<div class="clear"></div>
-			</div>
-			<div id="cardsMain"></div>
-		</div>
-	</div>
-	<div id="supercopOverlay">
-		<div id="supercopBox">
-			<div id="supercopHeader">
-				<div class="left">
-					<span class="ftlogo">firetable</span> Supercop Control Panel
-				</div>
-				<div class="right">
-					<span id="supercopClose">Close</span>
-				</div>
-				<div class="clear"></div>
-			</div>
-			<div id="supercopMain">
-				Suspend a user's account, or manage active suspentions.<br/><br/>
-				<input type="text" placeholder="Enter Username to Suspend User's Account" id="supercopSearch"></input>
-				<div id="supercopResponse"></div>
-				<h3>Active Suspentions</h3>
-				<div id="activeSuspentions"></div>
+				<button role="button" class="butt graybutt iconbutt" id="history">
+					<i class="material-icons">history</i>
+				</button>
 			</div>
 		</div>
-	</div>
-	<div id="importPromptOverlay">
-		<div id="importPromptBox">
-			<div id="importPromptHeader">
-				<div class="left">
-					<span class="ftlogo">firetable</span> Playlist Import Machine
+
+		<div id="themebox">
+			<div id="currentTheme"></div>
+		</div>
+
+		<div id="minimodeoptions" class="tabs">
+			<button class="tab" id="mmusrs">People</button>
+			<button class="tab" id="mmqueue">Your Queue</button>
+			<button class="tab on" id="mmchat">Chat</button>
+		</div>
+
+		<div id="actualChat">
+			<div id="chats" class="scrollit"></div>
+			<div id="chatbottom">
+				<input maxlength="240" placeholder="Chat a thing" type="text" id="newchat">
+				<button class="butt graybutt iconbutt" id="pickEmoji"><i class="material-icons"> insert_emoticon </i></button>
+				<div id="emojiPicker">
+					<div id="pickerNav">
+						<i id="bpickerpeople" class="material-icons"> emoji_people </i>
+						<i id="bpickeranimals_and_nature" class="material-icons"> emoji_nature </i>
+						<i id="bpickerfood_and_drink" class="material-icons"> emoji_food_beverage </i>
+						<i id="bpickeractivity" class="material-icons"> emoji_events </i>
+						<i id="bpickertravel_and_places" class="material-icons"> emoji_transportation </i>
+						<i id="bpickerobjects" class="material-icons"> emoji_objects </i>
+						<i id="bpickersymbols" class="material-icons"> emoji_symbols </i>
+						<i id="bpickerflags" class="material-icons"> emoji_flags </i>
+					</div>
+					<input type="text" placeholder="Filter emoji things..." id="pickerSearch">
+					<div id="pickerResults" class="scrollit">
+						<div id="pickerpeople">
+							<h3>People</h3>
+						</div>
+						<div id="pickeranimals_and_nature">
+							<h3>Nature</h3>
+						</div>
+						<div id="pickerfood_and_drink">
+							<h3>Food</h3>
+						</div>
+						<div id="pickeractivity">
+							<h3>Activities</h3>
+						</div>
+						<div id="pickertravel_and_places">
+							<h3>Travel</h3>
+						</div>
+						<div id="pickerobjects">
+							<h3>Objects</h3>
+						</div>
+						<div id="pickersymbols">
+							<h3>Symbols</h3>
+						</div>
+						<div id="pickerflags">
+							<h3>Flags</h3>
+						</div>
+					</div>
 				</div>
-				<div class="right">
-					<span id="importPromptClose">Cancel</span>
-				</div>
-				<div class="clear"></div>
 			</div>
-			<div id="importPromptMain">
-				<div id="importSources">
-					<span class="importChoice" id="ytimportchoice">Youtube</span><span id="scimportchoice">Soundcloud</span>
+		</div>
+
+		<div id="usersbox">
+			<div id="usertabs" class="tabs">
+				<button class="tab on" id="label1">Everyone<span class="count"></span></button>
+				<button class="tab" id="label2">Waitlist<span class="count"></span></button>
+			</div>
+			<div id="userslist" class="scrollit">
+				<div id="allusers">
+					Loading users...
 				</div>
-				<div id="byId">
-					<input type="text" placeholder="Enter a YouTube playlist ID" id="plMachineById"></input>
-					<button class="material-icon" disabled>
-						<i class="material-icons" title="Import"></i>
+				<div id="justwaitlist">
+					Loading waitlist...
+				</div>
+			</div>
+		</div>
+
+		<div id="queuebox">
+			<div class="queuetop">
+				<div id="queueControls">
+					<select id="listpicker">
+						<option value="1">Add/Delete Playlist</option>
+						<option value="0">Default Queue</option>
+					</select>
+					<div id="qControlButtons">
+						<button class="butt graybutt iconbutt" id="addToQueueBttn"><i class="material-icons"> add </i></button>
+						<button class="butt graybutt iconbutt" id="mergeLists"><i class="material-icons"> merge_type </i></button>
+						<button class="butt graybutt iconbutt" id="shuffleQueue"><i class="material-icons"> shuffle </i></button>
+					</div>
+					<button class="butt graybutt" id="cancelqsearch">
+						Cancel
 					</button>
-					<p>or</p>
 				</div>
-				<input type="text" placeholder="Search Playlists" id="plMachine"></input>
-				<div id="importResults"></div>
-
+				<div id="mergeContain">
+					<div id="mergeArrow"></div>
+					<div id="mergeBox">
+						<div id="mergeSetup">
+							<select id="mergepicker"> <option value="0">Default Queue</option> </select> <i class="material-icons"> arrow_right_alt </i> <select id="mergepicker2"> <option value="0">Default Queue</option> </select> <button class=
+							"butt" id="startMerge">Merge</button>
+						</div>
+						<div id="mergeHappening">Merge in progress... Please stand by...</div>
+						<div id="mergeCompleted">Congratulations! Merge completed. <button class="butt" id="mergeOK">Ok Fine</button></div>
+					</div>
+				</div>
+			</div>
+			<div id="queuelist" class="scrollit">
+				<div id="mainqueue" class="innr">
+					Loading your lists...
+				</div>
+				<div id="plmanager">
+					<input type="text" placeholder="Choose a playlist name then hit enter" id="plmaker">
+					<div class="ortxt">or...</div>
+					<button class="butt graybutt openModal" data-modal="importPromptBox" id="plimportLauncher">Import A Playlist</button>
+					<button class="butt graybutt openModal" data-modal="deletePromptBox" id="pldeleteLauncher">Delete A Playlist</button>
+				</div>
+				<div id="addbox">
+					<input type="text" placeholder="Add a thing to the your queue now" id="qsearch"></input>
+					<div id="searchSelects" class="tabs">
+						<span class="tab on" id="ytsearchSelect">Youtube</span><span id="scsearchSelect" class="tab">Soundcloud</span>
+					</div>
+					<div id="searchResults" class="scrollit">
+					</div>
+				</div>
 			</div>
 		</div>
+
+		<div id="thehistory" class="scrollit">
+			<div id="histthing0" class="historyItem">
+				<div class="histart">
+					<i id="pv0" class="material-icons previewicon">&#xE037;</i>
+				</div>
+				<div class="pvbar" id="pvbar0">
+					<div class="qtxt">
+						<div class="listwords"><a target="_blank" href="" class="histlink"></a></div>
+						<div class="histmoreinfo">played by <span class="histdj"></span> on <span class="histdate"></span> at <span class="histtime"></span></div>
+					</div>
+					<div class="histeal"><i id="apvX0" class="material-icons">&#xE03B;</i></div>
+				</div>
+			</div>
+		</div>
+
+		<div id="login" class="scrollit">
+			<div id="welcomeInfo">
+				<h2>Welcome To Firetable!</h2>
+				<p>Want to jump on the DJ table and pick some h0t tunes to play? Just want to join the conversation?</p>
+			</div>
+			<div id="logscreen">
+				<h4>Log In</h4>
+				<div class="inputline">
+					<label>Email:</label>
+					<input type="text" id="loginemail">
+				</div>
+				<div class="inputline">
+					Password: <input type="password" id="loginpass">
+				</div>
+				<div class="inputline">
+					<button class="butt" id="loginBttn">Log In</button>
+				</div>
+				<div class="formlinks">
+					<a id="resetpass">Reset Password</a> &nbsp;|&nbsp; <a id="signuplink">Sign Up</a>
+				</div>
+			</div>
+			<div id="createscreen" style="display:none;">
+				<h4>Sign Up</h4>
+				<div class="inputline">
+					Email: <input type="text" id="newemail">
+				</div>
+				<div class="inputline">
+					Password: <input type="password" id="newpass">
+				</div>
+				<div class="inputline">
+					Repeat Password: <input type="password" id="newpass2">
+				</div>
+				<div class="inputline">
+					<button class="butt" id="createAccountBttn">Create Account</button>
+				</div>
+				<div class="formlinks">
+					<a id="loginlink" class="loginlink">Log In</a> &nbsp;|&nbsp; <a id="resetpass">Reset Password</a>
+				</div>
+			</div>
+			<div id="resetscreen" style="display:none;">
+				<h4>Reset your password!</h4>
+
+				<div class="inputline">
+					Email: <input type="text" id="theAddress">
+				</div>
+				<div class="inputline">
+					<button class="butt" id="resetPassBttn">Reset password</button>
+				</div>
+				<div class="formlinks">
+					<a id="loginlink2" class="loginlink">Log In</a> &nbsp;|&nbsp; <a id="signuplink">Sign Up</a>
+				</div>
+			</div>
+		</div>
+
 	</div>
-	<div id="contain">
-		<div id="topbar">
-			<div class="inr">
-				<div class="left">
-					<span class="ftlogo">firetable</span> <span id="idtitle">Indie Discotheque's Basement</span> <a id="infobutton" target="_blank" href="about"><i class="material-icons">&#xE887;</i></a><span id="ftSettings"><i class="material-icons">settings</i></span><span id="ftSuperCopButton"><i class="material-icons">security</i></span>
-				</div>
-				<div class="right">
-				<span id="cardCaseButton"><i class="material-icons"> business_center </i></span><span id="loggedInEmail">Not Logged In</span><span id="signOut"> </span>
-				</div>
-				<div class="clear"></div>
-			</div>
-		</div>
-		<div id="middleContain">
-			<div id="mainThing">
-				<div id="minimodeoptions">
-					<div class="minimodeopt" id="mmusrs">People</div>
-					<div class="minimodeopt" id="mmqueue">Your Queue</div>
-					<div class="minimodeopt mmselected" id="mmchat">Chat</div>
-				</div>
-				<div id="leftbox">
-					<div id="screenBox"><div id="scScreen"></div><div style="display:block" id="playerArea"></div><div id="screenover"></div></div>
-					<div id="scArea"><iframe allow="autoplay; encrypted-media" id="sc-widget" width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F1848notarealidthanks538&show_artwork=false"></iframe></div>
-					<div style="display:none" id="alert"></div>
-					<div id="usrarea" class="mmhidden">
-						<div id="usersbox">
-							<div id="usertabs">
-								<span class="usertab selected" id="label1">Everyone<span class="count"></span></span> <span class="usertab" id="label2">Waitlist<span class="count"></span></span>
-							</div>
-							<div id="userslist">
-								<div id="allusers" class="innr">
-									Loading users...
-								</div>
-								<div id="justwaitlist" style="display:none" class="innr">
-									Loading waitlist...
-								</div>
-							</div>
-						</div>
-					</div>
-					<div id="otherpart">
-						<div class="rh" id="recentHistory">
-							<div id="historyarrow"></div>
-							<div id="thehistory"></div>
-						</div>
-						<div id="upperpart">
-							<div id="upperlay">
-								<div id="npbox">
-									<div id="albumArt"></div>
-									<div id="nowplaying">
-										<div id="nptop">
-											<div id="track">Nothing</div>
-											<div id="timr"></div>
-											<div class="clear"></div>
-										</div>
-										<div id="npmiddle">
-											<div id="artist">Playing</div>
-										</div>
-										<div id="npbottom">
-											<span id="playCount"></span>
-											<span id="firstPlay"></span>
-											<span id="lastPlay"></span>
-										</div>
-									</div>
-									<div class="clear"></div>
-								</div>
-								<div id="deck"></div>
-								<div id="prgbar"></div>
-								<div id="volandthings">
-									<div id="songthings">
-										<button role="button" class="iconbutt" id="fire">
-											<i class="material-icons"> thumb_up </i>
-										</button>
-										<button role="button" class="iconbutt" id="cloud_with_rain">
-											<i class="material-icons"> thumb_down </i>
-										</button>
-										<div id="songActions">
-										<button role="button" class="iconbutt" id="grab">
-											<i class="material-icons"> &#xE03B; </i>
-										</button>
-										<a target="_blank" role="button" class="iconbutt"  id="songlink">
-											<i class="material-icons"> link </i>
-										</a>
-									</div>
-										<div id="playerControls">
-										<button role="button" class="iconbutt" id="reloadtrack" title="reload audio">
-											<i class="material-icons"> refresh </i>
-										</button>
-										<button role="button" class="iconbutt" id="volstatus" title="mute">
-											<i class="material-icons"> &#xE050; </i>
-										</button>
-										<div id="volplace">
-											<div id="slider"></div>
-										</div>
-									</div>
-									</div>
-									<button role="button" class="iconbutt" id="history">
-										<i class="material-icons">history</i>
-									</button>
-								</div>
-								<div class="clear"></div>
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div id="niceboxes">
-							<div class="mmhidden" id="notloggedin">
-								Log In or Sign Up to Join The Party!
-							</div>
-							<div id="queuebox" class="mmhidden">
-								<div class="queuetop">
-									<div id="queueControls">
-									<select id="listpicker">
-										<option value="1">Add/Delete Playlist</option>
-										  <option value="0">Default Queue</option>
-									</select>
-									<div id="qControlButtons">
-										<button class="iconbutt" id="addToQueueBttn">Add</button>
-										<button class="iconbutt" id="mergeLists"><i class="material-icons"> merge_type </i></button>
-										<button class="iconbutt" id="shuffleQueue"><i class="material-icons"> shuffle </i></button>
-									</div>
-									<button class="iconbutt" id="cancelqsearch">
-										Cancel
-									</button>
-								</div>
-									<div id="mergeContain">
-										<div id="mergeArrow"></div>
-										<div id="mergeBox">
-											<div id="mergeSetup">
-												<select id="mergepicker"> <option value="0">Default Queue</option> </select> <i class="material-icons"> arrow_right_alt </i> <select id="mergepicker2"> <option value="0">Default Queue</option> </select> <span id="startMerge">Merge</span>
-											</div>
-											<div id="mergeHappening">Merge in progress... Please stand by...</div>
-											<div id="mergeCompleted">Congratulations! Merge completed. <span id="mergeOK">Ok Fine</span></div>
-										</div>
-									</div>
-								</div>
-								<div id="queuelist">
-									<div id="mainqueue" class="innr">
-										Loading your lists...
-									</div>
-									<div id="plmanager">
-										<div class="helptxt">Choose a name + hit enter to make a blank playlist.</div>
-										<input type="text" placeholder="Choose a playlist name" id="plmaker"></input>
-										<div style="text-align:center" class="helptxt"><br/>or...<br/><br/></div>
-										<div id="plimportLauncher">Import A Playlist</div>
-										<div id="pldeleteLauncher">Delete A Playlist</div>
-									</div>
-									<div id="addbox" style="display:none" class="innr">
-										<input type="text" placeholder="Add a thing to the your queue now" id="qsearch"></input>
-										<div id="searchSelects">
-											<span class="searchSelectsSelected" id="ytsearchSelect">Youtube</span><span id="scsearchSelect">Soundcloud</span>
-										</div>
-										<div id="searchResults">
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="clear"></div>
-						</div>
-					</div>
-				</div>
-				<div id="rightbox">
-					<div id="login">
-						<div id="welcomeInfo">
-							<strong>Welcome To Firetable!</strong>
-							<br/><br/>Want to jump on the DJ table and pick some h0t tunes to play? Just want to join the conversation?<br/><br/>Log In or Sign Up below!
-						</div>
-						<div id="logscreen">
-							<h4>Log In <span class="subt" id="signuplink">Or Sign Up</span></h4>
-							<div class="inputline">
-								Email: <input type="text" id="loginemail">
-							</div>
-							<div class="inputline">
-								Password: <input type="password" id="loginpass">
-							</div>
-							<div class="inputline">
-								<button id="loginBttn">Log In</button> <span class="subt" id="resetpass">Reset Password</span>
-							</div>
-						</div>
-						<div id="createscreen" style="display:none;">
-							<h4>No Account? Sign Up! <span class="subt" id="loginlink2">Or Log In</span></h4>
-							<div class="inputline">
-								Email: <input type="text" id="newemail">
-							</div>
-							<div class="inputline">
-								Password: <input type="password" id="newpass">
-							</div>
-							<div class="inputline">
-								Repeat Password: <input type="password" id="newpass2">
-							</div>
-							<div class="inputline">
-								<button id="createAccountBttn">Create Account</button>
-							</div>
-						</div>
-						<div id="resetscreen" style="display:none;">
-							<h4>Reset your password! <span class="subt" id="loginlink">Back to login</span></h4>
 
-							<div class="inputline">
-								Email: <input type="text" id="theAddress">
-							</div>
-							<div class="inputline">
-								<button id="resetPassBttn">Reset password</button>
-							</div>
-						</div>
-					</div>
-					<div id="themebox">
-						<div id="themeflex">
-							<div id="currentTheme"></div>
-						</div>
-					</div>
-					<div id="actualChat">
-					</div>
-					<div id="chatMaker"><div id="emojiPicker"><div id="pickerNav"><i id="bpickerpeople" class="material-icons"> emoji_people </i><i id="bpickeranimals_and_nature" class="material-icons"> emoji_nature </i><i id="bpickerfood_and_drink" class="material-icons"> emoji_food_beverage </i><i id="bpickeractivity" class="material-icons"> emoji_events </i><i id="bpickertravel_and_places" class="material-icons"> emoji_transportation </i><i id="bpickerobjects" class="material-icons"> emoji_objects </i><i id="bpickersymbols" class="material-icons"> emoji_symbols </i><i id="bpickerflags" class="material-icons"> emoji_flags </i></div><input type="text" placeholder="Filter emoji things..." id="pickerSearch"><div id="pickerResults"><div id="pickerpeople"><h3>People</h3></div><div id="pickeranimals_and_nature"><h3>Nature</h3></div><div id="pickerfood_and_drink"><h3>Food</h3></div><div id="pickeractivity"><h3>Activities</h3></div><div id="pickertravel_and_places"><h3>Travel</h3></div><div id="pickerobjects"><h3>Objects</h3></div><div id="pickersymbols"><h3>Symbols</h3></div><div id="pickerflags"><h3>Flags</h3></div></div></div><input maxlength="240" placeholder="Chat a thing" type="text" id="newchat"><div id="pickEmoji"><i class="material-icons"> insert_emoticon </i></div></div>
+	<div id="overlay">
+		<div id="modal">
+
+			<div class="modalThing" id="tagPromptBox">
+				<div class="modalHeader">
+					<h2>Tag Editor</h2>
+					<button class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
 				</div>
-				<div class="clear"></div>
+				<div class="modalContent scrollit">
+					<div class="inputline">
+						<div class="left">Edit the song tag + hit enter to save.</div>
+						<div class="right"><a target="_blank" href="https://youtube.com" id="tagSongLink">Track Link</a></div>
+						<input type="text" placeholder="Artist - Song Title" id="tagMachine"></input>
+					</div>
+					<strong>Tag Formatting Guidelines</strong><br/> Standard: <i>Artist - Song Title</i><br/> Remix: <i>Artist - Song Title (Remixartist Remix)</i><br/> Featuring: <i>Artist - Song Title feat. Subartist</i><br/> Featuring + Remix: <i>Artist - Song Title feat. Subartist (Remixartist Remix)</i>
+					<div id="rsnCredit">Rohn Standard Notation 2015</div>
+				</div>
+			</div>
+	
+			<div class="modalThing" id="deletePromptBox">
+				<div class="modalHeader">
+					<h2>Playlist Deletion Zone</h2>
+					<button class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+				</div>
+				<div class="modalContent scrollit">
+					So you want to delete a playlist huh? This action is <strong>irreversible.</strong><br/> If you're super sure you want to do this, pick a playlist to delete below.
+					<br/><br/>
+					<div class="inputline">
+						<select placeholder="Pick a Playlist To Delete" id="deletepicker"></select>
+						<button class="butt redbutt" id="pldeleteButton">Delete This Playlist</button>
+					</div>
+				</div>
+			</div>
+	
+			<div class="modalThing" id="settingsBox">
+				<div class="modalHeader">
+					<h2>Setthings</h2>
+					<button class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+				</div>
+				<div class="modalContent scrollit">
+					Set all of the things here on the table.
+					<br/><br/>
+					<div class="settingline">
+						<input type="checkbox" id="badoopToggle" name="badoopToggle">
+						<label for="badoopToggle">Badoop sound for @mentions</label>
+					</div>
+					<div class="settingline">
+						<input type="checkbox" id="desktopNotifyMentionsToggle" name="DTNMToggle">
+						<label for="DTNMToggle">Desktop notifications for @mentions</label>
+					</div>
+					<div class="settingline">
+						<input type="checkbox" id="showImagesToggle" name="showImagesToggle">
+						<label for="showImagesToggle">Show images in chat</label>
+					</div>
+					<div class="settingline">
+						<input id="screenControlTogsync" type="radio" name="screenControl" value="sync">
+						<label for="screenControlTogsync">Screen Sync</label><br>
+						<input id="screenControlTogon" type="radio" name="screenControl" value="on">
+						<label for="screenControlTogon">Screen Always</label><br>
+						<input id="screenControlTogoff" type="radio" name="screenControl" value="off">
+						<label for="screenControlTogoff">Screen Disabled</label>
+					</div>
+				</div>
+			</div>
+	
+			<div class="modalThing" id="cardsBox">
+				<div class="modalHeader">
+					<h2>Your Card Case</h2>
+					<button class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+				</div>
+				<div class="modalContent scrollit">
+					<div id="cardsMain"></div>
+				</div>
+			</div>
+	
+			<div class="modalThing" id="supercopBox">
+				<div class="modalHeader">
+					<h2>Supercop Control Panel</h2>
+					<button class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+				</div>
+				<div class="modalContent scrollit">
+					Suspend a user's account, or manage active suspentions.<br/><br/>
+					<input type="text" placeholder="Enter Username to Suspend User's Account" id="supercopSearch"></input>
+					<div id="supercopResponse"></div>
+					<h3>Active Suspentions</h3>
+					<div id="activeSuspentions"></div>
+				</div>
+			</div>
+	
+			<div class="modalThing" id="importPromptBox">
+				<div class="modalHeader">
+					<h2>Playlist Import Machine</h2>
+					<button class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+				</div>
+				<div class="modalContent scrollit">
+					<div id="importSources" class="tabs">
+						<button class="tab on" id="ytimportchoice">Youtube</button><button class="tab" id="scimportchoice">Soundcloud</button>
+					</div>
+					<div id="importContent">
+						<div id="byId">
+							<input type="text" placeholder="Enter a YouTube playlist ID" id="plMachineById"></input>
+							<button class="butt graybutt iconbutt" disabled>
+								<i class="material-icons" title="Import"></i>
+							</button>
+						</div>
+						<div class="ortxt">or</div>
+						<input type="text" placeholder="Search Playlists" id="plMachine"></input>
+						<div id="importResults"></div>
+					</div>
+				</div>
 			</div>
 
 		</div>
-	</div>
 	</div>
 
 	<div id="stealContain">
 		<div id="stealArrow"></div>
 		<div id="stealBox">
-				<select id="stealpicker"> <option value="0">Default Queue</option> </select>
+			<select id="stealpicker"> <option value="0">Default Queue</option> </select>
 		</div>
 	</div>
 
-</body>
-<script src="https://apis.google.com/js/client.js?onload=googleApiClientReady">
-</script>
-<script src="https://w.soundcloud.com/player/api.js" type="text/javascript"></script>
+	<iframe allow="autoplay; encrypted-media" id="sc-widget" width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F1848notarealidthanks538&show_artwork=false"></iframe>
 
-<script type="text/javascript" src="js/main.js?v=00.04.73"></script>
-<script src="https://www.youtube.com/iframe_api"></script>
+	<audio autoplay="autoplay" id="audilert">
+		<source id="audilert_mp3" src="" type="audio/mpeg" />
+		<source id="audilert_ogg" src="" type="audio/ogg" />
+		<embed id="audilert_embed" hidden="true" autostart="true" loop="false" src="" />
+	</audio>
+
+	<script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.7/p5.min.js"></script>
+	<script src="https://connect.soundcloud.com/sdk/sdk-3.2.1.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+	<script src="js/jquery.countdown.min.js"></script>
+	<script src="https://unpkg.com/perfect-scrollbar@latest/dist/perfect-scrollbar.min.js"></script>
+	<script src="https://apis.google.com/js/client.js?onload=googleApiClientReady"></script>
+	<script src="https://w.soundcloud.com/player/api.js" type="text/javascript"></script>
+	<script src="https://www.youtube.com/iframe_api"></script>
+	<script type="text/javascript" src="js/main.js?v=00.04.73"></script>
+	
+</body>
+
+<div class="notice">
+	<h1 class="ftlogo">firetable</h1>
+	<p><span id="troublemaker"></span>,</p>
+	<p>Your account has been suspended due to a perceived violation of our <a href="terms">Terms of Service</a>.</p>
+	<p>If you believe your account has been suspended by mistake or as the result of a misunderstanding, please contact chris@indiediscotheque.com.</p>
+	<p>We reserve the right to modify, suspend, or terminate the Service for any reason, without notice, at any time.</p>
+</div>
 
 </html>
