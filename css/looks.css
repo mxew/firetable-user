@@ -159,7 +159,7 @@ code {
   background-color: #222;
   overflow: hidden;
   height: 100%;
-  padding: 50px;
+  padding: var(--pad4);
 }
 .notice#notice {
   display: block;
@@ -183,9 +183,11 @@ code {
   text-align: center;
   background-color: #222;
   border: 0;
+  border-radius: 0;
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
   box-shadow: 0 -0.2rem 0.5rem -0.1rem black, inset 0 -0.2rem 0.4rem -0.2rem black;
+  cursor: pointer;
 }
 .tab.on {
   color: #ffffff;
@@ -552,6 +554,7 @@ code {
   margin-right: var(--pad2);
   margin-left: var(--pad2);
   min-width: 0;
+  height: 1.5rem;
 }
 .spot.empty .djplaque {
   flex-direction: column;
@@ -561,11 +564,12 @@ code {
   display: none;
   position: absolute;
   z-index: 0;
-  bottom: 0;
+  bottom: 1.5rem;
   width: 100%;
-  height: 140px;
+  height: 6rem;
+  background-size: contain;
   background-repeat: no-repeat;
-  background-position: bottom 18px center;
+  background-position: center bottom;
 }
 .avtr.animate {
   animation: MoveUpDown 1s linear infinite;
@@ -576,8 +580,9 @@ code {
   display: flex;
   justify-content: center;
   min-width: 0;
-  padding: var(--pad1) var(--pad3);
+  padding: 0 var(--pad3);
   font-size: 0.75rem;
+  line-height: 1.5rem;
   text-align: center;
   background-color: #151515;
   border-top-left-radius: 0.5rem;
@@ -781,7 +786,7 @@ div#scScreen,
   top: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(rgba(0, 0, 0, 0.88) , rgba(0, 0, 0, 0.49) 20%,  rgba(255, 255, 255, 0.25) );
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.1));
 }
 
 
@@ -962,7 +967,7 @@ a.importLinkCheck {
   justify-content: space-between;
   padding: var(--pad2) var(--pad3);
   color: #ddd;
-  word-break: break-all;
+  word-break: break-word;
   background-color: #282828;
 }
 .newChat:nth-child(odd) {
@@ -980,6 +985,7 @@ a.importLinkCheck {
   text-align: center;
 }
 .chatContent .utitle {
+  line-height: 1.75;
   color: rgba(255,255,255,0.25);
 }
 .chatHead {
@@ -1055,7 +1061,7 @@ a.importLinkCheck {
 }
 .chatTime {
   font-weight: 400;
-  font-size: 10px;
+  font-size: 0.7rem;
   color: rgba(255, 255, 255, 0.47);
   white-space: nowrap;
 }
@@ -1389,6 +1395,11 @@ div#blog {
 
   #idtitle {
     display: block;
+  }
+
+  #usertabs {
+    padding-top: 0;
+    background-color: black;
   }
 
   #thehistory {

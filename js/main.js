@@ -1377,11 +1377,12 @@ firetable.utilities = {
     $('body').addClass('screen');
   },
   isChatPrettyMuchAtBottom: function() {
-    var objDiv = document.getElementById("actualChat");
+    var objDiv = document.getElementById("chats");
     var answr = false;
     var thing1 = objDiv.scrollHeight - objDiv.clientHeight;
     var thing2 = objDiv.scrollTop;
     if (Math.abs(thing1 - thing2) <= 5) answr = true;
+    firetable.debug && console.log('pretty much at bottom',answr);
     return answr;
   },
   htmlEscape: function(s, preserveCR) {
@@ -1453,7 +1454,7 @@ return text;
         chatTxt = chatTxt.replace(imageUrlRegex, function(imageUrl){
             var chatImage = new Image();
             chatImage.onload = function() {
-              var objDiv = document.getElementById("actualChat");
+              var objDiv = document.getElementById("chats");
               var thing1 = objDiv.scrollHeight - objDiv.clientHeight;
               var thing2 = objDiv.scrollTop;
               if (Math.abs(thing1 - thing2) <= (parseInt(chatImage.height)+20)) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
@@ -1572,7 +1573,7 @@ return text;
           $("#track").text(firetable.ui.strip(data.adamData.track_name));
           $("#artist").text(firetable.ui.strip(data.adamData.artist));
           var nicename = firetable.song.djname;
-          var objDiv = document.getElementById("actualChat");
+          var objDiv = document.getElementById("chats");
           scrollDown = false;
           if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
           var showPlaycount = false;
@@ -1588,6 +1589,7 @@ return text;
             $("#playCount").text("");
             $(".npmsg"+data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong></div>");
           }
+          scrollits['chats'].update();
           if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
         }
       }
@@ -1678,13 +1680,14 @@ return text;
           firetable.nonpmsg = false;
         } else {
           scrollDown = false;
-          var objDiv = document.getElementById("actualChat");
+          var objDiv = document.getElementById("chats");
           if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
           if (showPlaycount){
             $("#chats").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong><br/>This song has been played "+firetable.tagUpdate.adamData.playcount+" times.</div>")
           } else {
             $("#chats").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
           }
+          scrollits['chats'].update();
           if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
           firetable.lastChatPerson = false;
           firetable.lastChatId = false;
@@ -1906,7 +1909,7 @@ return text;
     ref.on('child_added', function(childSnapshot, prevChildKey) {
       var chatData = childSnapshot.val();
       var namebo = chatData.id;
-      var objDiv = document.getElementById("actualChat");
+      var objDiv = document.getElementById("chats");
       var utitle = "";
 
       var you = firetable.uid;
@@ -1970,7 +1973,9 @@ return text;
         firetable.actions.showCard(chatData.card, childSnapshot.key);
         firetable.debug && console.log("showin card");
       }
+      scrollits['chats'].update();
       if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+      firetable.debug && console.log('scroll on chat', objDiv.scrollHeight, objDiv.clientHeight, objDiv.scrollTop);
     });
 
     firetable.ui.LinkGrabber.start();
@@ -2964,10 +2969,11 @@ $("#stealpicker").change(function() {
 
 }
 
-
+var scrollits = [];
 $('.scrollit').each(function(){
-  new PerfectScrollbar($(this)[0], { minScrollbarLength: 30 });
+  scrollits[$(this).attr('id')] = new PerfectScrollbar($(this)[0], { minScrollbarLength: 30 });
 });
+firetable.debug && console.log('scrollits',scrollits);
 
 
 let isLoaded = false;
