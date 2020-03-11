@@ -135,10 +135,10 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1rem;
   color: white;
   background-color: black;
   border-radius: 999px;
@@ -259,7 +259,9 @@ code {
   position: relative;
   overflow: hidden;
 }
-.ps__rail-x,
+.ps__rail-x {
+	display: none !important;
+}
 .ps__rail-y {
 	z-index: 2;
 }
@@ -274,7 +276,7 @@ code {
 .ps__rail-y:focus > .ps__thumb-y,
 .ps__rail-y.ps--clicking .ps__thumb-y {
   width: 0.5rem;
-	background-color: var(--orange66);
+	background-color: rgba(123,123,123,0.5);
 	border-radius: 0.2rem;
 }
 
@@ -487,12 +489,12 @@ code {
 #nowplaying {
   position: relative;
   display: grid;
-  grid-template-columns: auto auto 1fr auto;
+  grid-template-columns: auto 1fr auto;
   grid-template-rows: auto auto 1fr;
   grid-template-areas: 
-    "art track track timr"
-    "art artist artist artist"
-    "art source plays plays"
+    "art track timr"
+    "art artist artist"
+    "art plays plays"
   ;
   margin-bottom: auto;
   padding: var(--pad4);
@@ -531,10 +533,6 @@ code {
   font-size: 0.75rem;
   font-weight: 700;
   color: rgba(255,255,255,0.4);
-}
-#source {
-  grid-area: source;
-  padding-right: 1em;
 }
 #plays {
   grid-area: plays;
@@ -962,7 +960,7 @@ a.importLinkCheck {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background-color: black;
+  background-color: #181818;
 }
 #chats {
   flex: 1;
@@ -978,24 +976,27 @@ a.importLinkCheck {
   padding: var(--pad2) var(--pad3);
   color: #ddd;
   word-break: break-word;
-  background-color: #282828;
+  background-color: #181818;
 }
 .newChat:nth-child(odd) {
-  background: #1e1e1e;
+/*  background: #1e1e1e;*/
 }
 .newChat.nowplayn {
-  margin: var(--pad2);
+  margin: var(--pad1) var(--pad3);
   padding: 0;
-  background-color: black !important;
+  background-color: transparent;
 }
 .npmsg {
   width: 100%;
+  padding: var(--pad1);
   color: #888;
   font-size: 0.7rem;
   text-align: center;
+  background-color: #282828;
+  border-radius: var(--pad1);
 }
 .chatContent .utitle {
-  line-height: 1.75;
+  line-height: 1.6;
   color: rgba(255,255,255,0.25);
 }
 .chatHead {
@@ -1114,6 +1115,7 @@ a.importLinkCheck {
   z-index: 99;
   left: 0;
   bottom: 100%;
+  width: 100%;
   padding: var(--pad3);
   background-color: #2d2d2d;
   box-shadow: 0 -0.25rem 0.5rem black;
@@ -1151,28 +1153,30 @@ img.emoji {
   width: 100%;
   background: #222;
 }
-.historyItem {
+#thehistory .pvbar {
   display: flex;
   padding: var(--pad2) var(--pad2) var(--pad2) var(--pad2);
   border-bottom: 1px solid black;
 }
 .histmoreinfo {
   font-size: 0.8rem;
+  color: #888;
 }
 .histart {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: var(--pad3);
-  height: 3rem;
-  width: 3rem;
+  margin-right: var(--pad2);
+  height: 2.5rem;
+  width: 2.5rem;
   background-size: cover;
   background-position: center;
 }
-#thehistory .pvbar {
+#thehistory .qtxt {
   flex: 1;
-  display: flex;
-  justify-content: space-between;
+}
+.histlink {
+  color: #bbb;
 }
 
 

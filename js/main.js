@@ -606,7 +606,7 @@ firetable.actions = {
       clearTimeout(firetable.ptimeout);
       firetable.ptimeout = null;
       $("#pv" + firetable.preview).html("&#xE037;");
-      $("#pvbar" + firetable.preview).css("background", "none");
+      $("#pvbar" + firetable.preview).css("background-image", "none");
       clearInterval(firetable.movePvBar);
       firetable.movePvBar = null;
       firetable.preview = false;
@@ -634,7 +634,7 @@ firetable.actions = {
     } else {
       if (firetable.preview) {
         $("#pv" + firetable.preview).html("&#xE037;");
-        $("#pvbar" + firetable.preview).css("background", "none");
+        $("#pvbar" + firetable.preview).css("background-image", "none");
       }
 
       firetable.preview = id;
@@ -656,7 +656,7 @@ firetable.actions = {
       firetable.ptimeout = setTimeout(function() {
         firetable.ptimeout = null;
         $("#pv" + firetable.preview).html("&#xE037;");
-        $("#pvbar" + firetable.preview).css("background", "none");
+        $("#pvbar" + firetable.preview).css("background-image", "none");
         clearInterval(firetable.movePvBar);
         firetable.movePvBar = null;
         firetable.pvCount = 0;
@@ -688,9 +688,9 @@ firetable.actions = {
       firetable.movePvBar = setInterval(function() {
         var pcnt = (firetable.pvCount / 29) * 100;
         firetable.pvCount += 0.2;
-        var pvcolr = "#212121";
+        var pvcolr = "#222";
         if (fromHist) pvcolr = "#333";
-        $("#pvbar" + firetable.preview).css("background", "linear-gradient(90deg, #2c4e61 " + pcnt + "%, "+ pvcolr +" " + pcnt + "%)");
+        $("#pvbar" + firetable.preview).css("background-image", "linear-gradient(90deg, " + firetable.color + "44 " + pcnt + "%, "+ pvcolr +" " + pcnt + "%)");
       }, 200);
       if (type == 1) {
         if (firetable.scLoaded) firetable.scwidget.pause();
@@ -1200,7 +1200,7 @@ firetable.actions = {
         $("#pv" + firetable.preview).html("&#xE037;");
         clearTimeout(firetable.ptimeout);
         firetable.ptimeout = null;
-        $("#pvbar" + firetable.preview).css("background", "none");
+        $("#pvbar" + firetable.preview).css("background-image", "none");
         clearInterval(firetable.movePvBar);
         firetable.movePvBar = null;
         firetable.preview = false;
@@ -1524,7 +1524,7 @@ return text;
       }
     }
     var recentz = firebase.database().ref("songHistory");
-    var $historyItem = $('.historyItem').remove();
+    var $historyItem = $('#thehistory .pvbar').remove();
     recentz.on('child_added', function(dataSnapshot, prev) {
         var data = dataSnapshot.val();
         var key = dataSnapshot.key;
@@ -1535,9 +1535,8 @@ return text;
         var pkey = firstpart +"cid" + data.cid;
 
         var $histItem = $historyItem.clone();
-        $histItem.attr('id', "histthing"+key);
+        $histItem.attr('id', "pvbar"+pkey);
         $histItem.find('.previewicon').attr('id', "pv"+pkey).on('click', function(){ firetable.actions.pview(pkey, true, data.type, true) });
-        $histItem.find('.pvbar').attr('id', "pvbar"+pkey);
         $histItem.find('.histlink').attr('href', data.url).text(data.artist + " - "+ data.title);
         $histItem.find('.histdj').text(data.dj);
         $histItem.find('.histdate').text(firetable.utilities.format_date(data.when));
@@ -1594,10 +1593,10 @@ return text;
           }
           if (showPlaycount){
             $("#playCount").text(data.adamData.playcount+" plays");
-            $(".npmsg"+data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong><br/>This song has been played "+data.adamData.playcount+" times.</div>");
+            $(".npmsg"+data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong><br/>This song has been played "+data.adamData.playcount+" times.</div>");
           } else {
             $("#playCount").text("");
-            $(".npmsg"+data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong></div>");
+            $(".npmsg"+data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong></div>");
           }
           scrollits['chats'].update();
           if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
@@ -1698,9 +1697,9 @@ return text;
           var objDiv = document.getElementById("chats");
           if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
           if (showPlaycount){
-            $("#chats").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong><br/>This song has been played "+firetable.tagUpdate.adamData.playcount+" times.</div>")
+            $("#chats").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong><br/>This song has been played "+firetable.tagUpdate.adamData.playcount+" times.</div>")
           } else {
-            $("#chats").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing<br/><strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
+            $("#chats").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
           }
           scrollits['chats'].update();
           if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
@@ -2042,7 +2041,7 @@ return text;
           $("#pv" + firetable.preview).html("&#xE037;");
           clearTimeout(firetable.ptimeout);
           firetable.ptimeout = null;
-          $("#pvbar" + firetable.preview).css("background", "none");
+          $("#pvbar" + firetable.preview).css("background-image", "none");
           clearInterval(firetable.movePvBar);
           firetable.movePvBar = null;
           firetable.preview = false;
@@ -2667,7 +2666,7 @@ $("#stealpicker").change(function() {
                   $("#pv" + firetable.preview).html("&#xE037;");
                   clearTimeout(firetable.ptimeout);
                   firetable.ptimeout = null;
-                  $("#pvbar" + firetable.preview).css("background", "none");
+                  $("#pvbar" + firetable.preview).css("background-image", "none");
                   clearInterval(firetable.movePvBar);
                   firetable.movePvBar = null;
                   firetable.preview = false;
@@ -2722,7 +2721,7 @@ $("#stealpicker").change(function() {
                 $("#pv" + firetable.preview).html("&#xE037;");
                 clearTimeout(firetable.ptimeout);
                 firetable.ptimeout = null
-                $("#pvbar" + firetable.preview).css("background", "none");
+                $("#pvbar" + firetable.preview).css("background-image", "none");
                 clearInterval(firetable.movePvBar);
                 firetable.movePvBar = null;
                 firetable.preview = false;
@@ -2897,7 +2896,7 @@ $("#stealpicker").change(function() {
       $("#djthing" + firetable.playdex).css("background-color", firetable.color);
       $("#djthing" + firetable.playdex).css("color", firetable.countcolor);
       $('.customColorStyles').remove();
-      $("head").append("<style class='customColorStyles'>a {color: " + firetable.color + ";} .iconbutt.on {color: " + firetable.color + "; border-bottom: 1px solid " + firetable.color + "66;box-shadow: inset 0 0 1rem " + firetable.color + "33;} #addToQueueBttn {background:" + firetable.color + ";}.ui-slider-horizontal .ui-slider-range-min{ background-color: " + firetable.color + ";}</style>");
+      $("head").append("<style class='customColorStyles'>.ui-slider-horizontal .ui-slider-range-min{ background-color: " + firetable.color + ";}</style>");
     });
   },
   usertab1: function() {

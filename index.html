@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width; initial-scale = 1.0; maximum-scale=1.0; user-scalable=no" />
 	<link rel="shortcut icon" href="favicon.png">
 	<link rel="stylesheet" href="css/reset.css" type="text/css" />
-	<link rel="stylesheet" href="https://unpkg.com/perfect-scrollbar@latest/css/perfect-scrollbar.css" />
+	<link rel="stylesheet" href="css/perfect-scrollbar.css" />
   	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' type='text/css'>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="css/looks.css?v=00.04.73" type="text/css" />
@@ -41,7 +41,6 @@
 					<div id="track">Nothing</div>
 					<div id="timr"></div>
 					<div id="artist">Playing</div>
-					<div id="source">Source</div>
 					<div id="plays">
 						<div id="playCount"></div>
 						<div id="firstPlay"></div>
@@ -209,17 +208,15 @@
 		</div>
 
 		<div id="thehistory" class="scrollit">
-			<div id="histthing0" class="historyItem">
+			<div class="pvbar" id="pvbar0">
 				<div class="histart">
 					<i id="pv0" class="material-icons previewicon">&#xE037;</i>
 				</div>
-				<div class="pvbar" id="pvbar0">
-					<div class="qtxt">
-						<div class="listwords"><a target="_blank" href="" class="histlink"></a></div>
-						<div class="histmoreinfo">played by <span class="histdj"></span> on <span class="histdate"></span> at <span class="histtime"></span></div>
-					</div>
-					<div class="histeal"><i id="apvX0" class="material-icons">&#xE03B;</i></div>
+				<div class="qtxt">
+					<div class="listwords"><a target="_blank" href="" class="histlink"></a></div>
+					<div class="histmoreinfo">played by <span class="histdj"></span> on <span class="histdate"></span> at <span class="histtime"></span></div>
 				</div>
+				<div class="histeal"><i id="apvX0" class="material-icons">&#xE03B;</i></div>
 			</div>
 		</div>
 
@@ -416,7 +413,7 @@
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
 	<script src="js/jquery.countdown.min.js"></script>
-	<script src="https://unpkg.com/perfect-scrollbar@latest/dist/perfect-scrollbar.min.js"></script>
+	<script src="js/perfect-scrollbar.min.js"></script>
 	<script src="https://apis.google.com/js/client.js?onload=googleApiClientReady"></script>
 	<script src="https://w.soundcloud.com/player/api.js" type="text/javascript"></script>
 	<script src="https://www.youtube.com/iframe_api"></script>
