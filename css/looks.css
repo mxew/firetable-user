@@ -61,10 +61,6 @@ body {
   overflow: hidden;
 }
 
-body.screen #albumArt {
-  display: none;
-}
-
 body,
 input,
 select,
@@ -573,7 +569,7 @@ code {
   display: none;
   position: absolute;
   z-index: 0;
-  bottom: 1.5rem;
+  bottom: 1.4rem;
   width: 100%;
   height: 6rem;
   background-size: contain;
@@ -779,9 +775,10 @@ select#stealpicker {
   width: 100%;
   height: 100%;
   z-index: 0;
+  transition: top 2s ease-in-out;
   pointer-events: none;
 }
-div#scScreen,
+#scScreen,
 #playerArea {
   position: absolute;
   top: 0;
@@ -1172,9 +1169,6 @@ img.emoji {
   background-size: cover;
   background-position: center;
 }
-#thehistory .qtxt {
-  flex: 1;
-}
 .histlink {
   color: #bbb;
 }
@@ -1369,12 +1363,19 @@ div#blog {
 @media only screen and (min-width: 800px) {
 
 
+  body.screen #albumArt {
+    display: none;
+  }
+  body.screen #screenBox {
+    top: 0;
+  }
+
   #mainGrid,
   #mainGrid.mmqueue,
   #mainGrid.mmchat,
   #mainGrid.mmusrs {
     grid-template-rows: auto auto 1fr;
-    grid-template-columns: minmax(min-content, 24rem) minmax(40vw, 100vw) minmax(min-content, 36rem);
+    grid-template-columns: minmax(max-content, 24rem) minmax(40vw, 100vw) minmax(min-content, 36rem);
     grid-template-areas: 
     "users stage theme"
     "users stage chat"
