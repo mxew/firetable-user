@@ -138,12 +138,13 @@ firetable.init = function() {
   };
   firetable.utilities.getEmojiMap();
   firetable.parser = new DOMParser();
-  $(window).resize(function() {
+  $(window).resize(firetable.utilities.debounce(function() {
     // This will execute whenever the window is resized
     $("#thehistory").css('top', $('#stage').outerHeight() + $('#topbar').outerHeight());
     $('#playerArea,#scScreen').width($('#djStage').outerWidth()).height($('#djStage').outerHeight());
-    $( "#stealContain" ).css({ 'top': $('#grab').offset().top + $('#grab').height(), 'left': $('#grab').offset().left - 16 })
-  });
+    $( "#stealContain" ).css({ 'top': $('#grab').offset().top + $('#grab').height(), 'left': $('#grab').offset().left - 16 });
+    setup();
+  },500));
   var widgetIframe = document.getElementById('sc-widget');
   firetable.scwidget = SC.Widget(widgetIframe);
   firetable.scwidget.bind(SC.Widget.Events.READY, function() {
@@ -1365,15 +1366,9 @@ firetable.utilities = {
       }
   },
   screenUp: function(){
-    $("#screenBox").animate({
-      'top': '-100%'
-    }, 2000);
     $('body').removeClass('screen');
   },
   screenDown: function(){
-    $("#screenBox").animate({
-      'top': '0'
-    }, 5000);
     $('body').addClass('screen');
   },
   isChatPrettyMuchAtBottom: function() {
@@ -1431,6 +1426,20 @@ firetable.utilities = {
       min += "0" + minutes;
     }
     return hours + ":" + min + "" + ampm;
+  },
+  debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+      var context = this, args = arguments;
+      var later = function() {
+        timeout = null;
+        if (!immediate) func.apply(context, args);
+      };
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) func.apply(context, args);
+    };
   }
 };
 
@@ -2658,6 +2667,7 @@ $("#stealpicker").change(function() {
               maxResults: 15
             });
             request.execute(function(response) {
+              firetable.debug && console.log('queue search:',response);
               //  $("#qsearch").val("");
               $('#searchResults').html("");
 
@@ -2694,13 +2704,12 @@ $("#stealpicker").change(function() {
                 }
               }
               var srchItems = response.result.items;
-              firetable.debug && console.log('queue search:',response);
               $.each(srchItems, function(index, item) {
                 vidTitle = item.snippet.title;
 
                 var pkey = "ytcid" + item.id.videoId;
 
-                $("#searchResults").append("<div class=\"qresult\"><div class=\"pvbar\" id=\"pvbar" + pkey + "\"> <div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, 1)\">&#xE037;</i><span class=\"listwords\">" + vidTitle + "</span></div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id.videoId + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 1)\">&#xE03B;</i></div></div></div>");
+                $("#searchResults").append("<div class=\"pvbar\" id=\"pvbar" + pkey + "\"><i id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, 1)\">&#xE037;</i><div class=\"listwords\">" + vidTitle + "</div><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id.videoId + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 1)\">&#xE03B;</i></div>");
               })
             })
           }
@@ -2761,7 +2770,7 @@ $("#stealpicker").change(function() {
               vidTitle = sartist + " - " + stitle;
               var pkey = "sccid" + item.id;
 
-              $("#searchResults").append("<div class=\"qresult\"><div class=\"pvbar\" id=\"pvbar" + pkey + "\"><div class=\"qtxt\"><i id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, 2)\">&#xE037;</i><span class=\"listwords\">" + vidTitle + "</span></div><div class=\"delete\"><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 2)\">&#xE03B;</i></div></div></div>");
+              $("#searchResults").append("<div class=\"pvbar\" id=\"pvbar" + pkey + "\"><i id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, 2)\">&#xE037;</i><div class=\"listwords\">" + vidTitle + "</div><i id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 2)\">&#xE03B;</i></div>");
             })
           });
         }
@@ -3002,6 +3011,9 @@ function setup(useThis) {
     loadImage(useThis, function(img) {
         glitch = new Glitch(img);
         isLoaded = true;
+        var $can = $('#scScreen canvas');
+        var canrat = $can.width() / $can.height();
+        $can.data('ratio',canrat);
     });
 }
 
