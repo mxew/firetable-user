@@ -84,6 +84,11 @@ a {
   cursor: pointer;
 }
 
+:focus {
+  outline: none;
+  box-shadow: 0 0 0.5rem var(--orange);
+}
+
 input:not([type="checkbox"]):not([type="radio"]),
 select,
 button {
@@ -725,13 +730,12 @@ select#stealpicker {
 .ui-slider .ui-slider-handle {
   position: absolute;
   z-index: 2;
-  width: 1rem;
-  height: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
   cursor: grab;
-  margin-top: .25rem;
-  background-color: #333;
-  border: 0;
-  border-radius: .5rem;
+  background-color: #bbb;
+  border: 0.2rem solid #666;
+  border-radius: 999px;
   -ms-touch-action: none;
   touch-action: none;
 }
@@ -751,7 +755,7 @@ select#stealpicker {
   height: 3px;
 }
 .ui-slider-horizontal .ui-slider-handle {
-  top: -.7rem;
+  top: -0.6rem;
   margin-left: -.6em;
 }
 .ui-slider-horizontal .ui-slider-range {
@@ -765,7 +769,6 @@ select#stealpicker {
   right: 0;
 }
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
-  background: #bbbbbb;
   font-weight: normal;
 }
 .ui-widget.ui-widget-content {
@@ -1478,8 +1481,8 @@ div#blog {
   }
 
   #albumArt {
-    height: 100px;
-    width: 100px;
+    height: 6.5rem;
+    width: 6.5rem;
   }
 
   #deck {

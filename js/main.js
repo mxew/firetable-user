@@ -2204,6 +2204,7 @@ return text;
       } else {
         $(this).removeClass('on');
         $("#emojiPicker").slideUp(function(){
+          $('#pickerSearch').val('').trigger('change');
           $('#newchat').focus();
         });
       }
