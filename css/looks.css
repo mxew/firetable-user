@@ -485,15 +485,25 @@ code {
 #nowplaying {
   position: relative;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto auto 1fr;
   grid-template-rows: auto auto 1fr;
   grid-template-areas: 
     "art track timr"
-    "art artist artist"
-    "art plays plays"
+    "art artist ."
+    "art plays ."
   ;
   margin-bottom: auto;
   padding: var(--pad4);
+}
+#nowplaying::before {
+  content: '';
+  position: absolute;
+  top: 3rem;
+  left: 3rem;
+  width: 15rem;
+  height: 5rem;
+  background-color: rgba(0,0,0,0.25);
+  box-shadow: 0 0 10rem 10rem rgba(0,0,0,0.25);
 }
 #albumArt {
   grid-area: art;
@@ -514,6 +524,7 @@ code {
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.05em;
+  text-align: right;
 }
 #artist {
   grid-area: artist;
@@ -971,9 +982,6 @@ a.importLinkCheck {
   word-break: break-word;
   background-color: #181818;
 }
-.newChat:nth-child(odd) {
-/*  background: #1e1e1e;*/
-}
 .newChat.nowplayn {
   margin: var(--pad1) var(--pad3);
   padding: 0;
@@ -1162,6 +1170,9 @@ img.emoji {
 }
 .histlink {
   color: #bbb;
+}
+.qtxt {
+  flex: 1;
 }
 
 
