@@ -19,12 +19,12 @@
 		<h1 class="ftlogo">firetable</h1>
 		<div id="idtitle">Indie Discotheque's Basement</div>
 		<a class="header_icon" target="_blank" href="about"><i class="material-icons">&#xE887;</i></a>
-		<button class="header_icon openModal" data-modal="settingsBox" id="ftSettings"><i class="material-icons">settings</i></button>
-		<button class="header_icon openModal" data-modal="supercopBox" id="ftSuperCopButton"><i class="material-icons">security</i></button>
+		<button role="button" class="header_icon openModal" data-modal="settingsBox" id="ftSettings"><i class="material-icons">settings</i></button>
+		<button role="button" class="header_icon openModal" data-modal="supercopBox" id="ftSuperCopButton"><i class="material-icons">security</i></button>
 		<div class="flexpacer"></div>
-		<button class="header_icon openModal" data-modal="cardsBox" id="cardCaseButton"><i class="material-icons"> business_center </i></button>
+		<button role="button" class="header_icon openModal" data-modal="cardsBox" id="cardCaseButton"><i class="material-icons"> business_center </i></button>
 		<div id="loggedInName"></div>
-		<button class="header_icon" id="logOutButton"><i class="material-icons"> exit_to_app </i></button>
+		<button role="button" class="header_icon" id="logOutButton"><i class="material-icons"> exit_to_app </i></button>
 	</header>
 	
 	<div id="mainGrid" class="mmchat">
@@ -91,16 +91,16 @@
 		</div>
 
 		<div id="minimodeoptions" class="tabs">
-			<button class="tab on" id="mmusrs">People</button>
-			<button class="tab" id="mmqueue">Your Queue</button>
-			<button class="tab" id="mmchat">Chat</button>
+			<button role="button" class="tab on" id="mmusrs">People</button>
+			<button role="button" class="tab" id="mmqueue">Your Queue</button>
+			<button role="button" class="tab" id="mmchat">Chat</button>
 		</div>
 
 		<div id="actualChat">
 			<div id="chats" class="scrollit"></div>
 			<div id="chatbottom">
 				<input maxlength="240" placeholder="Chat a thing" type="text" id="newchat">
-				<button class="butt graybutt iconbutt" id="pickEmoji"><i class="material-icons"> insert_emoticon </i></button>
+				<button role="button" class="butt graybutt iconbutt" id="pickEmoji"><i class="material-icons"> insert_emoticon </i></button>
 				<div id="emojiPicker">
 					<div id="pickerNav">
 						<i id="bpickerpeople" class="material-icons"> emoji_people </i>
@@ -145,8 +145,8 @@
 
 		<div id="usersbox">
 			<div id="usertabs" class="tabs">
-				<button class="tab on" id="label1">Everyone<span class="count"></span></button>
-				<button class="tab" id="label2">Waitlist<span class="count"></span></button>
+				<button role="button" class="tab on" id="label1">Everyone<span class="count"></span></button>
+				<button role="button" class="tab" id="label2">Waitlist<span class="count"></span></button>
 			</div>
 			<div id="userslist" class="scrollit">
 				<div id="allusers">
@@ -166,11 +166,11 @@
 						<option value="0">Default Queue</option>
 					</select>
 					<div id="qControlButtons">
-						<button class="butt graybutt iconbutt" id="addToQueueBttn"><i class="material-icons"> add </i></button>
-						<button class="butt graybutt iconbutt" id="mergeLists"><i class="material-icons"> merge_type </i></button>
-						<button class="butt graybutt iconbutt" id="shuffleQueue"><i class="material-icons"> shuffle </i></button>
+						<button role="button" class="butt graybutt iconbutt" id="addToQueueBttn"><i class="material-icons"> add </i></button>
+						<button role="button" class="butt graybutt iconbutt" id="mergeLists"><i class="material-icons"> merge_type </i></button>
+						<button role="button" class="butt graybutt iconbutt" id="shuffleQueue"><i class="material-icons"> shuffle </i></button>
 					</div>
-					<button class="butt graybutt" id="cancelqsearch">
+					<button role="button" class="butt graybutt" id="cancelqsearch">
 						Cancel
 					</button>
 				</div>
@@ -178,11 +178,11 @@
 					<div id="mergeArrow"></div>
 					<div id="mergeBox">
 						<div id="mergeSetup">
-							<select id="mergepicker"> <option value="0">Default Queue</option> </select> <i class="material-icons"> arrow_right_alt </i> <select id="mergepicker2"> <option value="0">Default Queue</option> </select> <button class=
+							<select id="mergepicker"> <option value="0">Default Queue</option> </select> <i class="material-icons"> arrow_right_alt </i> <select id="mergepicker2"> <option value="0">Default Queue</option> </select> <button role="button" class=
 							"butt" id="startMerge">Merge</button>
 						</div>
 						<div id="mergeHappening">Merge in progress... Please stand by...</div>
-						<div id="mergeCompleted">Congratulations! Merge completed. <button class="butt" id="mergeOK">Ok Fine</button></div>
+						<div id="mergeCompleted">Congratulations! Merge completed. <button role="button" class="butt" id="mergeOK">Ok Fine</button></div>
 					</div>
 				</div>
 			</div>
@@ -193,8 +193,8 @@
 				<div id="plmanager">
 					<input type="text" placeholder="Choose a playlist name then hit enter" id="plmaker">
 					<div class="ortxt">or...</div>
-					<button class="butt graybutt openModal" data-modal="importPromptBox" id="plimportLauncher">Import A Playlist</button>
-					<button class="butt graybutt openModal" data-modal="deletePromptBox" id="pldeleteLauncher">Delete A Playlist</button>
+					<button role="button" class="butt graybutt openModal" data-modal="importPromptBox" id="plimportLauncher">Import A Playlist</button>
+					<button role="button" class="butt graybutt openModal" data-modal="deletePromptBox" id="pldeleteLauncher">Delete A Playlist</button>
 				</div>
 				<div id="addbox">
 					<input type="text" placeholder="Add a thing to the your queue now" id="qsearch"></input>
@@ -210,13 +210,13 @@
 		<div id="thehistory" class="scrollit">
 			<div class="pvbar" id="pvbar0">
 				<div class="histart">
-					<i id="pv0" class="material-icons previewicon">&#xE037;</i>
+					<i role="button" id="pv0" class="material-icons previewicon">&#xE037;</i>
 				</div>
 				<div class="qtxt">
 					<div class="listwords"><a target="_blank" href="" class="histlink"></a></div>
 					<div class="histmoreinfo">played by <span class="histdj"></span> on <span class="histdate"></span> at <span class="histtime"></span></div>
 				</div>
-				<div class="histeal"><i id="apvX0" class="material-icons">&#xE03B;</i></div>
+				<div role="button" class="histeal"><i id="apvX0" class="material-icons">&#xE03B;</i></div>
 			</div>
 		</div>
 
@@ -235,7 +235,7 @@
 					Password: <input type="password" id="loginpass">
 				</div>
 				<div class="inputline">
-					<button class="butt" id="loginBttn">Log In</button>
+					<button role="button" class="butt" id="loginBttn">Log In</button>
 				</div>
 				<div class="formlinks">
 					<a id="resetpass">Reset Password</a> &nbsp;|&nbsp; <a id="signuplink">Sign Up</a>
@@ -253,7 +253,7 @@
 					Repeat Password: <input type="password" id="newpass2">
 				</div>
 				<div class="inputline">
-					<button class="butt" id="createAccountBttn">Create Account</button>
+					<button role="button" class="butt" id="createAccountBttn">Create Account</button>
 				</div>
 				<div class="formlinks">
 					<a id="loginlink" class="loginlink">Log In</a> &nbsp;|&nbsp; <a id="resetpass">Reset Password</a>
@@ -266,7 +266,7 @@
 					Email: <input type="text" id="theAddress">
 				</div>
 				<div class="inputline">
-					<button class="butt" id="resetPassBttn">Reset password</button>
+					<button role="button" class="butt" id="resetPassBttn">Reset password</button>
 				</div>
 				<div class="formlinks">
 					<a id="loginlink2" class="loginlink">Log In</a> &nbsp;|&nbsp; <a id="signuplink">Sign Up</a>
@@ -282,7 +282,7 @@
 			<div class="modalThing" id="tagPromptBox">
 				<div class="modalHeader">
 					<h2>Tag Editor</h2>
-					<button class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+					<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
 				</div>
 				<div class="modalContent scrollit">
 					<div class="inputline">
@@ -298,14 +298,14 @@
 			<div class="modalThing" id="deletePromptBox">
 				<div class="modalHeader">
 					<h2>Playlist Deletion Zone</h2>
-					<button class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+					<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
 				</div>
 				<div class="modalContent scrollit">
 					So you want to delete a playlist huh? This action is <strong>irreversible.</strong><br/> If you're super sure you want to do this, pick a playlist to delete below.
 					<br/><br/>
 					<div class="inputline">
 						<select placeholder="Pick a Playlist To Delete" id="deletepicker"></select>
-						<button class="butt redbutt" id="pldeleteButton">Delete This Playlist</button>
+						<button role="button" class="butt redbutt" id="pldeleteButton">Delete This Playlist</button>
 					</div>
 				</div>
 			</div>
@@ -313,7 +313,7 @@
 			<div class="modalThing" id="settingsBox">
 				<div class="modalHeader">
 					<h2>Setthings</h2>
-					<button class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+					<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
 				</div>
 				<div class="modalContent scrollit">
 					Set all of the things here on the table.
@@ -344,7 +344,7 @@
 			<div class="modalThing" id="cardsBox">
 				<div class="modalHeader">
 					<h2>Your Card Case</h2>
-					<button class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+					<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
 				</div>
 				<div class="modalContent scrollit">
 					<div id="cardsMain"></div>
@@ -354,7 +354,7 @@
 			<div class="modalThing" id="supercopBox">
 				<div class="modalHeader">
 					<h2>Supercop Control Panel</h2>
-					<button class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+					<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
 				</div>
 				<div class="modalContent scrollit">
 					Suspend a user's account, or manage active suspentions.<br/><br/>
@@ -368,16 +368,16 @@
 			<div class="modalThing" id="importPromptBox">
 				<div class="modalHeader">
 					<h2>Playlist Import Machine</h2>
-					<button class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+					<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
 				</div>
 				<div class="modalContent scrollit">
 					<div id="importSources" class="tabs">
-						<button class="tab on" id="ytimportchoice">Youtube</button><button class="tab" id="scimportchoice">Soundcloud</button>
+						<button role="button" class="tab on" id="ytimportchoice">Youtube</button><button role="button" class="tab" id="scimportchoice">Soundcloud</button>
 					</div>
 					<div id="importContent">
 						<div id="byId">
 							<input type="text" placeholder="Enter a YouTube playlist ID" id="plMachineById"></input>
-							<button class="butt graybutt iconbutt" disabled>
+							<button role="button" class="butt graybutt iconbutt" disabled>
 								<i class="material-icons" title="Import"></i>
 							</button>
 						</div>

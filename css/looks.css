@@ -77,8 +77,11 @@ h2 {
 
 a {
   color: var(--orange);
-  cursor: pointer;
   text-decoration: none;
+}
+
+[role="button"] {
+  cursor: pointer;
 }
 
 input:not([type="checkbox"]):not([type="radio"]),
@@ -139,7 +142,6 @@ code {
   background-color: black;
   border-radius: 999px;
   opacity: 0.66;
-  cursor: pointer;
 }
 
 .utitle {
@@ -183,7 +185,6 @@ code {
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
   box-shadow: 0 -0.2rem 0.5rem -0.1rem black, inset 0 -0.2rem 0.4rem -0.2rem black;
-  cursor: pointer;
 }
 .tab.on {
   color: #ffffff;
@@ -206,7 +207,6 @@ code {
   border-top: 1px solid rgba(255,255,255,0.3);
   border-bottom: 1px solid black;
   transition: all 100ms ease-in-out;
-  cursor: pointer;
   user-select: none;
 }
 .butt:hover {
@@ -700,7 +700,6 @@ select#stealpicker {
     border-right: 1px solid black;
     border-left: 1px solid black;
     border-radius: 5px;
-    cursor: pointer;
 }
 
 #slider {
@@ -806,7 +805,6 @@ select#stealpicker {
 #mainqueue .material-icons {
   margin: 0 var(--pad1);
   font-size: 1.2rem;
-  cursor: pointer;
 }
 #queuelist .pvbar {
   display: flex;
@@ -920,7 +918,6 @@ select#mergepicker, #mergepicker2 {
 }
 .importResult .material-icons {
   font-size: 15px;
-  cursor: pointer;
 }
 a.importLinkCheck {
   color: #eee;
@@ -1029,7 +1026,6 @@ a.importLinkCheck {
   color: white;
   background-color: rgba(255,0,0,0.5);
   border-radius: 999px;
-  cursor: pointer;
 }
 .chatText.hideImg .inlineImage {
   position: relative;
@@ -1061,9 +1057,9 @@ a.importLinkCheck {
 .badoop::after {
   content: "@";
   position: absolute;
-  top: 0;
-  right: 3.5rem;
-  font-size: 1.2rem;
+  top: 0.25em;
+  right: 4rem;
+  font-size: 1rem;
   color: var(--orange);
 }
 .chatTime {
@@ -1088,9 +1084,6 @@ a.importLinkCheck {
   height: 33vh;
   overflow-x: hidden;
   text-align:center;
-}
-.pickerResult{
-  cursor: pointer;
 }
 .pickerSecSelected{
   color: #fff;
@@ -1125,7 +1118,6 @@ input#pickerSearch {
   margin: var(--pad2) 0;
 }
 #pickerNav i {
-  cursor: pointer;
   margin-right: var(--pad2);
 }
 #pickerNav .on {
@@ -1264,7 +1256,6 @@ span.cardShareChat {
     background-color: #000;
     padding: 5px;
     border-radius: 5px;
-    cursor: pointer;
     display: none;
 }
 span.cardGiftChat {
@@ -1275,7 +1266,6 @@ span.cardGiftChat {
     background-color: #000;
     padding: 5px;
     border-radius: 5px;
-    cursor: pointer;
     display: none;
 }
 span.cardGiftChat:hover,
