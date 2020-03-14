@@ -599,7 +599,6 @@ code {
   white-space: nowrap;
 }
 .playcount {
-  display: none;
   white-space: nowrap;
 }
 
@@ -1371,11 +1370,67 @@ div#blog {
   }
 
   #mainGrid,
+  #mainGrid.mmchat {
+    grid-template-rows: auto auto auto 1fr;
+    grid-template-columns: 60vw 40vw;
+    grid-template-areas: 
+      "stage theme"
+      "stage chat"
+      "mmopts chat"
+      "users chat"
+    ;
+  }
+  #mainGrid.mmusrs {
+    grid-template-areas: 
+      "stage theme"
+      "stage chat"
+      "mmopts chat"
+      "users chat"
+    ;
+  }
+  #mainGrid.mmqueue {
+    grid-template-areas: 
+      "stage theme"
+      "stage chat"
+      "mmopts chat"
+      "queues chat"
+    ;
+  }
+  #mainGrid.mmchat #usersbox,
+  #mainGrid.mmqueue #actualChat,
+  #mainGrid.mmusrs #actualChat {
+    display: flex;
+  }
+  #mmchat {
+    display: none;
+  }
+
+  #idtitle {
+    display: block;
+  }
+
+  #thehistory {
+    grid-area: queues;
+    position: relative;
+    top: 0 !important;
+    bottom: 0;
+  }
+
+}
+
+
+@media only screen and (min-width: 1200px) {
+
+  html {
+    font-size: 1vw;
+  }
+
+  #mainGrid,
   #mainGrid.mmqueue,
   #mainGrid.mmchat,
   #mainGrid.mmusrs {
     grid-template-rows: auto auto 1fr;
-    grid-template-columns: minmax(max-content, 24rem) minmax(40vw, 100vw) minmax(min-content, 36rem);
+    grid-template-columns: minmax(16rem, 24rem) minmax(40vw, 100vw) minmax(24rem, 36rem);
     grid-template-areas: 
     "users stage theme"
     "users stage chat"
@@ -1408,29 +1463,9 @@ div#blog {
     display: none;
   }
 
-  #idtitle {
-    display: block;
-  }
-
   #usertabs {
     padding-top: 0;
     background-color: black;
-  }
-
-  #thehistory {
-    grid-area: queues;
-    position: relative;
-    top: 0 !important;
-    bottom: 0;
-  }
-
-}
-
-
-@media only screen and (min-width: 1200px) {
-
-  html {
-    font-size: 1vw;
   }
 
   #djStage {
@@ -1452,9 +1487,6 @@ div#blog {
   }
   .djplaque {
     justify-content: space-between;
-  }  
-  .playcount {
-    display: block;
   }
 
 }

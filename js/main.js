@@ -16,6 +16,7 @@ var firetable = {
   screenSyncPos: false,
   scSeek: false,
   desktopNotifyMentions: false,
+  orange: "#F4810B",
   color: "#F4810B",
   countcolor: "#fff",
   ytLoaded: null,
@@ -418,7 +419,7 @@ firetable.actions = {
     var defaultScheme = false;
     if (data.colors){
       if (data.colors.color == "#fff" || data.colors.color == "#7f7f7f") {
-        data.colors.color = "#F4810B";
+        data.colors.color = firetable.orange;
         data.colors.txt = "#000";
         defaultScheme = true;
       }
@@ -1189,7 +1190,7 @@ firetable.actions = {
       cid: cid
     };
     $("#apv" + type + cid).text("check");
-    $("#apv" + type + cid).css("color", "#F4810B");
+    $("#apv" + type + cid).css("color", firetable.orange);
     $("#apv" + type + cid).css("pointer-events", "none");
     var cuteid = firetable.queueRef.push(info, function() {
       firetable.debug && console.log('queue track id:',cuteid.key);
@@ -2527,7 +2528,7 @@ $("#stealpicker").change(function() {
                             if (!ppl[0].supermod){
                               var ref = firebase.database().ref("banned/"+ppl[0].userid);
                               ref.set(true);
-                              $("#supercopResponse").html("<span style=\"color: #F4810B;\">"+name+" suspended.</span>");
+                              $("#supercopResponse").html("<span style=\"color: "+firetable.orange+";\">"+name+" suspended.</span>");
 
                             } else {
                                 $("#supercopResponse").html("<span style=\"color: red; \">Can not suspend that (or any) supercop.</span>");
@@ -2887,7 +2888,7 @@ $("#stealpicker").change(function() {
       firetable.color = data.color;
       firetable.countcolor = data.txt;
       if (data.color == "#fff" || data.color == "#7f7f7f") {
-        firetable.color = "#F4810B";
+        firetable.color = firetable.orange;
         firetable.countcolor = "#fff";
         $("#stage").css("background-color", "#fff");
       } else {
@@ -2902,10 +2903,8 @@ $("#stealpicker").change(function() {
       }
       $("#stage").css("color", firetable.countcolor);
       */
-      $("#djthing" + firetable.playdex).css("background-color", firetable.color);
-      $("#djthing" + firetable.playdex).css("color", firetable.countcolor);
       $('.customColorStyles').remove();
-      $("head").append("<style class='customColorStyles'>.ui-slider-horizontal .ui-slider-range-min{ background-color: " + firetable.color + ";}</style>");
+      $("head").append("<style class='customColorStyles'>.ui-slider-horizontal .ui-slider-range-min { background-color: " + firetable.color + "; } #djthing" + firetable.playdex + " { background-color: " + firetable.color + "; color: " + firetable.countcolor + "; }</style>");
     });
   },
   usertab1: function() {
