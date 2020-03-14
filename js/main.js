@@ -691,8 +691,8 @@ firetable.actions = {
         var pcnt = (firetable.pvCount / 29) * 100;
         firetable.pvCount += 0.2;
         var pvcolr = "#222";
-        if (fromHist) pvcolr = "#333";
-        $("#pvbar" + firetable.preview).css("background-image", "linear-gradient(90deg, " + firetable.color + "44 " + pcnt + "%, "+ pvcolr +" " + pcnt + "%)");
+        if (fromHist) pvcolr = "#222";
+        $("#pvbar" + firetable.preview).css("background-image", "linear-gradient(90deg, " + firetable.orange + "44 " + pcnt + "%, "+ pvcolr +" " + pcnt + "%)");
       }, 200);
       if (type == 1) {
         if (firetable.scLoaded) firetable.scwidget.pause();
@@ -2163,8 +2163,8 @@ return text;
     $(".openModal").bind("click", function() {
       var modalContentID = $(this).attr('data-modal');
       $(".modalThing").hide();
-      $("#overlay").css("display","flex");      
-      $("#"+modalContentID).show();      
+      $("#overlay").css("display","flex");
+      $("#"+modalContentID).show();
     });
     $(".closeModal").bind("click", function() {
       $("#overlay").hide();
