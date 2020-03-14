@@ -1792,13 +1792,9 @@ return text;
       $("#deck").html(ok1);
       for (var i = 0; i < 4; i++) {
         if (i != firetable.playdex) {
-          $("#djthing" + i).css("background-color", "#151515");
-          $("#djthing" + i).css("color", "#eee");
           $("#avtr" + i).removeClass("animate");
 
         } else {
-          $("#djthing" + i).css("background-color", firetable.color);
-          $("#djthing" + i).css("color", firetable.countcolor);
           $("#avtr" + i).addClass("animate");
         }
       }
@@ -1809,13 +1805,9 @@ return text;
       firetable.playdex = data;
       for (var i = 0; i < 4; i++) {
         if (i != data) {
-          $("#djthing" + i).css("background-color", "#151515");
-          $("#djthing" + i).css("color", "#eee");
           $("#avtr" + i).removeClass("animate");
 
         } else {
-          $("#djthing" + i).css("background-color", firetable.color);
-          $("#djthing" + i).css("color", "#fff");
           $("#avtr" + i).addClass("animate");
         }
       }
@@ -2905,7 +2897,7 @@ $("#stealpicker").change(function() {
       $("#stage").css("color", firetable.countcolor);
       */
       $('.customColorStyles').remove();
-      $("head").append("<style class='customColorStyles'>.ui-slider-horizontal .ui-slider-range-min { background-color: " + firetable.color + "; } #djthing" + firetable.playdex + " { background-color: " + firetable.color + "; color: " + firetable.countcolor + "; }</style>");
+      $("head").append("<style class='customColorStyles'>#djthing" + firetable.playdex + " { background-color: " + firetable.color + "; color: " + firetable.countcolor + "; }</style>");
     });
   },
   usertab1: function() {
