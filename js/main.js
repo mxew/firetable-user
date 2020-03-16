@@ -41,7 +41,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "00.04.74";
+firetable.version = "00.04.75";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -1349,9 +1349,7 @@ firetable.utilities = {
   },
   playSound: function(filename) {
     if (firetable.playBadoop){
-      document.getElementById("audilert_mp3").setAttribute('src',filename+".mp3");
-      document.getElementById("audilert_ogg").setAttribute('src',filename+".ogg");
-      document.getElementById("audilert_embed").setAttribute('src',filename+".mp3");
+      document.getElementById("audilert").setAttribute('src',filename+".mp3");
     }
   },
   desktopNotify: function(chatData, namebo){
