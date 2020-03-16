@@ -332,7 +332,7 @@ code {
   display: grid;
   grid-template-rows: auto auto auto 1fr;
   grid-template-columns: 1fr;
-  grid-template-areas: 
+  grid-template-areas:
     "stage"
     "main"
     "main"
@@ -341,7 +341,7 @@ code {
   overflow: hidden;
 }
 #mainGrid.mmusrs {
-  grid-template-areas: 
+  grid-template-areas:
     "stage"
     "theme"
     "mmopts"
@@ -355,7 +355,7 @@ code {
   display: none;
 }
 #mainGrid.mmqueue {
-  grid-template-areas: 
+  grid-template-areas:
     "stage"
     "theme"
     "mmopts"
@@ -369,7 +369,7 @@ code {
   display: none;
 }
 #mainGrid.mmchat {
-  grid-template-areas: 
+  grid-template-areas:
     "stage"
     "theme"
     "mmopts"
@@ -384,7 +384,7 @@ code {
 }
 #mainGrid.login {
   grid-template-rows: auto 1fr;
-  grid-template-areas: 
+  grid-template-areas:
     "stage"
     "login"
   ;
@@ -496,7 +496,7 @@ code {
   display: grid;
   grid-template-columns: auto 1fr auto;
   grid-template-rows: auto auto 1fr;
-  grid-template-areas: 
+  grid-template-areas:
     "art track timr"
     "art artist artist"
     "art plays plays"
@@ -966,6 +966,11 @@ a.importLinkCheck {
   overflow: hidden;
 }
 
+#currentTheme{
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 
 /* Chat */
 
@@ -1384,7 +1389,7 @@ div#blog {
   #mainGrid.mmchat {
     grid-template-rows: auto auto auto 1fr;
     grid-template-columns: 60vw 40vw;
-    grid-template-areas: 
+    grid-template-areas:
       "stage theme"
       "stage chat"
       "mmopts chat"
@@ -1392,7 +1397,7 @@ div#blog {
     ;
   }
   #mainGrid.mmusrs {
-    grid-template-areas: 
+    grid-template-areas:
       "stage theme"
       "stage chat"
       "mmopts chat"
@@ -1400,7 +1405,7 @@ div#blog {
     ;
   }
   #mainGrid.mmqueue {
-    grid-template-areas: 
+    grid-template-areas:
       "stage theme"
       "stage chat"
       "mmopts chat"
@@ -1442,7 +1447,7 @@ div#blog {
   #mainGrid.mmusrs {
     grid-template-rows: auto auto 1fr;
     grid-template-columns: minmax(16rem, 24rem) minmax(40vw, 100vw) minmax(24rem, 36rem);
-    grid-template-areas: 
+    grid-template-areas:
     "users stage theme"
     "users stage chat"
     "users queues chat"
@@ -1457,7 +1462,7 @@ div#blog {
     display: flex;
   }
   #mainGrid.login {
-    grid-template-areas: 
+    grid-template-areas:
     "users stage chat"
     "users login chat"
     ;
@@ -1501,4 +1506,3 @@ div#blog {
   }
 
 }
-
