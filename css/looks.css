@@ -28,7 +28,7 @@
   --pad1: 0.25rem;
   --pad2: 0.5rem;
   --pad3: 1rem;
-  --pad4: 2rem;
+  --pad4: 1.5rem;
   --pad5: 4rem;
   --pad6: 8rem;
 }
@@ -987,17 +987,35 @@ a.importLinkCheck {
   position: relative;
   display: flex;
   justify-content: space-between;
-  padding: var(--pad2) var(--pad3);
+  padding: var(--pad2) var(--pad4) var(--pad3) var(--pad4);
   color: #ddd;
   word-break: break-word;
   background-color: #181818;
 }
-.newChat.nowplayn {
-  margin: var(--pad1) var(--pad3);
-  padding: 0;
+.newChat:not(:first-child) {
+  border-top: 1px solid #333;
+}
+.nowplayn {
+  position: relative;
+  padding: 0 var(--pad3) var(--pad1) var(--pad3);
   background-color: transparent;
 }
+.nowplayn::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  border-top: 1px solid #333;
+}
+.newChat.nowplayn,
+.nowplayn + .newChat {
+  border: 0;
+}
 .npmsg {
+  position: relative;
+  z-index: 2;
   width: 100%;
   padding: var(--pad1);
   color: #888;
@@ -1018,9 +1036,6 @@ a.importLinkCheck {
   font-size: 0.75rem;
   font-weight: 700;
   color: rgba(255,255,255,0.4);
-}
-.chatText {
-  margin: 0 var(--pad3);
 }
 .chatText a {
   position: relative;
@@ -1095,7 +1110,7 @@ a.importLinkCheck {
   display: flex;
   align-items: center;
   padding: var(--pad1);
-  background-color: #181818;
+  background-color: #282828;
 }
 #pickerResults {
   overflow-y: scroll;
@@ -1433,7 +1448,7 @@ div#blog {
 @media only screen and (min-width: 1200px) {
 
   html {
-    font-size: 1vw;
+    font-size: calc( 0.5rem + 0.5vw);
   }
 
   #mainGrid,
