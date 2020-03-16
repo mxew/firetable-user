@@ -120,6 +120,10 @@ input[type="radio"] + label {
   margin-right: var(--pad3);
 }
 
+option {
+  background-color: #333;
+}
+
 input:focus,
 select:focus,
 textarea:focus,
