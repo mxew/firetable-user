@@ -927,19 +927,22 @@ select#mergepicker, #mergepicker2 {
   display:none;
 }
 .importResult {
-  padding: 5px 3px 5px 5px;
+  display: flex;
+  align-items: center;
+  padding: var(--pad1) 0;
   border-bottom: 1px solid #111;
 }
 .importResult .material-icons {
-  font-size: 15px;
+  margin-left: var(--pad2);
+  font-size: 1rem;
 }
 a.importLinkCheck {
   color: #eee;
+  line-height: 0;
 }
 .imtxt {
-  width: calc(100% - 50px);
-  float: left;
-  margin-top: 5px;
+  flex: 1;
+  padding-right: var(--pad2);
 }
 
 
