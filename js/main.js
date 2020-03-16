@@ -1868,7 +1868,7 @@ return text;
                           name = childData2.username;
                         }
                       }
-                  $("#activeSuspentions").append("<div class=\"importResult\"><div class=\"imtxt\">" + name + "</div><div class=\"delete\"><i role=\"button\" onclick=\"firetable.actions.unban('" + key + "')\" class=\"material-icons\" title=\"Unsuspend\">&#xE5C9;</i></div><div class=\"clear\"></div></div>");
+                  $("#activeSuspentions").append("<div class=\"importResult\"><div class=\"imtxt\">" + name + "</div><i role=\"button\" onclick=\"firetable.actions.unban('" + key + "')\" class=\"material-icons\" title=\"Unsuspend\">&#xE5C9;</i></div>");
                   });
                 }
             });
@@ -2617,7 +2617,7 @@ $("#stealpicker").change(function() {
                 firetable.debug && console.log('import search results:',response);
                 $.each(srchItems, function(index, item) {
                   vidTitle = item.snippet.title;
-                  $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.snippet.title + " by " + item.snippet.channelTitle + "</div><div class=\"delete\"><a target=\"_blank\" href=\"https://www.youtube.com/playlist?list=" + item.id.playlistId + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id.playlistId + "', '" + firetable.utilities.htmlEscape(item.snippet.title) + "', 1)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div><div class=\"clear\"></div></div>");
+                  $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.snippet.title + " by " + item.snippet.channelTitle + "</div><a target=\"_blank\" href=\"https://www.youtube.com/playlist?list=" + item.id.playlistId + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id.playlistId + "', '" + firetable.utilities.htmlEscape(item.snippet.title) + "', 1)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
                 })
               })
             }
@@ -2631,8 +2631,7 @@ $("#stealpicker").change(function() {
               for (var i = 0; i < lists.length; i++) {
                 var item = lists[i];
                 if (item.sharing == "public") {
-                  $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><div class=\"delete\"><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div><div class=\"clear\"></div></div>");
-
+                  $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
                 }
               }
             });
