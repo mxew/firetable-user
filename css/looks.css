@@ -541,6 +541,7 @@ code {
   font-size: 1rem;
   font-weight: 400;
   overflow: hidden;
+  color: white;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
@@ -548,7 +549,7 @@ code {
 #plays {
   font-size: 0.75rem;
   font-weight: 700;
-  color: rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.8);
 }
 #plays {
   grid-area: plays;
@@ -957,7 +958,7 @@ a.importLinkCheck {
   z-index: 15;
   width: 100%;
   padding: var(--pad2);
-  font-size: 1rem;
+  font-size: 0.75rem;
   text-align: center;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -1024,7 +1025,7 @@ a.importLinkCheck {
   width: 100%;
   padding: var(--pad1);
   color: #888;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   text-align: center;
   background-color: #282828;
   border-radius: var(--pad1);
@@ -1102,7 +1103,7 @@ a.importLinkCheck {
 }
 .chatTime {
   font-weight: 400;
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   color: rgba(255, 255, 255, 0.47);
   white-space: nowrap;
 }
@@ -1370,7 +1371,7 @@ body.blog {
 }
 div#blog {
   flex: 1;
-  padding: var(--pad6);
+  padding: var(--pad5);
 }
 
 

@@ -41,7 +41,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "00.04.75";
+firetable.version = "00.05.00";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -692,7 +692,7 @@ firetable.actions = {
         firetable.pvCount += 0.2;
         var pvcolr = "#222";
         if (fromHist) pvcolr = "#222";
-        $("#pvbar" + firetable.preview).css("background-image", "linear-gradient(90deg, " + firetable.orange + "44 " + pcnt + "%, "+ pvcolr +" " + pcnt + "%)");
+        $("#pvbar" + firetable.preview).css("background-image", "linear-gradient(90deg, rgba(244, 129, 11, 0.267) " + pcnt + "%, "+ pvcolr +" " + pcnt + "%)");
       }, 200);
       if (type == 1) {
         if (firetable.scLoaded) firetable.scwidget.pause();
@@ -1649,7 +1649,7 @@ return text;
       $("#track").text(firetable.ui.strip(data.title));
       $("#artist").text(firetable.ui.strip(data.artist));
       $("#songlink").attr("href", data.url);
-      $("#albumArt").css("background-image", "url(" + data.image + ")")
+      $("#albumArt").css("background-image", "url(" + data.image + ")");
       var nownow = Date.now();
       var timeSince = nownow - data.started;
       if (timeSince <= 0 ) timeSince = 0;
@@ -1664,6 +1664,7 @@ return text;
         $("#scScreen").show();
         var biggerImg = data.image.replace('-large', '-t500x500');
         firetable.scImg = biggerImg;
+        $("#albumArt").css("background-image", "url(" + biggerImg + ")")
         try{
           setup(biggerImg);
         } catch (e){
