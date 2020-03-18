@@ -434,9 +434,7 @@ code {
   display: flex;
   align-items: center;
   min-width: 0;
-  padding: var(--pad1) var(--pad3);
-  font-size: 0.85rem;
-  font-weight: 700;
+  padding: var(--pad2) var(--pad3);
 }
 .prsnName {
   flex: 1;
