@@ -828,7 +828,7 @@ select#stealpicker {
 #queuelist .pvbar {
   display: flex;
   align-items: center;
-  padding: var(--pad1) var(--pad2);
+  padding: var(--pad2) var(--pad2);
   border-bottom: 1px solid black;
   cursor: move;
   /* fallback if grab cursor is unsupported */
