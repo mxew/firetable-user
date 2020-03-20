@@ -36,12 +36,13 @@ var firetable = {
   playlimit: 2,
   scImg: "",
   superCopBanUpdates: null,
+  loginForm: null,
   emojiMap: null,
   pickerInit: false,
   debug: true
 }
 
-firetable.version = "00.05.00";
+firetable.version = "00.05.02";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -189,6 +190,13 @@ firetable.init = function() {
       firetable.uid = user.uid;
       firetable.uname = user.uid;
       firetable.debug && console.log("user signed in!");
+      if ($("#login").html()){
+        firetable.loginForm = $("#login").html();
+        scrollits["login"].destroy();
+        firetable.ui.loginEventsDestroy();
+        $("#login").remove();
+      }
+
       if (firetable.users[firetable.uid]) {
         if (firetable.users[firetable.uid].username) {
           $("#loggedInName").text(firetable.users[firetable.uid].username);
@@ -348,6 +356,11 @@ firetable.init = function() {
       $("#logOutButton").hide().off();
       $('#mainGrid').removeClass().addClass('login');
       $("#grab").css("display", "none");
+      if (firetable.loginForm && !$("#login").html()){
+        $("#mainGrid").append("<div id=\"login\" class=\"scrollit\">"+firetable.loginForm+"</div>");
+        firetable.ui.loginEventsInit();
+        scrollits["login"] = new PerfectScrollbar($("#login")[0], { minScrollbarLength: 30 });
+      }
     }
   });
   firetable.ui.init();
@@ -1475,6 +1488,109 @@ return text;
     }
     return chatTxt;
   },
+  loginLinkToggle: function(id){
+    $("#formlinks").find(".selected").removeClass("selected");
+    $("#"+id).addClass("selected");
+  },
+  loginEventsInit: function(){
+    $("#resetpass").bind("click", function() {
+      $("#logscreen").css("display", "none");
+      $("#createscreen").css("display", "none");
+      $("#resetscreen").css("display", "block");
+      firetable.ui.loginLinkToggle($(this).attr('id'));
+    });
+    $("#loginlink").bind("click", function() {
+      $("#logscreen").css("display", "block");
+      $("#createscreen").css("display", "none");
+      $("#resetscreen").css("display", "none");
+      firetable.ui.loginLinkToggle($(this).attr('id'));
+    });
+     $("#signuplink").bind("click", function() {
+       $("#logscreen").css("display", "none");
+       $("#createscreen").css("display", "block");
+       $("#resetscreen").css("display", "none");
+       firetable.ui.loginLinkToggle($(this).attr('id'));
+     });
+     $("#loginpass").bind("keyup", function(e) {
+       if (e.which == 13) {
+         var email = $("#loginemail").val();
+         var pass = $("#loginpass").val();
+         $("#loginemail").val("");
+         $("#loginpass").val("");
+         firetable.actions.logIn(email, pass);
+       }
+     });
+     $("#newpass2").bind("keyup", function(e) {
+       if (e.which == 13) {
+         var email = $("#newemail").val();
+         var pass = $("#newpass").val();
+         var pass2 = $("#newpass2").val();
+         if (pass == pass2) {
+           firetable.actions.signUp(email, pass);
+         } else {
+           alert("Those passwords do not match!");
+         }
+       }
+     });
+     $("#theAddress").bind("keyup", function(e) {
+       if (e.which == 13) {
+         var email = $("#theAddress").val();
+         firetable.debug && console.log("reset email return");
+         firebase.auth().sendPasswordResetEmail(email).catch(function(error) {
+           var errorCode = error.code;
+           var errorMessage = error.message;
+           if (errorCode === 'auth/wrong-password') {
+             alert('Wrong password.');
+           } else {
+             alert(errorMessage);
+           }
+           firetable.debug && console.log('send pass reset error:',error);
+         });
+         alert("Reset email sent. Click the reset link when it arrives thanks.");
+       }
+     });
+     $("#createAccountBttn").bind("click", function() {
+       var email = $("#newemail").val();
+       var pass = $("#newpass").val();
+       $("#newemail").val("");
+       $("#newpass").val("");
+       firetable.actions.signUp(email, pass);
+
+     });
+     $("#resetPassBttn").bind("click", function() {
+       var email = $("#theAddress").val();
+       firetable.debug && console.log("reset email click button");
+       firebase.auth().sendPasswordResetEmail(email).catch(function(error) {
+         var errorCode = error.code;
+         var errorMessage = error.message;
+         if (errorCode === 'auth/wrong-password') {
+           alert('Wrong password.');
+         } else {
+           alert(errorMessage);
+         }
+         firetable.debug && console.log('send pass reset error:',error);
+       });
+       alert("Reset email sent. Click the reset link when it arrives thanks.");
+     });
+     $("#loginBttn").bind("click", function() {
+       var email = $("#loginemail").val();
+       var pass = $("#loginpass").val();
+       $("#loginemail").val("");
+       $("#loginpass").val("");
+       firetable.actions.logIn(email, pass);
+     });
+  },
+  loginEventsDestroy: function(){
+    $("#resetpass").off("click");
+    $("#loginlink").off("click");
+    $("#signuplink").off("click");
+    $("#loginpass").off("keyup");
+    $("#newpass2").off("keyup");
+    $("#theAddress").off("keyup");
+    $("#createAccountBttn").off("click");
+    $("#resetPassBttn").off("click");
+    $("#loginBttn").off("click");
+  },
   init: function() {
 
     //emojify those buttons
@@ -2071,11 +2187,7 @@ return text;
         }
       }
     });
-    $("#resetpass").bind("click", function() {
-      $("#logscreen").css("display", "none");
-      $("#createscreen").css("display", "none");
-      $("#resetscreen").css("display", "block");
-    });
+
     $("#grab").bind("click", function(){
       var isHidden = $("#stealContain").is( ":hidden" );
       if (isHidden){
@@ -2151,11 +2263,7 @@ return text;
         }
     });
     $("#reloadtrack").bind("click", firetable.actions.reloadtrack);
-    $("#loginlink").bind("click", function() {
-      $("#logscreen").css("display", "block");
-      $("#createscreen").css("display", "none");
-      $("#resetscreen").css("display", "none");
-    });
+
     $("#volstatus").bind("click", function() {
       firetable.actions.muteToggle();
     });
@@ -2381,79 +2489,9 @@ $("#stealpicker").change(function() {
 
        } catch (s) {}
    });
-    $("#signuplink").bind("click", function() {
-      $("#logscreen").css("display", "none");
-      $("#createscreen").css("display", "block");
-      $("#resetscreen").css("display", "none");
-    });
-    $("#loginpass").bind("keyup", function(e) {
-      if (e.which == 13) {
-        var email = $("#loginemail").val();
-        var pass = $("#loginpass").val();
-        $("#loginemail").val("");
-        $("#loginpass").val("");
-        firetable.actions.logIn(email, pass);
-      }
-    });
-    $("#newpass2").bind("keyup", function(e) {
-      if (e.which == 13) {
-        var email = $("#newemail").val();
-        var pass = $("#newpass").val();
-        var pass2 = $("#newpass2").val();
-        if (pass == pass2) {
-          firetable.actions.signUp(email, pass);
-        } else {
-          alert("Those passwords do not match!");
-        }
-      }
-    });
-    $("#theAddress").bind("keyup", function(e) {
-      if (e.which == 13) {
-        var email = $("#theAddress").val();
-        firetable.debug && console.log("reset email return");
-        firebase.auth().sendPasswordResetEmail(email).catch(function(error) {
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          if (errorCode === 'auth/wrong-password') {
-            alert('Wrong password.');
-          } else {
-            alert(errorMessage);
-          }
-          firetable.debug && console.log('send pass reset error:',error);
-        });
-        alert("Reset email sent. Click the reset link when it arrives thanks.");
-      }
-    });
-    $("#createAccountBttn").bind("click", function() {
-      var email = $("#newemail").val();
-      var pass = $("#newpass").val();
-      $("#newemail").val("");
-      $("#newpass").val("");
-      firetable.actions.signUp(email, pass);
 
-    });
-    $("#resetPassBttn").bind("click", function() {
-      var email = $("#theAddress").val();
-      firetable.debug && console.log("reset email click button");
-      firebase.auth().sendPasswordResetEmail(email).catch(function(error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        if (errorCode === 'auth/wrong-password') {
-          alert('Wrong password.');
-        } else {
-          alert(errorMessage);
-        }
-        firetable.debug && console.log('send pass reset error:',error);
-      });
-      alert("Reset email sent. Click the reset link when it arrives thanks.");
-    });
-    $("#loginBttn").bind("click", function() {
-      var email = $("#loginemail").val();
-      var pass = $("#loginpass").val();
-      $("#loginemail").val("");
-      $("#loginpass").val("");
-      firetable.actions.logIn(email, pass);
-    });
+   firetable.ui.loginEventsInit();
+
     $("#ytsearchSelect").bind("click", function() {
       $("#scsearchSelect").removeClass("on");
       $("#ytsearchSelect").addClass("on");

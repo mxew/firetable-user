@@ -1238,6 +1238,19 @@ img.emoji {
   margin-top: var(--pad3);
 }
 
+#login .formlinks a {
+    margin-right: 15px;
+    cursor: pointer;
+}
+#login .formlinks a:last-child {
+    margin-right: 0;
+}
+
+#login .formlinks .selected{
+  display:none;
+}
+
+
 
 /* Modals */
 

@@ -99,7 +99,7 @@
 		<div id="actualChat">
 			<div id="chats" class="scrollit"></div>
 			<div id="chatbottom">
-				<input maxlength="240" placeholder="Chat a thing" type="text" id="newchat">
+				<input maxlength="240" autocomplete="off" name="newchat" placeholder="Chat a thing" type="text" id="newchat">
 				<button role="button" class="butt graybutt iconbutt" id="pickEmoji"><i class="material-icons"> insert_emoticon </i></button>
 				<div id="emojiPicker">
 					<div id="pickerNav">
@@ -237,9 +237,6 @@
 				<div class="inputline">
 					<button role="button" class="butt" id="loginBttn">Log In</button>
 				</div>
-				<div class="formlinks">
-					<a id="resetpass">Reset Password</a> &nbsp;|&nbsp; <a id="signuplink">Sign Up</a>
-				</div>
 			</div>
 			<div id="createscreen" style="display:none;">
 				<h4>Sign Up</h4>
@@ -255,9 +252,6 @@
 				<div class="inputline">
 					<button role="button" class="butt" id="createAccountBttn">Create Account</button>
 				</div>
-				<div class="formlinks">
-					<a id="loginlink" class="loginlink">Log In</a> &nbsp;|&nbsp; <a id="resetpass">Reset Password</a>
-				</div>
 			</div>
 			<div id="resetscreen" style="display:none;">
 				<h4>Reset your password!</h4>
@@ -268,9 +262,10 @@
 				<div class="inputline">
 					<button role="button" class="butt" id="resetPassBttn">Reset password</button>
 				</div>
-				<div class="formlinks">
-					<a id="loginlink2" class="loginlink">Log In</a> &nbsp;|&nbsp; <a id="signuplink">Sign Up</a>
-				</div>
+
+			</div>
+			<div id="formlinks" class="formlinks">
+				<a id="loginlink" class="loginlink">Log In</a> <a id="signuplink">Sign Up</a><a id="resetpass">Reset Password</a>
 			</div>
 		</div>
 
