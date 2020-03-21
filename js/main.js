@@ -347,7 +347,7 @@ firetable.init = function() {
       $("#loggedInName").show();
       $("#logOutButton").show().on('click',firetable.actions.logOut);
       firetable.debug && console.log('remove login class from mainGrid');
-      $('#mainGrid').removeClass('login').addClass('mmchat');
+      $('#mainGrid').removeClass('login').addClass('mmusrs');
       $("#grab").css("display", "inline-block");
     } else {
       firetable.uid = null;
@@ -2907,6 +2907,8 @@ $("#stealpicker").change(function() {
           chat.push(chooto);
         }
         $("#newchat").val("");
+        $("#emojiPicker").slideUp();
+        $("#pickEmoji").removeClass("on");
       }
 
     });
@@ -2934,7 +2936,7 @@ $("#stealpicker").change(function() {
       $("#stage").css("color", firetable.countcolor);
       */
       $('.customColorStyles').remove();
-      $("head").append("<style class='customColorStyles'>#djthing" + firetable.playdex + " { background-color: " + firetable.color + "; color: " + firetable.countcolor + "; }</style>");
+      $("head").append("<style class='customColorStyles'>#djthing" + firetable.playdex + ", #addToQueueBttn, .butt:not(.graybutt), .ui-slider-horizontal .ui-slider-range-min { background-color: " + firetable.color + "; color: " + firetable.countcolor + "; } .iconbutt.on { color: " + firetable.color + "; border-bottom: 1px solid " + firetable.color + "66; box-shadow: inset 0 0 1rem " + firetable.color + "33; }</style>");
     });
   },
   usertab1: function() {
