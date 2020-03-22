@@ -190,10 +190,20 @@ code {
   text-align: center;
   background-color: #222;
   border: 0;
+  border-top: 1px solid rgba(255,255,255,0.1);
   border-radius: 0;
-  border-top-left-radius: 0.5rem;
-  border-top-right-radius: 0.5rem;
   box-shadow: 0 -0.2rem 0.5rem -0.1rem black, inset 0 -0.2rem 0.4rem -0.2rem black;
+  clip-path: 
+    polygon(
+      0% 0%, 
+      0% 0%, 
+      calc(100% - var(--pad3)) 0%, 
+      100% var(--pad3), 
+      100% 100%, 
+      100% 100%, 
+      0% 100%, 
+      0% 0%
+    );
 }
 .tab.on {
   color: #ffffff;
@@ -423,21 +433,26 @@ code {
 }
 #userslist {
   flex: 1;
-  padding-top: 1rem;
   background-color: #282828;
 }
 #usertabs {
   padding-top: 0.5rem;
   background-color: #222;
 }
+#allusers,
+#justwaitlist {
+  padding-top: 1rem;
+}
 .prson {
   display: flex;
   align-items: center;
   min-width: 0;
-  padding: var(--pad2) var(--pad3);
+  padding: var(--pad1) var(--pad4);
 }
 .prsnName {
   flex: 1;
+  font-size: 0.9rem;
+  font-weight: 700;
   line-height: 1.5;
   white-space: nowrap;
   overflow-x: hidden;
@@ -448,8 +463,8 @@ code {
 }
 .botson {
   margin-right: var(--pad2);
-  width: var(--pad4);
-  height: var(--pad4);
+  width: 2rem;
+  height: 2rem;
   background-color: #000;
   background-size: auto 100%;
   border-radius: 999px;
@@ -956,7 +971,7 @@ a.importLinkCheck {
   z-index: 15;
   width: 100%;
   padding: var(--pad2);
-  font-size: 0.75rem;
+  font-size: 1rem;
   text-align: center;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -1464,16 +1479,12 @@ div#blog {
 
 @media only screen and (min-width: 1200px) {
 
-  html {
-    font-size: calc( 0.5rem + 0.5vw);
-  }
-
   #mainGrid,
   #mainGrid.mmqueue,
   #mainGrid.mmchat,
   #mainGrid.mmusrs {
     grid-template-rows: auto auto 1fr;
-    grid-template-columns: minmax(16rem, 24rem) minmax(40vw, 100vw) minmax(24rem, 36rem);
+    grid-template-columns: minmax(16rem, 20rem) minmax(40vw, 100vw) minmax(24rem, 36rem);
     grid-template-areas:
     "users stage theme"
     "users stage chat"
@@ -1513,6 +1524,7 @@ div#blog {
 
   #djStage {
     height: 30vh;
+    min-height: 15rem;
   }
 
   .avtr {
@@ -1530,6 +1542,105 @@ div#blog {
   }
   .djplaque {
     justify-content: space-between;
+  }
+
+}
+
+
+
+@media only screen and (min-width: 1680px) {
+
+  #mainGrid,
+  #mainGrid.mmqueue,
+  #mainGrid.mmchat,
+  #mainGrid.mmusrs {
+    grid-template-columns: minmax(16rem, 20rem) minmax(60vw, 100vw) minmax(20rem, 30rem);
+  }
+
+  #history {
+    position: absolute;
+    left: 60%;
+    bottom: -1px;
+    width: auto;
+    padding: 0 var(--pad2);
+    border-left: var(--pad1) solid #151515;
+    border-bottom-color: #222;
+    border-radius: 0;
+    clip-path: 
+    polygon(
+      0% 0%, 
+      0% 0%, 
+      calc(100% - var(--pad2)) 0%, 
+      100% var(--pad2), 
+      100% 100%, 
+      100% 100%, 
+      0% 100%, 
+      0% 0%
+    );
+    pointer-events: none;
+  }
+  #history::after {
+    content: "Recent Plays";
+    margin-left: var(--pad1);
+    font-size: 0.85rem;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  #queuebox {
+    width: 60%;
+  }
+
+  #thehistory {
+    display: block !important;
+    grid-area: queues;
+    justify-self: flex-end;
+    width: 40%;
+    border-left: var(--pad1) solid #151515;
+  }
+
+}
+
+
+
+@media only screen and (min-width: 2100px) {
+
+  html {
+    font-size: calc( 0.4em + 0.4vw);
+  }
+
+  #mainGrid,
+  #mainGrid.mmqueue,
+  #mainGrid.mmchat,
+  #mainGrid.mmusrs {
+    grid-template-columns: minmax(24rem, 36rem) minmax(40vw, 100vw) minmax(24rem, 36rem);
+  }
+  
+  #usersbox .tab {
+    color: #ffffff;
+    background-color: #282828;
+    box-shadow: 0 -0.2rem 0.5rem -0.2rem black;
+  }
+
+  #userslist {
+    display: flex;
+    border-left: 4px solid black;
+    border-right: 4px solid black;
+  }
+
+  #allusers,
+  #justwaitlist {
+    display: block !important;
+    flex: 1;
+  }
+
+  #allusers {
+    border-right: 2px solid black;
+  }
+
+  #justwaitlist {
+    border-left: 2px solid black;
   }
 
 }
