@@ -57,7 +57,7 @@ body {
   margin: 0;
   font-size: 1rem;
   color: #bbbbbb;
-  background-color: #222;
+  background-color: #000;
   overflow: hidden;
 }
 
@@ -178,12 +178,11 @@ code {
 
 .tabs {
   display: flex;
-  padding: 2px 2px 0 2px;
   background-color: black;
 }
 .tab {
   flex: 1;
-  margin: 2px 2px 0 2px;
+  margin: 5px 0 0 0;
   padding: 0.5em;
   font-size: 0.85rem;
   color: #999;
@@ -209,6 +208,9 @@ code {
   color: #ffffff;
   background-color: #282828;
   box-shadow: 0 -0.2rem 0.5rem -0.2rem black;
+}
+.tab:not(:first-child) {
+  margin-left: 5px;;
 }
 
 .butt {
@@ -605,7 +607,7 @@ code {
   z-index: 0;
   bottom: 1.4rem;
   width: 100%;
-  height: 6rem;
+  height: 8rem;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center bottom;
@@ -617,7 +619,7 @@ code {
   position: relative;
   z-index: 1;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   min-width: 0;
   padding: 0 var(--pad3);
   font-size: 0.75rem;
@@ -842,6 +844,7 @@ select#stealpicker {
   display: flex;
   align-items: center;
   padding: var(--pad2) var(--pad2);
+  background-color: #222;
   border-bottom: 1px solid black;
   cursor: move;
   /* fallback if grab cursor is unsupported */
@@ -1006,27 +1009,14 @@ a.importLinkCheck {
   position: relative;
   display: flex;
   justify-content: space-between;
-  padding: var(--pad2) var(--pad4) var(--pad3) var(--pad4);
+  margin: var(--pad3);
   color: #ddd;
   word-break: break-word;
   background-color: #181818;
 }
-.newChat:not(:first-child) {
-  border-top: 1px solid #333;
-}
 .nowplayn {
   position: relative;
-  padding: 0 var(--pad3) var(--pad1) var(--pad3);
   background-color: transparent;
-}
-.nowplayn::before {
-  content: '';
-  position: absolute;
-  z-index: 1;
-  top: 50%;
-  left: 0;
-  width: 100%;
-  border-top: 1px solid #333;
 }
 .newChat.nowplayn,
 .nowplayn + .newChat {
@@ -1043,6 +1033,10 @@ a.importLinkCheck {
   background-color: #282828;
   border-radius: var(--pad1);
 }
+.chatContent {
+  flex: 1;
+  padding: 0 var(--pad2);
+}
 .chatContent .utitle {
   line-height: 1.6;
   color: rgba(255,255,255,0.25);
@@ -1055,6 +1049,9 @@ a.importLinkCheck {
   font-size: 0.75rem;
   font-weight: 700;
   color: rgba(255,255,255,0.4);
+}
+.chatText {
+  padding: 0 var(--pad3);
 }
 .chatText a {
   position: relative;
@@ -1106,11 +1103,9 @@ a.importLinkCheck {
   background-color: #444;
   transform: rotate(45deg);
 }
-.badoop::after {
+.badoop .chatTime::before {
   content: "@";
-  position: absolute;
-  top: 0.25em;
-  right: 4rem;
+  margin-right: var(--pad1);
   font-size: 1rem;
   color: var(--orange);
 }
@@ -1427,6 +1422,10 @@ div#blog {
     top: 0;
   }
 
+  #mainGrid {
+    gap: 0 5px;
+  }
+
   #mainGrid,
   #mainGrid.mmchat {
     grid-template-rows: auto auto auto 1fr;
@@ -1625,8 +1624,6 @@ div#blog {
 
   #userslist {
     display: flex;
-    border-left: 4px solid black;
-    border-right: 4px solid black;
   }
 
   #allusers,
@@ -1636,11 +1633,7 @@ div#blog {
   }
 
   #allusers {
-    border-right: 2px solid black;
-  }
-
-  #justwaitlist {
-    border-left: 2px solid black;
+    border-right: 5px solid black;
   }
 
 }
