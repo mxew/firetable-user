@@ -192,15 +192,15 @@ code {
   border-top: 1px solid rgba(255,255,255,0.1);
   border-radius: 0;
   box-shadow: 0 -0.2rem 0.5rem -0.1rem black, inset 0 -0.2rem 0.4rem -0.2rem black;
-  clip-path: 
+  clip-path:
     polygon(
-      0% 0%, 
-      0% 0%, 
-      calc(100% - var(--pad3)) 0%, 
-      100% var(--pad3), 
-      100% 100%, 
-      100% 100%, 
-      0% 100%, 
+      0% 0%,
+      0% 0%,
+      calc(100% - var(--pad3)) 0%,
+      100% var(--pad3),
+      100% 100%,
+      100% 100%,
+      0% 100%,
       0% 0%
     );
 }
@@ -633,6 +633,7 @@ code {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  padding-right:5px;
 }
 .playcount {
   white-space: nowrap;
@@ -1565,15 +1566,15 @@ div#blog {
     border-left: var(--pad1) solid #151515;
     border-bottom-color: #222;
     border-radius: 0;
-    clip-path: 
+    clip-path:
     polygon(
-      0% 0%, 
-      0% 0%, 
-      calc(100% - var(--pad2)) 0%, 
-      100% var(--pad2), 
-      100% 100%, 
-      100% 100%, 
-      0% 100%, 
+      0% 0%,
+      0% 0%,
+      calc(100% - var(--pad2)) 0%,
+      100% var(--pad2),
+      100% 100%,
+      100% 100%,
+      0% 100%,
       0% 0%
     );
     pointer-events: none;
@@ -1615,7 +1616,7 @@ div#blog {
   #mainGrid.mmusrs {
     grid-template-columns: minmax(24rem, 36rem) minmax(40vw, 100vw) minmax(24rem, 36rem);
   }
-  
+
   #usersbox .tab {
     color: #ffffff;
     background-color: #282828;
