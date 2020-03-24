@@ -2011,7 +2011,7 @@ return text;
                 rolenum = 2;
               }
               if (firetable.users[key].hostbot){
-                utitle = "robot";
+                utitle = "robocop";
                 rolenum = 3;
               }
               if (firetable.users[key].username) thename = firetable.users[key].username;
@@ -2052,7 +2052,7 @@ return text;
         if (firetable.users[chatData.id].username) namebo = firetable.users[chatData.id].username;
         if (firetable.users[chatData.id].mod) utitle = "cop";
         if (firetable.users[chatData.id].supermod) utitle = "supercop";
-        if (firetable.users[chatData.id].hostbot) utitle = "robot";
+        if (firetable.users[chatData.id].hostbot) utitle = "robocop";
       } else if (chatData.name){
         namebo = chatData.name;
       }
@@ -2936,7 +2936,7 @@ $("#stealpicker").change(function() {
       $("#stage").css("color", firetable.countcolor);
       */
       $('.customColorStyles').remove();
-      $("head").append("<style class='customColorStyles'>#djthing" + firetable.playdex + ", #addToQueueBttn, .butt:not(.graybutt), .ui-slider-horizontal .ui-slider-range-min { background-color: " + firetable.color + "; color: " + firetable.countcolor + "; } .iconbutt.on { color: " + firetable.color + "; border-bottom: 1px solid " + firetable.color + "66; box-shadow: inset 0 0 1rem " + firetable.color + "33; }</style>");
+      $("head").append("<style class='customColorStyles'>:focus { box-shadow: 0 0 0.5rem " + firetable.color + "; } #djthing" + firetable.playdex + ", #addToQueueBttn, .butt:not(.graybutt), .ui-slider-horizontal .ui-slider-range-min { background-color: " + firetable.color + "; color: " + firetable.countcolor + "; } .iconbutt.on { color: " + firetable.color + "; border-bottom: 1px solid " + firetable.color + "66; box-shadow: inset 0 0 1rem " + firetable.color + "33; }</style>");
     });
   },
   usertab1: function() {
