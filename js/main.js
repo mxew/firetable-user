@@ -2936,7 +2936,7 @@ $("#stealpicker").change(function() {
       $("#stage").css("color", firetable.countcolor);
       */
       $('.customColorStyles').remove();
-      $("head").append("<style class='customColorStyles'>#djthing" + firetable.playdex + ", #addToQueueBttn, .butt:not(.graybutt), .ui-slider-horizontal .ui-slider-range-min { background-color: " + firetable.color + "; color: " + firetable.countcolor + "; } .iconbutt.on { color: " + firetable.color + "; border-bottom: 1px solid " + firetable.color + "66; box-shadow: inset 0 0 1rem " + firetable.color + "33; }</style>");
+      $("head").append("<style class='customColorStyles'>:focus { box-shadow: 0 0 0.5rem " + firetable.color + "; } #djthing" + firetable.playdex + ", #addToQueueBttn, .butt:not(.graybutt), .ui-slider-horizontal .ui-slider-range-min { background-color: " + firetable.color + "; color: " + firetable.countcolor + "; } .iconbutt.on { color: " + firetable.color + "; border-bottom: 1px solid " + firetable.color + "66; box-shadow: inset 0 0 1rem " + firetable.color + "33; }</style>");
     });
   },
   usertab1: function() {
