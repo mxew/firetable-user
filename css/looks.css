@@ -892,6 +892,7 @@ input#qsearch {
 }
 #queuelist {
   flex: 1;
+  background-color: #181818;
 }
 #searchResults {
   flex: 1;
