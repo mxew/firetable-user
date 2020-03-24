@@ -1286,7 +1286,7 @@ img.emoji {
 .modalThing {
   display: flex;
   flex-direction: column;
-  max-height: 90vh;
+  max-height: 80vh;
   overflow: hidden;
 }
 .modalHeader {
