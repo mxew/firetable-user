@@ -1168,6 +1168,7 @@ input#pickerSearch {
 }
 #pickerNav i {
   margin-right: var(--pad2);
+  cursor: pointer;
 }
 #pickerNav .on {
   color: var(--orange);
@@ -1395,6 +1396,7 @@ body.blog {
 div#blog {
   flex: 1;
   padding: var(--pad5);
+  background-color:#282828;
 }
 
 
