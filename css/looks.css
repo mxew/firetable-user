@@ -172,6 +172,11 @@ code {
   display: block;
 }
 
+.notice p{
+  margin-bottom:15px;
+  margin-top:15px;
+}
+
 .flexpacer {
   flex: 1;
 }

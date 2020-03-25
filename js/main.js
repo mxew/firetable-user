@@ -217,7 +217,7 @@ firetable.init = function() {
         firetable.debug && console.log("BANCHECK", data)
         if (data){
           firetable.debug && console.log("ban detected.");
-          $("body").remove();
+          //$("body").remove();
           if (document.getElementById("notice") == null){
             var usrname2use = firetable.uid;
             if (firetable.users[firetable.uid]){
