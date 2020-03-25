@@ -892,6 +892,7 @@ input#qsearch {
 }
 #queuelist {
   flex: 1;
+  background-color: #181818;
 }
 #searchResults {
   flex: 1;
@@ -1010,7 +1011,7 @@ a.importLinkCheck {
   position: relative;
   display: flex;
   justify-content: space-between;
-  margin: var(--pad3);
+  margin: var(--pad4);
   color: #ddd;
   word-break: break-word;
   background-color: #181818;
@@ -1036,7 +1037,7 @@ a.importLinkCheck {
 }
 .chatContent {
   flex: 1;
-  padding: 0 var(--pad2);
+  padding-right: var(--pad2);
 }
 .chatContent .utitle {
   line-height: 1.6;
@@ -1286,7 +1287,7 @@ img.emoji {
 .modalThing {
   display: flex;
   flex-direction: column;
-  max-height: 90vh;
+  max-height: 80vh;
   overflow: hidden;
 }
 .modalHeader {
@@ -1554,7 +1555,7 @@ div#blog {
   #mainGrid.mmqueue,
   #mainGrid.mmchat,
   #mainGrid.mmusrs {
-    grid-template-columns: minmax(16rem, 20rem) minmax(60vw, 100vw) minmax(20rem, 30rem);
+    grid-template-columns: minmax(16rem, 20rem) minmax(50vw, 100vw) minmax(24rem, 36rem);
   }
 
   #history {
