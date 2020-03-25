@@ -1037,7 +1037,7 @@ a.importLinkCheck {
 }
 .chatContent {
   flex: 1;
-  padding-right: var(--pad2);
+  padding: 0 var(--pad4);
 }
 .chatContent .utitle {
   line-height: 1.6;
@@ -1051,9 +1051,6 @@ a.importLinkCheck {
   font-size: 0.75rem;
   font-weight: 700;
   color: rgba(255,255,255,0.4);
-}
-.chatText {
-  padding: 0 var(--pad3);
 }
 .chatText a {
   position: relative;
@@ -1460,6 +1457,17 @@ div#blog {
   #mainGrid.mmusrs #actualChat {
     display: flex;
   }
+  #mainGrid.login {
+    grid-template-areas:
+      "stage queues"
+      "login queues"
+    ;
+  }
+  #mainGrid.login #queuebox,
+  #mainGrid.login #thehistory {
+    display: block;
+  }
+  #mainGrid.login .histeal,
   #mmchat {
     display: none;
   }
@@ -1470,6 +1478,7 @@ div#blog {
 
   #thehistory {
     grid-area: queues;
+    display: block;
     position: relative;
     top: 0 !important;
     bottom: 0;
@@ -1502,16 +1511,9 @@ div#blog {
   }
   #mainGrid.login {
     grid-template-areas:
-    "users stage chat"
-    "users login chat"
+    "stage stage queues"
+    "login login queues"
     ;
-  }
-  #mainGrid.login #queuebox,
-  #mainGrid.login #themebox,
-  #mainGrid.login #voteActions,
-  #mainGrid.login #usersbox > *,
-  #mainGrid.login #actualChat > * {
-    display: none;
   }
 
   #mainGrid #minimodeoptions {
@@ -1556,6 +1558,18 @@ div#blog {
   #mainGrid.mmchat,
   #mainGrid.mmusrs {
     grid-template-columns: minmax(16rem, 20rem) minmax(50vw, 100vw) minmax(24rem, 36rem);
+  }
+  #mainGrid.login {
+    grid-template-areas:
+    "stage stage queues"
+    "login login queues"
+    ;
+  }
+  #mainGrid.login #queuebox {
+    display: none;
+  }
+  #mainGrid.login #thehistory {
+    width: 100%;
   }
 
   #history {
