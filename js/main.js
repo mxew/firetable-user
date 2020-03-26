@@ -1459,7 +1459,7 @@ firetable.ui = {
   textToLinks: function(text, themeBox) {
     var re = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
     if (firetable.showImages && !themeBox) re = /(https?:\/\/(?![/|.|\w|\s|-]*(?:jpg|png|gif))[^" ]+)/g;
-    return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
+    return text.replace(re, "<a href=\"$1\" target=\"_blank\" tabindex=\"-1\">$1</a>");
 
 return text;
   },
@@ -1481,7 +1481,7 @@ return text;
               if (Math.abs(thing1 - thing2) <= (parseInt(chatImage.height)+20)) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
             }
             chatImage.src = imageUrl;
-          return '<a class=\"inlineImgLink\" href="'+imageUrl+'" target="_blank"><img src="'+imageUrl+'" class="inlineImage" /><span role=\"button\" class="hideImage">&times;</span></a>'
+          return '<a class="inlineImgLink" href="'+imageUrl+'" target="_blank" tabindex="-1"><img src="'+imageUrl+'" class="inlineImage" /><span role=\"button\" class="hideImage">&times;</span></a>'
         });
 
       }
@@ -1661,13 +1661,14 @@ return text;
         var $histItem = $historyItem.clone();
         $histItem.attr('id', "pvbar"+pkey);
         $histItem.find('.previewicon').attr('id', "pv"+pkey).on('click', function(){ firetable.actions.pview(pkey, true, data.type, true) });
-        $histItem.find('.histlink').attr('href', data.url).text(data.artist + " - "+ data.title);
+        $histItem.find('.histlink').attr({'href': data.url, 'tabindex': "-1"}).text(data.artist + " - "+ data.title);
         $histItem.find('.histdj').text(data.dj);
         $histItem.find('.histdate').text(firetable.utilities.format_date(data.when));
         $histItem.find('.histtime').text(firetable.utilities.format_time(data.when));
         $histItem.find('.histeal').attr('id', "apv" + data.type + data.cid).on('click', function() { firetable.actions.queueTrack(data.cid, firetable.utilities.htmlEscape(data.artist + " - " + data.title), data.type, true) });
         $histItem.find('.histart').css('background-image', 'url(' + data.img + ')');
         $histItem.prependTo("#thehistory");
+        scrollits['thehistoryWrap'].update();
     });
     var themeChange = firebase.database().ref("theme");
     themeChange.on('value', function(dataSnapshot) {
@@ -1722,7 +1723,7 @@ return text;
             $("#playCount").text("");
             $(".npmsg"+data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong></div>");
           }
-          scrollits['chats'].update();
+          scrollits['chatsWrap'].update();
           if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
         }
       }
@@ -1826,7 +1827,7 @@ return text;
           } else {
             $("#chats").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
           }
-          scrollits['chats'].update();
+          scrollits['chatsWrap'].update();
           if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
           firetable.lastChatPerson = false;
           firetable.lastChatId = false;
@@ -2040,6 +2041,7 @@ return text;
       $("#label1 .count").text(" (" + count + ")");
       firetable.debug && console.log('users:',okdata);
     });
+    var $chatTemplate = $('#chatKEY').remove();
     var ref = firebase.database().ref("chat");
     ref.on('child_added', function(childSnapshot, prevChildKey) {
       var chatData = childSnapshot.val();
@@ -2086,7 +2088,11 @@ return text;
         twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
 
       } else {
-        var $chatthing = $("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + chatData.id + "" + namebo + ".png?size=110x110);\"></div><div class=\"chatContent\"><div class=\"chatHead\"><div class=\"chatName\"></div><div class=\"utitle\">" + utitle + "</div></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div></div><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div></div>");
+        var $chatthing = $chatTemplate.clone();
+        $chatthing.attr('id',"chat"+childSnapshot.key);
+        $chatthing.find('.botson').css('background-image',"url(https://indiediscotheque.com/robots/" + chatData.id + namebo + ".png?size=110x110");
+        $chatthing.find('.utitle').html(utitle);
+        $chatthing.find('.chatTime').attr('id',"chatTime" + childSnapshot.key).html(firetable.utilities.format_time(chatData.time));
         if ( badoop ) $chatthing.addClass('badoop');
         var txtOut = firetable.ui.strip(chatData.txt);
         txtOut = firetable.ui.showImages(txtOut);
@@ -2095,7 +2101,7 @@ return text;
         txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
           return "<code>"+x.replace(/\`/g, "") +"</code>";
         });
-        $chatthing.find(".chatText").html(txtOut);
+        $chatthing.find(".chatText").html(txtOut).attr('id',"chattxt" + childSnapshot.key);
         $chatthing.find(".chatName").text(namebo);
         twemoji.parse($chatthing.find(".chatText")[0]);
         $chatthing.appendTo("#chats");
@@ -2109,7 +2115,7 @@ return text;
         firetable.actions.showCard(chatData.card, childSnapshot.key);
         firetable.debug && console.log("showin card");
       }
-      scrollits['chats'].update();
+      scrollits['chatsWrap'].update();
       if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
       firetable.debug && console.log('scroll on chat', objDiv.scrollHeight, objDiv.clientHeight, objDiv.scrollTop);
     });
