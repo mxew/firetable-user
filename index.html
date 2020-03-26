@@ -179,10 +179,12 @@
 		<div id="queuebox">
 			<div class="queuetop">
 				<div id="queueControls">
-					<select id="listpicker">
-						<option value="1">Add/Delete Playlist</option>
-						<option value="0">Default Queue</option>
-					</select>
+					<div id="listpickerWrap">
+						<select id="listpicker">
+							<option value="1">Add/Delete Playlist</option>
+							<option value="0">Default Queue</option>
+						</select>
+					</div>
 					<div id="qControlButtons">
 						<button role="button" class="butt graybutt iconbutt" id="addToQueueBttn"><i class="material-icons"> add </i></button>
 						<button role="button" class="butt graybutt iconbutt" id="mergeLists"><i class="material-icons"> merge_type </i></button>
@@ -203,12 +205,12 @@
 						<div id="mergeCompleted">Congratulations! Merge completed. <button role="button" class="butt" id="mergeOK">Ok Fine</button></div>
 					</div>
 				</div>
+				<div id="filterMachine">
+					<input type="text" placeholder="Filter your list..." id="queueFilter">
+				</div>
 			</div>
 			<div id="queuelist" class="scrollit">
 				<div id="mainqueuestuff">
-					<div id="filterMachine">
-						<input type="text" placeholder="Filter your list..." id="queueFilter">
-					</div>
 					<div id="mainqueue" class="innr">
 						Loading your lists...
 					</div>
