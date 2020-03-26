@@ -42,7 +42,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "00.05.11";
+firetable.version = "00.05.12";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -260,9 +260,9 @@ firetable.init = function() {
                 var val = $("#listpicker").val();
                 if (val == "1") {
                   //ADD PLAYLIST SCREEN
-                  $("#mainqueue").css("display", "none");
+                  $("#mainqueuestuff").css("display", "none");
                   $("#addbox").css("display", "none");
-                  $("#cancelqsearch").show();
+                  $("#cancelqsearch").hide();
                   $("#qControlButtons").hide();
 
                   $("#plmanager").css("display", "flex");
@@ -270,7 +270,7 @@ firetable.init = function() {
                 } else if (val != firetable.selectedListThing) {
                   //LOAD SELECTED LIST
                   //change selected list in user obj
-                  $("#mainqueue").css("display", "block");
+                  $("#mainqueuestuff").css("display", "block");
                   $("#addbox").css("display", "none");
                   $("#cancelqsearch").hide();
                   $("#qControlButtons").show();
@@ -305,7 +305,7 @@ firetable.init = function() {
                   });
                 } else {
                   //you selected the thing you already had selected.
-                  $("#mainqueue").css("display", "block");
+                  $("#mainqueuestuff").css("display", "block");
                   $("#addbox").css("display", "none");
                   $("#cancelqsearch").hide();
                   $("#qControlButtons").show();
@@ -564,6 +564,26 @@ firetable.actions = {
         var data = allQueuesSnap.val();
         firetable.actions.displayCard(data, chatid);
       });
+  },
+  filterQueue: function(val){
+    if (val.length == 0) {
+      $("#mainqueue .pvbar").show();
+      return
+    } else {
+
+    }
+    val = val.toLowerCase();
+    console.log(val);
+    $("#mainqueue .pvbar").each(function(p, q) {
+      var txt = $(q).find(".listwords").text();
+      var regex = new RegExp( val, 'ig' );
+      if (txt.match(regex)) {
+        console.log($(q).find(".listwords").text())
+        $(q).show()
+      } else {
+        $(q).hide()
+      }
+    });
   },
   muteToggle: function(zeroMute) {
 
@@ -1241,7 +1261,7 @@ firetable.actions = {
         }
       }
     }
-    $("#mainqueue").css("display", "block");
+    $("#mainqueuestuff").css("display", "block");
     $("#addbox").css("display", "none");
     $("#cancelqsearch").hide();
     $("#qControlButtons").show();
@@ -2119,7 +2139,7 @@ return text;
     $("#label1").bind("click.lb1tab", firetable.ui.usertab1);
     $("#label2").bind("click.lb2tab", firetable.ui.usertab2);
     $("#addToQueueBttn").bind("click", function() {
-      $("#mainqueue").css("display", "none");
+      $("#mainqueuestuff").css("display", "none");
       $("#addbox").css("display", "flex");
       $("#cancelqsearch").show();
       $("#qControlButtons").hide();
@@ -2153,7 +2173,7 @@ return text;
       }
     });
     $("#cancelqsearch").bind("click", function() {
-      $("#mainqueue").css("display", "block");
+      $("#mainqueuestuff").css("display", "block");
       $("#cancelqsearch").hide();
       $("#qControlButtons").show();
 
@@ -2485,6 +2505,9 @@ $("#stealpicker").change(function() {
     $("#pickerSearch").on("change paste keyup", function() {
             firetable.emojis.niceSearch($("#pickerSearch").val());
      });
+     $("#queueFilter").on("change paste keyup", function() {
+             firetable.actions.filterQueue($("#queueFilter").val());
+      });
      $("#pickerResults").on("click", "span", function() {
        try {
          var oldval = $("#newchat").val();
