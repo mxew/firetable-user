@@ -42,7 +42,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "00.05.10";
+firetable.version = "00.05.11";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -2086,7 +2086,7 @@ return text;
         twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
 
       } else {
-        var $chatthing = $("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat\"><div class=\"chatContent\"><div class=\"chatHead\"><div class=\"chatName\"></div><div class=\"utitle\">" + utitle + "</div></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div></div><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div></div>");
+        var $chatthing = $("<div id=\"chat"+childSnapshot.key+"\" class=\"newChat\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + chatData.id + "" + namebo + ".png?size=110x110);\"></div><div class=\"chatContent\"><div class=\"chatHead\"><div class=\"chatName\"></div><div class=\"utitle\">" + utitle + "</div></div><div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div></div><div class=\"chatTime\" id=\"chatTime" + childSnapshot.key + "\">" + firetable.utilities.format_time(chatData.time) + "</div></div>");
         if ( badoop ) $chatthing.addClass('badoop');
         var txtOut = firetable.ui.strip(chatData.txt);
         txtOut = firetable.ui.showImages(txtOut);

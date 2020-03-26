@@ -468,16 +468,18 @@ code {
 #userslist .utitle {
   margin-left: auto;
 }
-.botson {
-  margin-right: var(--pad2);
-  width: 2rem;
-  height: 2rem;
+.botson{
   background-color: #000;
   background-size: auto 100%;
   border-radius: 999px;
   background-position: center 55%;
   background-repeat: no-repeat;
   border-bottom: 1px solid #888;
+}
+#userslist .botson {
+  margin-right: var(--pad2);
+  width: 2rem;
+  height: 2rem;
 }
 
 
@@ -1021,6 +1023,11 @@ a.importLinkCheck {
   word-break: break-word;
   background-color: #181818;
 }
+.newChat .botson{
+  margin-right: var(--pad3);
+  width: 2.5rem;
+  height: 2.5rem;
+}
 .nowplayn {
   position: relative;
   background-color: transparent;
@@ -1042,7 +1049,7 @@ a.importLinkCheck {
 }
 .chatContent {
   flex: 1;
-  padding: 0 var(--pad4);
+  padding: 0 var(--pad4) 0 0;
 }
 .chatContent .utitle {
   line-height: 1.6;
