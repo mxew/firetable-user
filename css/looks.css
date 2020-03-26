@@ -882,7 +882,8 @@ select#listpicker {
   padding-left: var(--pad2);
   white-space: nowrap;
 }
-#queueControls{
+#queueControls,
+#filterMachine {
   background-color: #222;
 }
 #qControlButtons {
@@ -897,6 +898,7 @@ button#cancelqsearch {
   display: none;
   flex-direction: column;
   height: 100%;
+  background-color: #222;
   overflow: hidden;
 }
 #plmanager {

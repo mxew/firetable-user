@@ -261,6 +261,7 @@ firetable.init = function() {
                 if (val == "1") {
                   //ADD PLAYLIST SCREEN
                   $("#mainqueuestuff").css("display", "none");
+                  $("#filterMachine").css("display", "none");
                   $("#addbox").css("display", "none");
                   $("#cancelqsearch").hide();
                   $("#qControlButtons").hide();
@@ -271,6 +272,7 @@ firetable.init = function() {
                   //LOAD SELECTED LIST
                   //change selected list in user obj
                   $("#mainqueuestuff").css("display", "block");
+                  $("#filterMachine").css("display", "block");
                   $("#addbox").css("display", "none");
                   $("#cancelqsearch").hide();
                   $("#qControlButtons").show();
@@ -306,6 +308,7 @@ firetable.init = function() {
                 } else {
                   //you selected the thing you already had selected.
                   $("#mainqueuestuff").css("display", "block");
+                  $("#filterMachine").css("display", "block");
                   $("#addbox").css("display", "none");
                   $("#cancelqsearch").hide();
                   $("#qControlButtons").show();
@@ -1262,6 +1265,7 @@ firetable.actions = {
       }
     }
     $("#mainqueuestuff").css("display", "block");
+    $("#filterMachine").css("display", "block");
     $("#addbox").css("display", "none");
     $("#cancelqsearch").hide();
     $("#qControlButtons").show();
@@ -2146,6 +2150,7 @@ return text;
     $("#label2").bind("click.lb2tab", firetable.ui.usertab2);
     $("#addToQueueBttn").bind("click", function() {
       $("#mainqueuestuff").css("display", "none");
+      $("#filterMachine").css("display", "none");
       $("#addbox").css("display", "flex");
       $("#cancelqsearch").show();
       $("#qControlButtons").hide();
@@ -2180,6 +2185,7 @@ return text;
     });
     $("#cancelqsearch").bind("click", function() {
       $("#mainqueuestuff").css("display", "block");
+      $("#filterMachine").css("display", "block");
       $("#cancelqsearch").hide();
       $("#qControlButtons").show();
 
