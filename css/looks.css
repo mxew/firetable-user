@@ -302,6 +302,10 @@ code {
 	border-radius: 0.2rem;
 }
 
+.scrollit {
+  overflow: auto;
+}
+
 
 /* Top Bar / Site Header */
 
@@ -366,7 +370,7 @@ code {
   ;
 }
 #mainGrid.mmusrs #queuebox,
-#mainGrid.mmusrs #thehistory,
+#mainGrid.mmusrs #thehistoryWrap,
 #mainGrid.mmusrs #actualChat,
 #mainGrid.mmusrs #login {
   display: none;
@@ -380,7 +384,7 @@ code {
   ;
 }
 #mainGrid.mmqueue #usersbox,
-#mainGrid.mmqueue #thehistory,
+#mainGrid.mmqueue #thehistoryWrap,
 #mainGrid.mmqueue #actualChat,
 #mainGrid.mmqueue #login {
   display: none;
@@ -395,7 +399,7 @@ code {
 }
 #mainGrid.mmchat #usersbox,
 #mainGrid.mmchat #queuebox,
-#mainGrid.mmchat #thehistory,
+#mainGrid.mmchat #thehistoryWrap,
 #mainGrid.mmchat #login {
   display: none;
 }
@@ -409,7 +413,7 @@ code {
 #mainGrid.login #usersbox,
 #mainGrid.login #queuebox,
 #mainGrid.login #history,
-#mainGrid.login #thehistory,
+#mainGrid.login #thehistoryWrap,
 #mainGrid.login #themebox,
 #mainGrid.login #actualChat,
 #mainGrid.login #voteActions,
@@ -441,6 +445,7 @@ code {
 #userslist {
   flex: 1;
   background-color: #282828;
+  overflow: hidden;
 }
 #usertabs {
   padding-top: 0.5rem;
@@ -1014,7 +1019,7 @@ a.importLinkCheck {
   overflow: hidden;
   background-color: #181818;
 }
-#chats {
+#chatsWrap {
   flex: 1;
 }
 #newchat {
@@ -1025,15 +1030,15 @@ a.importLinkCheck {
   position: relative;
   display: flex;
   justify-content: space-between;
-  margin: var(--pad4);
+  margin: var(--pad3);
   color: #ddd;
   word-break: break-word;
   background-color: #181818;
 }
 .newChat .botson{
   margin-right: var(--pad3);
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
 }
 .nowplayn {
   position: relative;
@@ -1199,7 +1204,7 @@ img.emoji {
 
 /* History */
 
-#thehistory {
+#thehistoryWrap {
   position: absolute;
   z-index: 15;
   bottom: 0;
@@ -1420,7 +1425,7 @@ div#blog {
 #ftSuperCopButton,
 #audilert,
 #sc-widget,
-#justwaitlist,
+#justwaitWrap,
 .notice,
 #emojiPicker,
 #overlay {
@@ -1485,7 +1490,7 @@ div#blog {
     ;
   }
   #mainGrid.login #queuebox,
-  #mainGrid.login #thehistory {
+  #mainGrid.login #thehistoryWrap {
     display: block;
   }
   #mainGrid.login .histeal,
@@ -1497,7 +1502,7 @@ div#blog {
     display: block;
   }
 
-  #thehistory {
+  #thehistoryWrap {
     grid-area: queues;
     display: block;
     position: relative;
@@ -1589,7 +1594,7 @@ div#blog {
   #mainGrid.login #queuebox {
     display: none;
   }
-  #mainGrid.login #thehistory {
+  #mainGrid.login #thehistoryWrap {
     width: 100%;
   }
 
@@ -1628,10 +1633,11 @@ div#blog {
     width: 60%;
   }
 
-  #thehistory {
+  #thehistoryWrap {
     display: block !important;
     grid-area: queues;
     justify-self: flex-end;
+    z-index: auto;
     width: 40%;
     border-left: var(--pad1) solid #151515;
   }
@@ -1663,13 +1669,12 @@ div#blog {
     display: flex;
   }
 
-  #allusers,
-  #justwaitlist {
+  .usersWrap {
     display: block !important;
     flex: 1;
   }
 
-  #allusers {
+  #allusersWrap {
     border-right: 5px solid black;
   }
 

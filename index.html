@@ -32,7 +32,7 @@
 		<div id="stage">
 			<div id="djStage">
 				<div id="screenBox">
-					<div id="playerArea"></div>
+					<div id="playerArea" tabindex="-1"></div>
 					<div id="scScreen"></div>
 					<div id="screenover"></div>
 				</div>
@@ -53,26 +53,26 @@
 			<div id="volandthings">
 				<div id="songthings">
 					<div id="voteActions">
-						<button role="button" class="butt graybutt iconbutt" id="fire">
+						<button role="button" class="butt graybutt iconbutt" id="fire" tabindex="0">
 							<i class="material-icons"> thumb_up </i>
 						</button>
-						<button role="button" class="butt graybutt iconbutt" id="cloud_with_rain">
+						<button role="button" class="butt graybutt iconbutt" id="cloud_with_rain" tabindex="0">
 							<i class="material-icons"> thumb_down </i>
 						</button>
 					</div>
 					<div id="songActions">
-						<button role="button" class="butt graybutt iconbutt" id="grab">
+						<button role="button" class="butt graybutt iconbutt" id="grab" tabindex="0">
 							<i class="material-icons"> &#xE03B; </i>
 						</button>
-						<a target="_blank" role="button" class="butt graybutt iconbutt"  id="songlink">
+						<a target="_blank" role="button" class="butt graybutt iconbutt"  id="songlink" tabindex="0">
 							<i class="material-icons"> link </i>
 						</a>
 					</div>
 					<div id="playerControls">
-						<button role="button" class="butt graybutt iconbutt" id="reloadtrack" title="reload audio">
+						<button role="button" class="butt graybutt iconbutt" id="reloadtrack" title="reload audio" tabindex="0">
 							<i class="material-icons"> refresh </i>
 						</button>
-						<button role="button" class="butt graybutt iconbutt" id="volstatus" title="mute">
+						<button role="button" class="butt graybutt iconbutt" id="volstatus" title="mute" tabindex="0">
 							<i class="material-icons"> &#xE050; </i>
 						</button>
 						<div id="volplace">
@@ -80,7 +80,7 @@
 						</div>
 					</div>
 				</div>
-				<button role="button" class="butt graybutt iconbutt" id="history">
+				<button role="button" class="butt graybutt iconbutt" id="history" tabindex="0">
 					<i class="material-icons">history</i>
 				</button>
 			</div>
@@ -97,9 +97,23 @@
 		</div>
 
 		<div id="actualChat">
-			<div id="chats" class="scrollit"></div>
+			<div id="chatsWrap" class="scrollit">
+				<div id="chats">
+					<div id="chatKEY" class="newChat">
+						<div class="botson"></div>
+						<div class="chatContent">
+							<div class="chatHead">
+								<div class="chatName"></div>
+								<div class="utitle"></div>
+							</div>
+							<div id="chattxtKEY" class="chatText"></div>
+						</div>
+						<div class="chatTime" id="chatTimeKEY"></div>
+					</div>
+				</div>
+			</div>
 			<div id="chatbottom">
-				<input maxlength="240" autocomplete="off" name="newchat" placeholder="Chat a thing" type="text" id="newchat">
+				<input maxlength="240" autocomplete="off" name="newchat" placeholder="Chat a thing" type="text" id="newchat" tabindex="0">
 				<button role="button" class="butt graybutt iconbutt" id="pickEmoji"><i class="material-icons"> insert_emoticon </i></button>
 				<div id="emojiPicker">
 					<div id="pickerNav">
@@ -112,7 +126,7 @@
 						<i id="bpickersymbols" class="material-icons"> emoji_symbols </i>
 						<i id="bpickerflags" class="material-icons"> emoji_flags </i>
 					</div>
-					<input type="text" placeholder="Filter emoji things..." id="pickerSearch">
+					<input type="text" placeholder="Filter emoji things..." id="pickerSearch" tabindex="-1">
 					<div id="pickerResults" class="scrollit">
 						<div id="pickerpeople">
 							<h3>People</h3>
@@ -148,12 +162,16 @@
 				<button role="button" class="tab on" id="label1">Everyone<span class="count"></span></button>
 				<button role="button" class="tab" id="label2">Waitlist<span class="count"></span></button>
 			</div>
-			<div id="userslist" class="scrollit">
-				<div id="allusers">
-					Loading users...
+			<div id="userslist">
+				<div id="allusersWrap" class="usersWrap scrollit">
+					<div id="allusers">
+						Loading users...
+					</div>
 				</div>
-				<div id="justwaitlist">
-					Loading waitlist...
+				<div id="justwaitWrap" class="usersWrap scrollit">
+					<div id="justwaitlist" class="scrollit">
+						Loading waitlist...
+					</div>
 				</div>
 			</div>
 		</div>
@@ -212,16 +230,18 @@
 			</div>
 		</div>
 
-		<div id="thehistory" class="scrollit">
-			<div class="pvbar" id="pvbar0">
-				<div class="histart">
-					<i role="button" id="pv0" class="material-icons previewicon">&#xE037;</i>
+		<div id="thehistoryWrap" class="scrollit">
+			<div id="thehistory">
+				<div class="pvbar" id="pvbar0">
+					<div class="histart">
+						<i role="button" id="pv0" class="material-icons previewicon">&#xE037;</i>
+					</div>
+					<div class="qtxt">
+						<div class="listwords"><a target="_blank" href="" class="histlink"></a></div>
+						<div class="histmoreinfo">played by <span class="histdj"></span> on <span class="histdate"></span> at <span class="histtime"></span></div>
+					</div>
+					<div role="button" class="histeal"><i id="apvX0" class="material-icons">&#xE03B;</i></div>
 				</div>
-				<div class="qtxt">
-					<div class="listwords"><a target="_blank" href="" class="histlink"></a></div>
-					<div class="histmoreinfo">played by <span class="histdj"></span> on <span class="histdate"></span> at <span class="histtime"></span></div>
-				</div>
-				<div role="button" class="histeal"><i id="apvX0" class="material-icons">&#xE03B;</i></div>
 			</div>
 		</div>
 
