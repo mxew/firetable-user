@@ -42,7 +42,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "00.05.13";
+firetable.version = "00.05.14";
 var player;
 
 function onYouTubeIframeAPIReady() {
