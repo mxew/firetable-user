@@ -876,11 +876,13 @@ div#filterMachine {
   flex: 1;
   margin-left: var(--pad2);
 }
-select#listpicker {
+#listpickerWrap {
   flex: 1;
+}
+select#listpicker {
+  width: 100%;
   background-color: #333;
   padding-left: var(--pad2);
-  white-space: nowrap;
 }
 #queueControls,
 #filterMachine {
