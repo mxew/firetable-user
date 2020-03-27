@@ -1525,14 +1525,14 @@ div#blog {
   }
 
   #thehistoryWrap {
-    grid-area: users;
+    grid-area: mmopts / users;
     display: block;
     position: relative;
-    top: 0 !important;
-    bottom: 0;
+    top: auto !important;
+    bottom: auto;
   }
   #mainGrid.mmqueue #thehistoryWrap {
-    grid-area: queues;
+    grid-area: mmopts / queues;
   }
 
 }
