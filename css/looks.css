@@ -1133,7 +1133,7 @@ a.importLinkCheck {
   transform: rotate(45deg);
 }
 .badoop::before {
-  content: "@";
+  content: "";
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -1596,6 +1596,9 @@ div#blog {
   }
   .djplaque {
     justify-content: space-between;
+  }
+  #thehistoryWrap {
+    grid-area: queues !important;
   }
 
 }
