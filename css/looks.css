@@ -1040,7 +1040,9 @@ a.importLinkCheck {
   background-color: #181818;
 }
 .newChat .botson{
-  margin-right: var(--pad3);
+  position: relative;
+  z-index: 2;
+  margin: 0.15rem var(--pad3) 0 0;
   width: 2rem;
   height: 2rem;
 }
@@ -1130,13 +1132,29 @@ a.importLinkCheck {
   background-color: #444;
   transform: rotate(45deg);
 }
-.badoop .chatTime::before {
+.badoop::before {
   content: "@";
-  margin-right: var(--pad1);
-  font-size: 1rem;
-  color: var(--orange);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  position: absolute;
+  z-index: 1;
+  top: calc( var(--pad3) * -1 );
+  left: calc( var(--pad3) * -1 );
+  bottom: calc( var(--pad3) * -1 );
+  width: 0;
+  padding: 0.2rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 3.2;
+  color: #777;
+  background-color: #444;
+  border-top-right-radius: 999px;
+  border-bottom-right-radius: 999px;
 }
 .chatTime {
+  position: relative;
+  z-index: 2;
   font-weight: 400;
   font-size: 0.66rem;
   color: rgba(255, 255, 255, 0.47);
@@ -1507,11 +1525,14 @@ div#blog {
   }
 
   #thehistoryWrap {
-    grid-area: queues;
+    grid-area: users;
     display: block;
     position: relative;
     top: 0 !important;
     bottom: 0;
+  }
+  #mainGrid.mmqueue #thehistoryWrap {
+    grid-area: queues;
   }
 
 }
