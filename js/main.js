@@ -42,7 +42,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "00.05.14";
+firetable.version = "00.05.15";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -2248,7 +2248,7 @@ return text;
     });
     $("#shuffleQueue").bind("click", firetable.actions.shuffleQueue);
     $("#history").bind("click", function() {
-      $("#thehistory").slideToggle().css('top', $('#stage').outerHeight() + $('#topbar').outerHeight());
+      $("#thehistoryWrap").slideToggle().css('top', $('#stage').outerHeight() + $('#topbar').outerHeight());
       $(this).toggleClass('on');
     });
     $("#startMerge").bind("click", function() {
