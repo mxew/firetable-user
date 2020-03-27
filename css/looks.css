@@ -997,7 +997,6 @@ a.importLinkCheck {
 #themebox {
   grid-area: theme;
   z-index: 15;
-  width: 100%;
   padding: var(--pad2);
   font-size: 1rem;
   text-align: center;
@@ -1012,6 +1011,7 @@ a.importLinkCheck {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  width: 100%;
 }
 
 /* Chat */
