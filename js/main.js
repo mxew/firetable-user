@@ -2948,7 +2948,9 @@ $("#stealpicker").change(function() {
         $("#newchat").val("");
         $("#emojiPicker").slideUp();
         $("#pickEmoji").removeClass("on");
-      }
+        var objDiv = document.getElementById("chatsWrap");
+        objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+    }
 
     });
     var colors = firebase.database().ref("colors");
