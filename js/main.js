@@ -881,7 +881,7 @@ firetable.actions = {
     //this fires when someone drags a song to a new spot in the queue
     var arr = $('#mainqueue > div').map(function() {
       var theid = this.id;
-      var idraw = theid.slice(3);
+      var idraw = theid.slice(5);
       return idraw;
     }).get();
 
@@ -901,7 +901,6 @@ firetable.actions = {
       newobj[newspot] = thisone;
       if (firetable.preview == songid) {
         changePv = newspot;
-        firetable.debug && console.log('update queue:',changePv);
       }
     }
     if (changePv) firetable.preview = changePv;
@@ -2981,16 +2980,16 @@ $("#stealpicker").change(function() {
     });
   },
   usertab1: function() {
-    $("#allusers").css("display", "block");
-    $("#justwaitlist").css("display", "none");
+    $("#allusersWrap").css("display", "block");
+    $("#justwaitWrap").css("display", "none");
     $("#usertabs").find(".on").removeClass("on");
     $("#label1").addClass("on");
   },
   usertab2: function() {
     $("#usertabs").find(".on").removeClass("on");
     $("#label2").addClass("on");
-    $("#allusers").css("display", "none");
-    $("#justwaitlist").css("display", "block");
+    $("#allusersWrap").css("display", "none");
+    $("#justwaitWrap").css("display", "block");
 
   },
   LinkGrabber: {
