@@ -42,7 +42,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "00.06.10";
+firetable.version = "00.06.11";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -186,7 +186,7 @@ firetable.init = function() {
   });
   firebase.auth().onAuthStateChanged(function(user) {
     firetable.debug && console.log('user:',user);
-    if (user) {
+    if (user && !firetable.uid) {
       firetable.uid = user.uid;
       firetable.uname = user.uid;
       firetable.debug && console.log("user signed in!");
