@@ -279,7 +279,6 @@ code {
 
 .ps {
   position: relative;
-  overflow: hidden;
 }
 .ps__rail-x {
 	display: none !important;
@@ -300,10 +299,6 @@ code {
   width: 0.5rem;
 	background-color: rgba(123,123,123,0.5);
 	border-radius: 0.2rem;
-}
-
-.scrollit {
-  overflow: auto;
 }
 
 
@@ -454,6 +449,10 @@ code {
 #allusers,
 #justwaitlist {
   padding-top: 1rem;
+}
+#allusersWrap,
+#justwaitWrap {
+  height: 100%;
 }
 .prson {
   display: flex;

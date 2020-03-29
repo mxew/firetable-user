@@ -1425,7 +1425,6 @@ firetable.utilities = {
     var thing1 = objDiv.scrollHeight - objDiv.clientHeight;
     var thing2 = objDiv.scrollTop;
     if (Math.abs(thing1 - thing2) <= 5) answr = true;
-    firetable.debug && console.log('pretty much at bottom',answr);
     return answr;
   },
   htmlEscape: function(s, preserveCR) {
@@ -1688,12 +1687,9 @@ return text;
     recentz.on('child_added', function(dataSnapshot, prev) {
         var data = dataSnapshot.val();
         var key = dataSnapshot.key;
-        firetable.debug && console.log("NEW HISTORY", data);
-
         var firstpart = "yt";
         if (data.type == 2) firstpart == "sc";
         var pkey = firstpart +"cid" + data.cid;
-
         var $histItem = $historyItem.clone();
         $histItem.attr('id', "pvbar"+pkey);
         $histItem.find('.previewicon').attr('id', "pv"+pkey).on('click', function(){ firetable.actions.pview(pkey, true, data.type, true) });
@@ -2153,7 +2149,6 @@ return text;
       }
       scrollits['chatsWrap'].update();
       if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
-      firetable.debug && console.log('scroll on chat', objDiv.scrollHeight, objDiv.clientHeight, objDiv.scrollTop);
     });
 
     firetable.ui.LinkGrabber.start();
