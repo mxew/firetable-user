@@ -42,7 +42,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "00.06.00";
+firetable.version = "00.06.10";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -302,11 +302,15 @@ firetable.init = function() {
                           psign = "&#xE034;";
                         }
                         $newli.attr('id', "pvbar" + key);
-                        $newli.find('.previewicon').attr('id', "pv" + key).on('click', function(){ firetable.actions.pview(key, false, thisone.type) }).html(psign);
+                        $newli.attr( "data-key", key );
+                        $newli.attr( "data-type", thisone.type);
+                        $newli.find('.previewicon').attr('id', "pv" + key).on('click', function(){
+                          firetable.actions.pview($(this).parent().attr('data-key'), false, $(this).parent().attr('data-type'));
+                        }).html(psign);
                         $newli.find('.listwords').html(thisone.name);
-                        $newli.find('.bumpsongs').on('click', function(){ firetable.actions.bumpSongInQueue(key) });
-                        $newli.find('.edittags').on('click', function(){ firetable.actions.editTagsPrompt(key) });
-                        $newli.find('.deletesong').on('click', function(){ firetable.actions.deleteSong(key) });
+                        $newli.find('.bumpsongs').on('click', function(){ firetable.actions.bumpSongInQueue($(this).parent().attr('data-key')) });
+                        $newli.find('.edittags').on('click', function(){ firetable.actions.editTagsPrompt($(this).parent().attr('data-key')) });
+                        $newli.find('.deletesong').on('click', function(){ firetable.actions.deleteSong($(this).parent().attr('data-key')) });
                         $('#mainqueue').append($newli);
                       }
                     }
@@ -335,11 +339,15 @@ firetable.init = function() {
                       psign = "&#xE034;";
                     }
                     $newli.attr('id', "pvbar" + key);
-                    $newli.find('.previewicon').attr('id', "pv" + key).on('click', function(){ firetable.actions.pview(key, false, thisone.type) }).html(psign);
+                    $newli.attr( "data-key", key );
+                    $newli.attr( "data-type", thisone.type);
+                    $newli.find('.previewicon').attr('id', "pv" + key).on('click', function(){
+                      firetable.actions.pview($(this).parent().attr('data-key'), false, $(this).parent().attr('data-type'));
+                    }).html(psign);
                     $newli.find('.listwords').html(thisone.name);
-                    $newli.find('.bumpsongs').on('click', function(){ firetable.actions.bumpSongInQueue(key) });
-                    $newli.find('.edittags').on('click', function(){ firetable.actions.editTagsPrompt(key) });
-                    $newli.find('.deletesong').on('click', function(){ firetable.actions.deleteSong(key) });
+                    $newli.find('.bumpsongs').on('click', function(){ firetable.actions.bumpSongInQueue($(this).parent().attr('data-key')) });
+                    $newli.find('.edittags').on('click', function(){ firetable.actions.editTagsPrompt($(this).parent().attr('data-key')) });
+                    $newli.find('.deletesong').on('click', function(){ firetable.actions.deleteSong($(this).parent().attr('data-key')) });
                     $('#mainqueue').append($newli);
                   }
                 }
@@ -652,6 +660,7 @@ firetable.actions = {
     localStorage["firetableMute"] = muted;
   },
   pview: function(id, fromSearch, type, fromHist) {
+    console.log("preview", {id: id, fromSearch: fromSearch, type: type, fromHist: fromHist});
     if (firetable.preview == id) {
       //already previewing this. stop and resume regular song
       clearTimeout(firetable.ptimeout);
@@ -745,10 +754,10 @@ firetable.actions = {
       }, 200);
       if (type == 1) {
         if (firetable.scLoaded) firetable.scwidget.pause();
-        player.loadVideoById(cid, 90, "large")
+        player.loadVideoById(cid, 0, "large")
       } else if (type == 2) {
         if (firetable.ytLoaded) player.stopVideo();
-        firetable.scSeek = 90000;
+        firetable.scSeek = 0;
         firetable.scwidget.load("http://api.soundcloud.com/tracks/" + cid, {
           auto_play: true
         });
@@ -1237,7 +1246,7 @@ firetable.actions = {
       name: name,
       cid: cid
     };
-    $("#apv" + type + cid).text("check");
+    $("#apv" + type + cid).find(".material-icons").text("check");
     $("#apv" + type + cid).css("color", firetable.orange);
     $("#apv" + type + cid).css("pointer-events", "none");
     var cuteid = firetable.queueRef.push(info, function() {
@@ -2787,7 +2796,7 @@ $("#stealpicker").change(function() {
                 var pkey = "ytcid" + item.id.videoId;
                 var $srli = $searchItemTemplate.clone();
                 $srli.attr('id', "pvbar" + pkey);
-                $srli.find('.previewicon').attr('id', "pv" + key).on('click', function(){ firetable.actions.pview(pkey, true, 1) });
+                $srli.find('.previewicon').attr('id', "pv" + pkey).on('click', function(){ firetable.actions.pview(pkey, true, 1) });
                 $srli.find('.listwords').html(vidTitle);
                 $srli.find('.queuetrack').on('click', function(){ firetable.actions.queueTrack(item.id.videoId, firetable.utilities.htmlEscape(vidTitle), 1) });
                 $("#searchResults").append($srli);
@@ -2852,7 +2861,7 @@ $("#stealpicker").change(function() {
               var pkey = "sccid" + item.id;
               var $srli = $searchItemTemplate.clone();
               $srli.attr('id', "pvbar" + pkey);
-              $srli.find('.previewicon').attr('id', "pv" + key).on('click', function(){ firetable.actions.pview(pkey, true, 2) });
+              $srli.find('.previewicon').attr('id', "pv" + pkey).on('click', function(){ firetable.actions.pview(pkey, true, 2) });
               $srli.find('.listwords').html(vidTitle);
               $srli.find('.queuetrack').on('click', function(){ firetable.actions.queueTrack(item.id, firetable.utilities.htmlEscape(vidTitle), 2) });
               $("#searchResults").append($srli);
