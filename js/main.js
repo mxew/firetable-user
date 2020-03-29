@@ -233,6 +233,7 @@ firetable.init = function() {
           window.location.reload();
         }
       });
+      var $playlistItemTemplate = $('#mainqueue .pvbar').remove();
       var getSelect = firebase.database().ref("users/" + firetable.uid + "/selectedList");
       var allQueues = firebase.database().ref("playlists/" + firetable.uid);
       allQueues.once('value')
@@ -289,21 +290,26 @@ firetable.init = function() {
                   }
                   firetable.queueBind = firetable.queueRef.on('value', function(dataSnapshot) {
                     var okdata = dataSnapshot.val();
+                    firetable.debug && console.log('change list',okdata);
                     firetable.queue = okdata;
-                    var newlist = "";
-                    firetable.debug && console.log('queue',okdata);
+                    $('#mainqueue').html("");
                     for (var key in okdata) {
                       if (okdata.hasOwnProperty(key)) {
+                        var $newli = $playlistItemTemplate.clone();
                         var thisone = okdata[key];
                         var psign = "&#xE037;";
                         if (key == firetable.preview) {
                           psign = "&#xE034;";
                         }
-                        newlist += "<div class=\"pvbar\" id=\"pvbar" + key + "\"><i role=\"button\" id=\"pv" + key + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + key + "', false,  " + thisone.type + ")\">" + psign + "</i> <div class=\"listwords\">" + thisone.name + "</div><i role=\"button\" onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i role=\"button\" onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i role=\"button\" onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div>";
+                        $newli.attr('id', "pvbar" + key);
+                        $newli.find('.previewicon').attr('id', "pv" + key).on('click', function(){ firetable.actions.pview(key, false, thisone.type) }).html(psign);
+                        $newli.find('.listwords').html(thisone.name);
+                        $newli.find('.bumpsongs').on('click', function(){ firetable.actions.bumpSongInQueue(key) });
+                        $newli.find('.edittags').on('click', function(){ firetable.actions.editTagsPrompt(key) });
+                        $newli.find('.deletesong').on('click', function(){ firetable.actions.deleteSong(key) });
+                        $('#mainqueue').append($newli);
                       }
                     }
-                    $("#mainqueue").html(newlist);
-
                   });
                 } else {
                   //you selected the thing you already had selected.
@@ -317,16 +323,24 @@ firetable.init = function() {
               });
               firetable.queueBind = firetable.queueRef.on('value', function(dataSnapshot) {
                 var okdata = dataSnapshot.val();
+                firetable.debug && console.log("init list",okdata);
                 firetable.queue = okdata;
-                var newlist = "";
+                $('#mainqueue').html("");
                 for (var key in okdata) {
                   if (okdata.hasOwnProperty(key)) {
+                    var $newli = $playlistItemTemplate.clone();
                     var thisone = okdata[key];
                     var psign = "&#xE037;";
                     if (key == firetable.preview) {
                       psign = "&#xE034;";
                     }
-                    newlist += "<div class=\"pvbar\" id=\"pvbar" + key + "\"><i role=\"button\" id=\"pv" + key + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + key + "', false,  " + thisone.type + ")\">" + psign + "</i> <div class=\"listwords\">" + thisone.name + "</div><i role=\"button\" onclick=\"firetable.actions.bumpSongInQueue('" + key + "')\" class=\"material-icons\">&#xE5D8;</i> <i role=\"button\" onclick=\"firetable.actions.editTagsPrompt('" + key + "')\" class=\"material-icons\">&#xE22B;</i> <i role=\"button\" onclick=\"firetable.actions.deleteSong('" + key + "')\" class=\"material-icons\">&#xE5C9;</i></div>";
+                    $newli.attr('id', "pvbar" + key);
+                    $newli.find('.previewicon').attr('id', "pv" + key).on('click', function(){ firetable.actions.pview(key, false, thisone.type) }).html(psign);
+                    $newli.find('.listwords').html(thisone.name);
+                    $newli.find('.bumpsongs').on('click', function(){ firetable.actions.bumpSongInQueue(key) });
+                    $newli.find('.edittags').on('click', function(){ firetable.actions.editTagsPrompt(key) });
+                    $newli.find('.deletesong').on('click', function(){ firetable.actions.deleteSong(key) });
+                    $('#mainqueue').append($newli);
                   }
                 }
                 $('#mainqueue').sortable({
@@ -342,7 +356,6 @@ firetable.init = function() {
                     firetable.actions.updateQueue();
                   }
                 });
-                $("#mainqueue").html(newlist);
               });
             });
         });
@@ -2714,6 +2727,7 @@ $("#stealpicker").change(function() {
         }
       }
     });
+    var $searchItemTemplate = $('#searchResults .pvbar').remove();
     $("#qsearch").bind("keyup", function(e) {
       if (e.which == 13) {
         var txt = $("#qsearch").val();
@@ -2775,10 +2789,13 @@ $("#stealpicker").change(function() {
               var srchItems = response.result.items;
               $.each(srchItems, function(index, item) {
                 vidTitle = item.snippet.title;
-
                 var pkey = "ytcid" + item.id.videoId;
-
-                $("#searchResults").append("<div class=\"pvbar\" id=\"pvbar" + pkey + "\"><i role=\"button\" id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, 1)\">&#xE037;</i><div class=\"listwords\">" + vidTitle + "</div><i role=\"button\" id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id.videoId + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 1)\">&#xE03B;</i></div>");
+                var $srli = $searchItemTemplate.clone();
+                $srli.attr('id', "pvbar" + pkey);
+                $srli.find('.previewicon').attr('id', "pv" + key).on('click', function(){ firetable.actions.pview(pkey, true, 1) });
+                $srli.find('.listwords').html(vidTitle);
+                $srli.find('.queuetrack').on('click', function(){ firetable.actions.queueTrack(item.id.videoId, firetable.utilities.htmlEscape(vidTitle), 1) });
+                $("#searchResults").append($srli);
               })
             })
           }
@@ -2838,8 +2855,12 @@ $("#stealpicker").change(function() {
               }
               vidTitle = sartist + " - " + stitle;
               var pkey = "sccid" + item.id;
-
-              $("#searchResults").append("<div class=\"pvbar\" id=\"pvbar" + pkey + "\"><i role=\"button\" id=\"pv" + pkey + "\" class=\"material-icons previewicon\" onclick=\"firetable.actions.pview('" + pkey + "', true, 2)\">&#xE037;</i><div class=\"listwords\">" + vidTitle + "</div><i role=\"button\" id=\"pv" + pkey + "\" class=\"material-icons\" onclick=\"firetable.actions.queueTrack('" + item.id + "', '" + firetable.utilities.htmlEscape(vidTitle) + "', 2)\">&#xE03B;</i></div>");
+              var $srli = $searchItemTemplate.clone();
+              $srli.attr('id', "pvbar" + pkey);
+              $srli.find('.previewicon').attr('id', "pv" + key).on('click', function(){ firetable.actions.pview(pkey, true, 2) });
+              $srli.find('.listwords').html(vidTitle);
+              $srli.find('.queuetrack').on('click', function(){ firetable.actions.queueTrack(item.id, firetable.utilities.htmlEscape(vidTitle), 2) });
+              $("#searchResults").append($srli);
             })
           });
         }
