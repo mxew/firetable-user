@@ -32,7 +32,7 @@
 		<div id="stage">
 			<div id="djStage">
 				<div id="screenBox">
-					<div id="playerArea" tabindex="-1"></div>
+					<div id="playerArea"></div>
 					<div id="scScreen"></div>
 					<div id="screenover"></div>
 				</div>
@@ -99,7 +99,7 @@
 		<div id="actualChat">
 			<div id="chatsWrap" class="scrollit">
 				<div id="chats">
-					<div id="chatKEY" class="newChat">
+					<div id="chatKEY" class="newChat"><!-- template for chat items -->
 						<div class="botson"></div>
 						<div class="chatContent">
 							<div class="chatHead">
@@ -212,7 +212,13 @@
 			<div id="queuelist" class="scrollit">
 				<div id="mainqueuestuff">
 					<div id="mainqueue" class="innr">
-						Loading your lists...
+						<div class="pvbar" id="pvbarKEY"><!-- template for playlist items -->
+							<i role="button" id="pvKEY" class="material-icons previewicon"></i>
+							<div class="listwords"></div>
+							<i role="button" class="material-icons">&#xE5D8;</i>
+							<i role="button" class="material-icons">&#xE22B;</i>
+							<i role="button" class="material-icons">&#xE5C9;</i>
+						</div>
 					</div>
 				</div>
 				<div id="plmanager">
@@ -227,6 +233,11 @@
 						<span class="tab on" id="ytsearchSelect">Youtube</span><span id="scsearchSelect" class="tab">Soundcloud</span>
 					</div>
 					<div id="searchResults" class="scrollit">
+						<div class="pvbar" id="pvbarKEY"><!-- template for search result items -->
+							<i role="button" id="pvKEY" class="material-icons previewicon">&#xE037;</i>
+							<div class="listwords"></div>
+							<i role="button" id="pvKEY" class="material-icons">&#xE03B;</i>
+						</div>
 					</div>
 				</div>
 			</div>
