@@ -42,7 +42,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "00.06.11";
+firetable.version = "00.06.13";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -179,6 +179,8 @@ firetable.init = function() {
     firetable.scLoaded = true;
   });
 
+  var $playlistItemTemplate = $('#mainqueue .pvbar').remove();
+
 
   firebase.initializeApp(config);
   SC.initialize({
@@ -186,7 +188,7 @@ firetable.init = function() {
   });
   firebase.auth().onAuthStateChanged(function(user) {
     firetable.debug && console.log('user:',user);
-    if (user && !firetable.uid) {
+    if (user) {
       firetable.uid = user.uid;
       firetable.uname = user.uid;
       firetable.debug && console.log("user signed in!");
@@ -233,7 +235,6 @@ firetable.init = function() {
           window.location.reload();
         }
       });
-      var $playlistItemTemplate = $('#mainqueue .pvbar').remove();
       var getSelect = firebase.database().ref("users/" + firetable.uid + "/selectedList");
       var allQueues = firebase.database().ref("playlists/" + firetable.uid);
       allQueues.once('value')
@@ -351,19 +352,7 @@ firetable.init = function() {
                     $('#mainqueue').append($newli);
                   }
                 }
-                $('#mainqueue').sortable({
-                  start: function(event, ui) {
-                    var start_pos = ui.item.index();
-                    ui.item.data('start_pos', start_pos);
-                  },
-                  change: function(event, ui) {
 
-                  },
-                  update: function(event, ui) {
-                    firetable.debug && console.log("UPDATE");
-                    firetable.actions.updateQueue();
-                  }
-                });
               });
             });
         });
@@ -1637,9 +1626,19 @@ return text;
   },
   init: function() {
 
-    //emojify those buttons
-    twemoji.parse(document.getElementById("fire"));
-    twemoji.parse(document.getElementById("cloud_with_rain"));
+    $('#mainqueue').sortable({
+      start: function(event, ui) {
+        var start_pos = ui.item.index();
+        ui.item.data('start_pos', start_pos);
+      },
+      change: function(event, ui) {
+
+      },
+      update: function(event, ui) {
+        firetable.debug && console.log("UPDATE");
+        firetable.actions.updateQueue();
+      }
+    });
     //GET SETTINGS FROM LOCALSTORAGE
     var showImages = localStorage["firetableShowImages"];
     if (typeof showImages == "undefined") {
