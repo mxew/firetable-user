@@ -42,7 +42,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "00.06.13";
+firetable.version = "00.06.15";
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -308,12 +308,28 @@ firetable.init = function() {
                         $newli.attr( "data-key", key );
                         $newli.attr( "data-type", thisone.type);
                         $newli.find('.previewicon').attr('id', "pv" + key).on('click', function(){
-                          firetable.actions.pview($(this).parent().attr('data-key'), false, $(this).parent().attr('data-type'));
+                          firetable.actions.pview(
+                            $(this).parent().attr('data-key'),
+                            false,
+                            $(this).parent().attr('data-type')
+                          );
                         }).html(psign);
                         $newli.find('.listwords').html(thisone.name);
-                        $newli.find('.bumpsongs').on('click', function(){ firetable.actions.bumpSongInQueue($(this).parent().attr('data-key')) });
-                        $newli.find('.edittags').on('click', function(){ firetable.actions.editTagsPrompt($(this).parent().attr('data-key')) });
-                        $newli.find('.deletesong').on('click', function(){ firetable.actions.deleteSong($(this).parent().attr('data-key')) });
+                        $newli.find('.bumpsongs').on('click', function(){
+                          firetable.actions.bumpSongInQueue(
+                            $(this).parent().attr('data-key')
+                          );
+                        });
+                        $newli.find('.edittags').on('click', function(){
+                          firetable.actions.editTagsPrompt(
+                            $(this).parent().attr('data-key')
+                          );
+                        });
+                        $newli.find('.deletesong').on('click', function(){
+                          firetable.actions.deleteSong(
+                            $(this).parent().attr('data-key')
+                          );
+                        });
                         $('#mainqueue').append($newli);
                       }
                     }
@@ -1702,12 +1718,30 @@ return text;
         var pkey = firstpart +"cid" + data.cid;
         var $histItem = $historyItem.clone();
         $histItem.attr('id', "pvbar"+pkey);
-        $histItem.find('.previewicon').attr('id', "pv"+pkey).on('click', function(){ firetable.actions.pview(pkey, true, data.type, true) });
+        $histItem.attr( "data-key", pkey );
+        $histItem.attr( "data-cid", data.cid);
+        $histItem.attr( "data-type", data.type);
+
+        $histItem.find('.previewicon').attr('id', "pv"+pkey).on('click', function(){
+          firetable.actions.pview(
+            $(this).closest('.pvbar').attr('data-key'),
+            true,
+            $(this).closest('.pvbar').attr('data-type'),
+            true
+          );
+        });
         $histItem.find('.histlink').attr({'href': data.url, 'tabindex': "-1"}).text(data.artist + " - "+ data.title);
         $histItem.find('.histdj').text(data.dj);
         $histItem.find('.histdate').text(firetable.utilities.format_date(data.when));
         $histItem.find('.histtime').text(firetable.utilities.format_time(data.when));
-        $histItem.find('.histeal').attr('id', "apv" + data.type + data.cid).on('click', function() { firetable.actions.queueTrack(data.cid, firetable.utilities.htmlEscape(data.artist + " - " + data.title), data.type, true) });
+        $histItem.find('.histeal').attr('id', "apv" + data.type + data.cid).on('click', function() {
+          firetable.actions.queueTrack(
+            $(this).closest('.pvbar').attr('data-cid'),
+            firetable.utilities.htmlEscape($(this).closest('.pvbar').find('.histlink').text()),
+            $(this).closest('.pvbar').attr('data-type'),
+            true
+          );
+        });
         $histItem.find('.histart').css('background-image', 'url(' + data.img + ')');
         $histItem.prependTo("#thehistory");
         scrollits['thehistoryWrap'].update();
@@ -2797,9 +2831,19 @@ $("#stealpicker").change(function() {
                 var pkey = "ytcid" + item.id.videoId;
                 var $srli = $searchItemTemplate.clone();
                 $srli.attr('id', "pvbar" + pkey);
-                $srli.find('.previewicon').attr('id', "pv" + pkey).on('click', function(){ firetable.actions.pview(pkey, true, 1) });
+                $srli.attr( "data-key", pkey );
+                $srli.attr( "data-cid", item.id.videoId );
+                $srli.find('.previewicon').attr('id', "pv" + pkey).on('click', function(){
+                  firetable.actions.pview($(this).parent().attr('data-key'), true, 1);
+                });
                 $srli.find('.listwords').html(vidTitle);
-                $srli.find('.queuetrack').on('click', function(){ firetable.actions.queueTrack(item.id.videoId, firetable.utilities.htmlEscape(vidTitle), 1) });
+                $srli.find('.queuetrack').on('click', function(){
+                  firetable.actions.queueTrack(
+                    $(this).parent().attr('data-cid'),
+                    firetable.utilities.htmlEscape($(this).parent().find('.listwords').text()),
+                    1
+                  );
+                });
                 $("#searchResults").append($srli);
               })
             })
@@ -2862,9 +2906,23 @@ $("#stealpicker").change(function() {
               var pkey = "sccid" + item.id;
               var $srli = $searchItemTemplate.clone();
               $srli.attr('id', "pvbar" + pkey);
-              $srli.find('.previewicon').attr('id', "pv" + pkey).on('click', function(){ firetable.actions.pview(pkey, true, 2) });
+              $srli.attr( "data-key", pkey );
+              $srli.attr( "data-cid", item.id );
+              $srli.find('.previewicon').attr('id', "pv" + pkey).on('click', function(){
+                firetable.actions.pview(
+                  $(this).parent().attr('data-key'),
+                  true,
+                  2
+                );
+              });
               $srli.find('.listwords').html(vidTitle);
-              $srli.find('.queuetrack').on('click', function(){ firetable.actions.queueTrack(item.id, firetable.utilities.htmlEscape(vidTitle), 2) });
+              $srli.find('.queuetrack').on('click', function(){
+                firetable.actions.queueTrack(
+                  $(this).parent().attr('data-cid'),
+                  firetable.utilities.htmlEscape($(this).parent().find('.listwords').text()),
+                  2
+                );
+              });
               $("#searchResults").append($srli);
             })
           });
