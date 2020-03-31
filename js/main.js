@@ -146,6 +146,8 @@ firetable.init = function() {
     $('#playerArea,#scScreen').width($('#djStage').outerWidth()).height($('#djStage').outerHeight());
     $( "#stealContain" ).css({ 'top': $('#grab').offset().top + $('#grab').height(), 'left': $('#grab').offset().left - 16 });
     setup();
+    var objDiv = document.getElementById("chatsWrap");
+    objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
   },500));
   var widgetIframe = document.getElementById('sc-widget');
   firetable.scwidget = SC.Widget(widgetIframe);
