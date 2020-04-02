@@ -1,5 +1,6 @@
 var firetable = {
   started: false,
+  loggedIn: false,
   uid: null,
   uname: null,
   pvCount: 0,
@@ -43,7 +44,7 @@ var firetable = {
 }
 
 firetable.version = "01.00.00";
-var player;
+var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('playerArea', {
@@ -181,7 +182,7 @@ firetable.init = function() {
     firetable.scLoaded = true;
   });
 
-  var $playlistItemTemplate = $('#mainqueue .pvbar').remove();
+  $playlistItemTemplate = $('#mainqueue .pvbar').remove();
 
 
   firebase.initializeApp(config);
@@ -190,209 +191,24 @@ firetable.init = function() {
   });
   firebase.auth().onAuthStateChanged(function(user) {
     firetable.debug && console.log('user:',user);
-    if (user) {
-      firetable.uid = user.uid;
-      firetable.uname = user.uid;
-      firetable.debug && console.log("user signed in!");
-      if ($("#login").html()){
-        firetable.loginForm = $("#login").html();
-        scrollits["login"].destroy();
-        firetable.ui.loginEventsDestroy();
-        $("#login").remove();
-      }
-
-      if (firetable.users[firetable.uid]) {
-        if (firetable.users[firetable.uid].username) {
-          $("#loggedInName").text(firetable.users[firetable.uid].username);
-          firetable.uname = firetable.users[firetable.uid].username;
-        } else {
-          $("#loggedInName").text(user.uid);
-        }
+    if (!firetable.loggedIn){
+      // YOU ARE NOT LOGGED IN YET. IF AUTHENTICATED, INIT LOGIN
+      if (user) {
+        firetable.actions.loggedIn(user);
+        firetable.loggedIn = true; //this stays true until the logout button is clicked
       } else {
-        $("#loggedInName").text(user.uid);
+        // not logged in, not authnticated.. have a login screen
+        firetable.actions.showLoginScreen();
       }
-
-      var ref0 = firebase.database().ref("users/" + user.uid + "/status");
-      ref0.set(true);
-      ref0.onDisconnect().set(false);
-      var banCheck = firebase.database().ref("banned/"+firetable.uid);
-      banCheck.on('value', function(dataSnapshot) {
-        var data = dataSnapshot.val();
-        firetable.debug && console.log("BANCHECK", data)
-        if (data){
-          firetable.debug && console.log("ban detected.");
-          //$("body").remove();
-          if (document.getElementById("notice") == null){
-            var usrname2use = firetable.uid;
-            if (firetable.users[firetable.uid]){
-              if (firetable.users[firetable.uid].username) usrname2use = firetable.users[firetable.uid].username;
-            }
-            $('.notice').attr('id','notice');
-            $("#troublemaker").text(usrname2use);
-            var ref0 = firebase.database().ref("users/" + firetable.uid + "/status");
-            firetable.uid = null;
-            ref0.set(false);
-          }
-        } else if (document.getElementById("notice") !== null){
-          window.location.reload();
-        }
-      });
-      var getSelect = firebase.database().ref("users/" + firetable.uid + "/selectedList");
-      var allQueues = firebase.database().ref("playlists/" + firetable.uid);
-      allQueues.once('value')
-        .then(function(allQueuesSnap) {
-          var allPlaylists = allQueuesSnap.val();
-          $("#listpicker").off("change");
-          $("#listpicker").html("<option value=\"1\">Add/Delete Playlist</option><option value=\"0\">Default Queue</option>");
-          for (var key in allPlaylists) {
-            if (allPlaylists.hasOwnProperty(key)) {
-              $("#listpicker").append("<option id=\"pdopt" + key + "\" value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
-            }
-          }
-          getSelect.once('value')
-            .then(function(snappy) {
-              firetable.selectedListThing = snappy.val();
-
-              if (!firetable.selectedListThing) firetable.selectedListThing = "0";
-              if (firetable.selectedListThing == 0) {
-                firetable.queueRef = firebase.database().ref("queues/" + firetable.uid);
-              } else {
-                firetable.queueRef = firebase.database().ref("playlists/" + firetable.uid + "/" + firetable.selectedListThing + "/list");
-              }
-              $("#listpicker").val(firetable.selectedListThing).change();
-              $("#listpicker").change(function() {
-                var val = $("#listpicker").val();
-                if (val == "1") {
-                  //ADD PLAYLIST SCREEN
-                  $("#mainqueuestuff").css("display", "none");
-                  $("#filterMachine").css("display", "none");
-                  $("#addbox").css("display", "none");
-                  $("#cancelqsearch").hide();
-                  $("#qControlButtons").hide();
-
-                  $("#plmanager").css("display", "flex");
-
-                } else if (val != firetable.selectedListThing) {
-                  //LOAD SELECTED LIST
-                  //change selected list in user obj
-                  $("#mainqueuestuff").css("display", "block");
-                  $("#filterMachine").css("display", "block");
-                  $("#addbox").css("display", "none");
-                  $("#cancelqsearch").hide();
-                  $("#qControlButtons").show();
-
-                  $("#plmanager").css("display", "none");
-                  var uref = firebase.database().ref("users/" + firetable.uid + "/selectedList");
-                  uref.set(val);
-                  firetable.selectedListThing = val;
-                  firetable.queueRef.off("value", firetable.queueBind); //stop listening for changes on old list
-                  if (firetable.selectedListThing == "0") {
-                    firetable.queueRef = firebase.database().ref("queues/" + firetable.uid);
-                  } else {
-                    firetable.queueRef = firebase.database().ref("playlists/" + firetable.uid + "/" + firetable.selectedListThing + "/list");
-                  }
-                  firetable.queueBind = firetable.queueRef.on('value', function(dataSnapshot) {
-                    var okdata = dataSnapshot.val();
-                    firetable.debug && console.log('change list',okdata);
-                    firetable.queue = okdata;
-                    $('#mainqueue').html("");
-                    for (var key in okdata) {
-                      if (okdata.hasOwnProperty(key)) {
-                        var $newli = $playlistItemTemplate.clone();
-                        var thisone = okdata[key];
-                        var psign = "&#xE037;";
-                        if (key == firetable.preview) {
-                          psign = "&#xE034;";
-                        }
-                        $newli.attr('id', "pvbar" + key);
-                        $newli.attr( "data-key", key );
-                        $newli.attr( "data-type", thisone.type);
-                        $newli.find('.previewicon').attr('id', "pv" + key).on('click', function(){
-                          firetable.actions.pview(
-                            $(this).parent().attr('data-key'),
-                            false,
-                            $(this).parent().attr('data-type')
-                          );
-                        }).html(psign);
-                        $newli.find('.listwords').html(thisone.name);
-                        $newli.find('.bumpsongs').on('click', function(){
-                          firetable.actions.bumpSongInQueue(
-                            $(this).parent().attr('data-key')
-                          );
-                        });
-                        $newli.find('.edittags').on('click', function(){
-                          firetable.actions.editTagsPrompt(
-                            $(this).parent().attr('data-key')
-                          );
-                        });
-                        $newli.find('.deletesong').on('click', function(){
-                          firetable.actions.deleteSong(
-                            $(this).parent().attr('data-key')
-                          );
-                        });
-                        $('#mainqueue').append($newli);
-                      }
-                    }
-                  });
-                } else {
-                  //you selected the thing you already had selected.
-                  $("#mainqueuestuff").css("display", "block");
-                  $("#filterMachine").css("display", "block");
-                  $("#addbox").css("display", "none");
-                  $("#cancelqsearch").hide();
-                  $("#qControlButtons").show();
-                  $("#plmanager").css("display", "none");
-                }
-              });
-              firetable.queueBind = firetable.queueRef.on('value', function(dataSnapshot) {
-                var okdata = dataSnapshot.val();
-                firetable.debug && console.log("init list",okdata);
-                firetable.queue = okdata;
-                $('#mainqueue').html("");
-                for (var key in okdata) {
-                  if (okdata.hasOwnProperty(key)) {
-                    var $newli = $playlistItemTemplate.clone();
-                    var thisone = okdata[key];
-                    var psign = "&#xE037;";
-                    if (key == firetable.preview) {
-                      psign = "&#xE034;";
-                    }
-                    $newli.attr('id', "pvbar" + key);
-                    $newli.attr( "data-key", key );
-                    $newli.attr( "data-type", thisone.type);
-                    $newli.find('.previewicon').attr('id', "pv" + key).on('click', function(){
-                      firetable.actions.pview($(this).parent().attr('data-key'), false, $(this).parent().attr('data-type'));
-                    }).html(psign);
-                    $newli.find('.listwords').html(thisone.name);
-                    $newli.find('.bumpsongs').on('click', function(){ firetable.actions.bumpSongInQueue($(this).parent().attr('data-key')) });
-                    $newli.find('.edittags').on('click', function(){ firetable.actions.editTagsPrompt($(this).parent().attr('data-key')) });
-                    $newli.find('.deletesong').on('click', function(){ firetable.actions.deleteSong($(this).parent().attr('data-key')) });
-                    $('#mainqueue').append($newli);
-                  }
-                }
-
-              });
-            });
-        });
-      $("#cardCaseButton").show();
-      $("#loggedInName").show();
-      $("#logOutButton").show().on('click',firetable.actions.logOut);
-      firetable.debug && console.log('remove login class from mainGrid');
-      $('#mainGrid').removeClass().addClass('mmusrs');
-      $("#grab").css("display", "inline-block");
     } else {
-      firetable.uid = null;
-      $("#cardCaseButton").hide();
-      $("#loggedInName").hide();
-      $("#logOutButton").hide().off();
-      $('#mainGrid').removeClass().addClass('login');
-      $("#grab").css("display", "none");
-      if (firetable.loginForm && !$("#login").html()){
-        $("#mainGrid").append("<div id=\"login\" class=\"scrollit\">"+firetable.loginForm+"</div>");
-        firetable.ui.loginEventsInit();
-        scrollits["login"] = new PerfectScrollbar($("#login")[0], { minScrollbarLength: 30 });
+      // user is already logged in.. treat these as disconnects and reconnects
+      if (user){
+        firetable.debug && console.log('reconnected');
+      } else {
+        firetable.debug && console.log('disconnected');
       }
     }
+
   });
   firetable.ui.init();
 };
@@ -404,6 +220,23 @@ firetable.actions = {
     ref0.set(false);
     firetable.debug && console.log("logout");
     firebase.auth().signOut();
+    firetable.loggedIn = false;
+    //visually indicate a sign out
+    firetable.uid = null;
+    firetable.actions.showLoginScreen();
+
+  },
+  showLoginScreen: function(){
+    $("#cardCaseButton").hide();
+    $("#loggedInName").hide();
+    $("#logOutButton").hide().off();
+    $('#mainGrid').removeClass().addClass('login');
+    $("#grab").css("display", "none");
+    if (firetable.loginForm && !$("#login").html()){
+      $("#mainGrid").append("<div id=\"login\" class=\"scrollit\">"+firetable.loginForm+"</div>");
+      firetable.ui.loginEventsInit();
+      scrollits["login"] = new PerfectScrollbar($("#login")[0], { minScrollbarLength: 30 });
+    }
   },
   logIn: function(email, password) {
     firetable.debug && console.log("login");
@@ -417,6 +250,197 @@ firetable.actions = {
       }
       firetable.debug && console.log("log in error:",error);
     });
+  },
+  loggedIn: function(user){
+    firetable.uid = user.uid;
+    firetable.uname = user.uid;
+    firetable.debug && console.log("user signed in!");
+    if ($("#login").html()){
+      firetable.loginForm = $("#login").html();
+      scrollits["login"].destroy();
+      firetable.ui.loginEventsDestroy();
+      $("#login").remove();
+    }
+
+    if (firetable.users[firetable.uid]) {
+      if (firetable.users[firetable.uid].username) {
+        $("#loggedInName").text(firetable.users[firetable.uid].username);
+        firetable.uname = firetable.users[firetable.uid].username;
+      } else {
+        $("#loggedInName").text(user.uid);
+      }
+    } else {
+      $("#loggedInName").text(user.uid);
+    }
+
+    var ref0 = firebase.database().ref("users/" + user.uid + "/status");
+    ref0.set(true);
+    ref0.onDisconnect().set(false);
+    var banCheck = firebase.database().ref("banned/"+firetable.uid);
+    banCheck.on('value', function(dataSnapshot) {
+      var data = dataSnapshot.val();
+      firetable.debug && console.log("BANCHECK", data)
+      if (data){
+        firetable.debug && console.log("ban detected.");
+        //$("body").remove();
+        if (document.getElementById("notice") == null){
+          var usrname2use = firetable.uid;
+          if (firetable.users[firetable.uid]){
+            if (firetable.users[firetable.uid].username) usrname2use = firetable.users[firetable.uid].username;
+          }
+          $('.notice').attr('id','notice');
+          $("#troublemaker").text(usrname2use);
+          var ref0 = firebase.database().ref("users/" + firetable.uid + "/status");
+          firetable.uid = null;
+          ref0.set(false);
+        }
+      } else if (document.getElementById("notice") !== null){
+        window.location.reload();
+      }
+    });
+    var getSelect = firebase.database().ref("users/" + firetable.uid + "/selectedList");
+    var allQueues = firebase.database().ref("playlists/" + firetable.uid);
+    allQueues.once('value')
+      .then(function(allQueuesSnap) {
+        var allPlaylists = allQueuesSnap.val();
+        $("#listpicker").off("change");
+        $("#listpicker").html("<option value=\"1\">Add/Delete Playlist</option><option value=\"0\">Default Queue</option>");
+        for (var key in allPlaylists) {
+          if (allPlaylists.hasOwnProperty(key)) {
+            $("#listpicker").append("<option id=\"pdopt" + key + "\" value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
+          }
+        }
+        getSelect.once('value')
+          .then(function(snappy) {
+            firetable.selectedListThing = snappy.val();
+
+            if (!firetable.selectedListThing) firetable.selectedListThing = "0";
+            if (firetable.selectedListThing == 0) {
+              firetable.queueRef = firebase.database().ref("queues/" + firetable.uid);
+            } else {
+              firetable.queueRef = firebase.database().ref("playlists/" + firetable.uid + "/" + firetable.selectedListThing + "/list");
+            }
+            $("#listpicker").val(firetable.selectedListThing).change();
+            $("#listpicker").change(function() {
+              var val = $("#listpicker").val();
+              if (val == "1") {
+                //ADD PLAYLIST SCREEN
+                $("#mainqueuestuff").css("display", "none");
+                $("#filterMachine").css("display", "none");
+                $("#addbox").css("display", "none");
+                $("#cancelqsearch").hide();
+                $("#qControlButtons").hide();
+
+                $("#plmanager").css("display", "flex");
+
+              } else if (val != firetable.selectedListThing) {
+                //LOAD SELECTED LIST
+                //change selected list in user obj
+                $("#mainqueuestuff").css("display", "block");
+                $("#filterMachine").css("display", "block");
+                $("#addbox").css("display", "none");
+                $("#cancelqsearch").hide();
+                $("#qControlButtons").show();
+
+                $("#plmanager").css("display", "none");
+                var uref = firebase.database().ref("users/" + firetable.uid + "/selectedList");
+                uref.set(val);
+                firetable.selectedListThing = val;
+                firetable.queueRef.off("value", firetable.queueBind); //stop listening for changes on old list
+                if (firetable.selectedListThing == "0") {
+                  firetable.queueRef = firebase.database().ref("queues/" + firetable.uid);
+                } else {
+                  firetable.queueRef = firebase.database().ref("playlists/" + firetable.uid + "/" + firetable.selectedListThing + "/list");
+                }
+                firetable.queueBind = firetable.queueRef.on('value', function(dataSnapshot) {
+                  var okdata = dataSnapshot.val();
+                  firetable.debug && console.log('change list',okdata);
+                  firetable.queue = okdata;
+                  $('#mainqueue').html("");
+                  for (var key in okdata) {
+                    if (okdata.hasOwnProperty(key)) {
+                      var $newli = $playlistItemTemplate.clone();
+                      var thisone = okdata[key];
+                      var psign = "&#xE037;";
+                      if (key == firetable.preview) {
+                        psign = "&#xE034;";
+                      }
+                      $newli.attr('id', "pvbar" + key);
+                      $newli.attr( "data-key", key );
+                      $newli.attr( "data-type", thisone.type);
+                      $newli.find('.previewicon').attr('id', "pv" + key).on('click', function(){
+                        firetable.actions.pview(
+                          $(this).parent().attr('data-key'),
+                          false,
+                          $(this).parent().attr('data-type')
+                        );
+                      }).html(psign);
+                      $newli.find('.listwords').html(thisone.name);
+                      $newli.find('.bumpsongs').on('click', function(){
+                        firetable.actions.bumpSongInQueue(
+                          $(this).parent().attr('data-key')
+                        );
+                      });
+                      $newli.find('.edittags').on('click', function(){
+                        firetable.actions.editTagsPrompt(
+                          $(this).parent().attr('data-key')
+                        );
+                      });
+                      $newli.find('.deletesong').on('click', function(){
+                        firetable.actions.deleteSong(
+                          $(this).parent().attr('data-key')
+                        );
+                      });
+                      $('#mainqueue').append($newli);
+                    }
+                  }
+                });
+              } else {
+                //you selected the thing you already had selected.
+                $("#mainqueuestuff").css("display", "block");
+                $("#filterMachine").css("display", "block");
+                $("#addbox").css("display", "none");
+                $("#cancelqsearch").hide();
+                $("#qControlButtons").show();
+                $("#plmanager").css("display", "none");
+              }
+            });
+            firetable.queueBind = firetable.queueRef.on('value', function(dataSnapshot) {
+              var okdata = dataSnapshot.val();
+              firetable.debug && console.log("init list",okdata);
+              firetable.queue = okdata;
+              $('#mainqueue').html("");
+              for (var key in okdata) {
+                if (okdata.hasOwnProperty(key)) {
+                  var $newli = $playlistItemTemplate.clone();
+                  var thisone = okdata[key];
+                  var psign = "&#xE037;";
+                  if (key == firetable.preview) {
+                    psign = "&#xE034;";
+                  }
+                  $newli.attr('id', "pvbar" + key);
+                  $newli.attr( "data-key", key );
+                  $newli.attr( "data-type", thisone.type);
+                  $newli.find('.previewicon').attr('id', "pv" + key).on('click', function(){
+                    firetable.actions.pview($(this).parent().attr('data-key'), false, $(this).parent().attr('data-type'));
+                  }).html(psign);
+                  $newli.find('.listwords').html(thisone.name);
+                  $newli.find('.bumpsongs').on('click', function(){ firetable.actions.bumpSongInQueue($(this).parent().attr('data-key')) });
+                  $newli.find('.edittags').on('click', function(){ firetable.actions.editTagsPrompt($(this).parent().attr('data-key')) });
+                  $newli.find('.deletesong').on('click', function(){ firetable.actions.deleteSong($(this).parent().attr('data-key')) });
+                  $('#mainqueue').append($newli);
+                }
+              }
+
+            });
+          });
+      });
+    $("#cardCaseButton").show();
+    $("#loggedInName").show();
+    $("#logOutButton").show().on('click',firetable.actions.logOut);
+    firetable.debug && console.log('remove login class from mainGrid');
+    $('#mainGrid').removeClass().addClass('mmusrs');
+    $("#grab").css("display", "inline-block");
   },
   cardCase: function(){
     var niceref = firebase.database().ref("cards");
