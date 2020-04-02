@@ -1452,7 +1452,7 @@ body.disconnected #reconnecting {
   display: block;
 }
 body.disconnected #logOutButton {
-  display: nonecl;
+  display: none;
 }
 
 
