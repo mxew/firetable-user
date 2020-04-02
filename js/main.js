@@ -43,7 +43,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "01.00.00";
+firetable.version = "01.00.10";
 var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
@@ -205,11 +205,11 @@ firetable.init = function() {
       if (user){
         firetable.debug && console.log('reconnected');
         $('body').removeClass('disconnected');
-        $('#newchat').removeAttr('disabled').focus();
+        $('#newchat').prop( 'disabled', false ).focus();
       } else {
         firetable.debug && console.log('disconnected');
         $('body').addClass('disconnected');
-        $('#newchat').attr('disabled').blur();
+        $('#newchat').prop( 'disabled', true ).blur();
       }
     }
 
