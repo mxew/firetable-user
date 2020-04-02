@@ -197,15 +197,19 @@ firetable.init = function() {
         firetable.actions.loggedIn(user);
         firetable.loggedIn = true; //this stays true until the logout button is clicked
       } else {
-        // not logged in, not authnticated.. have a login screen
+        // not logged in, not authenticated.. have a login screen
         firetable.actions.showLoginScreen();
       }
     } else {
       // user is already logged in.. treat these as disconnects and reconnects
       if (user){
         firetable.debug && console.log('reconnected');
+        $('body').removeClass('disconnected');
+        $('#newchat').removeAttr('disabled').focus();
       } else {
         firetable.debug && console.log('disconnected');
+        $('body').addClass('disconnected');
+        $('#newchat').attr('disabled').blur();
       }
     }
 
