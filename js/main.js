@@ -378,7 +378,7 @@ firetable.init = function() {
       $("#loggedInName").show();
       $("#logOutButton").show().on('click',firetable.actions.logOut);
       firetable.debug && console.log('remove login class from mainGrid');
-      $('#mainGrid').removeClass('login').addClass('mmusrs');
+      $('#mainGrid').removeClass().addClass('mmusrs');
       $("#grab").css("display", "inline-block");
     } else {
       firetable.uid = null;
