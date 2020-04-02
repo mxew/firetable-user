@@ -18,6 +18,10 @@
     will-change:transform;
    }
 }
+@keyframes pulse {
+  from {opacity:1;}
+  to {opacity:0.5;}
+}
 
 
 :root {
@@ -1427,6 +1431,28 @@ input#plMachineById {
 #mergeLists,
 #shuffleQueue {
   margin-left:1em;
+}
+
+
+/* Unauthenticated state */
+
+#reconnecting {
+  display: none;
+  padding: var(--pad1) var(--pad2);
+  background-color: #bb4433;
+  animation: pulse 500ms infinite linear alternate;
+}
+body.disconnected #queuebox,
+body.disconnected #newchat {
+  opacity: 0.5;
+  pointer-events: none;
+  user-select: none;
+}
+body.disconnected #reconnecting {
+  display: block;
+}
+body.disconnected #logOutButton {
+  display: nonecl;
 }
 
 
