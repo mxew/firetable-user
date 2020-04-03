@@ -43,7 +43,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "01.00.11";
+firetable.version = "01.00.20";
 var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
@@ -1963,6 +1963,16 @@ return text;
         firetable.utilities.screenUp();
       }
     }
+    });
+    var danceCheck = firebase.database().ref("dance");
+    danceCheck.on('value', function(dataSnapshot) {
+      var data = dataSnapshot.val();
+      firetable.debug && console.log('dance check:',data);
+      if (data){
+        $("#deck").addClass("dance");
+      } else {
+        $("#deck").removeClass("dance");
+      }
     });
     var wl = firebase.database().ref("waitlist");
     wl.on('value', function(dataSnapshot) {
