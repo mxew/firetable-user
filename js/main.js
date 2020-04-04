@@ -20,6 +20,8 @@ var firetable = {
   orange: "#F4810B",
   color: "#F4810B",
   countcolor: "#fff",
+  presenceDetectEvent: null,
+  presenceDetectRef: null,
   ytLoaded: null,
   scLoaded: null,
   selectedListThing: "0",
@@ -43,7 +45,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "01.00.20";
+firetable.version = "01.00.21";
 var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
@@ -206,6 +208,8 @@ firetable.init = function() {
         firetable.debug && console.log('reconnected');
         $('body').removeClass('disconnected');
         $('#newchat').prop( 'disabled', false ).focus();
+        firetable.presenceDetectRef = firebase.database().ref("users/" + user.uid + "/status");
+        firetable.presenceDetectEvent = firetable.presenceDetectRef.onDisconnect().set(false);
       } else {
         firetable.debug && console.log('disconnected');
         $('body').addClass('disconnected');
@@ -277,9 +281,9 @@ firetable.actions = {
       $("#loggedInName").text(user.uid);
     }
 
-    var ref0 = firebase.database().ref("users/" + user.uid + "/status");
-    ref0.set(true);
-    ref0.onDisconnect().set(false);
+    firetable.presenceDetectRef = firebase.database().ref("users/" + user.uid + "/status");
+    firetable.presenceDetectEvent = firetable.presenceDetectRef.onDisconnect().set(false);
+    firetable.presenceDetectRef.set(true);
     var banCheck = firebase.database().ref("banned/"+firetable.uid);
     banCheck.on('value', function(dataSnapshot) {
       var data = dataSnapshot.val();
@@ -2074,9 +2078,9 @@ return text;
       if (firetable.uid){
         if (!firetable.users[firetable.uid]){
             //Firebase thinks you are not here (but you are totally here!)
-            var ref0 = firebase.database().ref("users/" + firetable.uid + "/status");
-            ref0.set(true);
-            return;
+            firetable.presenceDetectRef = firebase.database().ref("users/" + firetable.uid + "/status");
+            firetable.presenceDetectEvent = firetable.presenceDetectRef.onDisconnect().set(false);
+            firetable.presenceDetectRef.set(true);
         }
       if (firetable.users[firetable.uid].supermod){
         if ($("#ftSuperCopButton").is(":hidden")){
