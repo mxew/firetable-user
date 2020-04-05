@@ -45,7 +45,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "01.00.22";
+firetable.version = "01.00.23";
 var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
@@ -2083,7 +2083,9 @@ return text;
             firetable.presenceDetectRef = firebase.database().ref("users/" + firetable.uid + "/status");
             firetable.presenceDetectEvent = firetable.presenceDetectRef.onDisconnect().set(false);
             firetable.presenceDetectRef.set(true);
-        }
+        } else {
+
+
       if (firetable.users[firetable.uid].supermod){
         if ($("#ftSuperCopButton").is(":hidden")){
           $("#ftSuperCopButton").show();
@@ -2115,6 +2117,7 @@ return text;
           });
         }
       }
+    }
       }
       var newlist = "";
       var listBuild = [];
