@@ -45,7 +45,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "01.00.21";
+firetable.version = "01.00.22";
 var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
@@ -210,10 +210,12 @@ firetable.init = function() {
         $('#newchat').prop( 'disabled', false ).focus();
         firetable.presenceDetectRef = firebase.database().ref("users/" + user.uid + "/status");
         firetable.presenceDetectEvent = firetable.presenceDetectRef.onDisconnect().set(false);
+        firetable.presenceDetectRef.set(true);
       } else {
         firetable.debug && console.log('disconnected');
         $('body').addClass('disconnected');
         $('#newchat').prop( 'disabled', true ).blur();
+        firetable.presenceDetectRef.set(false);
       }
     }
 
