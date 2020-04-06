@@ -20,6 +20,9 @@ var firetable = {
   orange: "#F4810B",
   color: "#F4810B",
   countcolor: "#fff",
+  presenceDetectEvent: null,
+  presenceDetectRef: null,
+  connectedRef: null,
   ytLoaded: null,
   scLoaded: null,
   selectedListThing: "0",
@@ -43,7 +46,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "01.00.20";
+firetable.version = "01.00.24";
 var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
@@ -186,6 +189,8 @@ firetable.init = function() {
 
 
   firebase.initializeApp(config);
+
+
   SC.initialize({
     client_id: "27028829630d95b0f9d362951de3ba2c"
   });
@@ -196,6 +201,15 @@ firetable.init = function() {
       if (user) {
         firetable.actions.loggedIn(user);
         firetable.loggedIn = true; //this stays true until the logout button is clicked
+        firetable.connectedRef = firebase.database().ref('.info/connected');
+        firetable.connectedRef.on('value', function(snap) {
+          if (snap.val() === true) {
+            firetable.presenceDetectRef = firebase.database().ref("users/" + user.uid + "/status");
+            firetable.presenceDetectEvent = firetable.presenceDetectRef.onDisconnect().set(false);
+            firetable.presenceDetectRef.set(true);
+          }
+        });
+
       } else {
         // not logged in, not authenticated.. have a login screen
         firetable.actions.showLoginScreen();
@@ -277,9 +291,6 @@ firetable.actions = {
       $("#loggedInName").text(user.uid);
     }
 
-    var ref0 = firebase.database().ref("users/" + user.uid + "/status");
-    ref0.set(true);
-    ref0.onDisconnect().set(false);
     var banCheck = firebase.database().ref("banned/"+firetable.uid);
     banCheck.on('value', function(dataSnapshot) {
       var data = dataSnapshot.val();
@@ -2074,10 +2085,12 @@ return text;
       if (firetable.uid){
         if (!firetable.users[firetable.uid]){
             //Firebase thinks you are not here (but you are totally here!)
-            var ref0 = firebase.database().ref("users/" + firetable.uid + "/status");
-            ref0.set(true);
-            return;
-        }
+            firetable.presenceDetectRef = firebase.database().ref("users/" + firetable.uid + "/status");
+            firetable.presenceDetectEvent = firetable.presenceDetectRef.onDisconnect().set(false);
+            firetable.presenceDetectRef.set(true);
+        } else {
+
+
       if (firetable.users[firetable.uid].supermod){
         if ($("#ftSuperCopButton").is(":hidden")){
           $("#ftSuperCopButton").show();
@@ -2109,6 +2122,7 @@ return text;
           });
         }
       }
+    }
       }
       var newlist = "";
       var listBuild = [];
