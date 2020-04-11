@@ -1295,6 +1295,10 @@ firetable.actions = {
     $("#apv" + type + cid).find(".material-icons").text("check");
     $("#apv" + type + cid).css("color", firetable.orange);
     $("#apv" + type + cid).css("pointer-events", "none");
+    setTimeout( function() {
+      $("#apv" + type + cid).find(".material-icons").text("playlist_add");
+      $("#apv" + type + cid).removeAttr("style");
+    }, 3000 );
     var cuteid = firetable.queueRef.push(info, function() {
       firetable.debug && console.log('queue track id:',cuteid.key);
       if (!tobottom) firetable.actions.bumpSongInQueue(cuteid.key);
