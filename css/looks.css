@@ -1082,6 +1082,9 @@ a.importLinkCheck {
   width: 2rem;
   height: 2rem;
 }
+#actualChat.avatarsOff .botson {
+  display: none;
+}
 .nowplayn {
   position: relative;
   background-color: transparent;

@@ -1707,6 +1707,19 @@ return text;
       firetable.showImages = showImages;
       $( "#showImagesToggle" ).prop( "checked", showImages );
     }
+    var showAvatars = localStorage["firetableShowAvatars"];
+    if (typeof showAvatars == "undefined") {
+      localStorage["firetableShowAvatars"] = true;
+      firetable.showAvatars = true;
+      $( "#showAvatarsToggle" ).prop( "checked", true );
+    } else {
+      showAvatars = JSON.parse(showAvatars);
+      firetable.showAvatars = showAvatars;
+      $( "#showAvatarsToggle" ).prop( "checked", showAvatars );
+      if( showAvatars == false ) {
+        document.getElementById("actualChat").classList.add("avatarsOff");
+      }
+    }
     var playBadoop = localStorage["firetableBadoop"];
     if (typeof playBadoop == "undefined") {
       localStorage["firetableBadoop"] = true;
@@ -2508,6 +2521,19 @@ $('#showImagesToggle').change(function() {
       localStorage["firetableShowImages"] = false;
       firetable.showImages = false;
 
+  }
+});
+$('#showAvatarsToggle').change(function() {
+  if (this.checked) {
+      firetable.debug && console.log("show avatars on");
+      localStorage["firetableShowAvatars"] = true;
+      firetable.showAvatars = true;
+      document.getElementById("actualChat").classList.remove("avatarsOff");
+  } else {
+      firetable.debug && console.log("show avatars off");
+      localStorage["firetableShowAvatars"] = false;
+      firetable.showAvatars = false;
+      document.getElementById("actualChat").classList.add("avatarsOff");
   }
 });
 $(document).on('click', '.hideImage', function(e){
