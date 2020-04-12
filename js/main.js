@@ -46,7 +46,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "01.00.24";
+firetable.version = "01.01.00";
 var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
