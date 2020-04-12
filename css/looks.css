@@ -1060,6 +1060,9 @@ a.importLinkCheck {
   flex: 1;
 }
 #newchat {
+  width: 100%;
+}
+#newchatForm {
   flex: 1;
   margin-right: var(--pad1);
 }
