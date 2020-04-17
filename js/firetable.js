@@ -4,10 +4,16 @@ firetable API wrapper
 */
 
 var ftapi = {
-  started: false
+  started: false,
+  loggedIn: false,
+  banned: false,
+  presenceDetectRef: null,
+  connectedRef: null,
+  superCopBanUpdates: null,
+  uname: null,
+  uid: null,
+  users: {}
 };
-
-var player;
 
 ftapi.init = function() {
   console.log("Powered by firetable. \n" +
@@ -33,7 +39,31 @@ ftapi.init = function() {
   var ref2 = firebase.database().ref("users");
   ref2.orderByChild('status').equalTo(true).on('value', function(dataSnapshot) {
     var okdata = dataSnapshot.val();
+    ftapi.users = okdata;
+    if (ftapi.users[ftapi.uid]) {
+      if (ftapi.users[ftapi.uid].username) {
+        ftapi.uname = ftapi.users[ftapi.uid].username;
+      }
+    }
     ftapi.events.emit("usersChanged", okdata);
+    if (ftapi.uid) {
+      if (!ftapi.users[ftapi.uid]) {
+        //Firebase thinks you are not here (but you are totally here!)
+        ftapi.presenceDetectRef = firebase.database().ref("users/" + ftapi.uid + "/status");
+        ftapi.presenceDetectEvent = ftapi.presenceDetectRef.onDisconnect().set(false);
+        ftapi.presenceDetectRef.set(true);
+      } else {
+        if (ftapi.users[ftapi.uid].supermod) {
+          if (!ftapi.superCopBanUpdates) {
+            //begin event listener for ban updates
+            var ref = firebase.database().ref("banned");
+            ftapi.superCopBanUpdates = ref.on('value', function(dataSnapshot) {
+              ftapi.events.emit("banListChanged", dataSnapshot.val());
+            });
+          }
+        }
+      }
+    }
   });
 
   // new song event emitter
@@ -107,7 +137,64 @@ ftapi.init = function() {
     ftapi.events.emit("screenStateChanged", data);
   });
 
+  var colors = firebase.database().ref("colors");
+  colors.on('value', function(dataSnapshot) {
+    var data = dataSnapshot.val();
+    ftapi.events.emit("colorsChanged", data);
+  });
 
+  /*
+  AUTHENTICATED FIRETABLE EVENT BINDINGS
+  Realtime events for the authenticated user
+  */
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (!ftapi.loggedIn) {
+      // YOU ARE NOT LOGGED IN YET. IF AUTHENTICATED, INIT LOGIN
+      if (user) {
+        ftapi.loggedIn = true; // this stays true until the logout function is called
+        ftapi.connectedRef = firebase.database().ref('.info/connected');
+        ftapi.connectedRef.on('value', function(snap) {
+          if (snap.val() === true) {
+            ftapi.presenceDetectRef = firebase.database().ref("users/" + user.uid + "/status");
+            ftapi.presenceDetectEvent = ftapi.presenceDetectRef.onDisconnect().set(false);
+            ftapi.presenceDetectRef.set(true);
+          }
+        });
+        ftapi.uid = user.uid;
+        ftapi.uname = user.uid;
+        ftapi.events.emit("loggedIn", user);
+
+        // setup ban check event emitters
+        var banCheck = firebase.database().ref("banned/"+ftapi.uid);
+        banCheck.on('value', function(dataSnapshot) {
+          var data = dataSnapshot.val();
+          if (data){
+            if (!ftapi.banned){
+              ftapi.banned = true;
+              var ref0 = firebase.database().ref("users/" + ftapi.uid + "/status");
+              ftapi.uid = null;
+              ref0.set(false);
+              ftapi.events.emit("userBanned");
+            }
+          } else if (ftapi.banned){
+            ftapi.events.emit("userUnbanned");
+          }
+        });
+      } else {
+        // not logged in, not authenticated..
+        // emit logged out state
+        ftapi.events.emit("loggedOut");
+      }
+    } else {
+      // user is already logged in.. treat these as disconnects and reconnects
+      // authReconnected/authDisconnected emitters
+      if (user) {
+        ftapi.events.emit("authReconnected");
+      } else {
+        ftapi.events.emit("authDisconnected");
+      }
+    }
+  });
 };
 
 /*
@@ -121,14 +208,30 @@ ftapi.actions = {
     var chat = firebase.database().ref("chat");
     var chooto = {
       time: firebase.database.ServerValue.TIMESTAMP,
-      id: firetable.uid,
-      txt: "Check out my card...",
-      name: firetable.uname
+      id: ftapi.uid,
+      txt: txt,
+      name: ftapi.uname
     };
     if (cardid) chatoo.card = cardid;
     chat.push(chooto);
   },
 
+  /*
+  AUTH ACTIONS
+  */
+  logOut: function() {
+    var ref0 = firebase.database().ref("users/" + ftapi.uid + "/status");
+    ftapi.uid = null;
+    ref0.set(false);
+    ftapi.loggedIn = false;
+    ftapi.events.emit("loggedOut");
+    firebase.auth().signOut();
+  },
+  logIn: function(email, password, errorCallback){
+    firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+      return errorCallback(error);
+    });
+  },
   /*
   ADMIN ACTIONS
   */
@@ -163,7 +266,7 @@ ftapi.actions = {
           childData.userid = key;
           ppl.push(childData);
         });
-        if (ppl[0]){
+        if (ppl[0]) {
           return callback(ppl[0]);
         } else {
           ftapi.actions.getUserByID(name, callback);
