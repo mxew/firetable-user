@@ -187,9 +187,8 @@ firetable.init = function() {
 
   $playlistItemTemplate = $('#mainqueue .pvbar').remove();
 
-
   firebase.initializeApp(config);
-
+  ftapi.init();
 
   SC.initialize({
     client_id: "27028829630d95b0f9d362951de3ba2c"
@@ -473,29 +472,11 @@ firetable.actions = {
     });
   },
   chatCard: function(cardid){
-    var chat = firebase.database().ref("chat");
-    var chooto = {
-      time: firebase.database.ServerValue.TIMESTAMP,
-      id: firetable.uid,
-      txt: "Check out my card...",
-      card: cardid,
-      name: firetable.uname
-    };
-    firetable.debug && console.log('chat card:',chooto);
-    chat.push(chooto);
+    ftapi.actions.sendChat("Check out my card...", cardid);
   },
   giftCard: function(cardid){
-    var chat = firebase.database().ref("chat");
-    var chooto = {
-      time: firebase.database.ServerValue.TIMESTAMP,
-      id: firetable.uid,
-      txt: "!giftcard :gift:",
-      card: cardid,
-      name: firetable.uname
-    };
+    ftapi.actions.sendChat("!giftcard :gift:", cardid);
     $("#caseCardSpot"+cardid).remove();
-    firetable.debug && console.log('card case:',chooto);
-    chat.push(chooto);
   },
   displayCard: function(data, chatid){
     firetable.debug && console.log("display card");
@@ -628,12 +609,9 @@ firetable.actions = {
   },
   showCard: function(cardid, chatid){
     // let's SHOW A CARD
-    var thecard = firebase.database().ref("cards/" + cardid);
-    thecard.once('value')
-      .then(function(allQueuesSnap) {
-        var data = allQueuesSnap.val();
-        firetable.actions.displayCard(data, chatid);
-      });
+    ftapi.actions.getCard(cardid, function(data){
+      firetable.actions.displayCard(data, chatid);
+    });
   },
   filterQueue: function(val){
     if (val.length == 0) {
@@ -1258,8 +1236,7 @@ firetable.actions = {
     }
   },
   unban: function(userid){
-    var ref = firebase.database().ref("banned/"+userid);
-    ref.set(false);
+    ftapi.actions.unbanUser(userid);
   },
   reloadtrack: function() {
     $('#reloadtrack').addClass('on working');
@@ -1764,11 +1741,8 @@ return text;
         }
       }
     }
-    var recentz = firebase.database().ref("songHistory");
     var $historyItem = $('#thehistory .pvbar').remove();
-    recentz.on('child_added', function(dataSnapshot, prev) {
-        var data = dataSnapshot.val();
-        var key = dataSnapshot.key;
+    ftapi.events.on('newHistory', function(data) {
         var firstpart = "yt";
         if (data.type == 2) firstpart == "sc";
         var pkey = firstpart +"cid" + data.cid;
@@ -1802,9 +1776,7 @@ return text;
         $histItem.prependTo("#thehistory");
         scrollits['thehistoryWrap'].update();
     });
-    var themeChange = firebase.database().ref("theme");
-    themeChange.on('value', function(dataSnapshot) {
-      var data = dataSnapshot.val();
+    ftapi.events.on("newTheme", function(data) {
       if (!data){
         //no theme
         $("#currentTheme").text("!suggest a theme");
@@ -1819,9 +1791,7 @@ return text;
         twemoji.parse(document.getElementById("currentTheme"));
       }
     });
-    var tagUpdate = firebase.database().ref("tagUpdate");
-    tagUpdate.on('value', function(dataSnapshot) {
-      var data = dataSnapshot.val();
+    ftapi.events.on("tagUpdate", function(data) {
       firetable.debug && console.log("TAG UPDATE", data);
       firetable.tagUpdate = data;
       if (firetable.song){
@@ -1862,9 +1832,7 @@ return text;
     });
 
 
-    var s2p = firebase.database().ref("songToPlay");
-    s2p.on('value', function(dataSnapshot) {
-      var data = dataSnapshot.val();
+    ftapi.events.on('newSong', function(data) {
       $("#playCount").text("");
       $("lastPlay").text("");
       $("firstPlay").text("");
@@ -1979,9 +1947,7 @@ return text;
         $("#prgbar").css("background", "linear-gradient(90deg, " + firetable.color + " " + pcnt + "%, #151515 " + pcnt + "%)");
       }, 500);
     });
-    var thescreen = firebase.database().ref("thescreen");
-    thescreen.on('value', function(dataSnapshot) {
-      var data = dataSnapshot.val();
+    ftapi.events.on("screenStateChanged", function(data) {
       firetable.debug && console.log('thescreen:',data);
       firetable.screenSyncPos = data;
       if (firetable.screenControl == "sync"){
@@ -1992,9 +1958,7 @@ return text;
       }
     }
     });
-    var danceCheck = firebase.database().ref("dance");
-    danceCheck.on('value', function(dataSnapshot) {
-      var data = dataSnapshot.val();
+    ftapi.events.on("danceStateChanged", function(data) {
       firetable.debug && console.log('dance check:',data);
       if (data){
         $("#deck").addClass("dance");
@@ -2002,9 +1966,7 @@ return text;
         $("#deck").removeClass("dance");
       }
     });
-    var wl = firebase.database().ref("waitlist");
-    wl.on('value', function(dataSnapshot) {
-      var data = dataSnapshot.val();
+    ftapi.events.on("waitlistChanged", function(data) {
       var ok1 = "";
       var cnt = "0";
       if (data) {
@@ -2021,9 +1983,7 @@ return text;
       $("#label2 .count").text(" (" + cnt + ")");
       $("#justwaitlist").html(ok1);
     });
-    var tbl = firebase.database().ref("table");
-    tbl.on('value', function(dataSnapshot) {
-      var data = dataSnapshot.val();
+    ftapi.events.on("tableChanged", function(data) {
       var ok1 = "";
       if (data) {
         var countr = 0;
@@ -2059,9 +2019,7 @@ return text;
         }
       }
     });
-    var pldx = firebase.database().ref("playdex");
-    pldx.on('value', function(dataSnapshot) {
-      var data = dataSnapshot.val();
+    ftapi.events.on("spotlightStateChanged", function(data) {
       firetable.playdex = data;
       for (var i = 0; i < 4; i++) {
         if (i != data) {
@@ -2074,17 +2032,14 @@ return text;
         }
       }
     });
-    var plc = firebase.database().ref("playlimit");
-    plc.on('value', function(dataSnapshot) {
-      var data = dataSnapshot.val();
+    ftapi.events.on("playLimitChanged", function(data) {
       firetable.playlimit = data;
       for (var i = 0; i < 4; i++) {
         $("#plimit" + i).text(data);
       }
     });
-    var ref2 = firebase.database().ref("users");
-    ref2.orderByChild('status').equalTo(true).on('value', function(dataSnapshot) {
-      var okdata = dataSnapshot.val();
+
+    ftapi.events.on("usersChanged", function(okdata) {
       firetable.users = okdata;
 
       if ($("#loggedInName").text() == firetable.uid) {
@@ -2187,9 +2142,7 @@ return text;
       firetable.debug && console.log('users:',okdata);
     });
     var $chatTemplate = $('#chatKEY').remove();
-    var ref = firebase.database().ref("chat");
-    ref.on('child_added', function(childSnapshot, prevChildKey) {
-      var chatData = childSnapshot.val();
+    ftapi.events.on("newChat", function(chatData){
       var namebo = chatData.id;
       var objDiv = document.getElementById("chatsWrap");
       var utitle = "";
@@ -2220,7 +2173,7 @@ return text;
       scrollDown = false;
       if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
       if (chatData.id == firetable.lastChatPerson && !badoop) {
-        $("#chat" + firetable.lastChatId+" .chatContent").append("<div id=\"chattxt" + childSnapshot.key + "\" class=\"chatText\"></div>");
+        $("#chat" + firetable.lastChatId+" .chatContent").append("<div id=\"chattxt" + chatData.chatID + "\" class=\"chatText\"></div>");
         $("#chatTime" + firetable.lastChatId).text(firetable.utilities.format_time(chatData.time));
         var txtOut = firetable.ui.strip(chatData.txt);
         txtOut = firetable.ui.showImages(txtOut);
@@ -2229,15 +2182,15 @@ return text;
         txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
           return "<code>"+x.replace(/\`/g, "") +"</code>";
         });
-        $("#chattxt"+childSnapshot.key).html(txtOut);
-        twemoji.parse(document.getElementById("chattxt"+childSnapshot.key));
+        $("#chattxt"+chatData.chatID).html(txtOut);
+        twemoji.parse(document.getElementById("chattxt"+chatData.chatID));
 
       } else {
         var $chatthing = $chatTemplate.clone();
-        $chatthing.attr('id',"chat"+childSnapshot.key);
+        $chatthing.attr('id',"chat"+chatData.chatID);
         $chatthing.find('.botson').css('background-image',"url(https://indiediscotheque.com/robots/" + chatData.id + namebo + ".png?size=110x110");
         $chatthing.find('.utitle').html(utitle);
-        $chatthing.find('.chatTime').attr('id',"chatTime" + childSnapshot.key).html(firetable.utilities.format_time(chatData.time));
+        $chatthing.find('.chatTime').attr('id',"chatTime" + chatData.chatID).html(firetable.utilities.format_time(chatData.time));
         if ( badoop ) $chatthing.addClass('badoop');
         var txtOut = firetable.ui.strip(chatData.txt);
         txtOut = firetable.ui.showImages(txtOut);
@@ -2246,18 +2199,18 @@ return text;
         txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
           return "<code>"+x.replace(/\`/g, "") +"</code>";
         });
-        $chatthing.find(".chatText").html(txtOut).attr('id',"chattxt" + childSnapshot.key);
+        $chatthing.find(".chatText").html(txtOut).attr('id',"chattxt" + chatData.chatID);
         $chatthing.find(".chatName").text(namebo);
         twemoji.parse($chatthing.find(".chatText")[0]);
         $chatthing.appendTo("#chats");
         firetable.lastChatPerson = chatData.id;
-        firetable.lastChatId = childSnapshot.key;
+        firetable.lastChatId = chatData.chatID;
       }
 
       if (chatData.card){
-        $("#chattxt"+childSnapshot.key).append("<canvas width=\"225\" height=\"300\" class=\"chatCard\" id=\"cardMaker"+childSnapshot.key+"\"></canvas>");
+        $("#chattxt"+chatData.chatID).append("<canvas width=\"225\" height=\"300\" class=\"chatCard\" id=\"cardMaker"+chatData.chatID+"\"></canvas>");
 
-        firetable.actions.showCard(chatData.card, childSnapshot.key);
+        firetable.actions.showCard(chatData.card, chatData.chatID);
         firetable.debug && console.log("showin card");
       }
       scrollits['chatsWrap'].update();
@@ -2474,31 +2427,15 @@ return text;
     });
 
     $("#fire").bind("click", function() {
-      var chat = firebase.database().ref("chat");
-      var chooto = {
-        time: firebase.database.ServerValue.TIMESTAMP,
-        id: firetable.uid,
-        txt: ":fire:",
-        name: firetable.uname
-      };
-      firetable.debug && console.log('fire:',chooto);
+      ftapi.actions.sendChat(":fire:");
       $("#cloud_with_rain").removeClass("on");
       $("#fire").addClass("on");
-      chat.push(chooto);
     });
 
     $("#cloud_with_rain").bind("click", function() {
-      var chat = firebase.database().ref("chat");
-      var chooto = {
-        time: firebase.database.ServerValue.TIMESTAMP,
-        id: firetable.uid,
-        txt: ":cloud_with_rain:",
-        name: firetable.uname
-      };
-      firetable.debug && console.log('rain:',chooto);
+      ftapi.actions.sendChat(":cloud_with_rain:");
       $("#cloud_with_rain").addClass("on");
       $("#fire").removeClass("on");
-      chat.push(chooto);
     });
 
 
@@ -2704,46 +2641,22 @@ $("#stealpicker").change(function() {
           $("#supercopResponse").html("");
           if (val != "") {
             //begin user search...
-            var ppl = [];
-            var name = val;
-            var niceref = firebase.database().ref("users");
-            niceref.orderByChild('username').equalTo(name).once("value")
-                .then(function(snapshot) {
-                  snapshot.forEach(function(childSnapshot) {
-                      var key = childSnapshot.key;
-                      var childData = childSnapshot.val();
-                      childData.userid = key;
-                      ppl.push(childData);
-                    });
-                    var niceref2 = firebase.database().ref("users/" + name);
+            ftapi.actions.getUserByName(val, function(person){
+              console.log(person);
+              //check search results
+              if (person) {
+                //found something!
+                if (!person.supermod) {
+                  ftapi.actions.banUser(person.userid);
+                  $("#supercopResponse").html("<span style=\"color: " + firetable.orange + ";\">" + person.username + " suspended.</span>");
 
-                    niceref2.once("value")
-                      .then(function(snapshot2) {
-                          var childData2 = snapshot2.val();
-                          if (childData2) {
-                              var key2 = snapshot2.key;
-                              childData2.userid = key2;
-                              ppl.push(childData2);
-                          }
-                          //check search results
-                          if (ppl.length){
-                            //found something!
-                            if (!ppl[0].supermod){
-                              var ref = firebase.database().ref("banned/"+ppl[0].userid);
-                              ref.set(true);
-                              $("#supercopResponse").html("<span style=\"color: "+firetable.orange+";\">"+name+" suspended.</span>");
-
-                            } else {
-                                $("#supercopResponse").html("<span style=\"color: red; \">Can not suspend that (or any) supercop.</span>");
-                            }
-
-                          } else {
-                            $("#supercopResponse").html("<span style=\"color: red;\">"+name+" not found...</span>");
-                          }
-                      });
-                });
-
-
+                } else {
+                  $("#supercopResponse").html("<span style=\"color: red; \">Can not suspend that (or any) supercop.</span>");
+                }
+              } else {
+                $("#supercopResponse").html("<span style=\"color: red;\">" + val + " not found...</span>");
+              }
+            });
           }
         }
     });
