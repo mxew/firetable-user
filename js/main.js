@@ -280,11 +280,8 @@ firetable.actions = {
     } else {
       $("#loggedInName").text(user.uid);
     }
-    var getSelect = firebase.database().ref("users/" + ftapi.uid + "/selectedList");
-    var allQueues = firebase.database().ref("playlists/" + ftapi.uid);
-    allQueues.once('value')
-      .then(function(allQueuesSnap) {
-        var allPlaylists = allQueuesSnap.val();
+
+    ftapi.lookup.allLists(function(allPlaylists){
         $("#listpicker").off("change");
         $("#listpicker").html("<option value=\"1\">Add/Delete Playlist</option><option value=\"0\">Default Queue</option>");
         for (var key in allPlaylists) {
@@ -292,16 +289,8 @@ firetable.actions = {
             $("#listpicker").append("<option id=\"pdopt" + key + "\" value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
           }
         }
-        getSelect.once('value')
-          .then(function(snappy) {
-            firetable.selectedListThing = snappy.val();
-
-            if (!firetable.selectedListThing) firetable.selectedListThing = "0";
-            if (firetable.selectedListThing == 0) {
-              firetable.queueRef = firebase.database().ref("queues/" + ftapi.uid);
-            } else {
-              firetable.queueRef = firebase.database().ref("playlists/" + ftapi.uid + "/" + firetable.selectedListThing + "/list");
-            }
+        ftapi.lookup.selectedList(function(selectedList){
+            firetable.selectedListThing = selectedList;
             $("#listpicker").val(firetable.selectedListThing).change();
             $("#listpicker").change(function() {
               var val = $("#listpicker").val();
@@ -325,58 +314,8 @@ firetable.actions = {
                 $("#qControlButtons").show();
 
                 $("#plmanager").css("display", "none");
-                var uref = firebase.database().ref("users/" + ftapi.uid + "/selectedList");
-                uref.set(val);
-                firetable.selectedListThing = val;
-                firetable.queueRef.off("value", firetable.queueBind); //stop listening for changes on old list
-                if (firetable.selectedListThing == "0") {
-                  firetable.queueRef = firebase.database().ref("queues/" + ftapi.uid);
-                } else {
-                  firetable.queueRef = firebase.database().ref("playlists/" + ftapi.uid + "/" + firetable.selectedListThing + "/list");
-                }
-                firetable.queueBind = firetable.queueRef.on('value', function(dataSnapshot) {
-                  var okdata = dataSnapshot.val();
-                  firetable.debug && console.log('change list',okdata);
-                  firetable.queue = okdata;
-                  $('#mainqueue').html("");
-                  for (var key in okdata) {
-                    if (okdata.hasOwnProperty(key)) {
-                      var $newli = $playlistItemTemplate.clone();
-                      var thisone = okdata[key];
-                      var psign = "&#xE037;";
-                      if (key == firetable.preview) {
-                        psign = "&#xE034;";
-                      }
-                      $newli.attr('id', "pvbar" + key);
-                      $newli.attr( "data-key", key );
-                      $newli.attr( "data-type", thisone.type);
-                      $newli.find('.previewicon').attr('id', "pv" + key).on('click', function(){
-                        firetable.actions.pview(
-                          $(this).parent().attr('data-key'),
-                          false,
-                          $(this).parent().attr('data-type')
-                        );
-                      }).html(psign);
-                      $newli.find('.listwords').html(thisone.name);
-                      $newli.find('.bumpsongs').on('click', function(){
-                        firetable.actions.bumpSongInQueue(
-                          $(this).parent().attr('data-key')
-                        );
-                      });
-                      $newli.find('.edittags').on('click', function(){
-                        firetable.actions.editTagsPrompt(
-                          $(this).parent().attr('data-key')
-                        );
-                      });
-                      $newli.find('.deletesong').on('click', function(){
-                        firetable.actions.deleteSong(
-                          $(this).parent().attr('data-key')
-                        );
-                      });
-                      $('#mainqueue').append($newli);
-                    }
-                  }
-                });
+                ftapi.actions.switchList(val);
+
               } else {
                 //you selected the thing you already had selected.
                 $("#mainqueuestuff").css("display", "block");
@@ -387,34 +326,7 @@ firetable.actions = {
                 $("#plmanager").css("display", "none");
               }
             });
-            firetable.queueBind = firetable.queueRef.on('value', function(dataSnapshot) {
-              var okdata = dataSnapshot.val();
-              firetable.debug && console.log("init list",okdata);
-              firetable.queue = okdata;
-              $('#mainqueue').html("");
-              for (var key in okdata) {
-                if (okdata.hasOwnProperty(key)) {
-                  var $newli = $playlistItemTemplate.clone();
-                  var thisone = okdata[key];
-                  var psign = "&#xE037;";
-                  if (key == firetable.preview) {
-                    psign = "&#xE034;";
-                  }
-                  $newli.attr('id', "pvbar" + key);
-                  $newli.attr( "data-key", key );
-                  $newli.attr( "data-type", thisone.type);
-                  $newli.find('.previewicon').attr('id', "pv" + key).on('click', function(){
-                    firetable.actions.pview($(this).parent().attr('data-key'), false, $(this).parent().attr('data-type'));
-                  }).html(psign);
-                  $newli.find('.listwords').html(thisone.name);
-                  $newli.find('.bumpsongs').on('click', function(){ firetable.actions.bumpSongInQueue($(this).parent().attr('data-key')) });
-                  $newli.find('.edittags').on('click', function(){ firetable.actions.editTagsPrompt($(this).parent().attr('data-key')) });
-                  $newli.find('.deletesong').on('click', function(){ firetable.actions.deleteSong($(this).parent().attr('data-key')) });
-                  $('#mainqueue').append($newli);
-                }
-              }
 
-            });
           });
       });
     $("#cardCaseButton").show();
@@ -577,7 +489,7 @@ firetable.actions = {
   },
   showCard: function(cardid, chatid){
     // let's SHOW A CARD
-    ftapi.actions.getCard(cardid, function(data){
+    ftapi.lookup.card(cardid, function(data){
       firetable.actions.displayCard(data, chatid);
     });
   },
@@ -2011,7 +1923,7 @@ return text;
       $("#activeSuspentions").html("");
       for (key in data) {
           if (data[key]){
-            ftapi.actions.getUserByName(key, function(person){
+            ftapi.lookup.userByName(key, function(person){
               $("#activeSuspentions").append("<div class=\"importResult\"><div class=\"imtxt\">" + person.username + "</div><i role=\"button\" onclick=\"firetable.actions.unban('" + person.userid + "')\" class=\"material-icons\" title=\"Unsuspend\">&#xE5C9;</i></div>");
             });
           }
@@ -2153,6 +2065,32 @@ return text;
       }
       scrollits['chatsWrap'].update();
       if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+    });
+
+    ftapi.events.on("playlistChanged", function(okdata){
+        firetable.queue = okdata;
+        $('#mainqueue').html("");
+        for (var key in okdata) {
+          if (okdata.hasOwnProperty(key)) {
+            var $newli = $playlistItemTemplate.clone();
+            var thisone = okdata[key];
+            var psign = "&#xE037;";
+            if (key == firetable.preview) {
+              psign = "&#xE034;";
+            }
+            $newli.attr('id', "pvbar" + key);
+            $newli.attr( "data-key", key );
+            $newli.attr( "data-type", thisone.type);
+            $newli.find('.previewicon').attr('id', "pv" + key).on('click', function(){
+              firetable.actions.pview($(this).parent().attr('data-key'), false, $(this).parent().attr('data-type'));
+            }).html(psign);
+            $newli.find('.listwords').html(thisone.name);
+            $newli.find('.bumpsongs').on('click', function(){ firetable.actions.bumpSongInQueue($(this).parent().attr('data-key')) });
+            $newli.find('.edittags').on('click', function(){ firetable.actions.editTagsPrompt($(this).parent().attr('data-key')) });
+            $newli.find('.deletesong').on('click', function(){ firetable.actions.deleteSong($(this).parent().attr('data-key')) });
+            $('#mainqueue').append($newli);
+          }
+        }
     });
 
     firetable.ui.LinkGrabber.start();
@@ -2579,7 +2517,7 @@ $("#stealpicker").change(function() {
           $("#supercopResponse").html("");
           if (val != "") {
             //begin user search...
-            ftapi.actions.getUserByName(val, function(person){
+            ftapi.lookup.userByName(val, function(person){
               console.log(person);
               //check search results
               if (person) {

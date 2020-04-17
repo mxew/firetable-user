@@ -1,5 +1,5 @@
 /*
-firetable.js
+ftapi.js
 firetable API wrapper
 */
 
@@ -12,7 +12,15 @@ var ftapi = {
   superCopBanUpdates: null,
   uname: null,
   uid: null,
+  selectedListThing: "0",
+  queueBind: null,
+  queueRef: null,
+  queue: null,
   users: {}
+};
+
+ftapi.ready = function(){
+  ftapi.events = new EventEmitter();
 };
 
 ftapi.init = function() {
@@ -25,7 +33,6 @@ ftapi.init = function() {
   All realtime events for the non-authenticated user
   These will persist regardless of auth state changes
   */
-  ftapi.events = new EventEmitter();
 
   // chat event emitter
   var chatRef = firebase.database().ref("chat");
@@ -165,21 +172,42 @@ ftapi.init = function() {
         ftapi.events.emit("loggedIn", user);
 
         // setup ban check event emitters
-        var banCheck = firebase.database().ref("banned/"+ftapi.uid);
+        var banCheck = firebase.database().ref("banned/" + ftapi.uid);
         banCheck.on('value', function(dataSnapshot) {
           var data = dataSnapshot.val();
-          if (data){
-            if (!ftapi.banned){
+          if (data) {
+            if (!ftapi.banned) {
               ftapi.banned = true;
               var ref0 = firebase.database().ref("users/" + ftapi.uid + "/status");
               ftapi.uid = null;
               ref0.set(false);
               ftapi.events.emit("userBanned");
             }
-          } else if (ftapi.banned){
+          } else if (ftapi.banned) {
             ftapi.events.emit("userUnbanned");
           }
         });
+
+        /*
+        SET UP QUEUE BIND
+        */
+        ftapi.lookup.selectedList(function(data){
+          ftapi.selectedListThing = data;
+          if (data == 0) {
+            ftapi.queueRef = firebase.database().ref("queues/" + ftapi.uid);
+          } else {
+            ftapi.queueRef = firebase.database().ref("playlists/" + ftapi.uid + "/" + data + "/list");
+          }
+
+          // set up queueBind
+          ftapi.queueBind = ftapi.queueRef.on('value', function(dataSnapshot) {
+            var data = dataSnapshot.val();
+            ftapi.queue = data;
+            ftapi.events.emit("playlistChanged", data);
+          });
+
+        });
+
       } else {
         // not logged in, not authenticated..
         // emit logged out state
@@ -206,16 +234,38 @@ ftapi.actions = {
   */
   sendChat: function(txt, cardid) {
     var chat = firebase.database().ref("chat");
-    var chooto = {
+    var data = {
       time: firebase.database.ServerValue.TIMESTAMP,
       id: ftapi.uid,
       txt: txt,
       name: ftapi.uname
     };
-    if (cardid) chatoo.card = cardid;
-    chat.push(chooto);
+    if (cardid) data.card = cardid;
+    chat.push(data);
   },
+  switchList: function(listID){
+    var uref = firebase.database().ref("users/" + ftapi.uid + "/selectedList");
+    uref.set(listID);
+    ftapi.selectedListThing = listID;
 
+    // update queue bind
+    ftapi.queueRef.off("value", ftapi.queueBind); //stop listening for changes on old list
+
+    // change queueRef to the new listID
+    if (listID == "0") {
+      ftapi.queueRef = firebase.database().ref("queues/" + ftapi.uid);
+    } else {
+      ftapi.queueRef = firebase.database().ref("playlists/" + ftapi.uid + "/" + listID + "/list");
+    }
+
+    // setup new queueBind
+    ftapi.queueBind = ftapi.queueRef.on('value', function(dataSnapshot) {
+      var data = dataSnapshot.val();
+      ftapi.queue = data;
+      ftapi.events.emit("playlistChanged", data);
+    });
+
+  },
   /*
   AUTH ACTIONS
   */
@@ -227,7 +277,7 @@ ftapi.actions = {
     ftapi.events.emit("loggedOut");
     firebase.auth().signOut();
   },
-  logIn: function(email, password, errorCallback){
+  logIn: function(email, password, errorCallback) {
     firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
       return errorCallback(error);
     });
@@ -242,12 +292,14 @@ ftapi.actions = {
   banUser: function(userid) {
     var ref = firebase.database().ref("banned/" + userid);
     ref.set(true);
-  },
+  }
+};
 
+ftapi.lookup = {
   /*
   DATA LOOKUP FUNCTIONS
   */
-  getCard: function(cardid, callback) {
+  card: function(cardid, callback) {
     var thecard = firebase.database().ref("cards/" + cardid);
     thecard.once('value')
       .then(function(allQueuesSnap) {
@@ -255,7 +307,7 @@ ftapi.actions = {
         return callback(data);
       });
   },
-  getUserByName: function(name, callback) {
+  userByName: function(name, callback) {
     var searchByName = firebase.database().ref("users");
     var ppl = [];
     searchByName.orderByChild('username').equalTo(name).once("value")
@@ -269,11 +321,11 @@ ftapi.actions = {
         if (ppl[0]) {
           return callback(ppl[0]);
         } else {
-          ftapi.actions.getUserByID(name, callback);
+          ftapi.lookup.userByID(name, callback);
         }
       });
   },
-  getUserByID: function(userid, callback) {
+  userByID: function(userid, callback) {
     var searchByID = firebase.database().ref("users/" + userid);
     var person = null;
     searchByID.once("value")
@@ -285,6 +337,23 @@ ftapi.actions = {
           person = childData2;
         }
         return callback(person);
+      });
+  },
+  selectedList: function(callback) {
+    var getSelect = firebase.database().ref("users/" + ftapi.uid + "/selectedList");
+    getSelect.once('value')
+      .then(function(snappy) {
+        data = snappy.val();
+        if (!data) data = "0";
+        return callback(data);
+      });
+  },
+  allLists: function(callback) {
+    var allQueues = firebase.database().ref("playlists/" + ftapi.uid);
+    allQueues.once('value')
+      .then(function(allQueuesSnap) {
+        var allPlaylists = allQueuesSnap.val();
+        return callback(allPlaylists);
       });
   }
 };
@@ -362,3 +431,5 @@ EventEmitter.prototype.once = function(event, listener) {
     listener.apply(this, arguments);
   });
 };
+
+ftapi.ready();
