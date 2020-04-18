@@ -19,7 +19,7 @@ var ftapi = {
   users: {}
 };
 
-ftapi.ready = function(){
+ftapi.ready = function() {
   ftapi.events = new EventEmitter();
 };
 
@@ -191,7 +191,7 @@ ftapi.init = function() {
         /*
         SET UP QUEUE BIND
         */
-        ftapi.lookup.selectedList(function(data){
+        ftapi.lookup.selectedList(function(data) {
           ftapi.selectedListThing = data;
           if (data == 0) {
             ftapi.queueRef = firebase.database().ref("queues/" + ftapi.uid);
@@ -243,7 +243,7 @@ ftapi.actions = {
     if (cardid) data.card = cardid;
     chat.push(data);
   },
-  switchList: function(listID){
+  switchList: function(listID) {
     var uref = firebase.database().ref("users/" + ftapi.uid + "/selectedList");
     uref.set(listID);
     ftapi.selectedListThing = listID;
@@ -266,6 +266,132 @@ ftapi.actions = {
     });
 
   },
+  createList: function(listname) {
+    var plref = firebase.database().ref("playlists/" + ftapi.uid);
+    var newlist = plref.push();
+    var listid = newlist.key;
+    var obj = {
+      name: listname,
+      list: {}
+    };
+    newlist.set(obj);
+    return listid;
+  },
+  addToList: function(type, name, cid, dest) {
+    var destref;
+    if (dest) {
+      if (dest == 0) {
+        destref = firebase.database().ref("queues/" + ftapi.uid);
+      } else {
+        destref = firebase.database().ref("playlists/" + ftapi.uid + "/" + dest + "/list");
+      }
+    } else {
+      destref = ftapi.queueRef;
+    }
+    var info = {
+      type: type,
+      name: name,
+      cid: cid
+    };
+    var newTrack = destref.push(info);
+    return newTrack.key;
+  },
+  moveTrackToTop: function(trackID, preview, pvChangeCallback) {
+    // this is a stupid way of doing this,
+    // but i couldn't find a way to re-order a fb ref
+    // or add to the top of it (fb has a push() but no unshift() equivalent)
+    if (!ftapi.queue) return false;
+    var okdata = ftapi.queue;
+    var qtemp = [];
+    var ids = [];
+    var indx = false;
+    var countr = 0;
+    for (var key in okdata) {
+      if (okdata.hasOwnProperty(key)) {
+        var thisone = okdata[key];
+        var obj = {
+          data: thisone,
+          key: key
+        };
+        qtemp.push(obj);
+        ids.push(key);
+        if (key == trackID) indx = countr;
+        countr++;
+      }
+    }
+    var newobj = {};
+    if (indx) {
+      var thingo = qtemp[indx];
+      qtemp.splice(indx, 1); //take song out of temp array
+      qtemp.unshift(thingo); //add it to the top
+      var changePv = false;
+      //now we have to rebuild the object keeping the oldkeys in the same order
+      //we have to do it this way (i think) because firebase orders based on its ids
+      for (var i = 0; i < qtemp.length; i++) {
+        var theid = ids[i];
+        if (preview){
+          if (preview == qtemp[i].key) {
+            changePv = theid;
+          }
+        }
+        newobj[theid] = qtemp[i].data;
+      }
+      if (changePv) pvChangeCallback(changePv);
+      ftapi.queueRef.set(newobj); //send it off to firebase!
+    }
+  },
+  deleteList: function(listID) {
+    var removeThis = firebase.database().ref("playlists/" + ftapi.uid + "/" + listID);
+    removeThis.remove();
+  },
+  mergeLists: function(source, dest, callback) {
+    var destref;
+    if (dest == 0) {
+      destref = firebase.database().ref("queues/" + ftapi.uid);
+    } else {
+      destref = firebase.database().ref("playlists/" + ftapi.uid + "/" + dest + "/list");
+    }
+
+    var sourceref;
+    if (source == 0) {
+      sourceref = firebase.database().ref("queues/" + ftapi.uid);
+    } else {
+      sourceref = firebase.database().ref("playlists/" + ftapi.uid + "/" + source + "/list");
+    }
+    // create dest obj to check for duplicates
+    var destObj = {};
+    destref.once("value")
+      .then(function(snapshot2) {
+        snapshot2.forEach(function(childSnapshot) {
+          var key = childSnapshot.key;
+          var childData = childSnapshot.val();
+          if (childData) {
+            if (childData.cid) destObj[childData.cid] = childData.type;
+          }
+        });
+        sourceref.once("value")
+          .then(function(snapshot3) {
+            snapshot3.forEach(function(childSnapshot3) {
+              var key = childSnapshot3.key;
+              var childData = childSnapshot3.val();
+              if (childData) {
+                if (childData.cid) {
+                  var dupe = false;
+                  if (destObj[childData.cid]) {
+                    if (childData.type == destObj[childData.cid]) dupe = true;
+                  }
+                  if (!dupe) {
+                    // NOT A DUPLICATE! GO GO GO
+                    destref.push(childData);
+                  }
+                }
+              }
+
+            });
+            return callback();
+          });
+      });
+  },
   /*
   AUTH ACTIONS
   */
@@ -282,6 +408,11 @@ ftapi.actions = {
       return errorCallback(error);
     });
   },
+  resetPassword: function(email, errorCallback) {
+    firebase.auth().sendPasswordResetEmail(email).catch(function(error) {
+      return errorCallback(error);
+    });
+  },
   /*
   ADMIN ACTIONS
   */
@@ -292,6 +423,14 @@ ftapi.actions = {
   banUser: function(userid) {
     var ref = firebase.database().ref("banned/" + userid);
     ref.set(true);
+  },
+  modUser: function(userid) {
+    var modp = firebase.database().ref("users/" + userid + "/mod");
+    modp.set(true);
+  },
+  unmodUser: function(userid) {
+    var modp = firebase.database().ref("users/" + userid + "/mod");
+    modp.set(false);
   }
 };
 
@@ -305,6 +444,14 @@ ftapi.lookup = {
       .then(function(allQueuesSnap) {
         var data = allQueuesSnap.val();
         return callback(data);
+      });
+  },
+  cardCollection: function(callback) {
+    var niceref = firebase.database().ref("cards");
+    niceref.orderByChild('owner').equalTo(ftapi.uid).once("value")
+      .then(function(snapshot) {
+        var cards = snapshot.val();
+        return callback(cards);
       });
   },
   userByName: function(name, callback) {

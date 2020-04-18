@@ -26,7 +26,6 @@ var firetable = {
   ytLoaded: null,
   scLoaded: null,
   selectedListThing: "0",
-  queueBind: null,
   parser: null,
   songTagToEdit: null,
   scwidget: null,
@@ -337,19 +336,15 @@ firetable.actions = {
     $("#grab").css("display", "inline-block");
   },
   cardCase: function(){
-    var niceref = firebase.database().ref("cards");
      $("#cardsMain").html("");
-     niceref.orderByChild('owner').equalTo(ftapi.uid).once("value")
-       .then(function(snapshot) {
-         snapshot.forEach(function(childSnapshot) {
-           var key = childSnapshot.key;
-           var childData = childSnapshot.val();
-           firetable.debug && console.log('card:',childData);
-           $("#cardsMain").append("<span id=\"caseCardSpot"+key+"\" class=\"caseCardSpot\"><canvas width=\"225\" height=\"300\" class=\"caseCard\" id=\"cardMaker"+key+"\"></canvas><span role=\"button\" onclick=\"firetable.actions.giftCard('"+key+"')\" class=\"cardGiftChat\">Gift to DJ</span><span role=\"button\" onclick=\"firetable.actions.chatCard('"+key+"')\" class=\"cardShareChat\">Share In Chat</span></span>");
-
-           firetable.actions.displayCard(childData, childSnapshot.key);
-           });
-    });
+     ftapi.lookup.cardCollection(function(data){
+       for (var key in data){
+         var childData = data[key];
+         firetable.debug && console.log('card:', childData);
+         $("#cardsMain").append("<span id=\"caseCardSpot" + key + "\" class=\"caseCardSpot\"><canvas width=\"225\" height=\"300\" class=\"caseCard\" id=\"cardMaker" + key + "\"></canvas><span role=\"button\" onclick=\"firetable.actions.giftCard('" + key + "')\" class=\"cardGiftChat\">Gift to DJ</span><span role=\"button\" onclick=\"firetable.actions.chatCard('" + key + "')\" class=\"cardShareChat\">Share In Chat</span></span>");
+         firetable.actions.displayCard(childData, key);
+      }
+     });
   },
   chatCard: function(cardid){
     ftapi.actions.sendChat("Check out my card...", cardid);
@@ -679,68 +674,14 @@ firetable.actions = {
     }
     if (dest == -1){
       // create new list if needed
-      var plref = firebase.database().ref("playlists/" + ftapi.uid);
-      var newlist = plref.push();
-      var listid = newlist.key;
-      dest = listid;
       var newname = firetable.utilities.format_date(Date.now()) + " Copy of "+sourceName;
-      var obj = {
-        name: newname,
-        list: {}
-      };
-      newlist.set(obj);
+      var listid = ftapi.actions.createList(newname);
       $("#listpicker").append("<option id=\"pdopt" + listid + "\" value=\"" + listid + "\">" + newname + "</option>");
     }
-    var destref;
-    if (dest == 0){
-      destref = firebase.database().ref("queues/" + ftapi.uid);
-    } else {
-      destref = firebase.database().ref("playlists/" + ftapi.uid + "/" + dest + "/list");
-    }
-
-    var sourceref;
-    if (source == 0){
-      sourceref = firebase.database().ref("queues/" + ftapi.uid);
-    } else {
-      sourceref = firebase.database().ref("playlists/" + ftapi.uid + "/" + source + "/list");
-    }
-    // create dest obj to check for duplicates
-    var destObj = {};
-    destref.once("value")
-      .then(function(snapshot2) {
-        snapshot2.forEach(function(childSnapshot) {
-            var key = childSnapshot.key;
-            var childData = childSnapshot.val();
-            if (childData){
-              if (childData.cid) destObj[childData.cid] = childData.type;
-            }
-        });
-        firetable.debug && console.log('merge dest:',destObj);
-        sourceref.once("value")
-          .then(function(snapshot3) {
-            snapshot3.forEach(function(childSnapshot3) {
-                var key = childSnapshot3.key;
-                var childData = childSnapshot3.val();
-                if (childData){
-                  if (childData.cid) {
-                    var dupe = false;
-                    if (destObj[childData.cid]){
-                        if (childData.type == destObj[childData.cid]) dupe = true;
-                    }
-                    firetable.debug && console.log('dupe:',dupe, childData);
-                    if (!dupe){
-                      // NOT A DUPLICATE! GO GO GO
-                      destref.push(childData);
-                    }
-                  }
-                }
-
-            });
-            $("#mergeCompleted").show();
-            $("#mergeHappening").hide();
-        });
+    ftapi.actions.mergeLists(source, dest, function(){
+      $("#mergeCompleted").show();
+      $("#mergeHappening").hide();
     });
-
   },
   queueFromLink: function(link) {
     if (link.match(/youtube.com\/watch/)) {
@@ -944,23 +885,10 @@ firetable.actions = {
             if (response.nextPageToken != "") keyWordsearch(response.nextPageToken);
           } else {
             firetable.debug && console.log(finalList);
-            var plref = firebase.database().ref("playlists/" + ftapi.uid);
-            var newlist = plref.push();
-            var listid = newlist.key;
-            var obj = {
-              name: name,
-              list: {}
-            };
-            newlist.set(obj);
+            var listid = ftapi.actions.createList(name);
             $("#listpicker").append("<option id=\"pdopt" + listid + "\" value=\"" + listid + "\">" + name + "</option>");
-            var nref = firebase.database().ref("playlists/" + ftapi.uid + "/" + listid + "/list");
             for (var i = 0; i < finalList.length; i++) {
-              var info = {
-                type: 1,
-                name: finalList[i].snippet.title,
-                cid: finalList[i].snippet.resourceId.videoId
-              };
-              nref.push(info);
+              ftapi.actions.addToList(1, finalList[i].snippet.title, finalList[i].snippet.resourceId.videoId, listid);
             }
           }
         })
@@ -970,16 +898,8 @@ firetable.actions = {
     } else if (type == 2) {
       SC.get('/playlists/' + id).then(function(listinfo) {
         firetable.debug && console.log('sc tracks:',listinfo.tracks);
-        var plref = firebase.database().ref("playlists/" + ftapi.uid);
-        var newlist = plref.push();
-        var listid = newlist.key;
-        var obj = {
-          name: name,
-          list: {}
-        };
-        newlist.set(obj);
+        var listid = ftapi.actions.createList(name);
         $("#listpicker").append("<option id=\"pdopt" + listid + "\" value=\"" + listid + "\">" + name + "</option>");
-        var nref = firebase.database().ref("playlists/" + ftapi.uid + "/" + listid + "/list");
         for (var i = 0; i < listinfo.tracks.length; i++) {
           var yargo = listinfo.tracks[i].title.split(" - ");
           var sartist = yargo[0];
@@ -989,12 +909,7 @@ firetable.actions = {
             sartist = listinfo.tracks[i].user.username;
           }
           var goodTitle = sartist +" - "+stitle;
-          var info = {
-            type: 2,
-            name: goodTitle,
-            cid: listinfo.tracks[i].id
-          };
-          nref.push(info);
+          ftapi.actions.addToList(2, goodTitle, listinfo.tracks[i].id, listid);
         }
       });
     }
@@ -1031,49 +946,9 @@ firetable.actions = {
 
   },
   bumpSongInQueue: function(songid) {
-    //this is a stupid way of doing this,
-    //but i couldn't find a way to re-order a fb ref
-    //or add to the top of it (fb has a push() but no unshift() equivalent)
-    if (!firetable.queue) return false;
-    var okdata = firetable.queue;
-    var qtemp = [];
-    var ids = [];
-    var indx = false;
-    var countr = 0;
-    for (var key in okdata) {
-      if (okdata.hasOwnProperty(key)) {
-        var thisone = okdata[key];
-        var obj = {
-          data: thisone,
-          key: key
-        };
-        qtemp.push(obj);
-        ids.push(key);
-        if (key == songid) indx = countr;
-        countr++;
-      }
-    }
-    var newobj = {};
-    if (indx) {
-      var thingo = qtemp[indx];
-      qtemp.splice(indx, 1); //take song out of temp array
-      qtemp.unshift(thingo); //add it to the top
-      var changePv = false;
-      //now we have to rebuild the object keeping the oldkeys in the same order
-      //we have to do it this way (i think) because firebase orders based on its ids
-      for (var i = 0; i < qtemp.length; i++) {
-        var theid = ids[i];
-        firetable.debug && console.log('bump song id:',theid);
-        if (firetable.preview == qtemp[i].key) {
-          changePv = theid;
-        }
-
-        newobj[theid] = qtemp[i].data;
-      }
-      if (changePv) firetable.preview = changePv;
-      firetable.queueRef.set(newobj); //send it off to firebase!
-    }
-
+    var previewChange = ftapi.actions.moveTrackToTop(songid, firetable.preview, function(changePV){
+      if (changePV) firetable.preview = changePV;
+    });
   },
   signUp: function(email, password) {
     firetable.debug && console.log("signup");
@@ -1487,7 +1362,7 @@ return text;
        if (e.which == 13) {
          var email = $("#theAddress").val();
          firetable.debug && console.log("reset email return");
-         firebase.auth().sendPasswordResetEmail(email).catch(function(error) {
+         ftapi.actions.resetPassword(email, function(error){
            var errorCode = error.code;
            var errorMessage = error.message;
            if (errorCode === 'auth/wrong-password') {
@@ -1511,7 +1386,7 @@ return text;
      $("#resetPassBttn").bind("click", function() {
        var email = $("#theAddress").val();
        firetable.debug && console.log("reset email click button");
-       firebase.auth().sendPasswordResetEmail(email).catch(function(error) {
+       ftapi.actions.resetPassword(email, function(error) {
          var errorCode = error.code;
          var errorMessage = error.message;
          if (errorCode === 'auth/wrong-password') {
@@ -2117,18 +1992,10 @@ return text;
       if (e.which == 13) {
         var val = $("#plmaker").val();
         if (val != "") {
-          var plref = firebase.database().ref("playlists/" + ftapi.uid);
-          var newlist = plref.push();
-          var listid = newlist.key;
-          var obj = {
-            name: val,
-            list: {}
-          };
-          newlist.set(obj);
+          var listid = ftapi.actions.createList(val);
           $("#listpicker").append("<option id=\"pdopt" + listid + "\" value=\"" + listid + "\">" + val + "</option>");
           $("#listpicker").val(listid).change();
-          var uref = firebase.database().ref("users/" + ftapi.uid + "/selectedList");
-          uref.set(listid);
+          ftapi.actions.switchList(listid);
         }
       }
     });
@@ -2176,10 +2043,7 @@ return text;
     $("#grab").bind("click", function(){
       var isHidden = $("#stealContain").is( ":hidden" );
       if (isHidden){
-        var allQueues = firebase.database().ref("playlists/" + ftapi.uid);
-        allQueues.once('value')
-          .then(function(allQueuesSnap) {
-            var allPlaylists = allQueuesSnap.val();
+        ftapi.lookup.allLists(function(allPlaylists){
             $("#stealpicker").html("<option value=\"-1\">Where to?</option><option value=\"0\">Default Queue</option>");
             for (var key in allPlaylists) {
               if (allPlaylists.hasOwnProperty(key)) {
@@ -2220,10 +2084,7 @@ return text;
       var $this = $(this);
        var isHidden = $("#mergeContain").is( ":hidden" );
        if (isHidden){
-         var allQueues = firebase.database().ref("playlists/" + ftapi.uid);
-         allQueues.once('value')
-           .then(function(allQueuesSnap) {
-             var allPlaylists = allQueuesSnap.val();
+         ftapi.lookup.allLists(function(allPlaylists){
              $("#mergepicker").html("<option value=\"0\">Default Queue</option>");
              $("#mergepicker2").html("<option value=\"-1\">Create New Copy</option><option value=\"0\">Default Queue</option>");
              for (var key in allPlaylists) {
@@ -2397,24 +2258,12 @@ $('input[type=radio][name=screenControl]').change(function() {
 $("#stealpicker").change(function() {
   var dest = $("#stealpicker").val();
   if (dest == "-1") return;
-  var destref;
-  if (dest == 0){
-    destref = firebase.database().ref("queues/" + ftapi.uid);
-  } else {
-    destref = firebase.database().ref("playlists/" + ftapi.uid + "/" + dest + "/list");
-  }
   if (firetable.song.cid != 0) {
     var title = firetable.song.artist + " - " + firetable.song.title;
     $("#grab").removeClass('on');
-    var info = {
-      type: firetable.song.type,
-      name: title,
-      cid: firetable.song.cid
-    };
-    destref.push(info);
+    ftapi.actions.addToList(firetable.song.type, title, firetable.song.cid, dest);
     $( "#stealContain" ).hide();
   }
-
 });
 
     $("#pldeleteButton").bind("click", function() {
@@ -2427,16 +2276,8 @@ $("#stealpicker").change(function() {
           }
         }
       }
-      var removeThis = firebase.database().ref("playlists/" + ftapi.uid + "/" + val);
+      ftapi.actions.deleteList(val);
       $("#pdopt" + val).remove();
-      removeThis.remove()
-        .then(function() {
-          firetable.debug && console.log("pl remove went great.");
-
-        })
-        .catch(function(error) {
-          firetable.debug && console.log("pl Remove failed: " + error.message);
-        });
       $("#overlay").hide();
     });
     $("#plimportLauncher").bind("click", function() {
@@ -2445,10 +2286,7 @@ $("#stealpicker").change(function() {
       $('#importPromptBox').show();
     });
     $("#pldeleteLauncher").bind("click", function() {
-      var allQueues = firebase.database().ref("playlists/" + ftapi.uid);
-      allQueues.once('value')
-        .then(function(allQueuesSnap) {
-          var allPlaylists = allQueuesSnap.val();
+      ftapi.lookup.allLists(function(allPlaylists){
           $("#deletepicker").html("");
           for (var key in allPlaylists) {
             if (allPlaylists.hasOwnProperty(key)) {
@@ -2818,14 +2656,12 @@ $("#stealpicker").change(function() {
           if (command == "mod") {
             var personToMod = firetable.actions.uidLookup(args);
             if (personToMod) {
-              var modp = firebase.database().ref("users/" + personToMod + "/mod");
-              modp.set(true);
+              ftapi.actions.modUser(personToMod);
             }
           } else if (command == "unmod") {
             var personToMod = firetable.actions.uidLookup(args);
             if (personToMod) {
-              var modp = firebase.database().ref("users/" + personToMod + "/mod");
-              modp.set(false);
+              ftapi.actions.unmodUser(personToMod);
             }
           } else if (command == "hot") {
             ftapi.actions.sendChat(":hot:");
