@@ -396,6 +396,11 @@ firetable.actions = {
                           $(this).parent().attr('data-key')
                         );
                       });
+                      $newli.find('.downsongs').on('click', function(){
+                        firetable.actions.bumpSongInQueue(
+                          $(this).parent().attr('data-key'), "down"
+                        );
+                      });
                       $newli.find('.edittags').on('click', function(){
                         firetable.actions.editTagsPrompt(
                           $(this).parent().attr('data-key')
@@ -441,6 +446,7 @@ firetable.actions = {
                   }).html(psign);
                   $newli.find('.listwords').html(thisone.name);
                   $newli.find('.bumpsongs').on('click', function(){ firetable.actions.bumpSongInQueue($(this).parent().attr('data-key')) });
+                  $newli.find('.downsongs').on('click', function(){ firetable.actions.bumpSongInQueue($(this).parent().attr('data-key'), "down") });
                   $newli.find('.edittags').on('click', function(){ firetable.actions.editTagsPrompt($(this).parent().attr('data-key')) });
                   $newli.find('.deletesong').on('click', function(){ firetable.actions.deleteSong($(this).parent().attr('data-key')) });
                   $('#mainqueue').append($newli);
@@ -1172,7 +1178,7 @@ firetable.actions = {
     }
 
   },
-  bumpSongInQueue: function(songid) {
+  bumpSongInQueue: function(songid,direc) {
     //this is a stupid way of doing this,
     //but i couldn't find a way to re-order a fb ref
     //or add to the top of it (fb has a push() but no unshift() equivalent)
@@ -1199,7 +1205,11 @@ firetable.actions = {
     if (indx) {
       var thingo = qtemp[indx];
       qtemp.splice(indx, 1); //take song out of temp array
-      qtemp.unshift(thingo); //add it to the top
+      if( direc == 'down' ) {
+        qtemp.push(thingo); //add it to the BOTTOM
+      } else {
+        qtemp.unshift(thingo); //add it to the top
+      }
       var changePv = false;
       //now we have to rebuild the object keeping the oldkeys in the same order
       //we have to do it this way (i think) because firebase orders based on its ids
