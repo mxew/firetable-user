@@ -23,10 +23,14 @@ ftapi.ready = function() {
   ftapi.events = new EventEmitter();
 };
 
-ftapi.init = function() {
+ftapi.init = function(firebaseConfig) {
   console.log("Powered by firetable. \n" +
     "For more information, head to firetable.org");
   ftapi.started = true;
+
+  // init firebase app
+  firebase.initializeApp(firebaseConfig);
+
 
   /*
   NON-AUTHENTICATED FIRETABLE EVENT BINDINGS
@@ -277,7 +281,7 @@ ftapi.actions = {
     newlist.set(obj);
     return listid;
   },
-  addToList: function(type, name, cid, dest) {
+  addToList: function(type, name, cid, dest, callback) {
     var destref;
     if (dest) {
       if (dest == 0) {
@@ -293,7 +297,9 @@ ftapi.actions = {
       name: name,
       cid: cid
     };
-    var newTrack = destref.push(info);
+    var newTrack = destref.push(info, function() {
+      if (callback) callback();
+    });
     return newTrack.key;
   },
   moveTrackToTop: function(trackID, preview, pvChangeCallback) {
@@ -329,7 +335,7 @@ ftapi.actions = {
       //we have to do it this way (i think) because firebase orders based on its ids
       for (var i = 0; i < qtemp.length; i++) {
         var theid = ids[i];
-        if (preview){
+        if (preview) {
           if (preview == qtemp[i].key) {
             changePv = theid;
           }
@@ -338,6 +344,55 @@ ftapi.actions = {
       }
       if (changePv) pvChangeCallback(changePv);
       ftapi.queueRef.set(newobj); //send it off to firebase!
+    }
+  },
+  moveTrackToBottom: function(trackID) {
+    var theTrack = ftapi.queue[trackID];
+    ttapi.deleteTrack(trackID, function() {
+      ftapi.addToList(theTrack.type, theTrack.name, theTrack.cid);
+    });
+  },
+  deleteTrack: function(trackID, callback) {
+    var removeThis = ftapi.queueRef.child(trackID);
+    removeThis.remove()
+      .then(function() {
+        if (callback) return callback();
+      });
+  },
+  editTrackTag: function(trackID, cid, newTag) {
+    if (ftapi.queue[trackID]) {
+      if (ftapi.queue[trackID].cid == cid) {
+        var changeref = ftapi.queueRef.child(trackID);
+        var trackObj = ftapi.queue[trackID];
+        trackObj.name = newTag;
+        changeref.set(trackObj);
+      } else {
+        //song appears to have moved since the editing began, let's try and find it...
+        for (var key in ftapi.queue) {
+          if (ftapi.queue.hasOwnProperty(key)) {
+            if (ftapi.queue[key].cid == cid) {
+              var changeref = ftapi.queueRef.child(key);
+              var trackObj = ftapi.queue[key];
+              trackObj.name = newTag;
+              changeref.set(trackObj);
+              return;
+            }
+          }
+        }
+      }
+    } else {
+      //song appears to have moved since the editing began, let's try and find it...
+      for (var key in ftapi.queue) {
+        if (ftapi.queue.hasOwnProperty(key)) {
+          if (ftapi.queue[key].cid == cid) {
+            var changeref = ftapi.queueRef.child(key);
+            var trackObj = ftapi.queue[key];
+            trackObj.name = newTag;
+            changeref.set(trackObj);
+            return;
+          }
+        }
+      }
     }
   },
   deleteList: function(listID) {
@@ -392,6 +447,74 @@ ftapi.actions = {
           });
       });
   },
+  shuffleList: function(preview, pvChangeCallback) {
+    var okdata = ftapi.queue;
+    var ids = [];
+    var arr = [];
+    for (var key in okdata) {
+      if (okdata.hasOwnProperty(key)) {
+        ids.push(key);
+        arr.push(key);
+      }
+    }
+    ftapi.utilities.shuffle(arr);
+    var changePv = false;
+    var newobj = {};
+    for (var i = 0; i < arr.length; i++) {
+      var songid = arr[i];
+      var newspot = ids[i];
+      var thisone = okdata[songid];
+      newobj[newspot] = thisone;
+      if (preview == songid) {
+        changePv = newspot;
+      }
+    }
+    if (changePv) pvChangeCallback(changePv);
+    ftapi.queueRef.set(newobj);
+  },
+  removeDuplicatesFromList: function() {
+    var okdata = ftapi.queue;
+    var arr = [];
+    for (var key in okdata) {
+      if (okdata.hasOwnProperty(key)) {
+        var entry = ftapi.queue[key];
+        entry.key = key;
+        arr.push(entry);
+      }
+    }
+    var dupes = arr.filter((obj, pos, arr2) => {
+      return arr2.map(mapObj => mapObj.cid).indexOf(obj.cid) !== pos;
+    });
+    for (var i = 0; i < dupes.length; i++) {
+      ftapi.actions.deleteTrack(dupes[i].key);
+    }
+  },
+  reorderList: function(arr, preview, pvChangeCallback) {
+    console.log(arr.length);
+    console.log(ftapi.utilities.size(ftapi.queue));
+    if (!arr.length) return;
+    if (arr.length !== ftapi.utilities.size(ftapi.queue)) return;
+    var okdata = ftapi.queue;
+    var ids = [];
+    for (var key in okdata) {
+      if (okdata.hasOwnProperty(key)) {
+        ids.push(key);
+      }
+    }
+    var changePv = false;
+    var newobj = {};
+    for (var i = 0; i < arr.length; i++) {
+      var songid = arr[i];
+      var newspot = ids[i];
+      var thisone = okdata[songid];
+      newobj[newspot] = thisone;
+      if (preview == songid) {
+        changePv = newspot;
+      }
+    }
+    if (changePv) pvChangeCallback(changePv);
+    ftapi.queueRef.set(newobj);
+  },
   /*
   AUTH ACTIONS
   */
@@ -410,6 +533,13 @@ ftapi.actions = {
   },
   resetPassword: function(email, errorCallback) {
     firebase.auth().sendPasswordResetEmail(email).catch(function(error) {
+      return errorCallback(error);
+    });
+  },
+  signUp: function(email, password, errorCallback) {
+    firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+      var errorCode = error.code;
+      var errorMessage = error.message;
       return errorCallback(error);
     });
   },
@@ -502,6 +632,30 @@ ftapi.lookup = {
         var allPlaylists = allQueuesSnap.val();
         return callback(allPlaylists);
       });
+  }
+};
+
+/*
+UTILITY FUNCTIONS
+*/
+ftapi.utilities = {
+  // Modern Fisher-Yates shuffle
+  shuffle: function(a) {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1));
+      x = a[i];
+      a[i] = a[j];
+      a[j] = x;
+    }
+    return a;
+  },
+  size: function(obj) {
+    var size = 0;
+    for (var key in obj) {
+      if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
   }
 };
 

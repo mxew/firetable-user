@@ -20,9 +20,6 @@ var firetable = {
   orange: "#F4810B",
   color: "#F4810B",
   countcolor: "#fff",
-  presenceDetectEvent: null,
-  presenceDetectRef: null,
-  connectedRef: null,
   ytLoaded: null,
   scLoaded: null,
   selectedListThing: "0",
@@ -31,7 +28,6 @@ var firetable = {
   scwidget: null,
   searchSelectsChoice: 1,
   importSelectsChoice: 1,
-  queueRef: null,
   lastChatPerson: false,
   lastChatId: false,
   tagUpdate: null,
@@ -136,7 +132,7 @@ function onPlayerStateChange(event) {
 firetable.init = function() {
   console.log("Yo sup welcome to firetable my name is chris rohn.");
   firetable.started = true;
-  var config = {
+  var firebaseConfig = {
     apiKey: "AIzaSyDdshWtOPnY_0ACt6uJKmcI_qPpTfO4sJ4",
     authDomain: "firetable-e10fd.firebaseapp.com",
     databaseURL: "https://firetable-e10fd.firebaseio.com"
@@ -186,8 +182,7 @@ firetable.init = function() {
 
   $playlistItemTemplate = $('#mainqueue .pvbar').remove();
 
-  firebase.initializeApp(config);
-  ftapi.init();
+  ftapi.init(firebaseConfig);
 
   SC.initialize({
     client_id: "27028829630d95b0f9d362951de3ba2c"
@@ -751,70 +746,17 @@ firetable.actions = {
       var idraw = theid.slice(5);
       return idraw;
     }).get();
-
-    var okdata = firetable.queue;
-    var ids = [];
-    for (var key in okdata) {
-      if (okdata.hasOwnProperty(key)) {
-        ids.push(key);
-      }
-    }
-    var changePv = false;
-    var newobj = {};
-    for (var i = 0; i < arr.length; i++) {
-      var songid = arr[i];
-      var newspot = ids[i];
-      var thisone = okdata[songid];
-      newobj[newspot] = thisone;
-      if (firetable.preview == songid) {
-        changePv = newspot;
-      }
-    }
-    if (changePv) firetable.preview = changePv;
-    firetable.queueRef.set(newobj);
+    ftapi.actions.reorderList(arr, firetable.preview, function(changePV){
+      if (changePV) firetable.preview = changePV;
+    });
   },
   shuffleQueue: function(){
-    var okdata = firetable.queue;
-    var ids = [];
-    var arr = [];
-    for (var key in okdata) {
-      if (okdata.hasOwnProperty(key)) {
-        ids.push(key);
-        arr.push(key);
-      }
-    }
-    firetable.utilities.shuffle(arr);
-    var changePv = false;
-    var newobj = {};
-    for (var i = 0; i < arr.length; i++) {
-      var songid = arr[i];
-      var newspot = ids[i];
-      var thisone = okdata[songid];
-      newobj[newspot] = thisone;
-      if (firetable.preview == songid) {
-        changePv = newspot;
-        firetable.debug && console.log('shuffle queue:',changePv);
-      }
-    }
-    if (changePv) firetable.preview = changePv;
-    firetable.queueRef.set(newobj);
+    ftapi.actions.shuffleList(firetable.preview, function(changePV){
+      if (changePV) firetable.preview = changePV;
+    });
   },
   removeDupesFromQueue: function(){
-    var okdata = firetable.queue;
-    var arr = [];
-    for (var key in okdata) {
-      if (okdata.hasOwnProperty(key)) {
-        var entry = firetable.queue[key];
-        entry.key = key;
-        arr.push(entry);
-      }
-    }
-    var dupes = arr.filter((obj, pos, arr2) => {
-        return arr2.map(mapObj => mapObj.cid).indexOf(obj.cid) !== pos;
-    });
-    for (var i=0; i<dupes.length; i++){
-      firetable.actions.deleteSong(dupes[i].key);
-    }
+    ftapi.actions.removeDuplicatesFromList();
     $("#mergeCompleted").show();
     $("#mergeHappening").hide();
   },
@@ -914,60 +856,21 @@ firetable.actions = {
       });
     }
   },
-  editSongTag: function(obj) {
-    if (firetable.queue[obj.key]) {
-      if (firetable.queue[obj.key].cid == obj.song.cid) {
-        var changeref = firetable.queueRef.child(obj.key);
-        changeref.set(obj.song);
-      } else {
-        //song appears to have moved since the editing began, let's try and find it...
-        for (var key in firetable.queue) {
-          if (firetable.queue.hasOwnProperty(key)) {
-            if (firetable.queue[key].cid == obj.song.cid) {
-              var changeref = firetable.queueRef.child(key);
-              changeref.set(obj.song);
-              return;
-            }
-          }
-        }
-      }
-    } else {
-      //song appears to have moved since the editing began, let's try and find it...
-      for (var key in firetable.queue) {
-        if (firetable.queue.hasOwnProperty(key)) {
-          if (firetable.queue[key].cid == obj.song.cid) {
-            var changeref = firetable.queueRef.child(key);
-            changeref.set(obj.song);
-            return;
-          }
-        }
-      }
-    }
-
-  },
   bumpSongInQueue: function(songid) {
-    var previewChange = ftapi.actions.moveTrackToTop(songid, firetable.preview, function(changePV){
+    ftapi.actions.moveTrackToTop(songid, firetable.preview, function(changePV){
       if (changePV) firetable.preview = changePV;
     });
   },
   signUp: function(email, password) {
     firetable.debug && console.log("signup");
-    firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+    ftapi.actions.signUp(email, password, function(error) {
       var errorCode = error.code;
       var errorMessage = error.message;
       alert(errorMessage);
     });
   },
   deleteSong: function(id) {
-    var removeThis = firetable.queueRef.child(id);
-    removeThis.remove()
-      .then(function() {
-        firetable.debug && console.log("song remove went great.");
-
-      })
-      .catch(function(error) {
-        firetable.debug && console.log("Song Remove failed: " + error.message);
-      });
+    ftapi.actions.deleteTrack(id);
   },
   uidLookup: function(name) {
     var match = false;
@@ -1031,9 +934,10 @@ firetable.actions = {
       $("#apv" + type + cid).find(".material-icons").text("playlist_add");
       $("#apv" + type + cid).removeAttr("style");
     }, 3000 );
-    var cuteid = firetable.queueRef.push(info, function() {
-      firetable.debug && console.log('queue track id:',cuteid.key);
-      if (!tobottom) firetable.actions.bumpSongInQueue(cuteid.key);
+
+    var cuteid = ftapi.actions.addToList(type, name, cid, false, function(){
+      firetable.debug && console.log('queue track id:',cuteid);
+      if (!tobottom) firetable.actions.bumpSongInQueue(cuteid);
     });
 
     if (firetable.preview) {
@@ -1164,17 +1068,6 @@ firetable.utilities = {
           }
           context.fillText(line, x, y);
           return lines;
-  },
-  // Modern Fisher-Yates shuffle
-  shuffle: function(a) {
-    var j, x, i;
-    for (i = a.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1));
-        x = a[i];
-        a[i] = a[j];
-        a[j] = x;
-    }
-    return a;
   },
   emojiShortnamestoUnicode : function(str){
     var res = str.replace(/\:(.*?)\:/g, function (x) {
@@ -2339,8 +2232,7 @@ $("#stealpicker").change(function() {
           var val = $("#tagMachine").val();
           if (val != "") {
             var obj = firetable.songToEdit;
-            obj.song.name = val;
-            firetable.actions.editSongTag(obj);
+            ftapi.actions.editTrackTag(obj.key, obj.song.cid, val);
             firetable.songToEdit = null;
             $("#tagMachine").val("");
             $("#tagSongLink").attr("href", "https://youtube.com");
