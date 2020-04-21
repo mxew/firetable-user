@@ -670,8 +670,8 @@ firetable.actions = {
     if (dest == -1){
       // create new list if needed
       var newname = firetable.utilities.format_date(Date.now()) + " Copy of "+sourceName;
-      var listid = ftapi.actions.createList(newname);
-      $("#listpicker").append("<option id=\"pdopt" + listid + "\" value=\"" + listid + "\">" + newname + "</option>");
+      var dest = ftapi.actions.createList(newname);
+      $("#listpicker").append("<option id=\"pdopt" + dest + "\" value=\"" + dest + "\">" + newname + "</option>");
     }
     ftapi.actions.mergeLists(source, dest, function(){
       $("#mergeCompleted").show();
