@@ -207,6 +207,7 @@ ftapi.init = function(firebaseConfig) {
           // set up queueBind
           ftapi.queueBind = ftapi.queueRef.on('value', function(dataSnapshot) {
             var data = dataSnapshot.val();
+            if (!data) data = {};
             ftapi.queue = data;
             ftapi.events.emit("playlistChanged", data);
           });
@@ -266,6 +267,7 @@ ftapi.actions = {
     // setup new queueBind
     ftapi.queueBind = ftapi.queueRef.on('value', function(dataSnapshot) {
       var data = dataSnapshot.val();
+      if (!data) data = {};
       ftapi.queue = data;
       ftapi.events.emit("playlistChanged", data);
     });

@@ -38,10 +38,10 @@ var firetable = {
   loginForm: null,
   emojiMap: null,
   pickerInit: false,
-  debug: true
+  debug: false
 }
 
-firetable.version = "01.02.00";
+firetable.version = "01.02.10";
 var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
@@ -284,8 +284,7 @@ firetable.actions = {
           }
         }
         ftapi.lookup.selectedList(function(selectedList){
-            firetable.selectedListThing = selectedList;
-            $("#listpicker").val(firetable.selectedListThing).change();
+            $("#listpicker").val(selectedList).change();
             $("#listpicker").change(function() {
               var val = $("#listpicker").val();
               if (val == "1") {
@@ -298,7 +297,7 @@ firetable.actions = {
 
                 $("#plmanager").css("display", "flex");
 
-              } else if (val != firetable.selectedListThing) {
+              } else if (val != ftapi.selectedListThing) {
                 //LOAD SELECTED LIST
                 //change selected list in user obj
                 $("#mainqueuestuff").css("display", "block");
@@ -1836,6 +1835,7 @@ return text;
     });
 
     ftapi.events.on("playlistChanged", function(okdata){
+      console.log(okdata);
         firetable.queue = okdata;
         $('#mainqueue').html("");
         for (var key in okdata) {
