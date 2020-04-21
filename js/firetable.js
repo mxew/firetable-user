@@ -1,5 +1,5 @@
 /*
-ftapi.js
+firetable.js
 firetable API wrapper
 */
 
@@ -347,10 +347,12 @@ ftapi.actions = {
       ftapi.queueRef.set(newobj); //send it off to firebase!
     }
   },
-  moveTrackToBottom: function(trackID) {
+  moveTrackToBottom: function(trackID, callback) {
     var theTrack = ftapi.queue[trackID];
-    ttapi.deleteTrack(trackID, function() {
-      ftapi.addToList(theTrack.type, theTrack.name, theTrack.cid);
+    ftapi.actions.deleteTrack(trackID, function() {
+      var newID = ftapi.actions.addToList(theTrack.type, theTrack.name, theTrack.cid, false, function(){
+        if (callback) return callback(newID);
+      });
     });
   },
   deleteTrack: function(trackID, callback) {

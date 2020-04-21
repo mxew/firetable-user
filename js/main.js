@@ -1854,7 +1854,19 @@ return text;
             }).html(psign);
             $newli.find('.listwords').html(thisone.name);
             $newli.find('.bumpsongs').on('click', function(){ firetable.actions.bumpSongInQueue($(this).parent().attr('data-key')) });
-            $newli.find('.edittags').on('click', function(){ firetable.actions.editTagsPrompt($(this).parent().attr('data-key')) });
+            $newli.find('.bottomsongs').on('click', function(){
+              var oldID = $(this).parent().attr('data-key');
+              ftapi.actions.moveTrackToBottom( $(this).parent().attr('data-key'), function(newID){
+                if (firetable.preview){
+                  // if this was a currently playing preview, make sure that's visually reflected
+                  if (firetable.preview == oldID){
+                    firetable.preview = newID;
+                    $("#pv" + newID).html("&#xE034;");
+                  }
+                }
+              });
+            });
+            $newli.find('.edittags').on('click', function(){ firetable.actions.editTagsPrompt($(this).parent().attr('data-key'))});
             $newli.find('.deletesong').on('click', function(){ firetable.actions.deleteSong($(this).parent().attr('data-key')) });
             $('#mainqueue').append($newli);
           }
