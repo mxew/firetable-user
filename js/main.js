@@ -41,7 +41,7 @@ var firetable = {
   debug: true
 }
 
-firetable.version = "01.01.00";
+firetable.version = "01.02.00";
 var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
@@ -1858,7 +1858,7 @@ return text;
               var oldID = $(this).parent().attr('data-key');
               ftapi.actions.moveTrackToBottom( $(this).parent().attr('data-key'), function(newID){
                 if (firetable.preview){
-                  // if this was a currently playing preview, make sure that's visually reflected
+                  // visually update preview in the new location if applicable
                   if (firetable.preview == oldID){
                     firetable.preview = newID;
                     $("#pv" + newID).html("&#xE034;");
