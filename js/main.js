@@ -41,7 +41,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.02.10";
+firetable.version = "01.02.11";
 var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
@@ -267,7 +267,6 @@ firetable.actions = {
     if (ftapi.users[ftapi.uid]) {
       if (ftapi.users[ftapi.uid].username) {
         $("#loggedInName").text(ftapi.users[ftapi.uid].username);
-        ftapi.uid = ftapi.users[ftapi.uid].username;
       } else {
         $("#loggedInName").text(user.uid);
       }
@@ -490,12 +489,10 @@ firetable.actions = {
 
     }
     val = val.toLowerCase();
-    console.log(val);
     $("#mainqueue .pvbar").each(function(p, q) {
       var txt = $(q).find(".listwords").text();
       var regex = new RegExp( val, 'ig' );
       if (txt.match(regex)) {
-        console.log($(q).find(".listwords").text())
         $(q).show()
       } else {
         $(q).hide()
@@ -553,7 +550,6 @@ firetable.actions = {
     localStorage["firetableMute"] = muted;
   },
   pview: function(id, fromSearch, type, fromHist) {
-    console.log("preview", {id: id, fromSearch: fromSearch, type: type, fromHist: fromHist});
     if (firetable.preview == id) {
       //already previewing this. stop and resume regular song
       clearTimeout(firetable.ptimeout);
@@ -1686,7 +1682,6 @@ return text;
       }
     });
     ftapi.events.on("banListChanged", function(data){
-      console.log(data);
       $("#activeSuspentions").html("");
       for (key in data) {
           if (data[key]){
@@ -1835,7 +1830,6 @@ return text;
     });
 
     ftapi.events.on("playlistChanged", function(okdata){
-      console.log(okdata);
         firetable.queue = okdata;
         $('#mainqueue').html("");
         for (var key in okdata) {
@@ -2260,7 +2254,6 @@ $("#stealpicker").change(function() {
           if (val != "") {
             //begin user search...
             ftapi.lookup.userByName(val, function(person){
-              console.log(person);
               //check search results
               if (person) {
                 //found something!
