@@ -41,7 +41,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.02.11";
+firetable.version = "01.02.20";
 var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
@@ -133,7 +133,7 @@ firetable.init = function() {
   console.log("Yo sup welcome to firetable my name is chris rohn.");
   firetable.started = true;
   var firebaseConfig = {
-    apiKey: "AIzaSyDdshWtOPnY_0ACt6uJKmcI_qPpTfO4sJ4",
+    apiKey: "AIzaSyB1I9rU2_3Bsf81BmPA-eVZX8qm3LLuFaA",
     authDomain: "firetable-e10fd.firebaseapp.com",
     databaseURL: "https://firetable-e10fd.firebaseio.com"
   };
@@ -1860,6 +1860,15 @@ return text;
                 }
               });
             });
+            if (thisone.flagged){
+              $newli.find('.track-warning').html("<span class=\"material-icons\"> warning </span>");
+              $newli.find('.track-warning').prop('title', 'Flagged as broken on '+firetable.utilities.format_date(thisone.flagged.date)+'. Click to remove flag.');
+              $newli.find('.track-warning').on('click', function(){
+                ftapi.actions.unflagTrack($(this).parent().attr('data-key'));
+                $(this).html("");
+              });
+
+            }
             $newli.find('.edittags').on('click', function(){ firetable.actions.editTagsPrompt($(this).parent().attr('data-key'))});
             $newli.find('.deletesong').on('click', function(){ firetable.actions.deleteSong($(this).parent().attr('data-key')) });
             $('#mainqueue').append($newli);

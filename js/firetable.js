@@ -364,6 +364,10 @@ ftapi.actions = {
         if (callback) return callback();
       });
   },
+  unflagTrack: function(trackID) {
+    var removeThis = ftapi.queueRef.child(trackID + "/flagged");
+    removeThis.remove();
+  },
   editTrackTag: function(trackID, cid, newTag) {
     if (ftapi.queue[trackID]) {
       if (ftapi.queue[trackID].cid == cid) {

@@ -183,6 +183,15 @@ code {
   opacity: 0.66;
 }
 
+.track-warning {
+    color: var(--orange);
+    cursor: pointer;
+}
+
+.track-warning:empty {
+    display: none;
+}
+
 .utitle {
   color: rgba(255, 255, 255, 0.4);
   font-size: 0.66rem;
