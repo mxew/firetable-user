@@ -41,7 +41,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.02.20";
+firetable.version = "01.02.30";
 var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
@@ -1737,7 +1737,8 @@ return text;
               id: key,
               name: thename,
               rolename: utitle,
-              rolenum: rolenum
+              rolenum: rolenum,
+              joined: firetable.utilities.format_date(ftapi.users[key].joined)
             };
             listBuild.push(pguy);
 
@@ -1747,7 +1748,7 @@ return text;
             return b.rolenum - a.rolenum;
       });
       for (var i=0; i<listBuild.length; i++){
-        newlist += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + listBuild[i].id + "" + listBuild[i].name + ".png?size=110x110);\"></div><span class=\"prsnName\">" + listBuild[i].name + "</span><span class=\"utitle\">" + listBuild[i].rolename + "</span></div>";
+        newlist += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + listBuild[i].id + "" + listBuild[i].name + ".png?size=110x110);\"></div><span class=\"prsnName\">" + listBuild[i].name + "</span><span class=\"utitle\">" + listBuild[i].rolename + "</span><span class=\"prsnJoined\">joined "+listBuild[i].joined+"</span></div>";
       }
       $("#allusers").html(newlist);
       $("#label1 .count").text(" (" + count + ")");
