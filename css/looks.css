@@ -192,7 +192,7 @@ code {
     display: none;
 }
 
-.utitle {
+.utitle, .prsnJoined {
   color: rgba(255, 255, 255, 0.4);
   font-size: 0.66rem;
   font-weight: 700;
@@ -510,6 +510,17 @@ code {
 }
 #userslist .utitle {
   margin-left: auto;
+}
+#userslist .prson .prsnJoined {
+    display: none;
+}
+
+#userslist .prson:hover .prsnJoined{
+    display: block;
+}
+
+#userslist .prson:hover .utitle{
+    display: none;
 }
 .botson{
   background-color: #000;

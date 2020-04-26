@@ -214,6 +214,16 @@ ftapi.init = function(firebaseConfig) {
 
         });
 
+        // set join date if needed
+        var joinRef = firebase.app("firetable").database().ref("users/" + user.uid + "/joined");
+        joinRef.once('value')
+          .then(function(joinsnap) {
+            var data = joinsnap.val();
+            if (!data) {
+              joinRef.set(firebase.database.ServerValue.TIMESTAMP);
+            }
+          });
+
       } else {
         // not logged in, not authenticated..
         // emit logged out state
@@ -352,7 +362,7 @@ ftapi.actions = {
   moveTrackToBottom: function(trackID, callback) {
     var theTrack = ftapi.queue[trackID];
     ftapi.actions.deleteTrack(trackID, function() {
-      var newID = ftapi.actions.addToList(theTrack.type, theTrack.name, theTrack.cid, false, function(){
+      var newID = ftapi.actions.addToList(theTrack.type, theTrack.name, theTrack.cid, false, function() {
         if (callback) return callback(newID);
       });
     });
