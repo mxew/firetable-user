@@ -22,7 +22,7 @@ var firetable = {
   countcolor: "#fff",
   ytLoaded: null,
   scLoaded: null,
-  selectedListThing: "0",
+  listShowing: null,
   parser: null,
   songTagToEdit: null,
   scwidget: null,
@@ -41,7 +41,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.03.00";
+firetable.version = "01.03.10";
 var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
@@ -312,7 +312,6 @@ firetable.actions = {
 
             $("#plmanager").css("display", "none");
             ftapi.actions.switchList(val);
-
           } else {
             //you selected the thing you already had selected.
             $("#mainqueuestuff").css("display", "block");
@@ -503,6 +502,7 @@ firetable.actions = {
         $(q).hide()
       }
     });
+    scrollits["queuelist"].update();
   },
   muteToggle: function(zeroMute) {
 
@@ -1026,7 +1026,8 @@ firetable.emojis = {
       } else {
         $(q).hide()
       }
-    })
+    });
+    scrollits["pickerResults"].update();
   }
 };
 
@@ -1480,6 +1481,7 @@ firetable.ui = {
           }
           scrollits['chatsWrap'].update();
           if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+          window.dispatchEvent(new Event('resize'));
         }
       }
     });
@@ -1487,8 +1489,9 @@ firetable.ui = {
 
     ftapi.events.on('newSong', function(data) {
       $("#playCount").text("");
-      $("lastPlay").text("");
-      $("firstPlay").text("");
+      $("#lastPlay").text("");
+      $("#firstPlay").text("");
+      window.dispatchEvent(new Event('resize'));
       $("#cloud_with_rain").removeClass("on");
       $("#fire").removeClass("on");
       $("#timr").countdown("destroy");
@@ -1840,7 +1843,7 @@ firetable.ui = {
       if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
     });
 
-    ftapi.events.on("playlistChanged", function(okdata) {
+    ftapi.events.on("playlistChanged", function(okdata, listID) {
       firetable.queue = okdata;
       $('#mainqueue').html("");
       for (var key in okdata) {
@@ -1890,6 +1893,15 @@ firetable.ui = {
           });
           $('#mainqueue').append($newli);
         }
+      }
+      // if this is a different list, reset scrollerboy
+      if (firetable.listShowing){
+        if (firetable.listShowing !== listID){
+          scrollits['queuelist'].update();
+        }
+      } else {
+        firetable.listShowing = listID;
+        scrollits['queuelist'].update();
       }
     });
 
