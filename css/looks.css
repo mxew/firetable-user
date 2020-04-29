@@ -1457,8 +1457,7 @@ span.cardShareChat:hover {
   color: #999;
 }
 input#tagMachine, #supercopSearch, #changeUsername {
-  line-height: 30px;
-  width: 470px;
+  width: 100%;
   padding: 5px;
   margin-bottom: 15px;
 }

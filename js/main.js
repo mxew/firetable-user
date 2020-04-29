@@ -41,7 +41,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.03.10";
+firetable.version = "01.03.11";
 var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
@@ -1650,7 +1650,7 @@ firetable.ui = {
           }
         }
         if (countr < 4) {
-          ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\"></div><div class=\"playcount\">Type !addme</div></div></div>";
+          ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\">!addme</div><div class=\"playcount\"></div></div></div>";
           countr++;
           for (var i = countr; i < 4; i++) {
             ok1 += "<div class=\"spot empty\"><div class=\"djplaque\">&nbsp;</div></div>";
@@ -1658,7 +1658,7 @@ firetable.ui = {
         }
 
       } else {
-        ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\"></div><div class=\"playcount\">Type !addme</div></div></div>";
+        ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\">!addme</div><div class=\"playcount\"></div></div></div>";
         for (var i = 0; i < 3; i++) {
           ok1 += "<div class=\"spot empty\"><div class=\"djplaque\">&nbsp;</div></div>";
         }
