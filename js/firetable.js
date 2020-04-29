@@ -210,7 +210,7 @@ ftapi.init = function(firebaseConfig) {
             var data = dataSnapshot.val();
             if (!data) data = {};
             ftapi.queue = data;
-            ftapi.events.emit("playlistChanged", data);
+            ftapi.events.emit("playlistChanged", data, ftapi.selectedListThing);
           });
 
         });
@@ -287,7 +287,7 @@ ftapi.actions = {
       var data = dataSnapshot.val();
       if (!data) data = {};
       ftapi.queue = data;
-      ftapi.events.emit("playlistChanged", data);
+      ftapi.events.emit("playlistChanged", data, ftapi.selectedListThing);
     });
 
   },
