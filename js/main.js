@@ -46,7 +46,7 @@ var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('playerArea', {
-    width: $('#djStage').outerHeight()*1.7777,
+    width: $('#djStage').outerHeight() * 1.7777,
     height: $('#djStage').outerHeight(),
     playerVars: {
       'autoplay': 1,
@@ -55,7 +55,7 @@ function onYouTubeIframeAPIReady() {
     videoId: '0',
     events: {
       onReady: initialize,
-      onStateChange: function(){
+      onStateChange: function() {
         $('#reloadtrack').removeClass('on working');
       }
     }
@@ -111,7 +111,7 @@ function initialize(event) {
     var data = firetable.song;
     var nownow = Date.now();
     var timeSince = nownow - data.started;
-    if (timeSince <= 0 ) timeSince = 0;
+    if (timeSince <= 0) timeSince = 0;
 
     var secSince = Math.floor(timeSince / 1000);
     var timeLeft = data.duration - secSince;
@@ -143,11 +143,14 @@ firetable.init = function() {
     // This will execute whenever the window is resized
     $("#thehistory").css('top', $('#stage').outerHeight() + $('#topbar').outerHeight());
     $('#playerArea,#scScreen').width($('#djStage').outerWidth()).height($('#djStage').outerHeight());
-    $( "#stealContain" ).css({ 'top': $('#grab').offset().top + $('#grab').height(), 'left': $('#grab').offset().left - 16 });
+    $("#stealContain").css({
+      'top': $('#grab').offset().top + $('#grab').height(),
+      'left': $('#grab').offset().left - 16
+    });
     setup();
     var objDiv = document.getElementById("chatsWrap");
     objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
-  },500));
+  }, 500));
   var widgetIframe = document.getElementById('sc-widget');
   firetable.scwidget = SC.Widget(widgetIframe);
   firetable.scwidget.bind(SC.Widget.Events.READY, function() {
@@ -164,7 +167,7 @@ firetable.init = function() {
       var data = firetable.song;
       var nownow = Date.now();
       var timeSince = nownow - data.started;
-      if (timeSince <= 0 ) timeSince = 0;
+      if (timeSince <= 0) timeSince = 0;
 
       var secSince = Math.floor(timeSince / 1000);
       var timeLeft = data.duration - secSince;
@@ -188,37 +191,37 @@ firetable.init = function() {
     client_id: "27028829630d95b0f9d362951de3ba2c"
   });
 
-  ftapi.events.on("loggedIn", function(data){
+  ftapi.events.on("loggedIn", function(data) {
     firetable.actions.loggedIn(data);
   });
 
   ftapi.events.on("loggedOut", firetable.actions.showLoginScreen);
 
-  ftapi.events.on("authReconnected", function(){
+  ftapi.events.on("authReconnected", function() {
     firetable.debug && console.log('reconnected');
     $('body').removeClass('disconnected');
-    $('#newchat').prop( 'disabled', false ).focus();
+    $('#newchat').prop('disabled', false).focus();
   });
 
-  ftapi.events.on("authDisconnected", function(){
+  ftapi.events.on("authDisconnected", function() {
     firetable.debug && console.log('disconnected');
     $('body').addClass('disconnected');
-    $('#newchat').prop( 'disabled', true ).blur();
+    $('#newchat').prop('disabled', true).blur();
   });
 
-  ftapi.events.on("userBanned", function(){
+  ftapi.events.on("userBanned", function() {
     firetable.debug && console.log("ban detected.");
-      if (document.getElementById("notice") == null){
-        var usrname2use = ftapi.uid;
-        if (ftapi.users[ftapi.uid]){
-          if (ftapi.users[ftapi.uid].username) usrname2use = ftapi.users[ftapi.uid].username;
-        }
-        $('.notice').attr('id','notice');
-        $("#troublemaker").text(usrname2use);
+    if (document.getElementById("notice") == null) {
+      var usrname2use = ftapi.uid;
+      if (ftapi.users[ftapi.uid]) {
+        if (ftapi.users[ftapi.uid].username) usrname2use = ftapi.users[ftapi.uid].username;
       }
+      $('.notice').attr('id', 'notice');
+      $("#troublemaker").text(usrname2use);
+    }
   });
 
-  ftapi.events.on("userUnbanned", function(){
+  ftapi.events.on("userUnbanned", function() {
     window.location.reload();
   });
 
@@ -230,34 +233,36 @@ firetable.actions = {
     ftapi.actions.logOut();
     firetable.debug && console.log("logout");
   },
-  showLoginScreen: function(){
+  showLoginScreen: function() {
     $("#cardCaseButton").hide();
     $("#loggedInName").hide();
     $("#logOutButton").hide().off();
     $('#mainGrid').removeClass().addClass('login');
     $("#grab").css("display", "none");
-    if (firetable.loginForm && !$("#login").html()){
-      $("#mainGrid").append("<div id=\"login\" class=\"scrollit\">"+firetable.loginForm+"</div>");
+    if (firetable.loginForm && !$("#login").html()) {
+      $("#mainGrid").append("<div id=\"login\" class=\"scrollit\">" + firetable.loginForm + "</div>");
       firetable.ui.loginEventsInit();
-      scrollits["login"] = new PerfectScrollbar($("#login")[0], { minScrollbarLength: 30 });
+      scrollits["login"] = new PerfectScrollbar($("#login")[0], {
+        minScrollbarLength: 30
+      });
     }
   },
   logIn: function(email, password) {
     firetable.debug && console.log("login");
-    ftapi.actions.logIn(email, password, function(error){
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        if (errorCode === 'auth/wrong-password') {
-          alert('Wrong password.');
-        } else {
-          alert(errorMessage);
-        }
-        firetable.debug && console.log("log in error:",error);
+    ftapi.actions.logIn(email, password, function(error) {
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      if (errorCode === 'auth/wrong-password') {
+        alert('Wrong password.');
+      } else {
+        alert(errorMessage);
+      }
+      firetable.debug && console.log("log in error:", error);
     });
   },
-  loggedIn: function(user){
+  loggedIn: function(user) {
     firetable.debug && console.log("user signed in!");
-    if ($("#login").html()){
+    if ($("#login").html()) {
       firetable.loginForm = $("#login").html();
       scrollits["login"].destroy();
       firetable.ui.loginEventsDestroy();
@@ -274,82 +279,82 @@ firetable.actions = {
       $("#loggedInName").text(user.uid);
     }
 
-    ftapi.lookup.allLists(function(allPlaylists){
-        $("#listpicker").off("change");
-        $("#listpicker").html("<option value=\"1\">Add/Delete Playlist</option><option value=\"0\">Default Queue</option>");
-        for (var key in allPlaylists) {
-          if (allPlaylists.hasOwnProperty(key)) {
-            $("#listpicker").append("<option id=\"pdopt" + key + "\" value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
-          }
+    ftapi.lookup.allLists(function(allPlaylists) {
+      $("#listpicker").off("change");
+      $("#listpicker").html("<option value=\"1\">Add/Delete Playlist</option><option value=\"0\">Default Queue</option>");
+      for (var key in allPlaylists) {
+        if (allPlaylists.hasOwnProperty(key)) {
+          $("#listpicker").append("<option id=\"pdopt" + key + "\" value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
         }
-        ftapi.lookup.selectedList(function(selectedList){
-            $("#listpicker").val(selectedList).change();
-            $("#listpicker").change(function() {
-              var val = $("#listpicker").val();
-              if (val == "1") {
-                //ADD PLAYLIST SCREEN
-                $("#mainqueuestuff").css("display", "none");
-                $("#filterMachine").css("display", "none");
-                $("#addbox").css("display", "none");
-                $("#cancelqsearch").hide();
-                $("#qControlButtons").hide();
+      }
+      ftapi.lookup.selectedList(function(selectedList) {
+        $("#listpicker").val(selectedList).change();
+        $("#listpicker").change(function() {
+          var val = $("#listpicker").val();
+          if (val == "1") {
+            //ADD PLAYLIST SCREEN
+            $("#mainqueuestuff").css("display", "none");
+            $("#filterMachine").css("display", "none");
+            $("#addbox").css("display", "none");
+            $("#cancelqsearch").hide();
+            $("#qControlButtons").hide();
 
-                $("#plmanager").css("display", "flex");
+            $("#plmanager").css("display", "flex");
 
-              } else if (val != ftapi.selectedListThing) {
-                //LOAD SELECTED LIST
-                //change selected list in user obj
-                $("#mainqueuestuff").css("display", "block");
-                $("#filterMachine").css("display", "block");
-                $("#addbox").css("display", "none");
-                $("#cancelqsearch").hide();
-                $("#qControlButtons").show();
+          } else if (val != ftapi.selectedListThing) {
+            //LOAD SELECTED LIST
+            //change selected list in user obj
+            $("#mainqueuestuff").css("display", "block");
+            $("#filterMachine").css("display", "block");
+            $("#addbox").css("display", "none");
+            $("#cancelqsearch").hide();
+            $("#qControlButtons").show();
 
-                $("#plmanager").css("display", "none");
-                ftapi.actions.switchList(val);
+            $("#plmanager").css("display", "none");
+            ftapi.actions.switchList(val);
 
-              } else {
-                //you selected the thing you already had selected.
-                $("#mainqueuestuff").css("display", "block");
-                $("#filterMachine").css("display", "block");
-                $("#addbox").css("display", "none");
-                $("#cancelqsearch").hide();
-                $("#qControlButtons").show();
-                $("#plmanager").css("display", "none");
-              }
-            });
+          } else {
+            //you selected the thing you already had selected.
+            $("#mainqueuestuff").css("display", "block");
+            $("#filterMachine").css("display", "block");
+            $("#addbox").css("display", "none");
+            $("#cancelqsearch").hide();
+            $("#qControlButtons").show();
+            $("#plmanager").css("display", "none");
+          }
+        });
 
-          });
       });
+    });
     $("#cardCaseButton").show();
     $("#loggedInName").show();
-    $("#logOutButton").show().on('click',firetable.actions.logOut);
+    $("#logOutButton").show().on('click', firetable.actions.logOut);
     firetable.debug && console.log('remove login class from mainGrid');
     $('#mainGrid').removeClass().addClass('mmusrs');
     $("#grab").css("display", "inline-block");
   },
-  cardCase: function(){
-     $("#cardsMain").html("");
-     ftapi.lookup.cardCollection(function(data){
-       for (var key in data){
-         var childData = data[key];
-         firetable.debug && console.log('card:', childData);
-         $("#cardsMain").append("<span id=\"caseCardSpot" + key + "\" class=\"caseCardSpot\"><canvas width=\"225\" height=\"300\" class=\"caseCard\" id=\"cardMaker" + key + "\"></canvas><span role=\"button\" onclick=\"firetable.actions.giftCard('" + key + "')\" class=\"cardGiftChat\">Gift to DJ</span><span role=\"button\" onclick=\"firetable.actions.chatCard('" + key + "')\" class=\"cardShareChat\">Share In Chat</span></span>");
-         firetable.actions.displayCard(childData, key);
+  cardCase: function() {
+    $("#cardsMain").html("");
+    ftapi.lookup.cardCollection(function(data) {
+      for (var key in data) {
+        var childData = data[key];
+        firetable.debug && console.log('card:', childData);
+        $("#cardsMain").append("<span id=\"caseCardSpot" + key + "\" class=\"caseCardSpot\"><canvas width=\"225\" height=\"300\" class=\"caseCard\" id=\"cardMaker" + key + "\"></canvas><span role=\"button\" onclick=\"firetable.actions.giftCard('" + key + "')\" class=\"cardGiftChat\">Gift to DJ</span><span role=\"button\" onclick=\"firetable.actions.chatCard('" + key + "')\" class=\"cardShareChat\">Share In Chat</span></span>");
+        firetable.actions.displayCard(childData, key);
       }
-     });
+    });
   },
-  chatCard: function(cardid){
+  chatCard: function(cardid) {
     ftapi.actions.sendChat("Check out my card...", cardid);
   },
-  giftCard: function(cardid){
+  giftCard: function(cardid) {
     ftapi.actions.sendChat("!giftcard :gift:", cardid);
-    $("#caseCardSpot"+cardid).remove();
+    $("#caseCardSpot" + cardid).remove();
   },
-  displayCard: function(data, chatid){
+  displayCard: function(data, chatid) {
     firetable.debug && console.log("display card");
     var defaultScheme = false;
-    if (data.colors){
+    if (data.colors) {
       if (data.colors.color == "#fff" || data.colors.color == "#7f7f7f") {
         data.colors.color = firetable.orange;
         data.colors.txt = "#000";
@@ -357,7 +362,7 @@ firetable.actions = {
       }
     }
 
-    var canvas = document.getElementById('cardMaker'+chatid);
+    var canvas = document.getElementById('cardMaker' + chatid);
 
     if (canvas.getContext) {
       var ctx = canvas.getContext('2d');
@@ -369,13 +374,13 @@ firetable.actions = {
       if (defaultScheme) ctx.fillStyle = "#fff";
       ctx.fillRect(1, 30, 223, 175);
 
-      var grd = ctx.createLinearGradient(0,0,0,175);
-      grd.addColorStop(0,"rgba(0, 0, 0, 0.75)");
-      grd.addColorStop(1,"rgba(0, 0, 0, 0.55)");
+      var grd = ctx.createLinearGradient(0, 0, 0, 175);
+      grd.addColorStop(0, "rgba(0, 0, 0, 0.75)");
+      grd.addColorStop(1, "rgba(0, 0, 0, 0.55)");
 
       // Fill with gradient
       ctx.fillStyle = grd;
-      ctx.fillRect(1,30,223,175);
+      ctx.fillRect(1, 30, 223, 175);
 
       ctx.fillStyle = data.colors.color;
       ctx.fillRect(1, 205, 223, 10);
@@ -395,12 +400,12 @@ firetable.actions = {
 
       ctx.font = "400 8px Helvetica, Arial, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("Printed "+firetable.utilities.format_date(data.date)+" | Indie Discotheque", 112.5, 299);
+      ctx.fillText("Printed " + firetable.utilities.format_date(data.date) + " | Indie Discotheque", 112.5, 299);
 
       ctx.font = "700 10px Helvetica, Arial, sans-serif";
       ctx.textAlign = "left";
       var linez = firetable.utilities.wrapText(ctx, data.title, 66, 240, 160, 15);
-      firetable.debug && console.log('linez:',linez);
+      firetable.debug && console.log('linez:', linez);
       ctx.font = "400 8px Helvetica, Arial, sans-serif";
       ctx.textAlign = "left";
       firetable.utilities.wrapText(ctx, data.artist, 66, 253 + (15 * linez), 160, 15);
@@ -408,7 +413,7 @@ firetable.actions = {
       ctx.fillStyle = data.colors.txt;
       ctx.font = "400 9px Helvetica, Arial, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("Card No. "+data.cardnum+" | DJ Card | Max Operating Temp "+data.temp+"°", 112.5, 214);
+      ctx.fillText("Card No. " + data.cardnum + " | DJ Card | Max Operating Temp " + data.temp + "°", 112.5, 214);
       ctx.beginPath();
       ctx.arc(205, 15, 12, 0, 2 * Math.PI, false);
       ctx.fillStyle = data.colors.color;
@@ -419,7 +424,7 @@ firetable.actions = {
       ctx.textAlign = "left";
       ctx.fillText(data.num, 200.5, 20);
 
-      var doImages = function(){
+      var doImages = function() {
         var picboy = new Image;
         picboy.xvalue = 0;
         picboy.onload = function() {
@@ -434,15 +439,15 @@ firetable.actions = {
           };
           picboy2.src = data.image;
         };
-        picboy.src = 'https://indiediscotheque.com/robots/'+data.djid + data.djname+'.png?size=175x175';
+        picboy.src = 'https://indiediscotheque.com/robots/' + data.djid + data.djname + '.png?size=175x175';
 
 
       };
 
       // special styles
 
-      if (data.special){
-        if (data.special == "id8"){
+      if (data.special) {
+        if (data.special == "id8") {
           ctx.fillStyle = data.colors.color;
           ctx.fillRect(1, 30, 223, 10);
 
@@ -475,13 +480,13 @@ firetable.actions = {
       }
     }
   },
-  showCard: function(cardid, chatid){
+  showCard: function(cardid, chatid) {
     // let's SHOW A CARD
-    ftapi.lookup.card(cardid, function(data){
+    ftapi.lookup.card(cardid, function(data) {
       firetable.actions.displayCard(data, chatid);
     });
   },
-  filterQueue: function(val){
+  filterQueue: function(val) {
     if (val.length == 0) {
       $("#mainqueue .pvbar").show();
       return
@@ -491,7 +496,7 @@ firetable.actions = {
     val = val.toLowerCase();
     $("#mainqueue .pvbar").each(function(p, q) {
       var txt = $(q).find(".listwords").text();
-      var regex = new RegExp( val, 'ig' );
+      var regex = new RegExp(val, 'ig');
       if (txt.match(regex)) {
         $(q).show()
       } else {
@@ -503,7 +508,7 @@ firetable.actions = {
 
     var muted = localStorage["firetableMute"];
     var icon = "&#xE050;";
-    firetable.debug && console.log('muted:',muted);
+    firetable.debug && console.log('muted:', muted);
     if (zeroMute) {
       icon = "&#xE04E;";
       muted = 0;
@@ -544,7 +549,7 @@ firetable.actions = {
       localStorage["firetableVol"] = 0;
     }
 
-    if ( muted ) $("#volstatus").addClass('on');
+    if (muted) $("#volstatus").addClass('on');
     else $("#volstatus").removeClass('on');
     $("#volstatus i").html(icon);
     localStorage["firetableMute"] = muted;
@@ -562,7 +567,7 @@ firetable.actions = {
       //start regular song
       var nownow = Date.now();
       var timeSince = nownow - firetable.song.started;
-      if (timeSince <= 0 ) timeSince = 0;
+      if (timeSince <= 0) timeSince = 0;
 
       var secSince = Math.floor(timeSince / 1000);
       var timeLeft = firetable.song.duration - secSince;
@@ -614,7 +619,7 @@ firetable.actions = {
         //start regular song
         var nownow = Date.now();
         var timeSince = nownow - firetable.song.started;
-        if (timeSince <= 0 ) timeSince = 0;
+        if (timeSince <= 0) timeSince = 0;
 
         var secSince = Math.floor(timeSince / 1000);
         var timeLeft = firetable.song.duration - secSince;
@@ -639,7 +644,7 @@ firetable.actions = {
         firetable.pvCount += 0.2;
         var pvcolr = "#222";
         if (fromHist) pvcolr = "#222";
-        $("#pvbar" + firetable.preview).css("background-image", "linear-gradient(90deg, rgba(244, 129, 11, 0.267) " + pcnt + "%, "+ pvcolr +" " + pcnt + "%)");
+        $("#pvbar" + firetable.preview).css("background-image", "linear-gradient(90deg, rgba(244, 129, 11, 0.267) " + pcnt + "%, " + pvcolr + " " + pcnt + "%)");
       }, 200);
       if (type == 1) {
         if (firetable.scLoaded) firetable.scwidget.pause();
@@ -656,19 +661,19 @@ firetable.actions = {
     }
 
   },
-  mergeLists: function(source, dest, sourceName){
-    if (source == dest){
+  mergeLists: function(source, dest, sourceName) {
+    if (source == dest) {
       //source and dest are the same, let's remove the duplicates
       firetable.actions.removeDupesFromQueue();
       return;
     }
-    if (dest == -1){
+    if (dest == -1) {
       // create new list if needed
-      var newname = firetable.utilities.format_date(Date.now()) + " Copy of "+sourceName;
+      var newname = firetable.utilities.format_date(Date.now()) + " Copy of " + sourceName;
       var dest = ftapi.actions.createList(newname);
       $("#listpicker").append("<option id=\"pdopt" + dest + "\" value=\"" + dest + "\">" + newname + "</option>");
     }
-    ftapi.actions.mergeLists(source, dest, function(){
+    ftapi.actions.mergeLists(source, dest, function() {
       $("#mergeCompleted").show();
       $("#mergeHappening").hide();
     });
@@ -684,7 +689,7 @@ firetable.actions = {
       var therealid = getQueryStringValue(link, "v");
       if (therealid) {
         function keyWordsearch() {
-          gapi.client.setApiKey('AIzaSyDCXzJ9gGLTF_BLcTzNUO2Zeh4HwPxgyds');
+          gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
           gapi.client.load('youtube', 'v3', function() {
             makeRequest();
           });
@@ -697,7 +702,7 @@ firetable.actions = {
             maxResults: 1
           });
           request.execute(function(response) {
-            firetable.debug && console.log('queue from link:',response);
+            firetable.debug && console.log('queue from link:', response);
             if (response.result) {
               if (response.result.items) {
                 if (response.result.items.length) {
@@ -717,7 +722,7 @@ firetable.actions = {
       };
 
       var listComments = function(tracks) {
-        firetable.debug && console.log('sc tracks for comments:',tracks);
+        firetable.debug && console.log('sc tracks for comments:', tracks);
         if (tracks) {
           var yargo = tracks.title.split(" - ");
           var sartist = yargo[0];
@@ -741,16 +746,16 @@ firetable.actions = {
       var idraw = theid.slice(5);
       return idraw;
     }).get();
-    ftapi.actions.reorderList(arr, firetable.preview, function(changePV){
+    ftapi.actions.reorderList(arr, firetable.preview, function(changePV) {
       if (changePV) firetable.preview = changePV;
     });
   },
-  shuffleQueue: function(){
-    ftapi.actions.shuffleList(firetable.preview, function(changePV){
+  shuffleQueue: function() {
+    ftapi.actions.shuffleList(firetable.preview, function(changePV) {
       if (changePV) firetable.preview = changePV;
     });
   },
-  removeDupesFromQueue: function(){
+  removeDupesFromQueue: function() {
     ftapi.actions.removeDuplicatesFromList();
     $("#mergeCompleted").show();
     $("#mergeHappening").hide();
@@ -772,7 +777,7 @@ firetable.actions = {
       });
     }
 
-    firetable.debug && console.log('edit tags song id:',songid);
+    firetable.debug && console.log('edit tags song id:', songid);
     firetable.songToEdit = {
       song: song,
       key: songid
@@ -791,7 +796,7 @@ firetable.actions = {
       var finalList = [];
 
       function keyWordsearch(pg) {
-        gapi.client.setApiKey('AIzaSyDCXzJ9gGLTF_BLcTzNUO2Zeh4HwPxgyds');
+        gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
         gapi.client.load('youtube', 'v3', function() {
           makeRequest(pg);
         });
@@ -834,7 +839,7 @@ firetable.actions = {
 
     } else if (type == 2) {
       SC.get('/playlists/' + id).then(function(listinfo) {
-        firetable.debug && console.log('sc tracks:',listinfo.tracks);
+        firetable.debug && console.log('sc tracks:', listinfo.tracks);
         var listid = ftapi.actions.createList(name);
         $("#listpicker").append("<option id=\"pdopt" + listid + "\" value=\"" + listid + "\">" + name + "</option>");
         for (var i = 0; i < listinfo.tracks.length; i++) {
@@ -845,23 +850,21 @@ firetable.actions = {
             stitle = sartist;
             sartist = listinfo.tracks[i].user.username;
           }
-          var goodTitle = sartist +" - "+stitle;
+          var goodTitle = sartist + " - " + stitle;
           ftapi.actions.addToList(2, goodTitle, listinfo.tracks[i].id, listid);
         }
       });
     }
   },
   bumpSongInQueue: function(songid) {
-    ftapi.actions.moveTrackToTop(songid, firetable.preview, function(changePV){
+    ftapi.actions.moveTrackToTop(songid, firetable.preview, function(changePV) {
       if (changePV) firetable.preview = changePV;
     });
   },
-  signUp: function(email, password) {
+  signUp: function(email, password, username) {
     firetable.debug && console.log("signup");
-    ftapi.actions.signUp(email, password, function(error) {
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      alert(errorMessage);
+    ftapi.actions.signUp(email, password, username, function(error) {
+      alert(error);
     });
   },
   deleteSong: function(id) {
@@ -888,7 +891,7 @@ firetable.actions = {
       firetable.actions.queueTrack(firetable.song.cid, title, firetable.song.type, true);
     }
   },
-  unban: function(userid){
+  unban: function(userid) {
     ftapi.actions.unbanUser(userid);
   },
   reloadtrack: function() {
@@ -896,7 +899,7 @@ firetable.actions = {
     //start regular song
     var nownow = Date.now();
     var timeSince = nownow - firetable.song.started;
-    if (timeSince <= 0 ) timeSince = 0;
+    if (timeSince <= 0) timeSince = 0;
     var secSince = Math.floor(timeSince / 1000);
     var timeLeft = firetable.song.duration - secSince;
     if (firetable.song.type == 1) {
@@ -910,7 +913,7 @@ firetable.actions = {
         firetable.scSeek = timeSince;
         firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
           auto_play: true
-        },function(){
+        }, function() {
           $('#reloadtrack').removeClass('on working');
         });
       }
@@ -925,13 +928,13 @@ firetable.actions = {
     $("#apv" + type + cid).find(".material-icons").text("check");
     $("#apv" + type + cid).css("color", firetable.orange);
     $("#apv" + type + cid).css("pointer-events", "none");
-    setTimeout( function() {
+    setTimeout(function() {
       $("#apv" + type + cid).find(".material-icons").text("playlist_add");
       $("#apv" + type + cid).removeAttr("style");
-    }, 3000 );
+    }, 3000);
 
-    var cuteid = ftapi.actions.addToList(type, name, cid, false, function(){
-      firetable.debug && console.log('queue track id:',cuteid);
+    var cuteid = ftapi.actions.addToList(type, name, cid, false, function() {
+      firetable.debug && console.log('queue track id:', cuteid);
       if (!tobottom) firetable.actions.bumpSongInQueue(cuteid);
     });
 
@@ -947,7 +950,7 @@ firetable.actions = {
         //start regular song
         var nownow = Date.now();
         var timeSince = nownow - firetable.song.started;
-        if (timeSince <= 0 ) timeSince = 0;
+        if (timeSince <= 0) timeSince = 0;
         var secSince = Math.floor(timeSince / 1000);
         var timeLeft = firetable.song.duration - secSince;
         if (firetable.song.type == 1) {
@@ -979,36 +982,36 @@ firetable.emojis = {
     $(".pickerResult").show();
     $("#pickerResults h3").show();
   },
-  n: function (p, q) {
+  n: function(p, q) {
     var e = p.attr("data-alternative-name");
     return ($(p).text().toLowerCase().indexOf(q) >= 0) || (e != null && e.toLowerCase().indexOf(q) >= 0)
   },
-  sec: function(sec){
-    firetable.debug && console.log('emoji sec:',sec);
+  sec: function(sec) {
+    firetable.debug && console.log('emoji sec:', sec);
     var selectedSec = $("#pickerNav > .on");
     var thething = sec.substr(1);
 
-    if (selectedSec.length){
+    if (selectedSec.length) {
       firetable.debug && console.log("already selected sec");
-      if (selectedSec[0].id == sec){
+      if (selectedSec[0].id == sec) {
         firetable.debug && console.log("toggle selected... back to FULL LIST");
-        $("#"+selectedSec[0].id).removeClass("on");
+        $("#" + selectedSec[0].id).removeClass("on");
         $("#pickerResults div").show();
       } else {
         //new sec selected
-        $("#"+selectedSec[0].id).removeClass("on");
-        $("#"+selectedSec[0].id.substr(1)).hide();
-        $("#"+sec).addClass("on");
-        $("#"+thething).show();
+        $("#" + selectedSec[0].id).removeClass("on");
+        $("#" + selectedSec[0].id.substr(1)).hide();
+        $("#" + sec).addClass("on");
+        $("#" + thething).show();
       }
     } else {
       firetable.debug && console.log("first select");
-      $("#"+sec).addClass("on");
+      $("#" + sec).addClass("on");
       $("#pickerResults div").hide();
-      $("#"+thething).show();
+      $("#" + thething).show();
     }
   },
-  niceSearch: function (val){
+  niceSearch: function(val) {
     if (val.length == 0) {
       firetable.emojis.h();
       return
@@ -1028,74 +1031,73 @@ firetable.emojis = {
 };
 
 firetable.utilities = {
-  getEmojiMap: function(){
+  getEmojiMap: function() {
     firetable.emojiMap = {};
     fetch("https://unpkg.com/emojilib@^2.0.0/emojis.json").then(data => data.json()).then(json => {
       for (key in json) {
         var emoji = json[key]
         firetable.emojiMap[key] = emoji.char;
         var words = key;
-        for (var i=0; i<emoji.keywords.length; i++){
-          words += ", "+emoji.keywords[i];
+        for (var i = 0; i < emoji.keywords.length; i++) {
+          words += ", " + emoji.keywords[i];
         }
-        $("#picker"+emoji.category).append("<span role=\"button\" class=\"pickerResult\" title=\""+key+"\" data-alternative-name=\""+words+"\">"+emoji.char+"</span>");
+        $("#picker" + emoji.category).append("<span role=\"button\" class=\"pickerResult\" title=\"" + key + "\" data-alternative-name=\"" + words + "\">" + emoji.char + "</span>");
       }
     });
   },
-  wrapText: function (context, text, x, y, maxWidth, lineHeight) {
-          var words = text.split(' ');
-          var line = '';
-          var lines = 0;
+  wrapText: function(context, text, x, y, maxWidth, lineHeight) {
+    var words = text.split(' ');
+    var line = '';
+    var lines = 0;
 
-          for(var n = 0; n < words.length; n++) {
-            var testLine = line + words[n] + ' ';
-            var metrics = context.measureText(testLine);
-            var testWidth = metrics.width;
-            if (testWidth > maxWidth && n > 0) {
-              context.fillText(line, x, y);
-              line = words[n] + ' ';
-              y += lineHeight;
-              lines++;
-            }
-            else {
-              line = testLine;
-            }
-          }
-          context.fillText(line, x, y);
-          return lines;
+    for (var n = 0; n < words.length; n++) {
+      var testLine = line + words[n] + ' ';
+      var metrics = context.measureText(testLine);
+      var testWidth = metrics.width;
+      if (testWidth > maxWidth && n > 0) {
+        context.fillText(line, x, y);
+        line = words[n] + ' ';
+        y += lineHeight;
+        lines++;
+      } else {
+        line = testLine;
+      }
+    }
+    context.fillText(line, x, y);
+    return lines;
   },
-  emojiShortnamestoUnicode : function(str){
-    var res = str.replace(/\:(.*?)\:/g, function (x) {
+  emojiShortnamestoUnicode: function(str) {
+    var res = str.replace(/\:(.*?)\:/g, function(x) {
       var response = x;
       var shortname = x.replace(/\:/g, "");
-      if (firetable.emojiMap[shortname]){
-        response = "<span title=\""+x+"\">"+firetable.emojiMap[shortname]+"</span>";
+      if (firetable.emojiMap[shortname]) {
+        response = "<span title=\"" + x + "\">" + firetable.emojiMap[shortname] + "</span>";
       }
       return response;
     });
     return res;
   },
   playSound: function(filename) {
-    if (firetable.playBadoop){
-      document.getElementById("audilert").setAttribute('src',filename+".mp3");
+    if (firetable.playBadoop) {
+      document.getElementById("audilert").setAttribute('src', filename + ".mp3");
     }
   },
-  desktopNotify: function(chatData, namebo){
-      if (Notification) {
-        if (Notification.permission !== "granted") {
-          Notification.requestPermission();
-        } else {
-            var notification = new Notification(namebo, {
-              icon: "https://indiediscotheque.com/robots/"+chatData.id + namebo +".png?size=110x110",
-              body: chatData.txt,
-            });
-        }
+  desktopNotify: function(chatData, namebo) {
+    if (Notification) {
+      if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+      } else {
+        var notification = new Notification(namebo, {
+          icon: "https://indiediscotheque.com/robots/" + chatData.id + namebo + ".png?size=110x110",
+          body: chatData.txt,
+        });
       }
+    }
   },
-  screenUp: function(){
+  screenUp: function() {
     $('body').removeClass('screen');
   },
-  screenDown: function(){
+  screenDown: function() {
     $('body').addClass('screen');
   },
   isChatPrettyMuchAtBottom: function() {
@@ -1156,7 +1158,8 @@ firetable.utilities = {
   debounce(func, wait, immediate) {
     var timeout;
     return function() {
-      var context = this, args = arguments;
+      var context = this,
+        args = arguments;
       var later = function() {
         timeout = null;
         if (!immediate) func.apply(context, args);
@@ -1175,38 +1178,38 @@ firetable.ui = {
     if (firetable.showImages && !themeBox) re = /(https?:\/\/(?![/|.|\w|\s|-]*(?:jpg|png|gif))[^" ]+)/g;
     return text.replace(re, "<a href=\"$1\" target=\"_blank\" tabindex=\"-1\">$1</a>");
 
-return text;
+    return text;
   },
-  strip: function(html){
+  strip: function(html) {
     var doc = firetable.parser.parseFromString(html, 'text/html');
     return doc.body.textContent || "";
   },
   showImages: function(chatTxt) {
-    if (firetable.showImages){
+    if (firetable.showImages) {
       var imageUrlRegex = /((http(s?):)([/|.|\w|\s|-])*\.(?:jpe?g|gif|png))/g;
       var hasImage = chatTxt.search(imageUrlRegex) >= 0;
       if (hasImage) {
-        chatTxt = chatTxt.replace(imageUrlRegex, function(imageUrl){
-            var chatImage = new Image();
-            chatImage.onload = function() {
-              var objDiv = document.getElementById("chatsWrap");
-              var thing1 = objDiv.scrollHeight - objDiv.clientHeight;
-              var thing2 = objDiv.scrollTop;
-              if (Math.abs(thing1 - thing2) <= (parseInt(chatImage.height)+20)) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
-            }
-            chatImage.src = imageUrl;
-          return '<a class="inlineImgLink" href="'+imageUrl+'" target="_blank" tabindex="-1"><img src="'+imageUrl+'" class="inlineImage" /><span role=\"button\" class="hideImage">&times;</span></a>'
+        chatTxt = chatTxt.replace(imageUrlRegex, function(imageUrl) {
+          var chatImage = new Image();
+          chatImage.onload = function() {
+            var objDiv = document.getElementById("chatsWrap");
+            var thing1 = objDiv.scrollHeight - objDiv.clientHeight;
+            var thing2 = objDiv.scrollTop;
+            if (Math.abs(thing1 - thing2) <= (parseInt(chatImage.height) + 20)) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+          }
+          chatImage.src = imageUrl;
+          return '<a class="inlineImgLink" href="' + imageUrl + '" target="_blank" tabindex="-1"><img src="' + imageUrl + '" class="inlineImage" /><span role=\"button\" class="hideImage">&times;</span></a>'
         });
 
       }
     }
     return chatTxt;
   },
-  loginLinkToggle: function(id){
+  loginLinkToggle: function(id) {
     $("#formlinks").find(".selected").removeClass("selected");
-    $("#"+id).addClass("selected");
+    $("#" + id).addClass("selected");
   },
-  loginEventsInit: function(){
+  loginEventsInit: function() {
     $("#resetpass").bind("click", function() {
       $("#logscreen").css("display", "none");
       $("#createscreen").css("display", "none");
@@ -1219,82 +1222,86 @@ return text;
       $("#resetscreen").css("display", "none");
       firetable.ui.loginLinkToggle($(this).attr('id'));
     });
-     $("#signuplink").bind("click", function() {
-       $("#logscreen").css("display", "none");
-       $("#createscreen").css("display", "block");
-       $("#resetscreen").css("display", "none");
-       firetable.ui.loginLinkToggle($(this).attr('id'));
-     });
-     $("#loginpass").bind("keyup", function(e) {
-       if (e.which == 13) {
-         var email = $("#loginemail").val();
-         var pass = $("#loginpass").val();
-         $("#loginemail").val("");
-         $("#loginpass").val("");
-         firetable.actions.logIn(email, pass);
-       }
-     });
-     $("#newpass2").bind("keyup", function(e) {
-       if (e.which == 13) {
-         var email = $("#newemail").val();
-         var pass = $("#newpass").val();
-         var pass2 = $("#newpass2").val();
-         if (pass == pass2) {
-           firetable.actions.signUp(email, pass);
-         } else {
-           alert("Those passwords do not match!");
-         }
-       }
-     });
-     $("#theAddress").bind("keyup", function(e) {
-       if (e.which == 13) {
-         var email = $("#theAddress").val();
-         firetable.debug && console.log("reset email return");
-         ftapi.actions.resetPassword(email, function(error){
-           var errorCode = error.code;
-           var errorMessage = error.message;
-           if (errorCode === 'auth/wrong-password') {
-             alert('Wrong password.');
-           } else {
-             alert(errorMessage);
-           }
-           firetable.debug && console.log('send pass reset error:',error);
-         });
-         alert("Reset email sent. Click the reset link when it arrives thanks.");
-       }
-     });
-     $("#createAccountBttn").bind("click", function() {
-       var email = $("#newemail").val();
-       var pass = $("#newpass").val();
-       $("#newemail").val("");
-       $("#newpass").val("");
-       firetable.actions.signUp(email, pass);
-
-     });
-     $("#resetPassBttn").bind("click", function() {
-       var email = $("#theAddress").val();
-       firetable.debug && console.log("reset email click button");
-       ftapi.actions.resetPassword(email, function(error) {
-         var errorCode = error.code;
-         var errorMessage = error.message;
-         if (errorCode === 'auth/wrong-password') {
-           alert('Wrong password.');
-         } else {
-           alert(errorMessage);
-         }
-         firetable.debug && console.log('send pass reset error:',error);
-       });
-       alert("Reset email sent. Click the reset link when it arrives thanks.");
-     });
-     $("#loginBttn").bind("click", function() {
-       var email = $("#loginemail").val();
-       var pass = $("#loginpass").val();
-       $("#loginemail").val("");
-       $("#loginpass").val("");
-       firetable.actions.logIn(email, pass);
-     });
+    $("#signuplink").bind("click", function() {
+      $("#logscreen").css("display", "none");
+      $("#createscreen").css("display", "block");
+      $("#resetscreen").css("display", "none");
+      firetable.ui.loginLinkToggle($(this).attr('id'));
+    });
+    $("#loginpass").bind("keyup", function(e) {
+      if (e.which == 13) {
+        var email = $("#loginemail").val();
+        var pass = $("#loginpass").val();
+        $("#loginemail").val("");
+        $("#loginpass").val("");
+        firetable.actions.logIn(email, pass);
+      }
+    });
+    $("#newpass2").bind("keyup", function(e) {
+      if (e.which == 13) {
+        var email = $("#newemail").val();
+        var pass = $("#newpass").val();
+        var pass2 = $("#newpass2").val();
+        var username = $("#newusername").val();
+        if (pass == pass2) {
+          firetable.actions.signUp(email, pass, username);
+        } else {
+          alert("Those passwords do not match!");
+        }
+      }
+    });
+    $("#theAddress").bind("keyup", function(e) {
+      if (e.which == 13) {
+        var email = $("#theAddress").val();
+        firetable.debug && console.log("reset email return");
+        ftapi.actions.resetPassword(email, function(error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          if (errorCode === 'auth/wrong-password') {
+            alert('Wrong password.');
+          } else {
+            alert(errorMessage);
+          }
+          firetable.debug && console.log('send pass reset error:', error);
+        });
+        alert("Reset email sent. Click the reset link when it arrives thanks.");
+      }
+    });
+    $("#createAccountBttn").bind("click", function() {
+      var email = $("#newemail").val();
+      var pass = $("#newpass").val();
+      var pass2 = $("#newpass2").val();
+      var username = $("#newusername").val();
+      if (pass == pass2) {
+        firetable.actions.signUp(email, pass, username);
+      } else {
+        alert("Those passwords do not match!");
+      }
+    });
+    $("#resetPassBttn").bind("click", function() {
+      var email = $("#theAddress").val();
+      firetable.debug && console.log("reset email click button");
+      ftapi.actions.resetPassword(email, function(error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        if (errorCode === 'auth/wrong-password') {
+          alert('Wrong password.');
+        } else {
+          alert(errorMessage);
+        }
+        firetable.debug && console.log('send pass reset error:', error);
+      });
+      alert("Reset email sent. Click the reset link when it arrives thanks.");
+    });
+    $("#loginBttn").bind("click", function() {
+      var email = $("#loginemail").val();
+      var pass = $("#loginpass").val();
+      $("#loginemail").val("");
+      $("#loginpass").val("");
+      firetable.actions.logIn(email, pass);
+    });
   },
-  loginEventsDestroy: function(){
+  loginEventsDestroy: function() {
     $("#resetpass").off("click");
     $("#loginlink").off("click");
     $("#signuplink").off("click");
@@ -1325,22 +1332,22 @@ return text;
     if (typeof showImages == "undefined") {
       localStorage["firetableShowImages"] = false;
       firetable.showImages = false;
-      $( "#showImagesToggle" ).prop( "checked", false );
+      $("#showImagesToggle").prop("checked", false);
     } else {
       showImages = JSON.parse(showImages);
       firetable.showImages = showImages;
-      $( "#showImagesToggle" ).prop( "checked", showImages );
+      $("#showImagesToggle").prop("checked", showImages);
     }
     var showAvatars = localStorage["firetableShowAvatars"];
     if (typeof showAvatars == "undefined") {
       localStorage["firetableShowAvatars"] = true;
       firetable.showAvatars = true;
-      $( "#showAvatarsToggle" ).prop( "checked", true );
+      $("#showAvatarsToggle").prop("checked", true);
     } else {
       showAvatars = JSON.parse(showAvatars);
       firetable.showAvatars = showAvatars;
-      $( "#showAvatarsToggle" ).prop( "checked", showAvatars );
-      if( showAvatars == false ) {
+      $("#showAvatarsToggle").prop("checked", showAvatars);
+      if (showAvatars == false) {
         document.getElementById("actualChat").classList.add("avatarsOff");
       }
     }
@@ -1348,36 +1355,36 @@ return text;
     if (typeof playBadoop == "undefined") {
       localStorage["firetableBadoop"] = true;
       firetable.playBadoop = true;
-      $( "#badoopToggle" ).prop( "checked", true );
+      $("#badoopToggle").prop("checked", true);
     } else {
       playBadoop = JSON.parse(playBadoop);
       firetable.playBadoop = playBadoop;
-      $( "#badoopToggle" ).prop( "checked", playBadoop );
+      $("#badoopToggle").prop("checked", playBadoop);
     }
     var dtnmt = localStorage["firetableDTNM"];
     if (typeof dtnmt == "undefined") {
       localStorage["firetableDTNM"] = false;
       firetable.desktopNotifyMentions = false;
-      $( "#desktopNotifyMentionsToggle" ).prop( "checked", false);
+      $("#desktopNotifyMentionsToggle").prop("checked", false);
     } else {
       dtnmt = JSON.parse(dtnmt);
       firetable.desktopNotifyMentions = dtnmt;
-      $( "#desktopNotifyMentionsToggle" ).prop( "checked", dtnmt );
+      $("#desktopNotifyMentionsToggle").prop("checked", dtnmt);
     }
     var screenControl = localStorage["firetableScreenControl"];
     if (typeof screenControl == "undefined") {
       localStorage["firetableScreenControl"] = "sync";
       firetable.screenControl = "sync";
-      $( "#screenControlTog"+firetable.screenControl ).prop( "checked", true );
+      $("#screenControlTog" + firetable.screenControl).prop("checked", true);
     } else {
       firetable.screenControl = screenControl;
-      $( "#screenControlTog"+firetable.screenControl ).prop( "checked", true );
-      if (screenControl == "on"){
+      $("#screenControlTog" + firetable.screenControl).prop("checked", true);
+      if (screenControl == "on") {
         firetable.utilities.screenDown();
-      } else if (screenControl == "off"){
+      } else if (screenControl == "off") {
         firetable.utilities.screenUp();
-      } else if (screenControl == "sync"){
-        if (firetable.screenSyncPos){
+      } else if (screenControl == "sync") {
+        if (firetable.screenSyncPos) {
           firetable.utilities.screenDown();
         } else {
           firetable.utilities.screenUp();
@@ -1386,49 +1393,52 @@ return text;
     }
     var $historyItem = $('#thehistory .pvbar').remove();
     ftapi.events.on('newHistory', function(data) {
-        var firstpart = "yt";
-        if (data.type == 2) firstpart == "sc";
-        var pkey = firstpart +"cid" + data.cid;
-        var $histItem = $historyItem.clone();
-        $histItem.attr('id', "pvbar"+pkey);
-        $histItem.attr( "data-key", pkey );
-        $histItem.attr( "data-cid", data.cid);
-        $histItem.attr( "data-type", data.type);
+      var firstpart = "yt";
+      if (data.type == 2) firstpart == "sc";
+      var pkey = firstpart + "cid" + data.cid;
+      var $histItem = $historyItem.clone();
+      $histItem.attr('id', "pvbar" + pkey);
+      $histItem.attr("data-key", pkey);
+      $histItem.attr("data-cid", data.cid);
+      $histItem.attr("data-type", data.type);
 
-        $histItem.find('.previewicon').attr('id', "pv"+pkey).on('click', function(){
-          firetable.actions.pview(
-            $(this).closest('.pvbar').attr('data-key'),
-            true,
-            $(this).closest('.pvbar').attr('data-type'),
-            true
-          );
-        });
-        $histItem.find('.histlink').attr({'href': data.url, 'tabindex': "-1"}).text(data.artist + " - "+ data.title);
-        $histItem.find('.histdj').text(data.dj);
-        $histItem.find('.histdate').text(firetable.utilities.format_date(data.when));
-        $histItem.find('.histtime').text(firetable.utilities.format_time(data.when));
-        $histItem.find('.histeal').attr('id', "apv" + data.type + data.cid).on('click', function() {
-          firetable.actions.queueTrack(
-            $(this).closest('.pvbar').attr('data-cid'),
-            firetable.utilities.htmlEscape($(this).closest('.pvbar').find('.histlink').text()),
-            $(this).closest('.pvbar').attr('data-type'),
-            true
-          );
-        });
-        $histItem.find('.histart').css('background-image', 'url(' + data.img + ')');
-        $histItem.prependTo("#thehistory");
-        scrollits['thehistoryWrap'].update();
+      $histItem.find('.previewicon').attr('id', "pv" + pkey).on('click', function() {
+        firetable.actions.pview(
+          $(this).closest('.pvbar').attr('data-key'),
+          true,
+          $(this).closest('.pvbar').attr('data-type'),
+          true
+        );
+      });
+      $histItem.find('.histlink').attr({
+        'href': data.url,
+        'tabindex': "-1"
+      }).text(data.artist + " - " + data.title);
+      $histItem.find('.histdj').text(data.dj);
+      $histItem.find('.histdate').text(firetable.utilities.format_date(data.when));
+      $histItem.find('.histtime').text(firetable.utilities.format_time(data.when));
+      $histItem.find('.histeal').attr('id', "apv" + data.type + data.cid).on('click', function() {
+        firetable.actions.queueTrack(
+          $(this).closest('.pvbar').attr('data-cid'),
+          firetable.utilities.htmlEscape($(this).closest('.pvbar').find('.histlink').text()),
+          $(this).closest('.pvbar').attr('data-type'),
+          true
+        );
+      });
+      $histItem.find('.histart').css('background-image', 'url(' + data.img + ')');
+      $histItem.prependTo("#thehistory");
+      scrollits['thehistoryWrap'].update();
     });
     ftapi.events.on("newTheme", function(data) {
-      if (!data){
+      if (!data) {
         //no theme
         $("#currentTheme").text("!suggest a theme");
       } else {
         var txtOut = firetable.ui.strip(data);
         txtOut = firetable.ui.textToLinks(txtOut, true);
         txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
-        txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
-          return "<code>"+x.replace(/\`/g, "") +"</code>";
+        txtOut = txtOut.replace(/\`(.*?)\`/g, function(x) {
+          return "<code>" + x.replace(/\`/g, "") + "</code>";
         });
         $("#currentTheme").html(txtOut);
         twemoji.parse(document.getElementById("currentTheme"));
@@ -1437,8 +1447,8 @@ return text;
     ftapi.events.on("tagUpdate", function(data) {
       firetable.debug && console.log("TAG UPDATE", data);
       firetable.tagUpdate = data;
-      if (firetable.song){
-      if (firetable.song.cid == data.cid && data.adamData.track_name){
+      if (firetable.song) {
+        if (firetable.song.cid == data.cid && data.adamData.track_name) {
           $("#track").text(firetable.ui.strip(data.adamData.track_name));
           $("#artist").text(firetable.ui.strip(data.adamData.artist));
           var nicename = firetable.song.djname;
@@ -1446,27 +1456,27 @@ return text;
           scrollDown = false;
           if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
           var showPlaycount = false;
-          if (data.adamData.playcount){
-            if (data.adamData.playcount > 0){
+          if (data.adamData.playcount) {
+            if (data.adamData.playcount > 0) {
               showPlaycount = true;
             }
           }
-          if (data.adamData.last_play){
-            $("#lastPlay").text("last "+firetable.utilities.format_date(data.adamData.last_play)+" by "+data.adamData.last_play_dj);
+          if (data.adamData.last_play) {
+            $("#lastPlay").text("last " + firetable.utilities.format_date(data.adamData.last_play) + " by " + data.adamData.last_play_dj);
           } else {
             $("#lastPlay").text("");
           }
-          if (data.adamData.first_play){
-            $("#firstPlay").text("first "+firetable.utilities.format_date(data.adamData.first_play)+" by "+data.adamData.first_play_dj);
+          if (data.adamData.first_play) {
+            $("#firstPlay").text("first " + firetable.utilities.format_date(data.adamData.first_play) + " by " + data.adamData.first_play_dj);
           } else {
             $("#firstPlay").text("");
           }
-          if (showPlaycount){
-            $("#playCount").text(data.adamData.playcount+" plays");
-            $(".npmsg"+data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong><br/>This song has been played "+data.adamData.playcount+" times.</div>");
+          if (showPlaycount) {
+            $("#playCount").text(data.adamData.playcount + " plays");
+            $(".npmsg" + data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong><br/>This song has been played " + data.adamData.playcount + " times.</div>");
           } else {
             $("#playCount").text("");
-            $(".npmsg"+data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong></div>");
+            $(".npmsg" + data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong></div>");
           }
           scrollits['chatsWrap'].update();
           if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
@@ -1488,20 +1498,20 @@ return text;
       }
       $("#prgbar").css("background", "#151515");
       var showPlaycount = false;
-      if (firetable.tagUpdate){
-        if (data.cid == firetable.tagUpdate.cid && firetable.tagUpdate.adamData.track_name){
+      if (firetable.tagUpdate) {
+        if (data.cid == firetable.tagUpdate.cid && firetable.tagUpdate.adamData.track_name) {
           data.title = firetable.tagUpdate.adamData.track_name;
           data.artist = firetable.tagUpdate.adamData.artist;
-          if (firetable.tagUpdate.adamData.last_play){
-            $("#lastPlay").text("last "+firetable.utilities.format_date(firetable.tagUpdate.adamData.last_play)+" by "+firetable.tagUpdate.adamData.last_play_dj);
+          if (firetable.tagUpdate.adamData.last_play) {
+            $("#lastPlay").text("last " + firetable.utilities.format_date(firetable.tagUpdate.adamData.last_play) + " by " + firetable.tagUpdate.adamData.last_play_dj);
           }
-          if (firetable.tagUpdate.adamData.first_play){
-            $("#firstPlay").text("first "+firetable.utilities.format_date(firetable.tagUpdate.adamData.first_play)+" by "+firetable.tagUpdate.adamData.first_play_dj);
+          if (firetable.tagUpdate.adamData.first_play) {
+            $("#firstPlay").text("first " + firetable.utilities.format_date(firetable.tagUpdate.adamData.first_play) + " by " + firetable.tagUpdate.adamData.first_play_dj);
           }
-          if (firetable.tagUpdate.adamData.playcount){
-            if (firetable.tagUpdate.adamData.playcount > 0){
+          if (firetable.tagUpdate.adamData.playcount) {
+            if (firetable.tagUpdate.adamData.playcount > 0) {
               showPlaycount = true;
-              $("#playCount").text(firetable.tagUpdate.adamData.playcount+" plays");
+              $("#playCount").text(firetable.tagUpdate.adamData.playcount + " plays");
             }
           }
         }
@@ -1512,23 +1522,23 @@ return text;
       $("#albumArt").css("background-image", "url(" + data.image + ")");
       var nownow = Date.now();
       var timeSince = nownow - data.started;
-      if (timeSince <= 0 ) timeSince = 0;
+      if (timeSince <= 0) timeSince = 0;
       var secSince = Math.floor(timeSince / 1000);
       var timeLeft = data.duration - secSince;
       firetable.song = data;
       firetable.debug && console.log("NEW TRACK", data);
-      firetable.debug && console.log('time since:',timeSince);
-      if (data.type == 1){
-          $("#scScreen").hide();
-      } else if (data.type ==2){
+      firetable.debug && console.log('time since:', timeSince);
+      if (data.type == 1) {
+        $("#scScreen").hide();
+      } else if (data.type == 2) {
         $("#scScreen").show();
         var biggerImg = data.image.replace('-large', '-t500x500');
         firetable.scImg = biggerImg;
         $("#albumArt").css("background-image", "url(" + biggerImg + ")")
-        try{
+        try {
           setup(biggerImg);
-        } catch (e){
-          firetable.debug && console.log('big image error:',e)
+        } catch (e) {
+          firetable.debug && console.log('big image error:', e)
         }
       }
       if (data.type == 1 && firetable.ytLoaded) {
@@ -1565,10 +1575,10 @@ return text;
           scrollDown = false;
           var objDiv = document.getElementById("chatsWrap");
           if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
-          if (showPlaycount){
-            $("#chats").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong><br/>This song has been played "+firetable.tagUpdate.adamData.playcount+" times.</div>")
+          if (showPlaycount) {
+            $("#chats").append("<div class=\"newChat nowplayn npmsg" + data.cid + "\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong><br/>This song has been played " + firetable.tagUpdate.adamData.playcount + " times.</div>")
           } else {
-            $("#chats").append("<div class=\"newChat nowplayn npmsg"+data.cid+"\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
+            $("#chats").append("<div class=\"newChat nowplayn npmsg" + data.cid + "\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
           }
           scrollits['chatsWrap'].update();
           if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
@@ -1591,19 +1601,19 @@ return text;
       }, 500);
     });
     ftapi.events.on("screenStateChanged", function(data) {
-      firetable.debug && console.log('thescreen:',data);
+      firetable.debug && console.log('thescreen:', data);
       firetable.screenSyncPos = data;
-      if (firetable.screenControl == "sync"){
-      if (data) {
-        firetable.utilities.screenDown();
-      } else {
-        firetable.utilities.screenUp();
+      if (firetable.screenControl == "sync") {
+        if (data) {
+          firetable.utilities.screenDown();
+        } else {
+          firetable.utilities.screenUp();
+        }
       }
-    }
     });
     ftapi.events.on("danceStateChanged", function(data) {
-      firetable.debug && console.log('dance check:',data);
-      if (data){
+      firetable.debug && console.log('dance check:', data);
+      if (data) {
         $("#deck").addClass("dance");
       } else {
         $("#deck").removeClass("dance");
@@ -1615,7 +1625,7 @@ return text;
       if (data) {
         var countr = 1;
         for (var key in data) {
-          firetable.debug && console.log('waitlist',data);
+          firetable.debug && console.log('waitlist', data);
           if (data.hasOwnProperty(key)) {
             cnt = countr;
             ok1 += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><span class=\"prsnName\">" + countr + ". " + data[key].name + "</span></div>";
@@ -1681,28 +1691,28 @@ return text;
         $("#plimit" + i).text(data);
       }
     });
-    ftapi.events.on("banListChanged", function(data){
+    ftapi.events.on("banListChanged", function(data) {
       $("#activeSuspentions").html("");
       for (key in data) {
-          if (data[key]){
-            ftapi.lookup.userByName(key, function(person){
-              $("#activeSuspentions").append("<div class=\"importResult\"><div class=\"imtxt\">" + person.username + "</div><i role=\"button\" onclick=\"firetable.actions.unban('" + person.userid + "')\" class=\"material-icons\" title=\"Unsuspend\">&#xE5C9;</i></div>");
-            });
-          }
+        if (data[key]) {
+          ftapi.lookup.userByName(key, function(person) {
+            $("#activeSuspentions").append("<div class=\"importResult\"><div class=\"imtxt\">" + person.username + "</div><i role=\"button\" onclick=\"firetable.actions.unban('" + person.userid + "')\" class=\"material-icons\" title=\"Unsuspend\">&#xE5C9;</i></div>");
+          });
+        }
       }
     });
     ftapi.events.on("usersChanged", function(okdata) {
       if ($("#loggedInName").text() == ftapi.uid) {
         if (ftapi.users[ftapi.uid]) {
-          if (ftapi.users[ftapi.uid].username){
+          if (ftapi.users[ftapi.uid].username) {
             $("#loggedInName").text(ftapi.users[ftapi.uid].username);
           }
         }
       }
-      if (ftapi.uid){
-        if (ftapi.users[ftapi.uid]){
-          if (ftapi.users[ftapi.uid].supermod){
-            if ($("#ftSuperCopButton").is(":hidden")){
+      if (ftapi.uid) {
+        if (ftapi.users[ftapi.uid]) {
+          if (ftapi.users[ftapi.uid].supermod) {
+            if ($("#ftSuperCopButton").is(":hidden")) {
               $("#ftSuperCopButton").show();
             }
           }
@@ -1715,47 +1725,47 @@ return text;
         if (okdata.hasOwnProperty(key)) {
           var thisone = ftapi.users[key];
           var utitle = "";
-            var thename = key;
-            var rolenum = 0;
-            count++;
-            if (ftapi.users[key]) {
-              if (ftapi.users[key].mod) {
-                utitle = "cop";
-                rolenum = 1;
-              }
-              if (ftapi.users[key].supermod) {
-                utitle = "supercop";
-                rolenum = 2;
-              }
-              if (ftapi.users[key].hostbot){
-                utitle = "robocop";
-                rolenum = 3;
-              }
-              if (ftapi.users[key].username) thename = ftapi.users[key].username;
+          var thename = key;
+          var rolenum = 0;
+          count++;
+          if (ftapi.users[key]) {
+            if (ftapi.users[key].mod) {
+              utitle = "cop";
+              rolenum = 1;
             }
-            var pguy = {
-              id: key,
-              name: thename,
-              rolename: utitle,
-              rolenum: rolenum,
-              joined: firetable.utilities.format_date(ftapi.users[key].joined)
-            };
-            listBuild.push(pguy);
+            if (ftapi.users[key].supermod) {
+              utitle = "supercop";
+              rolenum = 2;
+            }
+            if (ftapi.users[key].hostbot) {
+              utitle = "robocop";
+              rolenum = 3;
+            }
+            if (ftapi.users[key].username) thename = ftapi.users[key].username;
+          }
+          var pguy = {
+            id: key,
+            name: thename,
+            rolename: utitle,
+            rolenum: rolenum,
+            joined: firetable.utilities.format_date(ftapi.users[key].joined)
+          };
+          listBuild.push(pguy);
 
         }
       }
       listBuild.sort(function(a, b) {
-            return b.rolenum - a.rolenum;
+        return b.rolenum - a.rolenum;
       });
-      for (var i=0; i<listBuild.length; i++){
-        newlist += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + listBuild[i].id + "" + listBuild[i].name + ".png?size=110x110);\"></div><span class=\"prsnName\">" + listBuild[i].name + "</span><span class=\"utitle\">" + listBuild[i].rolename + "</span><span class=\"prsnJoined\">joined "+listBuild[i].joined+"</span></div>";
+      for (var i = 0; i < listBuild.length; i++) {
+        newlist += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + listBuild[i].id + "" + listBuild[i].name + ".png?size=110x110);\"></div><span class=\"prsnName\">" + listBuild[i].name + "</span><span class=\"utitle\">" + listBuild[i].rolename + "</span><span class=\"prsnJoined\">joined " + listBuild[i].joined + "</span></div>";
       }
       $("#allusers").html(newlist);
       $("#label1 .count").text(" (" + count + ")");
-      firetable.debug && console.log('users:',okdata);
+      firetable.debug && console.log('users:', okdata);
     });
     var $chatTemplate = $('#chatKEY').remove();
-    ftapi.events.on("newChat", function(chatData){
+    ftapi.events.on("newChat", function(chatData) {
       var namebo = chatData.id;
       var objDiv = document.getElementById("chatsWrap");
       var utitle = "";
@@ -1770,7 +1780,7 @@ return text;
         if (ftapi.users[chatData.id].mod) utitle = "cop";
         if (ftapi.users[chatData.id].supermod) utitle = "supercop";
         if (ftapi.users[chatData.id].hostbot) utitle = "robocop";
-      } else if (chatData.name){
+      } else if (chatData.name) {
         namebo = chatData.name;
       }
 
@@ -1786,33 +1796,33 @@ return text;
       scrollDown = false;
       if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
       if (chatData.id == firetable.lastChatPerson && !badoop) {
-        $("#chat" + firetable.lastChatId+" .chatContent").append("<div id=\"chattxt" + chatData.chatID + "\" class=\"chatText\"></div>");
+        $("#chat" + firetable.lastChatId + " .chatContent").append("<div id=\"chattxt" + chatData.chatID + "\" class=\"chatText\"></div>");
         $("#chatTime" + firetable.lastChatId).text(firetable.utilities.format_time(chatData.time));
         var txtOut = firetable.ui.strip(chatData.txt);
         txtOut = firetable.ui.showImages(txtOut);
         txtOut = firetable.ui.textToLinks(txtOut);
         txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
-        txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
-          return "<code>"+x.replace(/\`/g, "") +"</code>";
+        txtOut = txtOut.replace(/\`(.*?)\`/g, function(x) {
+          return "<code>" + x.replace(/\`/g, "") + "</code>";
         });
-        $("#chattxt"+chatData.chatID).html(txtOut);
-        twemoji.parse(document.getElementById("chattxt"+chatData.chatID));
+        $("#chattxt" + chatData.chatID).html(txtOut);
+        twemoji.parse(document.getElementById("chattxt" + chatData.chatID));
 
       } else {
         var $chatthing = $chatTemplate.clone();
-        $chatthing.attr('id',"chat"+chatData.chatID);
-        $chatthing.find('.botson').css('background-image',"url(https://indiediscotheque.com/robots/" + chatData.id + namebo + ".png?size=110x110");
+        $chatthing.attr('id', "chat" + chatData.chatID);
+        $chatthing.find('.botson').css('background-image', "url(https://indiediscotheque.com/robots/" + chatData.id + namebo + ".png?size=110x110");
         $chatthing.find('.utitle').html(utitle);
-        $chatthing.find('.chatTime').attr('id',"chatTime" + chatData.chatID).html(firetable.utilities.format_time(chatData.time));
-        if ( badoop ) $chatthing.addClass('badoop');
+        $chatthing.find('.chatTime').attr('id', "chatTime" + chatData.chatID).html(firetable.utilities.format_time(chatData.time));
+        if (badoop) $chatthing.addClass('badoop');
         var txtOut = firetable.ui.strip(chatData.txt);
         txtOut = firetable.ui.showImages(txtOut);
         txtOut = firetable.ui.textToLinks(txtOut);
         txtOut = firetable.utilities.emojiShortnamestoUnicode(txtOut);
-        txtOut = txtOut.replace(/\`(.*?)\`/g, function (x) {
-          return "<code>"+x.replace(/\`/g, "") +"</code>";
+        txtOut = txtOut.replace(/\`(.*?)\`/g, function(x) {
+          return "<code>" + x.replace(/\`/g, "") + "</code>";
         });
-        $chatthing.find(".chatText").html(txtOut).attr('id',"chattxt" + chatData.chatID);
+        $chatthing.find(".chatText").html(txtOut).attr('id', "chattxt" + chatData.chatID);
         $chatthing.find(".chatName").text(namebo);
         twemoji.parse($chatthing.find(".chatText")[0]);
         $chatthing.appendTo("#chats");
@@ -1820,8 +1830,8 @@ return text;
         firetable.lastChatId = chatData.chatID;
       }
 
-      if (chatData.card){
-        $("#chattxt"+chatData.chatID).append("<canvas width=\"225\" height=\"300\" class=\"chatCard\" id=\"cardMaker"+chatData.chatID+"\"></canvas>");
+      if (chatData.card) {
+        $("#chattxt" + chatData.chatID).append("<canvas width=\"225\" height=\"300\" class=\"chatCard\" id=\"cardMaker" + chatData.chatID + "\"></canvas>");
 
         firetable.actions.showCard(chatData.card, chatData.chatID);
         firetable.debug && console.log("showin card");
@@ -1830,51 +1840,57 @@ return text;
       if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
     });
 
-    ftapi.events.on("playlistChanged", function(okdata){
-        firetable.queue = okdata;
-        $('#mainqueue').html("");
-        for (var key in okdata) {
-          if (okdata.hasOwnProperty(key)) {
-            var $newli = $playlistItemTemplate.clone();
-            var thisone = okdata[key];
-            var psign = "&#xE037;";
-            if (key == firetable.preview) {
-              psign = "&#xE034;";
-            }
-            $newli.attr('id', "pvbar" + key);
-            $newli.attr( "data-key", key );
-            $newli.attr( "data-type", thisone.type);
-            $newli.find('.previewicon').attr('id', "pv" + key).on('click', function(){
-              firetable.actions.pview($(this).parent().attr('data-key'), false, $(this).parent().attr('data-type'));
-            }).html(psign);
-            $newli.find('.listwords').html(thisone.name);
-            $newli.find('.bumpsongs').on('click', function(){ firetable.actions.bumpSongInQueue($(this).parent().attr('data-key')) });
-            $newli.find('.bottomsongs').on('click', function(){
-              var oldID = $(this).parent().attr('data-key');
-              ftapi.actions.moveTrackToBottom( $(this).parent().attr('data-key'), function(newID){
-                if (firetable.preview){
-                  // visually update preview in the new location if applicable
-                  if (firetable.preview == oldID){
-                    firetable.preview = newID;
-                    $("#pv" + newID).html("&#xE034;");
-                  }
-                }
-              });
-            });
-            if (thisone.flagged){
-              $newli.find('.track-warning').html("<span class=\"material-icons\"> warning </span>");
-              $newli.find('.track-warning').prop('title', 'Flagged as broken on '+firetable.utilities.format_date(thisone.flagged.date)+'. Click to remove flag.');
-              $newli.find('.track-warning').on('click', function(){
-                ftapi.actions.unflagTrack($(this).parent().attr('data-key'));
-                $(this).html("");
-              });
-
-            }
-            $newli.find('.edittags').on('click', function(){ firetable.actions.editTagsPrompt($(this).parent().attr('data-key'))});
-            $newli.find('.deletesong').on('click', function(){ firetable.actions.deleteSong($(this).parent().attr('data-key')) });
-            $('#mainqueue').append($newli);
+    ftapi.events.on("playlistChanged", function(okdata) {
+      firetable.queue = okdata;
+      $('#mainqueue').html("");
+      for (var key in okdata) {
+        if (okdata.hasOwnProperty(key)) {
+          var $newli = $playlistItemTemplate.clone();
+          var thisone = okdata[key];
+          var psign = "&#xE037;";
+          if (key == firetable.preview) {
+            psign = "&#xE034;";
           }
+          $newli.attr('id', "pvbar" + key);
+          $newli.attr("data-key", key);
+          $newli.attr("data-type", thisone.type);
+          $newli.find('.previewicon').attr('id', "pv" + key).on('click', function() {
+            firetable.actions.pview($(this).parent().attr('data-key'), false, $(this).parent().attr('data-type'));
+          }).html(psign);
+          $newli.find('.listwords').html(thisone.name);
+          $newli.find('.bumpsongs').on('click', function() {
+            firetable.actions.bumpSongInQueue($(this).parent().attr('data-key'))
+          });
+          $newli.find('.bottomsongs').on('click', function() {
+            var oldID = $(this).parent().attr('data-key');
+            ftapi.actions.moveTrackToBottom($(this).parent().attr('data-key'), function(newID) {
+              if (firetable.preview) {
+                // visually update preview in the new location if applicable
+                if (firetable.preview == oldID) {
+                  firetable.preview = newID;
+                  $("#pv" + newID).html("&#xE034;");
+                }
+              }
+            });
+          });
+          if (thisone.flagged) {
+            $newli.find('.track-warning').html("<span class=\"material-icons\"> warning </span>");
+            $newli.find('.track-warning').prop('title', 'Flagged as broken on ' + firetable.utilities.format_date(thisone.flagged.date) + '. Click to remove flag.');
+            $newli.find('.track-warning').on('click', function() {
+              ftapi.actions.unflagTrack($(this).parent().attr('data-key'));
+              $(this).html("");
+            });
+
+          }
+          $newli.find('.edittags').on('click', function() {
+            firetable.actions.editTagsPrompt($(this).parent().attr('data-key'))
+          });
+          $newli.find('.deletesong').on('click', function() {
+            firetable.actions.deleteSong($(this).parent().attr('data-key'))
+          });
+          $('#mainqueue').append($newli);
         }
+      }
     });
 
     firetable.ui.LinkGrabber.start();
@@ -1927,7 +1943,7 @@ return text;
           //start regular song
           var nownow = Date.now();
           var timeSince = nownow - firetable.song.started;
-          if (timeSince <= 0 ) timeSince = 0;
+          if (timeSince <= 0) timeSince = 0;
 
           var secSince = Math.floor(timeSince / 1000);
           var timeLeft = firetable.song.duration - secSince;
@@ -1949,23 +1965,26 @@ return text;
       }
     });
 
-    $("#grab").bind("click", function(){
-      var isHidden = $("#stealContain").is( ":hidden" );
-      if (isHidden){
-        ftapi.lookup.allLists(function(allPlaylists){
-            $("#stealpicker").html("<option value=\"-1\">Where to?</option><option value=\"0\">Default Queue</option>");
-            for (var key in allPlaylists) {
-              if (allPlaylists.hasOwnProperty(key)) {
-                $("#stealpicker").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
-              }
+    $("#grab").bind("click", function() {
+      var isHidden = $("#stealContain").is(":hidden");
+      if (isHidden) {
+        ftapi.lookup.allLists(function(allPlaylists) {
+          $("#stealpicker").html("<option value=\"-1\">Where to?</option><option value=\"0\">Default Queue</option>");
+          for (var key in allPlaylists) {
+            if (allPlaylists.hasOwnProperty(key)) {
+              $("#stealpicker").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
             }
-            $('#grab').addClass('on');
-            $( "#stealContain" ).css({ 'top': $('#grab').offset().top + $('#grab').height(), 'left': $('#grab').offset().left - 16 }).show();
-          });
+          }
+          $('#grab').addClass('on');
+          $("#stealContain").css({
+            'top': $('#grab').offset().top + $('#grab').height(),
+            'left': $('#grab').offset().left - 16
+          }).show();
+        });
 
       } else {
         $('#grab').removeClass('on');
-        $( "#stealContain" ).hide();
+        $("#stealContain").hide();
       }
     });
     $("#shuffleQueue").bind("click", firetable.actions.shuffleQueue);
@@ -1974,48 +1993,48 @@ return text;
       $(this).toggleClass('on');
     });
     $("#startMerge").bind("click", function() {
-        var source = $("#mergepicker").val();
-        var sourceName = $( "#mergepicker option:selected" ).text();
-        var dest = $("#mergepicker2").val();
-        var destName = $( "#mergepicker2 option:selected" ).text();
-        $("#mergeSetup").hide();
-        $("#mergeHappening").show();
-        firetable.debug && console.log(sourceName + " -> " + destName);
-        firetable.actions.mergeLists(source, dest, sourceName);
+      var source = $("#mergepicker").val();
+      var sourceName = $("#mergepicker option:selected").text();
+      var dest = $("#mergepicker2").val();
+      var destName = $("#mergepicker2 option:selected").text();
+      $("#mergeSetup").hide();
+      $("#mergeHappening").show();
+      firetable.debug && console.log(sourceName + " -> " + destName);
+      firetable.actions.mergeLists(source, dest, sourceName);
     });
     $("#mergeOK").bind("click", function() {
-        $("#mergeSetup").show();
-        $("#mergeCompleted").hide();
-        $("#mergeHappening").hide();
-        $( "#mergeContain" ).hide();
+      $("#mergeSetup").show();
+      $("#mergeCompleted").hide();
+      $("#mergeHappening").hide();
+      $("#mergeContain").hide();
     });
     $("#mergeLists").bind("click", function() {
       var $this = $(this);
-       var isHidden = $("#mergeContain").is( ":hidden" );
-       if (isHidden){
-         ftapi.lookup.allLists(function(allPlaylists){
-             $("#mergepicker").html("<option value=\"0\">Default Queue</option>");
-             $("#mergepicker2").html("<option value=\"-1\">Create New Copy</option><option value=\"0\">Default Queue</option>");
-             for (var key in allPlaylists) {
-               if (allPlaylists.hasOwnProperty(key)) {
-                 $("#mergepicker").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
-                 $("#mergepicker2").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
-               }
-             }
-             if (ftapi.users[ftapi.uid]) {
-               if (ftapi.users[ftapi.uid].selectedList) {
-                  $("#mergepicker").val(ftapi.users[ftapi.uid].selectedList).change();
-                  $("#mergepicker2").val(-1).change();
-               }
-             }
-            $( "#mergeContain" ).show();
-            $this.addClass('on');
-           });
+      var isHidden = $("#mergeContain").is(":hidden");
+      if (isHidden) {
+        ftapi.lookup.allLists(function(allPlaylists) {
+          $("#mergepicker").html("<option value=\"0\">Default Queue</option>");
+          $("#mergepicker2").html("<option value=\"-1\">Create New Copy</option><option value=\"0\">Default Queue</option>");
+          for (var key in allPlaylists) {
+            if (allPlaylists.hasOwnProperty(key)) {
+              $("#mergepicker").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
+              $("#mergepicker2").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
+            }
+          }
+          if (ftapi.users[ftapi.uid]) {
+            if (ftapi.users[ftapi.uid].selectedList) {
+              $("#mergepicker").val(ftapi.users[ftapi.uid].selectedList).change();
+              $("#mergepicker2").val(-1).change();
+            }
+          }
+          $("#mergeContain").show();
+          $this.addClass('on');
+        });
 
-       } else {
-         $( "#mergeContain" ).hide();
-         $this.removeClass('on');
-        }
+      } else {
+        $("#mergeContain").hide();
+        $this.removeClass('on');
+      }
     });
     $("#reloadtrack").bind("click", firetable.actions.reloadtrack);
 
@@ -2025,8 +2044,8 @@ return text;
     $(".openModal").bind("click", function() {
       var modalContentID = $(this).attr('data-modal');
       $(".modalThing").hide();
-      $("#overlay").css("display","flex");
-      $("#"+modalContentID).show();
+      $("#overlay").css("display", "flex");
+      $("#" + modalContentID).show();
     });
     $(".closeModal").bind("click", function() {
       $("#overlay").hide();
@@ -2042,20 +2061,20 @@ return text;
       $("#cardsOverlay").show();
     });
     $("#pickerNav").on("click", "i", function() {
-       try {
-         var sec =$(this)[0].id;
-         firetable.emojis.sec(sec);
-       } catch (s) {}
+      try {
+        var sec = $(this)[0].id;
+        firetable.emojis.sec(sec);
+      } catch (s) {}
     });
     $("#pickEmoji").bind("click", function() {
       //toggle emoji picker
-      if ($("#emojiPicker").is(":hidden")){
+      if ($("#emojiPicker").is(":hidden")) {
         $(this).addClass('on');
-        $("#emojiPicker").slideDown(function(){
+        $("#emojiPicker").slideDown(function() {
           $('#pickerSearch').focus();
         });
 
-        if (!firetable.pickerInit){
+        if (!firetable.pickerInit) {
           const makeRequest = async () => {
             twemoji.parse(document.getElementById("pickerResults"));
             return true;
@@ -2065,7 +2084,7 @@ return text;
         }
       } else {
         $(this).removeClass('on');
-        $("#emojiPicker").slideUp(function(){
+        $("#emojiPicker").slideUp(function() {
           $('#pickerSearch').val('').trigger('change');
           $('#newchat').focus();
         });
@@ -2086,50 +2105,50 @@ return text;
 
 
     //SETTINGS TOGGLES
-$('#badoopToggle').change(function() {
-    if (this.checked) {
+    $('#badoopToggle').change(function() {
+      if (this.checked) {
         firetable.debug && console.log("badoop on");
         localStorage["firetableBadoop"] = true;
         firetable.playBadoop = true;
-    } else {
+      } else {
         firetable.debug && console.log("badoop off");
         localStorage["firetableBadoop"] = false;
         firetable.playBadoop = false;
 
-    }
-});
-$('#showImagesToggle').change(function() {
-  if (this.checked) {
-      firetable.debug && console.log("show images on");
-      localStorage["firetableShowImages"] = true;
-      firetable.showImages = true;
-  } else {
-      firetable.debug && console.log("show images off");
-      localStorage["firetableShowImages"] = false;
-      firetable.showImages = false;
+      }
+    });
+    $('#showImagesToggle').change(function() {
+      if (this.checked) {
+        firetable.debug && console.log("show images on");
+        localStorage["firetableShowImages"] = true;
+        firetable.showImages = true;
+      } else {
+        firetable.debug && console.log("show images off");
+        localStorage["firetableShowImages"] = false;
+        firetable.showImages = false;
 
-  }
-});
-$('#showAvatarsToggle').change(function() {
-  if (this.checked) {
-      firetable.debug && console.log("show avatars on");
-      localStorage["firetableShowAvatars"] = true;
-      firetable.showAvatars = true;
-      document.getElementById("actualChat").classList.remove("avatarsOff");
-  } else {
-      firetable.debug && console.log("show avatars off");
-      localStorage["firetableShowAvatars"] = false;
-      firetable.showAvatars = false;
-      document.getElementById("actualChat").classList.add("avatarsOff");
-  }
-});
-$(document).on('click', '.hideImage', function(e){
-  e.stopPropagation();
-  e.preventDefault();
-  $(this).closest('.chatText').toggleClass('hideImg');
-});
-$('#desktopNotifyMentionsToggle').change(function() {
-    if (this.checked) {
+      }
+    });
+    $('#showAvatarsToggle').change(function() {
+      if (this.checked) {
+        firetable.debug && console.log("show avatars on");
+        localStorage["firetableShowAvatars"] = true;
+        firetable.showAvatars = true;
+        document.getElementById("actualChat").classList.remove("avatarsOff");
+      } else {
+        firetable.debug && console.log("show avatars off");
+        localStorage["firetableShowAvatars"] = false;
+        firetable.showAvatars = false;
+        document.getElementById("actualChat").classList.add("avatarsOff");
+      }
+    });
+    $(document).on('click', '.hideImage', function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      $(this).closest('.chatText').toggleClass('hideImg');
+    });
+    $('#desktopNotifyMentionsToggle').change(function() {
+      if (this.checked) {
         firetable.debug && console.log("dtnm on");
         localStorage["firetableDTNM"] = true;
         firetable.desktopNotifyMentions = true;
@@ -2138,46 +2157,46 @@ $('#desktopNotifyMentionsToggle').change(function() {
             Notification.requestPermission();
           }
         }
-    } else {
+      } else {
         firetable.debug && console.log("dtnm off");
         localStorage["firetableDTNM"] = false;
         firetable.desktopNotifyMentions = false;
 
-    }
-});
+      }
+    });
 
-$('input[type=radio][name=screenControl]').change(function() {
-  firetable.debug && console.log('screen control:',this.value);
-  localStorage["firetableScreenControl"] = this.value;
-  firetable.screenControl = this.value;
-  if (this.value == "off"){
-    firetable.utilities.screenUp();
-  } else if (this.value == "on"){
-    firetable.utilities.screenDown();
-  } else if (this.value == "sync"){
-    if (firetable.screenSyncPos){
-      firetable.utilities.screenDown();
-    } else {
-      firetable.utilities.screenUp();
-    }
-  }
-});
+    $('input[type=radio][name=screenControl]').change(function() {
+      firetable.debug && console.log('screen control:', this.value);
+      localStorage["firetableScreenControl"] = this.value;
+      firetable.screenControl = this.value;
+      if (this.value == "off") {
+        firetable.utilities.screenUp();
+      } else if (this.value == "on") {
+        firetable.utilities.screenDown();
+      } else if (this.value == "sync") {
+        if (firetable.screenSyncPos) {
+          firetable.utilities.screenDown();
+        } else {
+          firetable.utilities.screenUp();
+        }
+      }
+    });
 
 
-$("#stealpicker").change(function() {
-  var dest = $("#stealpicker").val();
-  if (dest == "-1") return;
-  if (firetable.song.cid != 0) {
-    var title = firetable.song.artist + " - " + firetable.song.title;
-    $("#grab").removeClass('on');
-    ftapi.actions.addToList(firetable.song.type, title, firetable.song.cid, dest);
-    $( "#stealContain" ).hide();
-  }
-});
+    $("#stealpicker").change(function() {
+      var dest = $("#stealpicker").val();
+      if (dest == "-1") return;
+      if (firetable.song.cid != 0) {
+        var title = firetable.song.artist + " - " + firetable.song.title;
+        $("#grab").removeClass('on');
+        ftapi.actions.addToList(firetable.song.type, title, firetable.song.cid, dest);
+        $("#stealContain").hide();
+      }
+    });
 
     $("#pldeleteButton").bind("click", function() {
       var val = $("#deletepicker").val();
-      firetable.debug && console.log('playlist delete:',val);
+      firetable.debug && console.log('playlist delete:', val);
       if (ftapi.users[ftapi.uid]) {
         if (ftapi.users[ftapi.uid].selectedList) {
           if (ftapi.users[ftapi.uid].selectedList == val) {
@@ -2195,34 +2214,34 @@ $("#stealpicker").change(function() {
       $('#importPromptBox').show();
     });
     $("#pldeleteLauncher").bind("click", function() {
-      ftapi.lookup.allLists(function(allPlaylists){
-          $("#deletepicker").html("");
-          for (var key in allPlaylists) {
-            if (allPlaylists.hasOwnProperty(key)) {
-              $("#deletepicker").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
-            }
+      ftapi.lookup.allLists(function(allPlaylists) {
+        $("#deletepicker").html("");
+        for (var key in allPlaylists) {
+          if (allPlaylists.hasOwnProperty(key)) {
+            $("#deletepicker").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
           }
-          $("#overlay").css("display", "flex");
-          $(".modalThing").hide();
-          $('#deletePromptBox').show();
-        });
+        }
+        $("#overlay").css("display", "flex");
+        $(".modalThing").hide();
+        $('#deletePromptBox').show();
+      });
     });
     $("#pickerSearch").on("change paste keyup", function() {
-            firetable.emojis.niceSearch($("#pickerSearch").val());
-     });
-     $("#queueFilter").on("change paste keyup", function() {
-             firetable.actions.filterQueue($("#queueFilter").val());
-      });
-     $("#pickerResults").on("click", "span", function() {
-       try {
-         var oldval = $("#newchat").val();
-         var newval = oldval + ":"+ $(this).attr("title").trim() + ":";
-         $("#newchat").focus().val(newval);
+      firetable.emojis.niceSearch($("#pickerSearch").val());
+    });
+    $("#queueFilter").on("change paste keyup", function() {
+      firetable.actions.filterQueue($("#queueFilter").val());
+    });
+    $("#pickerResults").on("click", "span", function() {
+      try {
+        var oldval = $("#newchat").val();
+        var newval = oldval + ":" + $(this).attr("title").trim() + ":";
+        $("#newchat").focus().val(newval);
 
-       } catch (s) {}
-   });
+      } catch (s) {}
+    });
 
-   firetable.ui.loginEventsInit();
+    firetable.ui.loginEventsInit();
 
     $("#ytsearchSelect").bind("click", function() {
       $("#scsearchSelect").removeClass("on");
@@ -2257,33 +2276,50 @@ $("#stealpicker").change(function() {
         }
       }
     });
+    $("#changeUsername").bind("keyup", function(e) {
+      if (e.which == 13) {
+        var val = $("#changeUsername").val();
+        $("#usernameResponse").html("");
+        if (val != "") {
+          // try to change name
+          ftapi.actions.changeName(val, function(error) {
+            if (error){
+              alert(error);
+              $("#usernameResponse").text(error);
+            } else {
+              $("#usernameResponse").text("Great job! Your name is now "+val);
+            }
+          });
+        }
+      }
+    });
     $("#supercopSearch").bind("keyup", function(e) {
       if (e.which == 13) {
-          var val = $("#supercopSearch").val();
-          $("#supercopResponse").html("");
-          if (val != "") {
-            //begin user search...
-            ftapi.lookup.userByName(val, function(person){
-              //check search results
-              if (person) {
-                //found something!
-                if (!person.supermod) {
-                  ftapi.actions.banUser(person.userid);
-                  $("#supercopResponse").html("<span style=\"color: " + firetable.orange + ";\">" + person.username + " suspended.</span>");
+        var val = $("#supercopSearch").val();
+        $("#supercopResponse").html("");
+        if (val != "") {
+          //begin user search...
+          ftapi.lookup.userByName(val, function(person) {
+            //check search results
+            if (person) {
+              //found something!
+              if (!person.supermod) {
+                ftapi.actions.banUser(person.userid);
+                $("#supercopResponse").html(person.username + " suspended.");
 
-                } else {
-                  $("#supercopResponse").html("<span style=\"color: red; \">Can not suspend that (or any) supercop.</span>");
-                }
               } else {
-                $("#supercopResponse").html("<span style=\"color: red;\">" + val + " not found...</span>");
+                $("#supercopResponse").text("Can not suspend that (or any) supercop.");
               }
-            });
-          }
+            } else {
+              $("#supercopResponse").text(val + " not found...");
+            }
+          });
         }
+      }
     });
-    $("#importSources .tab").bind( "click", function( e ) {
+    $("#importSources .tab").bind("click", function(e) {
       var searchFrom = firetable.importSelectsChoice;
-      if ( searchFrom == 2 ) {
+      if (searchFrom == 2) {
         $("#byId").hide();
       } else {
         $("#byId").show();
@@ -2291,20 +2327,21 @@ $("#stealpicker").change(function() {
       $(this).siblings().removeClass('on');
       $(this).addClass('on');
     });
-    $("#plMachineById").bind( "change keyup input", function( e ) {
+    $("#plMachineById").bind("change keyup input", function(e) {
       var searchFrom = firetable.importSelectsChoice;
       // YouTube playlist IDs are 34 characters. Full URL is 72 characters
-      if ( (searchFrom == 1 && this.value.length === 18) || (searchFrom == 1 && this.value.length === 34) || (searchFrom == 1 && this.value.length === 56) || (searchFrom == 1 && this.value.length === 72) ) {
-        $("#plMachineById + button").prop( 'disabled', false );
+      if ((searchFrom == 1 && this.value.length === 18) || (searchFrom == 1 && this.value.length === 34) || (searchFrom == 1 && this.value.length === 56) || (searchFrom == 1 && this.value.length === 72)) {
+        $("#plMachineById + button").prop('disabled', false);
       } else {
-        $("#plMachineById + button").prop( 'disabled', true );
+        $("#plMachineById + button").prop('disabled', true);
       };
     });
-    $("#plMachineById + button").bind( "click", function( e ) {
+    $("#plMachineById + button").bind("click", function(e) {
       var regex = /(?:list=)/
       var ytPlId = $("#plMachineById").val().split(regex);
+
       function keyWordsearch() {
-        gapi.client.setApiKey('AIzaSyDCXzJ9gGLTF_BLcTzNUO2Zeh4HwPxgyds');
+        gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
         gapi.client.load('youtube', 'v3', function() {
           makeRequest();
         });
@@ -2320,9 +2357,9 @@ $("#stealpicker").change(function() {
             if (response.result.items) {
               if (response.result.items.length === 1) {
                 var playlistTitle = response.result.items[0].snippet.title;
-                confirm("Importing playlist: "+playlistTitle);
-                firetable.actions.importList( ytPlId[ytPlId.length - 1], playlistTitle, 1);
-                $("#plMachineById + button").prop( 'disabled', true );
+                confirm("Importing playlist: " + playlistTitle);
+                firetable.actions.importList(ytPlId[ytPlId.length - 1], playlistTitle, 1);
+                $("#plMachineById + button").prop('disabled', true);
               } else {
                 alert("There is no YouTube playlist with that ID.");
               }
@@ -2342,7 +2379,7 @@ $("#stealpicker").change(function() {
           if (searchFrom == 1) {
             //youtube
             function keyWordsearch() {
-              gapi.client.setApiKey('AIzaSyDCXzJ9gGLTF_BLcTzNUO2Zeh4HwPxgyds');
+              gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
               gapi.client.load('youtube', 'v3', function() {
                 makeRequest();
               });
@@ -2357,7 +2394,7 @@ $("#stealpicker").change(function() {
               });
               request.execute(function(response) {
                 var srchItems = response.result.items;
-                firetable.debug && console.log('import search results:',response);
+                firetable.debug && console.log('import search results:', response);
                 $.each(srchItems, function(index, item) {
                   vidTitle = item.snippet.title;
                   $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.snippet.title + " by " + item.snippet.channelTitle + "</div><a target=\"_blank\" href=\"https://www.youtube.com/playlist?list=" + item.id.playlistId + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id.playlistId + "', '" + firetable.utilities.htmlEscape(item.snippet.title) + "', 1)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
@@ -2388,7 +2425,7 @@ $("#stealpicker").change(function() {
         var txt = $("#qsearch").val();
         if (firetable.searchSelectsChoice == 1) {
           function keyWordsearch() {
-            gapi.client.setApiKey('AIzaSyDCXzJ9gGLTF_BLcTzNUO2Zeh4HwPxgyds');
+            gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
             gapi.client.load('youtube', 'v3', function() {
               makeRequest();
             });
@@ -2405,7 +2442,7 @@ $("#stealpicker").change(function() {
               maxResults: 15
             });
             request.execute(function(response) {
-              firetable.debug && console.log('queue search:',response);
+              firetable.debug && console.log('queue search:', response);
               //  $("#qsearch").val("");
               $('#searchResults').html("");
 
@@ -2421,7 +2458,7 @@ $("#stealpicker").change(function() {
                   //start regular song
                   var nownow = Date.now();
                   var timeSince = nownow - firetable.song.started;
-                  if (timeSince <= 0 ) timeSince = 0;
+                  if (timeSince <= 0) timeSince = 0;
 
                   var secSince = Math.floor(timeSince / 1000);
                   var timeLeft = firetable.song.duration - secSince;
@@ -2447,13 +2484,13 @@ $("#stealpicker").change(function() {
                 var pkey = "ytcid" + item.id.videoId;
                 var $srli = $searchItemTemplate.clone();
                 $srli.attr('id', "pvbar" + pkey);
-                $srli.attr( "data-key", pkey );
-                $srli.attr( "data-cid", item.id.videoId );
-                $srli.find('.previewicon').attr('id', "pv" + pkey).on('click', function(){
+                $srli.attr("data-key", pkey);
+                $srli.attr("data-cid", item.id.videoId);
+                $srli.find('.previewicon').attr('id', "pv" + pkey).on('click', function() {
                   firetable.actions.pview($(this).parent().attr('data-key'), true, 1);
                 });
                 $srli.find('.listwords').html(vidTitle);
-                $srli.find('.queuetrack').on('click', function(){
+                $srli.find('.queuetrack').on('click', function() {
                   firetable.actions.queueTrack(
                     $(this).parent().attr('data-cid'),
                     firetable.utilities.htmlEscape($(this).parent().find('.listwords').text()),
@@ -2472,7 +2509,7 @@ $("#stealpicker").change(function() {
           SC.get('/tracks', {
             q: q
           }).then(function(tracks) {
-            firetable.debug && console.log('sc tracks:',tracks);
+            firetable.debug && console.log('sc tracks:', tracks);
             // $("#qsearch").val("");
             $('#searchResults').html("");
 
@@ -2488,7 +2525,7 @@ $("#stealpicker").change(function() {
                 //start regular song
                 var nownow = Date.now();
                 var timeSince = nownow - firetable.song.started;
-                if (timeSince <= 0 ) timeSince = 0;
+                if (timeSince <= 0) timeSince = 0;
 
                 var secSince = Math.floor(timeSince / 1000);
                 var timeLeft = firetable.song.duration - secSince;
@@ -2522,9 +2559,9 @@ $("#stealpicker").change(function() {
               var pkey = "sccid" + item.id;
               var $srli = $searchItemTemplate.clone();
               $srli.attr('id', "pvbar" + pkey);
-              $srli.attr( "data-key", pkey );
-              $srli.attr( "data-cid", item.id );
-              $srli.find('.previewicon').attr('id', "pv" + pkey).on('click', function(){
+              $srli.attr("data-key", pkey);
+              $srli.attr("data-cid", item.id);
+              $srli.find('.previewicon').attr('id', "pv" + pkey).on('click', function() {
                 firetable.actions.pview(
                   $(this).parent().attr('data-key'),
                   true,
@@ -2532,7 +2569,7 @@ $("#stealpicker").change(function() {
                 );
               });
               $srli.find('.listwords').html(vidTitle);
-              $srli.find('.queuetrack').on('click', function(){
+              $srli.find('.queuetrack').on('click', function() {
                 firetable.actions.queueTrack(
                   $(this).parent().attr('data-cid'),
                   firetable.utilities.htmlEscape($(this).parent().find('.listwords').text()),
@@ -2550,10 +2587,10 @@ $("#stealpicker").change(function() {
         var txt = $("#newchat").val();
         if (txt == "") return;
         var matches = txt.match(/^(?:[\/])(\w+)\s*(.*)/i);
-        if (txt == ":fire:" || txt == "🔥"){
+        if (txt == ":fire:" || txt == "🔥") {
           $("#cloud_with_rain").removeClass("on");
           $("#fire").addClass("on");
-        } else if (txt == ":cloud_with_rain:" || txt == "🌧"){
+        } else if (txt == ":cloud_with_rain:" || txt == "🌧") {
           $("#cloud_with_rain").addClass("on");
           $("#fire").removeClass("on");
         }
@@ -2599,10 +2636,10 @@ $("#stealpicker").change(function() {
         $("#pickEmoji").removeClass("on");
         var objDiv = document.getElementById("chatsWrap");
         objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
-    }
+      }
 
     });
-    ftapi.events.on("colorsChanged", function(data){
+    ftapi.events.on("colorsChanged", function(data) {
       firetable.debug && console.log("COLOR CHANGE!", data);
 
       firetable.color = data.color;
@@ -2712,10 +2749,12 @@ $("#stealpicker").change(function() {
 }
 
 var scrollits = [];
-$('.scrollit').each(function(){
-  scrollits[$(this).attr('id')] = new PerfectScrollbar($(this)[0], { minScrollbarLength: 30 });
+$('.scrollit').each(function() {
+  scrollits[$(this).attr('id')] = new PerfectScrollbar($(this)[0], {
+    minScrollbarLength: 30
+  });
 });
-firetable.debug && console.log('scrollits',scrollits);
+firetable.debug && console.log('scrollits', scrollits);
 
 
 let isLoaded = false;
@@ -2723,287 +2762,287 @@ let glitch;
 let imgSrc = '';
 
 function setup(useThis) {
-    if (!useThis) useThis = firetable.scImg;
-    background(0);
-    let cnv = createCanvas($('#djStage').outerWidth(), $('#djStage').outerHeight());
-    cnv.parent('scScreen');
-    loadImage(useThis, function(img) {
-        glitch = new Glitch(img);
-        isLoaded = true;
-        var $can = $('#scScreen canvas');
-        var canrat = $can.width() / $can.height();
-        $can.data('ratio',canrat);
-    });
+  if (!useThis) useThis = firetable.scImg;
+  background(0);
+  let cnv = createCanvas($('#djStage').outerWidth(), $('#djStage').outerHeight());
+  cnv.parent('scScreen');
+  loadImage(useThis, function(img) {
+    glitch = new Glitch(img);
+    isLoaded = true;
+    var $can = $('#scScreen canvas');
+    var canrat = $can.width() / $can.height();
+    $can.data('ratio', canrat);
+  });
 }
 
 function draw() {
-    clear();
-    background(0);
+  clear();
+  background(0);
 
-    if (isLoaded) {
-        glitch.show();
-    }
+  if (isLoaded) {
+    glitch.show();
+  }
 
-    // fill(255, 255, 255);
-    // textSize(14);
-    // text('FPS: ' + floor(frameRate()), 20, 30);
+  // fill(255, 255, 255);
+  // textSize(14);
+  // text('FPS: ' + floor(frameRate()), 20, 30);
 
 }
 
 class Glitch {
-    constructor(img) {
-        this.channelLen = 4;
-        this.imgOrigin = img;
-        this.imgOrigin.loadPixels();
-        this.copyData = [];
-        this.flowLineImgs = [];
-        this.shiftLineImgs = [];
-        this.shiftRGBs = [];
-        this.scatImgs = [];
+  constructor(img) {
+    this.channelLen = 4;
+    this.imgOrigin = img;
+    this.imgOrigin.loadPixels();
+    this.copyData = [];
+    this.flowLineImgs = [];
+    this.shiftLineImgs = [];
+    this.shiftRGBs = [];
+    this.scatImgs = [];
+    this.throughFlag = true;
+    this.copyData = new Uint8ClampedArray(this.imgOrigin.pixels);
+
+    // flow line
+    for (let i = 0; i < 1; i++) {
+      let o = {
+        pixels: null,
+        t1: floor(random(0, 1000)),
+        speed: floor(random(4, 24)),
+        randX: floor(random(24, 80))
+      };
+      this.flowLineImgs.push(o);
+    }
+
+    // shift line
+    for (let i = 0; i < 6; i++) {
+      let o = null;
+      this.shiftLineImgs.push(o);
+    }
+
+    // shift RGB
+    for (let i = 0; i < 1; i++) {
+      let o = null;
+      this.shiftRGBs.push(o);
+    }
+
+    // scat imgs
+    for (let i = 0; i < 3; i++) {
+      let scatImg = {
+        img: null,
+        x: 0,
+        y: 0
+      };
+      this.scatImgs.push(scatImg);
+    }
+  }
+
+  replaceData(destImg, srcPixels) {
+    for (let y = 0; y < destImg.height; y++) {
+      for (let x = 0; x < destImg.width; x++) {
+        let r, g, b, a;
+        let index;
+        index = (y * destImg.width + x) * this.channelLen;
+        r = index;
+        g = index + 1;
+        b = index + 2;
+        a = index + 3;
+        destImg.pixels[r] = srcPixels[r];
+        destImg.pixels[g] = srcPixels[g];
+        destImg.pixels[b] = srcPixels[b];
+        destImg.pixels[a] = srcPixels[a];
+      }
+    }
+    destImg.updatePixels();
+  }
+
+  flowLine(srcImg, obj) {
+
+    let destPixels,
+      tempY;
+    destPixels = new Uint8ClampedArray(srcImg.pixels);
+    obj.t1 %= srcImg.height;
+    obj.t1 += obj.speed;
+    //tempY = floor(noise(obj.t1) * srcImg.height);
+    tempY = floor(obj.t1);
+    for (let y = 0; y < srcImg.height; y++) {
+      if (tempY === y) {
+        for (let x = 0; x < srcImg.width; x++) {
+          let r, g, b, a;
+          let index;
+          index = (y * srcImg.width + x) * this.channelLen;
+          r = index;
+          g = index + 1;
+          b = index + 2;
+          a = index + 3;
+          destPixels[r] = srcImg.pixels[r] + obj.randX;
+          destPixels[g] = srcImg.pixels[g] + obj.randX;
+          destPixels[b] = srcImg.pixels[b] + obj.randX;
+          destPixels[a] = srcImg.pixels[a];
+        }
+      }
+    }
+    return destPixels;
+  }
+
+  shiftLine(srcImg) {
+
+    let offsetX;
+    let rangeMin, rangeMax;
+    let destPixels;
+    let rangeH;
+
+    destPixels = new Uint8ClampedArray(srcImg.pixels);
+    rangeH = srcImg.height;
+    rangeMin = floor(random(0, rangeH));
+    rangeMax = rangeMin + floor(random(1, rangeH - rangeMin));
+    offsetX = this.channelLen * floor(random(-40, 40));
+
+    for (let y = 0; y < srcImg.height; y++) {
+      if (y > rangeMin && y < rangeMax) {
+        for (let x = 0; x < srcImg.width; x++) {
+          let r, g, b, a;
+          let r2, g2, b2, a2;
+          let index;
+
+          index = (y * srcImg.width + x) * this.channelLen;
+          r = index;
+          g = index + 1;
+          b = index + 2;
+          a = index + 3;
+          r2 = r + offsetX;
+          g2 = g + offsetX;
+          b2 = b + offsetX;
+          destPixels[r] = srcImg.pixels[r2];
+          destPixels[g] = srcImg.pixels[g2];
+          destPixels[b] = srcImg.pixels[b2];
+          destPixels[a] = srcImg.pixels[a];
+        }
+      }
+    }
+    return destPixels;
+  }
+
+  shiftRGB(srcImg) {
+
+    let randR, randG, randB;
+    let destPixels;
+    let range;
+
+    range = 16;
+    destPixels = new Uint8ClampedArray(srcImg.pixels);
+    randR = (floor(random(-range, range)) * srcImg.width + floor(random(-range, range))) * this.channelLen;
+    randG = (floor(random(-range, range)) * srcImg.width + floor(random(-range, range))) * this.channelLen;
+    randB = (floor(random(-range, range)) * srcImg.width + floor(random(-range, range))) * this.channelLen;
+
+    for (let y = 0; y < srcImg.height; y++) {
+      for (let x = 0; x < srcImg.width; x++) {
+        let r, g, b, a;
+        let r2, g2, b2, a2;
+        let index;
+
+        index = (y * srcImg.width + x) * this.channelLen;
+        r = index;
+        g = index + 1;
+        b = index + 2;
+        a = index + 3;
+        r2 = (r + randR) % srcImg.pixels.length;
+        g2 = (g + randG) % srcImg.pixels.length;
+        b2 = (b + randB) % srcImg.pixels.length;
+        destPixels[r] = srcImg.pixels[r2];
+        destPixels[g] = srcImg.pixels[g2];
+        destPixels[b] = srcImg.pixels[b2];
+        destPixels[a] = srcImg.pixels[a];
+      }
+    }
+
+    return destPixels;
+  }
+
+  getRandomRectImg(srcImg) {
+    let startX;
+    let startY;
+    let rectW;
+    let rectH;
+    let destImg;
+    startX = floor(random(0, srcImg.width - 30));
+    startY = floor(random(0, srcImg.height - 50));
+    rectW = floor(random(30, srcImg.width - startX));
+    rectH = floor(random(1, 50));
+    destImg = srcImg.get(startX, startY, rectW, rectH);
+    destImg.loadPixels();
+    return destImg;
+  }
+
+  show() {
+
+    // restore the original state
+    this.replaceData(this.imgOrigin, this.copyData);
+
+    // sometimes pass without effect processing
+    let n = floor(random(100));
+    if (n > 75 && this.throughFlag) {
+      this.throughFlag = false;
+      setTimeout(() => {
         this.throughFlag = true;
-        this.copyData = new Uint8ClampedArray(this.imgOrigin.pixels);
-
-        // flow line
-        for (let i = 0; i < 1; i++) {
-            let o = {
-                pixels: null,
-                t1: floor(random(0, 1000)),
-                speed: floor(random(4, 24)),
-                randX: floor(random(24, 80))
-            };
-            this.flowLineImgs.push(o);
-        }
-
-        // shift line
-        for (let i = 0; i < 6; i++) {
-            let o = null;
-            this.shiftLineImgs.push(o);
-        }
-
-        // shift RGB
-        for (let i = 0; i < 1; i++) {
-            let o = null;
-            this.shiftRGBs.push(o);
-        }
-
-        // scat imgs
-        for (let i = 0; i < 3; i++) {
-            let scatImg = {
-                img: null,
-                x: 0,
-                y: 0
-            };
-            this.scatImgs.push(scatImg);
-        }
+      }, floor(random(200, 1500)));
+    }
+    if (!this.throughFlag) {
+      push();
+      translate((width - this.imgOrigin.width) / 2, (height - this.imgOrigin.height) / 2);
+      image(this.imgOrigin, 0, 0);
+      pop();
+      return;
     }
 
-    replaceData(destImg, srcPixels) {
-        for (let y = 0; y < destImg.height; y++) {
-            for (let x = 0; x < destImg.width; x++) {
-                let r, g, b, a;
-                let index;
-                index = (y * destImg.width + x) * this.channelLen;
-                r = index;
-                g = index + 1;
-                b = index + 2;
-                a = index + 3;
-                destImg.pixels[r] = srcPixels[r];
-                destImg.pixels[g] = srcPixels[g];
-                destImg.pixels[b] = srcPixels[b];
-                destImg.pixels[a] = srcPixels[a];
-            }
+    // flow line
+    this.flowLineImgs.forEach((v, i, arr) => {
+      arr[i].pixels = this.flowLine(this.imgOrigin, v);
+      if (arr[i].pixels) {
+        this.replaceData(this.imgOrigin, arr[i].pixels);
+      }
+    })
+
+    // shift line
+    this.shiftLineImgs.forEach((v, i, arr) => {
+      if (floor(random(100)) > 50) {
+        arr[i] = this.shiftLine(this.imgOrigin);
+        this.replaceData(this.imgOrigin, arr[i]);
+      } else {
+        if (arr[i]) {
+          this.replaceData(this.imgOrigin, arr[i]);
         }
-        destImg.updatePixels();
-    }
+      }
+    })
 
-    flowLine(srcImg, obj) {
+    // shift rgb
+    this.shiftRGBs.forEach((v, i, arr) => {
+      if (floor(random(100)) > 65) {
+        arr[i] = this.shiftRGB(this.imgOrigin);
+        this.replaceData(this.imgOrigin, arr[i]);
+      }
+    })
 
-        let destPixels,
-            tempY;
-        destPixels = new Uint8ClampedArray(srcImg.pixels);
-        obj.t1 %= srcImg.height;
-        obj.t1 += obj.speed;
-        //tempY = floor(noise(obj.t1) * srcImg.height);
-        tempY = floor(obj.t1);
-        for (let y = 0; y < srcImg.height; y++) {
-            if (tempY === y) {
-                for (let x = 0; x < srcImg.width; x++) {
-                    let r, g, b, a;
-                    let index;
-                    index = (y * srcImg.width + x) * this.channelLen;
-                    r = index;
-                    g = index + 1;
-                    b = index + 2;
-                    a = index + 3;
-                    destPixels[r] = srcImg.pixels[r] + obj.randX;
-                    destPixels[g] = srcImg.pixels[g] + obj.randX;
-                    destPixels[b] = srcImg.pixels[b] + obj.randX;
-                    destPixels[a] = srcImg.pixels[a];
-                }
-            }
-        }
-        return destPixels;
-    }
+    push();
+    translate((width - this.imgOrigin.width) / 2, (height - this.imgOrigin.height) / 2);
+    image(this.imgOrigin, 0, 0);
+    pop();
 
-    shiftLine(srcImg) {
+    // scat image
+    this.scatImgs.forEach((obj) => {
+      push();
+      translate((width - this.imgOrigin.width) / 2, (height - this.imgOrigin.height) / 2);
+      if (floor(random(100)) > 80) {
+        obj.x = floor(random(-this.imgOrigin.width * 0.3, this.imgOrigin.width * 0.7));
+        obj.y = floor(random(-this.imgOrigin.height * 0.1, this.imgOrigin.height));
+        obj.img = this.getRandomRectImg(this.imgOrigin);
+      }
+      if (obj.img) {
+        image(obj.img, obj.x, obj.y);
+      }
+      pop();
+    })
 
-        let offsetX;
-        let rangeMin, rangeMax;
-        let destPixels;
-        let rangeH;
-
-        destPixels = new Uint8ClampedArray(srcImg.pixels);
-        rangeH = srcImg.height;
-        rangeMin = floor(random(0, rangeH));
-        rangeMax = rangeMin + floor(random(1, rangeH - rangeMin));
-        offsetX = this.channelLen * floor(random(-40, 40));
-
-        for (let y = 0; y < srcImg.height; y++) {
-            if (y > rangeMin && y < rangeMax) {
-                for (let x = 0; x < srcImg.width; x++) {
-                        let r, g, b, a;
-                        let r2, g2, b2, a2;
-                        let index;
-
-                        index = (y * srcImg.width + x) * this.channelLen;
-                        r = index;
-                        g = index + 1;
-                        b = index + 2;
-                        a = index + 3;
-                        r2 = r + offsetX;
-                        g2 = g + offsetX;
-                        b2 = b + offsetX;
-                        destPixels[r] = srcImg.pixels[r2];
-                        destPixels[g] = srcImg.pixels[g2];
-                        destPixels[b] = srcImg.pixels[b2];
-                        destPixels[a] = srcImg.pixels[a];
-                }
-            }
-        }
-        return destPixels;
-    }
-
-    shiftRGB(srcImg) {
-
-        let randR, randG, randB;
-        let destPixels;
-        let range;
-
-        range = 16;
-        destPixels = new Uint8ClampedArray(srcImg.pixels);
-        randR = (floor(random(-range, range)) * srcImg.width + floor(random(-range, range))) * this.channelLen;
-        randG = (floor(random(-range, range)) * srcImg.width + floor(random(-range, range))) * this.channelLen;
-        randB = (floor(random(-range, range)) * srcImg.width + floor(random(-range, range))) * this.channelLen;
-
-        for (let y = 0; y < srcImg.height; y++) {
-            for (let x = 0; x < srcImg.width; x++) {
-                let r, g, b, a;
-                let r2, g2, b2, a2;
-                let index;
-
-                index = (y * srcImg.width + x) * this.channelLen;
-                r = index;
-                g = index + 1;
-                b = index + 2;
-                a = index + 3;
-                r2 = (r + randR) % srcImg.pixels.length;
-                g2 = (g + randG) % srcImg.pixels.length;
-                b2 = (b + randB) % srcImg.pixels.length;
-                destPixels[r] = srcImg.pixels[r2];
-                destPixels[g] = srcImg.pixels[g2];
-                destPixels[b] = srcImg.pixels[b2];
-                destPixels[a] = srcImg.pixels[a];
-            }
-        }
-
-        return destPixels;
-    }
-
-    getRandomRectImg(srcImg) {
-        let startX;
-        let startY;
-        let rectW;
-        let rectH;
-        let destImg;
-        startX = floor(random(0, srcImg.width - 30));
-        startY = floor(random(0, srcImg.height - 50));
-        rectW = floor(random(30, srcImg.width - startX));
-        rectH = floor(random(1, 50));
-        destImg = srcImg.get(startX, startY, rectW, rectH);
-        destImg.loadPixels();
-        return destImg;
-    }
-
-    show() {
-
-        // restore the original state
-        this.replaceData(this.imgOrigin, this.copyData);
-
-        // sometimes pass without effect processing
-        let n = floor(random(100));
-        if (n > 75 && this.throughFlag) {
-            this.throughFlag = false;
-            setTimeout(() => {
-                this.throughFlag = true;
-            }, floor(random(200, 1500)));
-        }
-        if (!this.throughFlag) {
-            push();
-            translate((width - this.imgOrigin.width) / 2, (height - this.imgOrigin.height) / 2);
-            image(this.imgOrigin, 0, 0);
-            pop();
-            return;
-        }
-
-        // flow line
-        this.flowLineImgs.forEach((v, i, arr) => {
-            arr[i].pixels = this.flowLine(this.imgOrigin, v);
-            if (arr[i].pixels) {
-                this.replaceData(this.imgOrigin, arr[i].pixels);
-            }
-        })
-
-        // shift line
-        this.shiftLineImgs.forEach((v, i, arr) => {
-            if (floor(random(100)) > 50) {
-                arr[i] = this.shiftLine(this.imgOrigin);
-                this.replaceData(this.imgOrigin, arr[i]);
-            } else {
-                if (arr[i]) {
-                    this.replaceData(this.imgOrigin, arr[i]);
-                }
-            }
-        })
-
-        // shift rgb
-        this.shiftRGBs.forEach((v, i, arr) => {
-            if (floor(random(100)) > 65) {
-                arr[i] = this.shiftRGB(this.imgOrigin);
-                this.replaceData(this.imgOrigin, arr[i]);
-            }
-        })
-
-        push();
-        translate((width - this.imgOrigin.width) / 2, (height - this.imgOrigin.height) / 2);
-        image(this.imgOrigin, 0, 0);
-        pop();
-
-        // scat image
-        this.scatImgs.forEach((obj) => {
-            push();
-            translate((width - this.imgOrigin.width) / 2, (height - this.imgOrigin.height) / 2);
-            if (floor(random(100)) > 80) {
-                obj.x = floor(random(-this.imgOrigin.width * 0.3, this.imgOrigin.width * 0.7));
-                obj.y = floor(random(-this.imgOrigin.height * 0.1, this.imgOrigin.height));
-                obj.img = this.getRandomRectImg(this.imgOrigin);
-            }
-            if (obj.img) {
-                image(obj.img, obj.x, obj.y);
-            }
-            pop();
-        })
-
-    }
+  }
 
 }
 

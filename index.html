@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="css/perfect-scrollbar.css" />
   	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' type='text/css'>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-	<link rel="stylesheet" href="css/looks.css?v=01.02.30" type="text/css" />
+	<link rel="stylesheet" href="css/looks.css?v=01.02.31" type="text/css" />
 </head>
 
 <body>
@@ -23,7 +23,7 @@
 		<button role="button" class="header_icon openModal" data-modal="supercopBox" id="ftSuperCopButton"><i class="material-icons">security</i></button>
 		<div class="flexpacer"></div>
 		<button role="button" class="header_icon openModal" data-modal="cardsBox" id="cardCaseButton"><i class="material-icons"> business_center </i></button>
-		<div id="loggedInName"></div>
+		<div id="loggedInName" class="openModal" data-modal="accountSettingsBox"></div>
 		<div id="reconnecting">Reconnecting...</div>
 		<button role="button" class="header_icon" id="logOutButton"><i class="material-icons"> exit_to_app </i></button>
 	</header>
@@ -288,6 +288,9 @@
 					Email: <input type="text" id="newemail">
 				</div>
 				<div class="inputline">
+					Username: <input type="text" id="newusername">
+				</div>
+				<div class="inputline">
 					Password: <input type="password" id="newpass">
 				</div>
 				<div class="inputline">
@@ -392,6 +395,19 @@
 				</div>
 			</div>
 
+			<div class="modalThing" id="accountSettingsBox">
+				<div class="modalHeader">
+					<h2>Your Account</h2>
+					<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+				</div>
+				<div class="modalContent scrollit">
+					<div id="accountSettingsMain"></div>
+					Change your username to some other thing...<br/><br/>
+					<input type="text" placeholder="Change Username" id="changeUsername"></input>
+					<div class="responseBox" id="usernameResponse"></div>
+				</div>
+			</div>
+
 			<div class="modalThing" id="supercopBox">
 				<div class="modalHeader">
 					<h2>Supercop Control Panel</h2>
@@ -400,7 +416,7 @@
 				<div class="modalContent scrollit">
 					Suspend a user's account, or manage active suspentions.<br/><br/>
 					<input type="text" placeholder="Enter Username to Suspend User's Account" id="supercopSearch"></input>
-					<div id="supercopResponse"></div>
+					<div class="responseBox" id="supercopResponse"></div>
 					<h3>Active Suspentions</h3>
 					<div id="activeSuspentions"></div>
 				</div>
@@ -454,8 +470,8 @@
 	<script src="https://apis.google.com/js/client.js?onload=googleApiClientReady"></script>
 	<script src="https://w.soundcloud.com/player/api.js" type="text/javascript"></script>
 	<script src="https://www.youtube.com/iframe_api"></script>
-	<script type="text/javascript" src="js/firetable.js?v=01.02.30"></script>
-	<script type="text/javascript" src="js/main.js?v=01.02.30"></script>
+	<script type="text/javascript" src="js/firetable.js?v=01.02.31"></script>
+	<script type="text/javascript" src="js/main.js?v=01.02.31"></script>
 
 </body>
 
