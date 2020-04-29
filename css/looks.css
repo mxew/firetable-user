@@ -364,6 +364,11 @@ code {
 }
 #loggedInName {
   margin: 0 var(--pad2);
+  cursor:pointer;
+  text-decoration:none;
+}
+#loggedInName:hover{
+  text-decoration:underline;
 }
 .header_icon {
   margin: 0.2rem 0.2rem 0 0.2rem;
@@ -1451,7 +1456,7 @@ span.cardShareChat:hover {
   font-size: 10px;
   color: #999;
 }
-input#tagMachine, #supercopSearch {
+input#tagMachine, #supercopSearch, #changeUsername {
   line-height: 30px;
   width: 470px;
   padding: 5px;
@@ -1481,8 +1486,15 @@ input#plMachineById {
 input#plMachineById {
   padding-right: 40px;
 }
-#supercopResponse {
-  margin-top: -15px;
+.responseBox {
+  background-color: var(--orange);
+  margin:10px;
+  padding:5px;
+  color: #000;
+  border-radius: 0.25rem;
+}
+.responseBox:empty{
+  display: none;
 }
 #mergeLists,
 #shuffleQueue {

@@ -9,6 +9,7 @@ var ftapi = {
   banned: false,
   presenceDetectRef: null,
   presenceDetectEvent: null,
+  nameChangeAfterSignUp: null,
   connectedRef: null,
   superCopBanUpdates: null,
   uname: null,
@@ -213,6 +214,13 @@ ftapi.init = function(firebaseConfig) {
           });
 
         });
+
+        // set username if needed
+        if (ftapi.nameChangeAfterSignUp) {
+          var name = ftapi.nameChangeAfterSignUp.username;
+          ftapi.nameChangeAfterSignUp = null;
+          ftapi.actions.changeName(name);
+        }
 
         // set join date if needed
         var joinRef = firebase.app("firetable").database().ref("users/" + user.uid + "/joined");
@@ -535,6 +543,29 @@ ftapi.actions = {
   /*
   AUTH ACTIONS
   */
+  changeName: function(newName, callback) {
+    if (!newName) return;
+    // locally validate name for length and char requirements before sending to firebase
+    var validateName = ftapi.utilities.validateUsername(newName);
+    if (!validateName.valid) return callback(validateName.reason);
+    // claim before we can change
+    var claimRef = firebase.app("firetable").database().ref("nameClaim/" + newName);
+    claimRef.set(ftapi.uid, function(error) {
+      if (error && callback) {
+        return callback("This username is not available");
+      } else {
+        // name claimed, now we can set it
+        var setRef = firebase.app("firetable").database().ref("users/" + ftapi.uid + "/username");
+        setRef.set(newName, function(error) {
+          if (error && callback) {
+            return callback("This username is not available");
+          } else if (!error && callback) {
+            return callback(); // ALL GOOD GREAT WORK
+          }
+        });
+      }
+    });
+  },
   logOut: function() {
     var ref0 = firebase.app("firetable").database().ref("users/" + ftapi.uid + "/status");
     ftapi.uid = null;
@@ -544,6 +575,7 @@ ftapi.actions = {
     firebase.app("firetable").auth().signOut();
   },
   logIn: function(email, password, errorCallback) {
+    nameChangeAfterSignUp = null; // make sure this is cleared
     firebase.app("firetable").auth().signInWithEmailAndPassword(email, password).catch(function(error) {
       return errorCallback(error);
     });
@@ -553,12 +585,25 @@ ftapi.actions = {
       return errorCallback(error);
     });
   },
-  signUp: function(email, password, errorCallback) {
-    firebase.app("firetable").auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      return errorCallback(error);
-    });
+  signUp: function(email, password, username, errorCallback) {
+    var validateName = ftapi.utilities.validateUsername(username);
+    if (!validateName.valid) {
+      return errorCallback(validateName.reason);
+    }
+    ftapi.lookup.usernameTaken(username, function(taken) {
+      if (taken) {
+        return errorCallback("This username is not available.");
+      } else {
+        ftapi.nameChangeAfterSignUp = {
+          username: username
+        };
+        firebase.app("firetable").auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          return errorCallback(errorMessage);
+        });
+      }
+    })
   },
   /*
   ADMIN ACTIONS
@@ -600,6 +645,18 @@ ftapi.lookup = {
         var cards = snapshot.val();
         return callback(cards);
       });
+  },
+  usernameTaken: function(name, callback) {
+    var searchByName = firebase.app("firetable").database().ref("users");
+    searchByName.orderByChild('username').equalTo(name).once("value")
+    .then(function(snapshot) {
+      var data = snapshot.val();
+      var taken = false;
+      if (data) {
+        taken = true;
+      }
+      return callback(taken);
+    });
   },
   userByName: function(name, callback) {
     var searchByName = firebase.app("firetable").database().ref("users");
@@ -673,6 +730,23 @@ ftapi.utilities = {
       if (obj.hasOwnProperty(key)) size++;
     }
     return size;
+  },
+  validateUsername: function(username) {
+    var reason = null;
+    if (username.length > 22) {
+      var diff = username.length - 22;
+      reason = "Name too long... Remove at least " + diff + " character(s).";
+    } else if (!username.match(/^[0-9a-zA-Z_]{1,22}$/)) {
+      reason = "Invalid name... Only use a combination of letters, numbers, and underscores.";
+    }
+    var valid = true;
+    if (reason) {
+      valid = false;
+    }
+    return {
+      valid: valid,
+      reason: reason
+    };
   }
 };
 
