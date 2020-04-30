@@ -41,7 +41,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.03.11";
+firetable.version = "01.03.12";
 var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
@@ -2695,7 +2695,7 @@ firetable.ui = {
     /* Textarea Management */
 
     attach_ta: function(event) {
-      if (!$.contains(document.getElementById("mainqueue"), event.target)) return;
+      if (!$.contains(document.getElementById("queuelist"), event.target)) return;
       if (firetable.ui.LinkGrabber.textarea != null) return;
 
       var textarea = firetable.ui.LinkGrabber.textarea = document.createElement("textarea");
