@@ -173,9 +173,21 @@ ftapi.init = function(firebaseConfig) {
             ftapi.presenceDetectRef.set(true);
           }
         });
+        var returnData = {
+          email: user.email,
+          uid: user.uid
+        };
         ftapi.uid = user.uid;
         ftapi.uname = user.uid;
-        ftapi.events.emit("loggedIn", user);
+        ftapi.lookup.userByID(user.uid, function(data){
+          if (data){
+            returnData.user = data;
+            if (data.username) ftapi.uname = data.username;
+          }
+
+          ftapi.events.emit("loggedIn", returnData);
+        });
+
 
         // setup ban check event emitters
         var banCheck = firebase.app("firetable").database().ref("banned/" + ftapi.uid);
