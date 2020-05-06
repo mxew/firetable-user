@@ -41,11 +41,15 @@ ftapi.init = function(firebaseConfig) {
   */
 
   // chat event emitter
-  var chatRef = firebase.app("firetable").database().ref("chat");
+  var chatRef = firebase.app("firetable").database().ref("chatFeed");
   chatRef.on('child_added', function(childSnapshot, prevChildKey) {
-    var chatData = childSnapshot.val();
-    chatData.chatID = childSnapshot.key;
-    ftapi.events.emit("newChat", chatData);
+    var chatID = childSnapshot.val();
+    ftapi.lookup.chatData(chatID, function(chatData){
+      chatData.chatID = chatID;
+      chatData.feedID = childSnapshot.key;
+      ftapi.events.emit("newChat", chatData);
+    });
+
   });
 
   // users change event emitter
@@ -257,7 +261,8 @@ ftapi.actions = {
   GENERAL USER ACTIONS
   */
   sendChat: function(txt, cardid) {
-    var chat = firebase.app("firetable").database().ref("chat");
+    var chatFeed = firebase.app("firetable").database().ref("chatFeed");
+    var chatData = firebase.app("firetable").database().ref("chatData");
     var data = {
       time: firebase.database.ServerValue.TIMESTAMP,
       id: ftapi.uid,
@@ -265,7 +270,11 @@ ftapi.actions = {
       name: ftapi.uname
     };
     if (cardid) data.card = cardid;
-    chat.push(data);
+    var chatItem = chatData.push(data, function(){
+      var feedItem = chatFeed.push(chatItem.key, function(){
+        chatItem.child("feedID").set(feedItem.key);
+      });
+    });
   },
   switchList: function(listID) {
     var uref = firebase.app("firetable").database().ref("users/" + ftapi.uid + "/selectedList");
@@ -630,11 +639,19 @@ ftapi.lookup = {
   /*
   DATA LOOKUP FUNCTIONS
   */
+  chatData: function(chatID, callback){
+    var chatData = firebase.app("firetable").database().ref("chatData/" + chatID);
+    chatData.once('value')
+      .then(function(snap) {
+        var data = snap.val();
+        return callback(data);
+      });
+  },
   card: function(cardid, callback) {
     var thecard = firebase.app("firetable").database().ref("cards/" + cardid);
     thecard.once('value')
-      .then(function(allQueuesSnap) {
-        var data = allQueuesSnap.val();
+      .then(function(snap) {
+        var data = snap.val();
         return callback(data);
       });
   },
