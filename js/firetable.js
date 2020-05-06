@@ -697,6 +697,7 @@ ftapi.lookup = {
         if (childData2) {
           var key2 = snapshot2.key;
           childData2.userid = key2;
+          if (!childData2.username) childData2.username = key2;
           person = childData2;
         }
         return callback(person);
