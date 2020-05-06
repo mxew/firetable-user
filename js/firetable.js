@@ -10,6 +10,7 @@ var ftapi = {
   presenceDetectRef: null,
   presenceDetectEvent: null,
   nameChangeAfterSignUp: null,
+  chatEvent: null,
   connectedRef: null,
   superCopBanUpdates: null,
   uname: null,
@@ -39,19 +40,6 @@ ftapi.init = function(firebaseConfig) {
   All realtime events for the non-authenticated user
   These will persist regardless of auth state changes
   */
-
-  // chat event emitter
-  var chatRef = firebase.app("firetable").database().ref("chatFeed");
-  chatRef.on('child_added', function(childSnapshot, prevChildKey) {
-    var chatID = childSnapshot.val();
-    ftapi.lookup.chatData(chatID, function(chatData){
-      chatData.chatID = chatID;
-      chatData.feedID = childSnapshot.key;
-      ftapi.events.emit("newChat", chatData);
-    });
-
-  });
-
   // users change event emitter
   var ref2 = firebase.app("firetable").database().ref("users");
   ref2.orderByChild('status').equalTo(true).on('value', function(dataSnapshot) {
@@ -197,6 +185,21 @@ ftapi.init = function(firebaseConfig) {
             ftapi.events.emit("userUnbanned");
           }
         });
+
+        // chat event emitter
+        if (!ftapi.chatEvent){
+          var chatRef = firebase.app("firetable").database().ref("chatFeed");
+          ftapi.chatEvent = chatRef.on('child_added', function(childSnapshot, prevChildKey) {
+            var chatID = childSnapshot.val();
+            ftapi.lookup.chatData(chatID, function(chatData){
+              chatData.chatID = chatID;
+              chatData.feedID = childSnapshot.key;
+              ftapi.events.emit("newChat", chatData);
+            });
+
+          });
+        }
+
 
         /*
         SET UP QUEUE BIND
