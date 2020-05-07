@@ -41,7 +41,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.03.12";
+firetable.version = "01.05.00";
 var player, $playlistItemTemplate;
 
 function onYouTubeIframeAPIReady() {
@@ -229,6 +229,13 @@ firetable.init = function() {
 };
 
 firetable.actions = {
+  localChatResponse: function(txt) {
+    if (txt.length) {
+      $("#chats").append("<div class=\"newChat\"><div class=\"lcrsp\">" + txt + "</div></div>");
+      var objDiv = document.getElementById("chatsWrap");
+      objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+    }
+  },
   logOut: function() {
     ftapi.actions.logOut();
     firetable.debug && console.log("logout");
@@ -1761,7 +1768,13 @@ firetable.ui = {
         return b.rolenum - a.rolenum;
       });
       for (var i = 0; i < listBuild.length; i++) {
-        newlist += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + listBuild[i].id + "" + listBuild[i].name + ".png?size=110x110);\"></div><span class=\"prsnName\">" + listBuild[i].name + "</span><span class=\"utitle\">" + listBuild[i].rolename + "</span><span class=\"prsnJoined\">joined " + listBuild[i].joined + "</span></div>";
+        var block = "";
+        var blockcon = "";
+        if (okdata[listBuild[i].id].blocked) {
+          block = "blockd";
+          blockcon = "block";
+        }
+        newlist += "<div class=\"prson " + block + "\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + listBuild[i].id + "" + listBuild[i].name + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span></div><span class=\"prsnName\">" + listBuild[i].name + "</span><span class=\"utitle\">" + listBuild[i].rolename + "</span><span class=\"prsnJoined\">joined " + listBuild[i].joined + "</span></div>";
       }
       $("#allusers").html(newlist);
       $("#label1 .count").text(" (" + count + ")");
@@ -1895,8 +1908,8 @@ firetable.ui = {
         }
       }
       // if this is a different list, reset scrollerboy
-      if (firetable.listShowing){
-        if (firetable.listShowing !== listID){
+      if (firetable.listShowing) {
+        if (firetable.listShowing !== listID) {
           scrollits['queuelist'].update();
         }
       } else {
@@ -2295,11 +2308,11 @@ firetable.ui = {
         if (val != "") {
           // try to change name
           ftapi.actions.changeName(val, function(error) {
-            if (error){
+            if (error) {
               alert(error);
               $("#usernameResponse").text(error);
             } else {
-              $("#usernameResponse").text("Great job! Your name is now "+val);
+              $("#usernameResponse").text("Great job! Your name is now " + val);
             }
           });
         }
@@ -2618,6 +2631,21 @@ firetable.ui = {
             var personToMod = firetable.actions.uidLookup(args);
             if (personToMod) {
               ftapi.actions.unmodUser(personToMod);
+            }
+          } else if (command == "block") {
+            if (args) {
+              ftapi.actions.blockUser(args, function(response) {
+                console.log(response);
+                firetable.actions.localChatResponse(response);
+              });
+            }
+          } else if (command == "unblock") {
+            if (args) {
+              ftapi.actions.unblockUser(args, function(response) {
+                console.log(response);
+
+                firetable.actions.localChatResponse(response);
+              });
             }
           } else if (command == "hot") {
             ftapi.actions.sendChat(":hot:");

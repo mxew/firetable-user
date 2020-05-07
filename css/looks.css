@@ -527,6 +527,9 @@ code {
 #userslist .prson:hover .utitle{
     display: none;
 }
+#userslist .prson.blockd .prsnName, #userslist .prson.blockd .prsnJoined, #userslist .prson.blockd .utitle{
+    opacity: 0.5;
+}
 .botson{
   background-color: #000;
   background-size: auto 100%;
@@ -540,8 +543,18 @@ code {
   width: 2rem;
   height: 2rem;
 }
+span.block {
+  width: 2rem;
+  height: 2rem;
+  font-size: 2rem;
+  background-color: rgba(0, 0, 0, 0.50);
+  color: var(--orange);
+  border-radius: 999px;
+}
 
-
+span.block:empty{
+  display:none;
+}
 /* The Stage */
 
 #stage {
@@ -1118,7 +1131,7 @@ a.importLinkCheck {
 .nowplayn + .newChat {
   border: 0;
 }
-.npmsg {
+.npmsg, .lcrsp {
   position: relative;
   z-index: 2;
   width: 100%;

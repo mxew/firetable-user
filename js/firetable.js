@@ -9,6 +9,8 @@ var ftapi = {
   banned: false,
   presenceDetectRef: null,
   presenceDetectEvent: null,
+  blockEvent: null,
+  blockRef: null,
   nameChangeAfterSignUp: null,
   chatEvent: null,
   connectedRef: null,
@@ -19,7 +21,8 @@ var ftapi = {
   queueBind: null,
   queueRef: null,
   queue: null,
-  users: {}
+  users: {},
+  blockedUsers: {}
 };
 
 ftapi.ready = function() {
@@ -44,6 +47,11 @@ ftapi.init = function(firebaseConfig) {
   var ref2 = firebase.app("firetable").database().ref("users");
   ref2.orderByChild('status').equalTo(true).on('value', function(dataSnapshot) {
     var okdata = dataSnapshot.val();
+    for (var key in okdata){
+        if (ftapi.blockedUsers[key]){
+          okdata[key].blocked = true;
+        }
+    }
     ftapi.users = okdata;
     if (ftapi.users[ftapi.uid]) {
       if (ftapi.users[ftapi.uid].username) {
@@ -212,6 +220,28 @@ ftapi.init = function(firebaseConfig) {
           });
         }
 
+        // fire users changed event on blocked users changes
+        if (ftapi.blockEvent){
+          ftapi.blockRef.off("value", ftapi.blockEvent);
+        }
+        ftapi.blockRef = firebase.app("firetable").database().ref("blocks/" + ftapi.uid);
+        ftapi.blockEvent = ftapi.blockRef.on("value", function(snap){
+          var data = snap.val();
+          if (data){
+            ftapi.blockedUsers = data;
+          } else {
+            ftapi.blockedUsers = {};
+          }
+          for (var key in ftapi.users){
+            if (ftapi.blockedUsers[key]){
+              // person is here
+              ftapi.users[key].blocked = true;
+            } else {
+              ftapi.users[key].blocked = false;
+            }
+          }
+          if (ftapi.users) ftapi.events.emit("usersChanged", ftapi.users);
+        });
 
         /*
         SET UP QUEUE BIND
@@ -563,6 +593,30 @@ ftapi.actions = {
     }
     if (changePv) pvChangeCallback(changePv);
     ftapi.queueRef.set(newobj);
+  },
+  blockUser: function(username, callback){
+    ftapi.lookup.userByName(username, function(data){
+      if (!data) return callback("There is no "+username);
+      if (data.mod || data.supermod || data.hostbot){
+        response = "You can not block this person.";
+      } else {
+        ftapi.blockRef.child(data.userid).set(true);
+        response = username + " blocked. They will not see your chats, and you will not see their chats.";
+      }
+      return callback(response);
+    });
+  },
+  unblockUser: function(username, callback){
+    ftapi.lookup.userByName(username, function(data){
+      if (!data) return callback("There is no "+username);
+      if (ftapi.blockedUsers[data.userid]){
+        ftapi.blockRef.child(data.userid).remove();
+        response = username + " has been unblocked. You will now see their chats, and they will see your chats.";
+      } else {
+        response = username + " wasn't even blocked to begin with...";
+      }
+      return callback(response);
+    });
   },
   /*
   AUTH ACTIONS
