@@ -43,11 +43,11 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.05.00";
+firetable.version = "01.05.10";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
-  idle: 10000,
+  idle: 60000,
   events: ['mousemove', 'keydown', 'mousedown', 'touchstart'],
   onIdle: function () {
     ftapi.actions.changeIdleStatus(true, 1);
@@ -1734,6 +1734,83 @@ firetable.ui = {
         }
       }
     });
+    ftapi.events.on("userJoined", function(data) {
+      console.log(data);
+      var user = data;
+      var block = "";
+      var blockcon = "";
+      var herecon = "lens";
+      var isIdle = "";
+      if (data.idle){
+        if (data.idle.isIdle) isIdle = "idle";
+        if (data.idle.audio == 2){
+          herecon = "explore";
+        }
+      }
+      if (data.blocked) {
+        block = "blockd";
+        blockcon = "block";
+      }
+
+      if (!data.username) data.username = data.userid;
+
+      var destination = "#usersRegular";
+      var rolename = "";
+      if (data.mod) {
+        rolename = "cop";
+        destination = "#usersMod";
+      }
+      if (data.supermod) {
+        rolename = "supercop";
+        destination = "#usersSuper";
+      }
+      if (data.hostbot) {
+        rolename = "robocop";
+        destination = "#usersBot";
+      }
+
+      $(destination).append("<div id=\"user"+data.userid+"\" class=\"prson " + block + "\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon "+ isIdle +"\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span></div>");
+    });
+    ftapi.events.on("userLeft", function(data) {
+      $("#user"+data.userid).remove();
+    });
+    ftapi.events.on("userChanged", function(data) {
+      var user = data;
+      var block = "";
+      var blockcon = "";
+      var herecon = "lens";
+      var isIdle = "";
+      console.log("CHANGE", data)
+      if (data.idle){
+        if (data.idle.isIdle) isIdle = "idle";
+        if (data.idle.audio == 2){
+          herecon = "explore";
+        }
+      }
+      if (data.blocked) {
+        block = "blockd";
+        blockcon = "block";
+      }
+
+      if (!data.username) data.username = data.userid;
+
+      var destination = "#usersRegular";
+      var rolename = "";
+      if (data.mod) {
+        rolename = "cop";
+        destination = "#usersMod";
+      }
+      if (data.supermod) {
+        rolename = "supercop";
+        destination = "#usersSuper";
+      }
+      if (data.hostbot) {
+        rolename = "robocop";
+        destination = "#usersBot";
+      }
+
+      $("#user"+data.userid).html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon "+ isIdle +"\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
+    });
     ftapi.events.on("usersChanged", function(okdata) {
       if ($("#loggedInName").text() == ftapi.uid) {
         if (ftapi.users[ftapi.uid]) {
@@ -1751,60 +1828,7 @@ firetable.ui = {
           }
         }
       }
-      var newlist = "";
-      var listBuild = [];
-      var count = 0;
-      for (var key in ftapi.users) {
-        if (okdata.hasOwnProperty(key)) {
-          var thisone = ftapi.users[key];
-          var utitle = "";
-          var thename = key;
-          var rolenum = 0;
-          count++;
-          if (ftapi.users[key]) {
-            if (ftapi.users[key].mod) {
-              utitle = "cop";
-              rolenum = 1;
-            }
-            if (ftapi.users[key].supermod) {
-              utitle = "supercop";
-              rolenum = 2;
-            }
-            if (ftapi.users[key].hostbot) {
-              utitle = "robocop";
-              rolenum = 3;
-            }
-            if (ftapi.users[key].username) thename = ftapi.users[key].username;
-          }
-          var pguy = {
-            id: key,
-            name: thename,
-            rolename: utitle,
-            rolenum: rolenum,
-            joined: firetable.utilities.format_date(ftapi.users[key].joined)
-          };
-          listBuild.push(pguy);
-
-        }
-      }
-      listBuild.sort(function(a, b) {
-        return b.rolenum - a.rolenum;
-      });
-      for (var i = 0; i < listBuild.length; i++) {
-        var block = "";
-        var blockcon = "";
-        var herecon = "lens";
-        var isIdle = "";
-        if (okdata[listBuild[i].id].idle){
-          if (okdata[listBuild[i].id].idle.isIdle) isIdle = "idle";
-        }
-        if (okdata[listBuild[i].id].blocked) {
-          block = "blockd";
-          blockcon = "block";
-        }
-        newlist += "<div class=\"prson " + block + "\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + listBuild[i].id + "" + listBuild[i].name + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon "+ isIdle +"\">" + herecon + "</span></div><span class=\"prsnName\">" + listBuild[i].name + "</span><span class=\"utitle\">" + listBuild[i].rolename + "</span><span class=\"prsnJoined\">joined " + listBuild[i].joined + "</span></div>";
-      }
-      $("#allusers").html(newlist);
+      var count = Object.keys(okdata).length;
       $("#label1 .count").text(" (" + count + ")");
       firetable.debug && console.log('users:', okdata);
     });
