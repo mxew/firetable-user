@@ -43,7 +43,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.05.11";
+firetable.version = "01.05.13";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -1742,7 +1742,7 @@ firetable.ui = {
       var herecon = "lens";
       var isIdle = "";
       if (data.idle){
-        if (data.idle.isIdle) isIdle = "idle";
+        if (data.idle.isIdle && !data.hostbot) isIdle = "idle";
         if (data.idle.audio == 2){
           herecon = "label_important";
         }
@@ -1782,9 +1782,9 @@ firetable.ui = {
       var isIdle = "";
       console.log("CHANGE", data)
       if (data.idle){
-        if (data.idle.isIdle) isIdle = "idle";
+        if (data.idle.isIdle && !data.hostbot) isIdle = "idle";
         if (data.idle.audio == 2){
-          herecon = "dynamic_feed";
+          herecon = "label_important";
         }
       }
       if (data.blocked) {
