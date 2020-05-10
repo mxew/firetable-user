@@ -188,6 +188,7 @@ ftapi.init = function(firebaseConfig) {
           ftapi.events.emit("loggedIn", returnData);
         });
 
+        ftapi.actions.changeIdleStatus(false, 1);
 
         // setup ban check event emitters
         var banCheck = firebase.app("firetable").database().ref("banned/" + ftapi.uid);
@@ -621,6 +622,14 @@ ftapi.actions = {
   /*
   AUTH ACTIONS
   */
+  changeIdleStatus: function(idle, audio) {
+    var ref = firebase.app("firetable").database().ref("users/" + ftapi.uid + "/idle");
+    ref.set({
+      isIdle: idle,
+      audio: audio,
+      since: firebase.database.ServerValue.TIMESTAMP
+    });
+  },
   changeName: function(newName, callback) {
     if (!newName) return;
     // locally validate name for length and char requirements before sending to firebase

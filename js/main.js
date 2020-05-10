@@ -12,6 +12,8 @@ var firetable = {
   moveBar: null,
   song: null,
   playBadoop: true,
+  idle: false,
+  idleChanged: null,
   sbhowImages: false,
   screenControl: "sync",
   screenSyncPos: false,
@@ -43,6 +45,27 @@ var firetable = {
 
 firetable.version = "01.05.00";
 var player, $playlistItemTemplate;
+
+var idlejs = new IdleJs({
+  idle: 10000,
+  events: ['mousemove', 'keydown', 'mousedown', 'touchstart'],
+  onIdle: function () {
+    ftapi.actions.changeIdleStatus(true, 1);
+  },
+  onActive: function () {
+    ftapi.actions.changeIdleStatus(false, 1);
+  },
+  onHide: function () {
+    ftapi.actions.changeIdleStatus(true, 1);
+    console.log("hide");
+  },
+  onShow: function () {
+    ftapi.actions.changeIdleStatus(false, 1);
+  },
+  keepTracking: true,
+  startAtIdle: false
+});
+idlejs.start();
 
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('playerArea', {
@@ -1770,11 +1793,16 @@ firetable.ui = {
       for (var i = 0; i < listBuild.length; i++) {
         var block = "";
         var blockcon = "";
+        var herecon = "lens";
+        var isIdle = "";
+        if (okdata[listBuild[i].id].idle){
+          if (okdata[listBuild[i].id].idle.isIdle) isIdle = "idle";
+        }
         if (okdata[listBuild[i].id].blocked) {
           block = "blockd";
           blockcon = "block";
         }
-        newlist += "<div class=\"prson " + block + "\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + listBuild[i].id + "" + listBuild[i].name + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span></div><span class=\"prsnName\">" + listBuild[i].name + "</span><span class=\"utitle\">" + listBuild[i].rolename + "</span><span class=\"prsnJoined\">joined " + listBuild[i].joined + "</span></div>";
+        newlist += "<div class=\"prson " + block + "\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + listBuild[i].id + "" + listBuild[i].name + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon "+ isIdle +"\">" + herecon + "</span></div><span class=\"prsnName\">" + listBuild[i].name + "</span><span class=\"utitle\">" + listBuild[i].rolename + "</span><span class=\"prsnJoined\">joined " + listBuild[i].joined + "</span></div>";
       }
       $("#allusers").html(newlist);
       $("#label1 .count").text(" (" + count + ")");
