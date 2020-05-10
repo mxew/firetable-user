@@ -200,6 +200,24 @@ code {
   letter-spacing: 0.1em;
 }
 
+.herecon {
+    color: #43b581;
+    background-color: #282828;
+    height: calc(0.75rem + 4px);
+    width: calc(0.75rem + 4px);
+    padding: 2px;
+    font-size: 0.75em;
+    display: block;
+    position: absolute;
+    bottom: 0;
+    border-radius: 999px;
+    right: -0.25rem;
+}
+
+.herecon.idle{
+  color: #faa61a;
+}
+
 .notice {
   margin: 0;
   background-color: #222;
@@ -539,9 +557,10 @@ code {
   border-bottom: 1px solid #888;
 }
 #userslist .botson {
-  margin-right: var(--pad2);
+  margin-right: 0.75rem;
   width: 2rem;
   height: 2rem;
+  position: relative;
 }
 span.block {
   width: 2rem;

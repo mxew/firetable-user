@@ -45,12 +45,36 @@ ftapi.init = function(firebaseConfig) {
   */
   // users change event emitter
   var ref2 = firebase.app("firetable").database().ref("users");
+  ref2.orderByChild('status').equalTo(true).on('child_added', function(dataSnapshot) {
+    var okdata = dataSnapshot.val();
+    okdata.userid = dataSnapshot.key;
+    if (ftapi.blockedUsers[okdata.userid]){
+      okdata.blocked = true;
+    }
+    ftapi.events.emit("userJoined", okdata);
+  });
+  ref2.orderByChild('status').equalTo(true).on('child_removed', function(dataSnapshot) {
+    var okdata = dataSnapshot.val();
+    okdata.userid = dataSnapshot.key;
+    if (ftapi.blockedUsers[okdata.userid]){
+      okdata.blocked = true;
+    }
+    ftapi.events.emit("userLeft", okdata);
+  });
+  ref2.orderByChild('status').equalTo(true).on('child_changed', function(dataSnapshot) {
+    var okdata = dataSnapshot.val();
+    okdata.userid = dataSnapshot.key;
+    if (ftapi.blockedUsers[okdata.userid]){
+      okdata.blocked = true;
+    }
+    ftapi.events.emit("userChanged", okdata);
+  });
   ref2.orderByChild('status').equalTo(true).on('value', function(dataSnapshot) {
     var okdata = dataSnapshot.val();
     for (var key in okdata){
-        if (ftapi.blockedUsers[key]){
-          okdata[key].blocked = true;
-        }
+      if (ftapi.blockedUsers[key]){
+        okdata[key].blocked = true;
+      }
     }
     ftapi.users = okdata;
     if (ftapi.users[ftapi.uid]) {
@@ -188,6 +212,7 @@ ftapi.init = function(firebaseConfig) {
           ftapi.events.emit("loggedIn", returnData);
         });
 
+        ftapi.actions.changeIdleStatus(false, 1);
 
         // setup ban check event emitters
         var banCheck = firebase.app("firetable").database().ref("banned/" + ftapi.uid);
@@ -236,11 +261,21 @@ ftapi.init = function(firebaseConfig) {
             if (ftapi.blockedUsers[key]){
               // person is here
               ftapi.users[key].blocked = true;
+              var changeData = ftapi.users[key];
+              changeData.userid = key;
+              ftapi.events.emit("userChanged", changeData);
             } else {
-              ftapi.users[key].blocked = false;
+              if (ftapi.users[key].blocked){
+                ftapi.users[key].blocked = false;
+                var changeData = ftapi.users[key];
+                changeData.userid = key;
+                ftapi.events.emit("userChanged", changeData);
+              }
             }
           }
-          if (ftapi.users) ftapi.events.emit("usersChanged", ftapi.users);
+          if (ftapi.users){
+            ftapi.events.emit("usersChanged", ftapi.users);
+          }
         });
 
         /*
@@ -621,6 +656,15 @@ ftapi.actions = {
   /*
   AUTH ACTIONS
   */
+  changeIdleStatus: function(idle, audio) {
+    if (!ftapi.uid) return
+    var ref = firebase.app("firetable").database().ref("users/" + ftapi.uid + "/idle");
+    ref.set({
+      isIdle: idle,
+      audio: audio,
+      since: firebase.database.ServerValue.TIMESTAMP
+    });
+  },
   changeName: function(newName, callback) {
     if (!newName) return;
     // locally validate name for length and char requirements before sending to firebase
