@@ -13,9 +13,9 @@
 }
 @keyframes MoveUpDown {
   50% {
-    -webkit-transform: translateY(5px);
-    transform: translateY(5px);
-    will-change:transform;
+    -webkit-transform: translateY(0.33rem);
+    transform: translateY(0.33rem);
+    will-change: transform;
    }
 }
 @keyframes MoveSideSide {
@@ -1706,6 +1706,9 @@ div#blog {
   body.mst3k .avtr {
     filter: brightness(0);
     height: 2vw;
+  }
+  body.mst3k .djplaque {
+    background-color: black !important;
   }
   body.mst3k .djplaque .djname,
   body.mst3k .djplaque .playcount {

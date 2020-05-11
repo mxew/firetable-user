@@ -1705,6 +1705,7 @@ firetable.ui = {
           $("#djthing" + i).addClass("djActive");
         }
       }
+      $('body').removeClass('mst3k');
     });
     ftapi.events.on("spotlightStateChanged", function(data) {
       firetable.playdex = data;
