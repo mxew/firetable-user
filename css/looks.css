@@ -21,27 +21,21 @@
 @keyframes MoveSideSide {
   5% {
     transform: rotate(0deg);
-    translateY(0.1rem);
   }
   25% {
     transform: rotate(-3deg);
-    translateY(0.1rem);
   }
   45% {
     transform: rotate(0deg);
-    translateY(0.1rem);
   }
   55% {
     transform: rotate(0deg);
-    translateY(0.1rem);
   }
   75% {
     transform: rotate(3deg);
-    translateY(0.1rem);
   }
   95% {
     transform: rotate(0deg);
-    translateY(0.1rem);
   }
 }
 @keyframes pulse {
@@ -624,8 +618,6 @@ span.block:empty{
   left: 3rem;
   width: 15rem;
   height: 5rem;
-  background-color: rgba(0,0,0,0.25);
-  box-shadow: 0 0 10rem 10rem rgba(0,0,0,0.25);
 }
 #albumArt {
   grid-area: art;
@@ -694,6 +686,7 @@ span.block:empty{
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  align-items: center;
   margin-right: var(--pad2);
   margin-left: var(--pad2);
   min-width: 0;
@@ -708,11 +701,8 @@ span.block:empty{
   position: absolute;
   z-index: 0;
   bottom: 1.4rem;
-  width: 100%;
-  height: 8rem;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center bottom;
+  width: auto;
+  height: 6vw;
 }
 .avtr.animate {
   animation: MoveUpDown 1s linear infinite;
@@ -722,6 +712,7 @@ span.block:empty{
   z-index: 1;
   display: flex;
   justify-content: space-between;
+  width: 100%;
   min-width: 0;
   padding: 0 var(--pad3);
   font-size: 0.75rem;
@@ -1707,6 +1698,18 @@ div#blog {
 
   .avtr {
     display: block;
+  }
+  body.mst3k .spot {
+    margin-left: var(--pad1);
+    margin-right: var(--pad1);
+  }
+  body.mst3k .avtr {
+    filter: brightness(0);
+    height: 2vw;
+  }
+  body.mst3k .djplaque .djname,
+  body.mst3k .djplaque .playcount {
+    opacity: 0;
   }
 
   #albumArt {

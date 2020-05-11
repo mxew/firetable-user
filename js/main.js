@@ -1525,6 +1525,7 @@ firetable.ui = {
       $("#cloud_with_rain").removeClass("on");
       $("#fire").removeClass("on");
       $("#timr").countdown("destroy");
+      $('body').removeClass('mst3k');
       if (firetable.moveBar != null) {
         clearInterval(firetable.moveBar);
         firetable.moveBar = null;
@@ -1675,7 +1676,7 @@ firetable.ui = {
         var countr = 0;
         for (var key in data) {
           if (data.hasOwnProperty(key)) {
-            ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"avtr\" id=\"avtr" + countr + "\" style=\"background-image: url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><div id=\"djthing" + countr + "\" class=\"djplaque\"><div class=\"djname\">" + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div></div>";
+            ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><img class=\"avtr\" id=\"avtr" + countr + "\" src=\"https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110\"><div id=\"djthing" + countr + "\" class=\"djplaque\"><div class=\"djname\">" + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div></div>";
             countr++;
           }
         }
@@ -2719,6 +2720,19 @@ firetable.ui = {
             var thingtosay = "┬─┬ ノ( ゜-゜ノ)";
             if (args) thingtosay = args + " ┬─┬ ノ( ゜-゜ノ)";
             ftapi.actions.sendChat(thingtosay);
+          } else if (command == "mst3k") {
+            $("body").toggleClass("mst3k");
+            if ( $("body").hasClass("mst3k") ) {
+              for ( var i = 0; i < 9; i++ ) {
+                $('<div class="spot empty mst"><div class="djplaque">&nbsp;</div></div>').prependTo('#deck');
+              }
+              for ( var i = 0; i < 3; i++ ) {
+                $('<div class="spot empty mst"><div class="djplaque">&nbsp;</div></div>').appendTo('#deck');
+              }
+            }
+            else {
+              $('.mst').remove();
+            }
           }
         } else {
           ftapi.actions.sendChat(txt);
