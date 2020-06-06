@@ -43,7 +43,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.05.13";
+firetable.version = "01.05.21";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -1873,7 +1873,20 @@ firetable.ui = {
         txtOut = txtOut.replace(/\`(.*?)\`/g, function(x) {
           return "<code>" + x.replace(/\`/g, "") + "</code>";
         });
+        if (chatData.hidden) txtOut = "[message removed]";
         $("#chattxt" + chatData.chatID).html(txtOut);
+
+        if (ftapi.users[ftapi.uid].mod || ftapi.users[ftapi.uid].supermod){
+          if (!ftapi.users[chatData.id].mod && !ftapi.users[chatData.id].mod && !chatData.hidden){
+            // add delete button
+            $("#chattxt" + chatData.chatID).addClass("deleteMe");
+            $("#chattxt" + chatData.chatID).append("<div class=\"modDelete\">x</div>");
+            $("#chattxt" + chatData.chatID).find(".modDelete").on('click', function() {
+                console.log("DELETE CHAT", chatData);
+                ftapi.actions.deleteChat(chatData.feedID);
+            });
+          }
+        }
         twemoji.parse(document.getElementById("chattxt" + chatData.chatID));
 
       } else {
@@ -1890,10 +1903,28 @@ firetable.ui = {
         txtOut = txtOut.replace(/\`(.*?)\`/g, function(x) {
           return "<code>" + x.replace(/\`/g, "") + "</code>";
         });
+        if (chatData.hidden) txtOut = "[message removed]";
         $chatthing.find(".chatText").html(txtOut).attr('id', "chattxt" + chatData.chatID);
+        console.log(chatData);
+
         $chatthing.find(".chatName").text(namebo);
         twemoji.parse($chatthing.find(".chatText")[0]);
         $chatthing.appendTo("#chats");
+        try{
+        if (ftapi.users[ftapi.uid].mod || ftapi.users[ftapi.uid].supermod){
+          if (!ftapi.users[chatData.id].mod && !ftapi.users[chatData.id].supermod && !chatData.hidden) {
+            // add delete button
+            $chatthing.find(".chatText").addClass("deleteMe");
+            $chatthing.find(".chatText").append("<div class=\"modDelete\">x</div>");
+            $chatthing.find(".modDelete").on('click', function() {
+                console.log("DELETE CHAT", chatData);
+                ftapi.actions.deleteChat(chatData.feedID);
+            });
+          }
+        }
+      } catch(e){
+        console.log(e)
+      }
         firetable.lastChatPerson = chatData.id;
         firetable.lastChatId = chatData.chatID;
       }
@@ -1906,6 +1937,12 @@ firetable.ui = {
       }
       scrollits['chatsWrap'].update();
       if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+    });
+
+    ftapi.events.on("chatRemoved", function(data){
+      console.log("chat DELETE", data);
+      $("#chattxt"+data.chatID).text("[message removed]");
+      if (ftapi.users[ftapi.uid].mod || ftapi.users[ftapi.uid].supermod) $("#chattxt"+data.chatID).removeClass("deleteMe");
     });
 
     ftapi.events.on("playlistChanged", function(okdata, listID) {
@@ -2700,7 +2737,7 @@ firetable.ui = {
               });
             }
           } else if (command == "hot") {
-            ftapi.actions.sendChat(":hot:");
+            ftapi.actions.sendChat(":fire:");
             $("#cloud_with_rain").removeClass("on");
             $("#fire").addClass("on");
           } else if (command == "storm") {
