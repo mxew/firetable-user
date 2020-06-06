@@ -43,7 +43,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.05.22";
+firetable.version = "01.05.23";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -1878,13 +1878,13 @@ firetable.ui = {
         var canBeDeleted = false;
         if (ftapi.users[ftapi.uid].mod || ftapi.users[ftapi.uid].supermod) {
           if (ftapi.users[chatData.id]) {
-            if (!ftapi.users[chatData.id].mod && !ftapi.users[chatData.id].supermod && !chatData.hidden) {
+            if (!ftapi.users[chatData.id].mod && !ftapi.users[chatData.id].supermod) {
               canBeDeleted = true;
             }
           } else {
             canBeDeleted = true;
           }
-          if (canBeDeleted) {
+          if (canBeDeleted && !chatData.hidden) {
             // add delete button
             $("#chattxt" + chatData.chatID).addClass("deleteMe");
             $("#chattxt" + chatData.chatID).append("<div class=\"modDelete\">x</div>");
@@ -1927,7 +1927,7 @@ firetable.ui = {
             } else {
               canBeDeleted = true;
             }
-            if (canBeDeleted){
+            if (canBeDeleted && !chatData.hidden){
               // add delete button
               $chatthing.find(".chatText").addClass("deleteMe");
               $chatthing.find(".chatText").append("<div class=\"modDelete\">x</div>");
