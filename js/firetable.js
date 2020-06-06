@@ -13,6 +13,7 @@ var ftapi = {
   blockRef: null,
   nameChangeAfterSignUp: null,
   chatEvent: null,
+  chatChangedEvent: null,
   connectedRef: null,
   superCopBanUpdates: null,
   uname: null,
@@ -235,13 +236,20 @@ ftapi.init = function(firebaseConfig) {
         if (!ftapi.chatEvent){
           var chatRef = firebase.app("firetable").database().ref("chatFeed");
           ftapi.chatEvent = chatRef.on('child_added', function(childSnapshot, prevChildKey) {
-            var chatID = childSnapshot.val();
+            var feedData = childSnapshot.val();
+            var chatID = feedData.chatID;
             ftapi.lookup.chatData(chatID, function(chatData){
               chatData.chatID = chatID;
               chatData.feedID = childSnapshot.key;
+              if (feedData.hidden) chatData.hidden = feedData.hidden;
               ftapi.events.emit("newChat", chatData);
             });
 
+          });
+          ftapi.chatChangedEvent = chatRef.on('child_changed', function(childSnapshot, prevChildKey) {
+            var feedData = childSnapshot.val();
+            feedData.feedID = childSnapshot.key;
+            if (feedData.hidden) ftapi.events.emit("chatRemoved", feedData);
           });
         }
 
@@ -351,7 +359,10 @@ ftapi.actions = {
     };
     if (cardid) data.card = cardid;
     var chatItem = chatData.push(data, function(){
-      var feedItem = chatFeed.push(chatItem.key, function(){
+      var feedObj = {
+        chatID: chatItem.key
+      };
+      var feedItem = chatFeed.push(feedObj, function(){
         chatItem.child("feedID").set(feedItem.key);
       });
     });
@@ -745,6 +756,10 @@ ftapi.actions = {
   unmodUser: function(userid) {
     var modp = firebase.app("firetable").database().ref("users/" + userid + "/mod");
     modp.set(false);
+  },
+  deleteChat: function(feedID){
+    var feedEntry = firebase.app("firetable").database().ref("chatFeed/" + feedID + "/hidden");
+    feedEntry.set(true);
   }
 };
 

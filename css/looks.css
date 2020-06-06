@@ -1178,6 +1178,35 @@ a.importLinkCheck {
   font-weight: 700;
   color: rgba(255,255,255,0.4);
 }
+.modDelete {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size:1rem;
+    padding-left:0.25rem;
+    font-weight:400;
+    padding-right:0.25rem;
+    background-color: #333;
+    cursor: pointer;
+    display:none;
+    color: #999;
+}
+
+.modDelete:hover{
+  background-color: #dd2e44;
+  color: #ddd;
+}
+
+.chatText {
+    position: relative;
+}
+
+.chatText.deleteMe:hover{
+    background-color:#282828;
+}
+.chatText.deleteMe:hover .modDelete{
+    display:block;
+}
 .chatText a {
   position: relative;
   display: block;

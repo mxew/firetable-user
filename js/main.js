@@ -43,23 +43,23 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.05.13";
+firetable.version = "01.05.23";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
   idle: 5 * 60000,
   events: ['mousemove', 'keydown', 'mousedown', 'touchstart'],
-  onIdle: function () {
+  onIdle: function() {
     ftapi.actions.changeIdleStatus(true, 1);
   },
-  onActive: function () {
+  onActive: function() {
     ftapi.actions.changeIdleStatus(false, 1);
   },
-  onHide: function () {
+  onHide: function() {
     ftapi.actions.changeIdleStatus(true, 1);
     console.log("hide");
   },
-  onShow: function () {
+  onShow: function() {
     ftapi.actions.changeIdleStatus(false, 1);
   },
   keepTracking: true,
@@ -1741,9 +1741,9 @@ firetable.ui = {
       var blockcon = "";
       var herecon = "lens";
       var isIdle = "";
-      if (data.idle){
+      if (data.idle) {
         if (data.idle.isIdle && !data.hostbot) isIdle = "idle";
-        if (data.idle.audio == 2){
+        if (data.idle.audio == 2) {
           herecon = "label_important";
         }
       }
@@ -1769,10 +1769,10 @@ firetable.ui = {
         destination = "#usersBot";
       }
 
-      $(destination).append("<div id=\"user"+data.userid+"\" class=\"prson " + block + "\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon "+ isIdle +"\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span></div>");
+      $(destination).append("<div id=\"user" + data.userid + "\" class=\"prson " + block + "\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span></div>");
     });
     ftapi.events.on("userLeft", function(data) {
-      $("#user"+data.userid).remove();
+      $("#user" + data.userid).remove();
     });
     ftapi.events.on("userChanged", function(data) {
       var user = data;
@@ -1781,9 +1781,9 @@ firetable.ui = {
       var herecon = "lens";
       var isIdle = "";
       console.log("CHANGE", data)
-      if (data.idle){
+      if (data.idle) {
         if (data.idle.isIdle && !data.hostbot) isIdle = "idle";
-        if (data.idle.audio == 2){
+        if (data.idle.audio == 2) {
           herecon = "label_important";
         }
       }
@@ -1809,7 +1809,7 @@ firetable.ui = {
         destination = "#usersBot";
       }
 
-      $("#user"+data.userid).html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon "+ isIdle +"\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
+      $("#user" + data.userid).html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
     });
     ftapi.events.on("usersChanged", function(okdata) {
       if ($("#loggedInName").text() == ftapi.uid) {
@@ -1873,7 +1873,27 @@ firetable.ui = {
         txtOut = txtOut.replace(/\`(.*?)\`/g, function(x) {
           return "<code>" + x.replace(/\`/g, "") + "</code>";
         });
+        if (chatData.hidden) txtOut = "[message removed]";
         $("#chattxt" + chatData.chatID).html(txtOut);
+        var canBeDeleted = false;
+        if (ftapi.users[ftapi.uid].mod || ftapi.users[ftapi.uid].supermod) {
+          if (ftapi.users[chatData.id]) {
+            if (!ftapi.users[chatData.id].mod && !ftapi.users[chatData.id].supermod) {
+              canBeDeleted = true;
+            }
+          } else {
+            canBeDeleted = true;
+          }
+          if (canBeDeleted && !chatData.hidden) {
+            // add delete button
+            $("#chattxt" + chatData.chatID).addClass("deleteMe");
+            $("#chattxt" + chatData.chatID).append("<div class=\"modDelete\">x</div>");
+            $("#chattxt" + chatData.chatID).find(".modDelete").on('click', function() {
+              console.log("DELETE CHAT", chatData);
+              ftapi.actions.deleteChat(chatData.feedID);
+            });
+          }
+        }
         twemoji.parse(document.getElementById("chattxt" + chatData.chatID));
 
       } else {
@@ -1890,10 +1910,36 @@ firetable.ui = {
         txtOut = txtOut.replace(/\`(.*?)\`/g, function(x) {
           return "<code>" + x.replace(/\`/g, "") + "</code>";
         });
+        if (chatData.hidden) txtOut = "[message removed]";
         $chatthing.find(".chatText").html(txtOut).attr('id', "chattxt" + chatData.chatID);
+        console.log(chatData);
+
         $chatthing.find(".chatName").text(namebo);
         twemoji.parse($chatthing.find(".chatText")[0]);
         $chatthing.appendTo("#chats");
+        try {
+          if (ftapi.users[ftapi.uid].mod || ftapi.users[ftapi.uid].supermod) {
+            var canBeDeleted = false;
+            if (ftapi.users[chatData.id]){
+              if (!ftapi.users[chatData.id].mod && !ftapi.users[chatData.id].supermod && !chatData.hidden) {
+                canBeDeleted = true;
+              }
+            } else {
+              canBeDeleted = true;
+            }
+            if (canBeDeleted && !chatData.hidden){
+              // add delete button
+              $chatthing.find(".chatText").addClass("deleteMe");
+              $chatthing.find(".chatText").append("<div class=\"modDelete\">x</div>");
+              $chatthing.find(".modDelete").on('click', function() {
+                console.log("DELETE CHAT", chatData);
+                ftapi.actions.deleteChat(chatData.feedID);
+              });
+            }
+          }
+        } catch (e) {
+          console.log(e)
+        }
         firetable.lastChatPerson = chatData.id;
         firetable.lastChatId = chatData.chatID;
       }
@@ -1906,6 +1952,12 @@ firetable.ui = {
       }
       scrollits['chatsWrap'].update();
       if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+    });
+
+    ftapi.events.on("chatRemoved", function(data) {
+      console.log("chat DELETE", data);
+      $("#chattxt" + data.chatID).text("[message removed]");
+      if (ftapi.users[ftapi.uid].mod || ftapi.users[ftapi.uid].supermod) $("#chattxt" + data.chatID).removeClass("deleteMe");
     });
 
     ftapi.events.on("playlistChanged", function(okdata, listID) {
@@ -2700,7 +2752,7 @@ firetable.ui = {
               });
             }
           } else if (command == "hot") {
-            ftapi.actions.sendChat(":hot:");
+            ftapi.actions.sendChat(":fire:");
             $("#cloud_with_rain").removeClass("on");
             $("#fire").addClass("on");
           } else if (command == "storm") {
