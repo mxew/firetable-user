@@ -43,7 +43,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.05.23";
+firetable.version = "01.05.30";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -1757,15 +1757,15 @@ firetable.ui = {
       var destination = "#usersRegular";
       var rolename = "";
       if (data.mod) {
-        rolename = "cop";
+        rolename = "mod";
         destination = "#usersMod";
       }
       if (data.supermod) {
-        rolename = "supercop";
+        rolename = "supermod";
         destination = "#usersSuper";
       }
       if (data.hostbot) {
-        rolename = "robocop";
+        rolename = "robot";
         destination = "#usersBot";
       }
 
@@ -1797,15 +1797,15 @@ firetable.ui = {
       var destination = "#usersRegular";
       var rolename = "";
       if (data.mod) {
-        rolename = "cop";
+        rolename = "mod";
         destination = "#usersMod";
       }
       if (data.supermod) {
-        rolename = "supercop";
+        rolename = "supermod";
         destination = "#usersSuper";
       }
       if (data.hostbot) {
-        rolename = "robocop";
+        rolename = "robot";
         destination = "#usersBot";
       }
 
@@ -1845,9 +1845,9 @@ firetable.ui = {
 
       if (ftapi.users[chatData.id]) {
         if (ftapi.users[chatData.id].username) namebo = ftapi.users[chatData.id].username;
-        if (ftapi.users[chatData.id].mod) utitle = "cop";
-        if (ftapi.users[chatData.id].supermod) utitle = "supercop";
-        if (ftapi.users[chatData.id].hostbot) utitle = "robocop";
+        if (ftapi.users[chatData.id].mod) utitle = "mod";
+        if (ftapi.users[chatData.id].supermod) utitle = "supermod";
+        if (ftapi.users[chatData.id].hostbot) utitle = "robot";
       } else if (chatData.name) {
         namebo = chatData.name;
       }
@@ -2437,7 +2437,7 @@ firetable.ui = {
                 $("#supercopResponse").html(person.username + " suspended.");
 
               } else {
-                $("#supercopResponse").text("Can not suspend that (or any) supercop.");
+                $("#supercopResponse").text("Can not suspend that (or any) supermod.");
               }
             } else {
               $("#supercopResponse").text(val + " not found...");
