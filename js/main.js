@@ -43,7 +43,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.05.30";
+firetable.version = "01.06.00";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -140,7 +140,7 @@ function initialize(event) {
     var timeLeft = data.duration - secSince;
     if (data.type == 1) {
       if (!firetable.preview) {
-        player.loadVideoById(data.cid, secSince, "large")
+        if (!firetable.disableMediaPlayback) player.loadVideoById(data.cid, secSince, "large")
       }
     }
   }
@@ -197,7 +197,7 @@ firetable.init = function() {
       if (data.type == 2) {
         if (!firetable.preview) {
           firetable.scSeek = timeSince;
-          firetable.scwidget.load("http://api.soundcloud.com/tracks/" + data.cid, {
+          if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + data.cid, {
             auto_play: true
           });
         }
@@ -604,13 +604,13 @@ firetable.actions = {
       if (firetable.song.type == 1) {
         if (!firetable.preview) {
           if (firetable.scLoaded) firetable.scwidget.pause();
-          player.loadVideoById(firetable.song.cid, secSince, "large");
+          if (!firetable.disableMediaPlayback) player.loadVideoById(firetable.song.cid, secSince, "large");
         }
       } else if (firetable.song.type == 2) {
         if (!firetable.preview) {
           if (firetable.ytLoaded) player.stopVideo();
           firetable.scSeek = timeSince;
-          firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
+          if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
             auto_play: true
           });
         }
@@ -656,13 +656,13 @@ firetable.actions = {
         if (firetable.song.type == 1) {
           if (!firetable.preview) {
             if (firetable.scLoaded) firetable.scwidget.pause();
-            player.loadVideoById(firetable.song.cid, secSince, "large");
+            if (!firetable.disableMediaPlayback) player.loadVideoById(firetable.song.cid, secSince, "large");
           }
         } else if (firetable.song.type == 2) {
           if (!firetable.preview) {
             if (firetable.ytLoaded) player.stopVideo();
             firetable.scSeek = timeSince;
-            firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
+            if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
               auto_play: true
             });
           }
@@ -678,11 +678,11 @@ firetable.actions = {
       }, 200);
       if (type == 1) {
         if (firetable.scLoaded) firetable.scwidget.pause();
-        player.loadVideoById(cid, 0, "large")
+        if (!firetable.disableMediaPlayback) player.loadVideoById(cid, 0, "large")
       } else if (type == 2) {
         if (firetable.ytLoaded) player.stopVideo();
         firetable.scSeek = 0;
-        firetable.scwidget.load("http://api.soundcloud.com/tracks/" + cid, {
+        if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + cid, {
           auto_play: true
         });
       }
@@ -935,13 +935,13 @@ firetable.actions = {
     if (firetable.song.type == 1) {
       if (!firetable.preview) {
         if (firetable.scLoaded) firetable.scwidget.pause();
-        player.loadVideoById(firetable.song.cid, secSince, "large");
+        if (!firetable.disableMediaPlayback) player.loadVideoById(firetable.song.cid, secSince, "large");
       }
     } else if (firetable.song.type == 2) {
       if (!firetable.preview) {
         if (firetable.ytLoaded) player.stopVideo();
         firetable.scSeek = timeSince;
-        firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
+        if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
           auto_play: true
         }, function() {
           $('#reloadtrack').removeClass('on working');
@@ -986,13 +986,13 @@ firetable.actions = {
         if (firetable.song.type == 1) {
           if (!firetable.preview) {
             if (firetable.scLoaded) firetable.scwidget.pause();
-            player.loadVideoById(firetable.song.cid, secSince, "large");
+            if (!firetable.disableMediaPlayback) player.loadVideoById(firetable.song.cid, secSince, "large");
           }
         } else if (firetable.song.type == 2) {
           if (!firetable.preview) {
             if (firetable.ytLoaded) player.stopVideo();
             firetable.scSeek = timeSince;
-            firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
+            if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
               auto_play: true
             });
           }
@@ -1359,6 +1359,17 @@ firetable.ui = {
       }
     });
     //GET SETTINGS FROM LOCALSTORAGE
+    var disableMediaPlayback = localStorage["firetableDisableMedia"];
+    if (typeof disableMediaPlayback == "undefined") {
+      localStorage["disableMediaPlayback"] = false;
+      firetable.disableMediaPlayback = false;
+      $("#mediaDisableToggle").prop("checked", false);
+    } else {
+      disableMediaPlayback = JSON.parse(disableMediaPlayback);
+      firetable.disableMediaPlayback = disableMediaPlayback;
+      $("#mediaDisableToggle").prop("checked", disableMediaPlayback);
+    }
+
     var showImages = localStorage["firetableShowImages"];
     if (typeof showImages == "undefined") {
       localStorage["firetableShowImages"] = false;
@@ -1577,7 +1588,7 @@ firetable.ui = {
       if (data.type == 1 && firetable.ytLoaded) {
         if (!firetable.preview) {
           if (firetable.scLoaded) firetable.scwidget.pause();
-          player.loadVideoById(data.cid, secSince, "large");
+          if (!firetable.disableMediaPlayback) player.loadVideoById(data.cid, secSince, "large");
           var thevolactual = $("#slider").slider("value");
           player.setVolume(thevolactual);
           firetable.scwidget.setVolume(thevolactual);
@@ -1586,7 +1597,7 @@ firetable.ui = {
         if (!firetable.preview) {
           if (firetable.ytLoaded) player.stopVideo();
           firetable.scSeek = timeSince;
-          firetable.scwidget.load("http://api.soundcloud.com/tracks/" + data.cid, {
+          if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + data.cid, {
             auto_play: true,
             single_active: false,
             callback: function() {
@@ -2079,13 +2090,13 @@ firetable.ui = {
           if (firetable.song.type == 1) {
             if (!firetable.preview) {
               if (firetable.scLoaded) firetable.scwidget.pause();
-              player.loadVideoById(firetable.song.cid, secSince, "large");
+              if (!firetable.disableMediaPlayback) player.loadVideoById(firetable.song.cid, secSince, "large");
             }
           } else if (firetable.song.type == 2) {
             if (!firetable.preview) {
               if (firetable.ytLoaded) player.stopVideo();
               firetable.scSeek = timeSince;
-              firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
+              if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
                 auto_play: true
               });
             }
@@ -2256,6 +2267,19 @@ firetable.ui = {
         localStorage["firetableShowImages"] = false;
         firetable.showImages = false;
 
+      }
+    });
+    $('#mediaDisableToggle').change(function() {
+      if (this.checked) {
+        firetable.debug && console.log("media disable on");
+        localStorage["firetableDisableMedia"] = true;
+        firetable.disableMediaPlayback = true;
+        if (firetable.scLoaded) firetable.scwidget.pause();
+        if (firetable.ytLoaded) player.stopVideo();
+      } else {
+        firetable.debug && console.log("media disable off");
+        localStorage["firetableDisableMedia"] = false;
+        firetable.disableMediaPlayback = false;
       }
     });
     $('#showAvatarsToggle').change(function() {
@@ -2594,13 +2618,13 @@ firetable.ui = {
                   if (firetable.song.type == 1) {
                     if (!firetable.preview) {
                       if (firetable.scLoaded) firetable.scwidget.pause();
-                      player.loadVideoById(firetable.song.cid, secSince, "large");
+                      if (!firetable.disableMediaPlayback) player.loadVideoById(firetable.song.cid, secSince, "large");
                     }
                   } else if (firetable.song.type == 2) {
                     if (!firetable.preview) {
                       if (firetable.ytLoaded) player.stopVideo();
                       firetable.scSeek = timeSince;
-                      firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
+                      if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
                         auto_play: true
                       });
                     }
@@ -2661,13 +2685,13 @@ firetable.ui = {
                 if (firetable.song.type == 1) {
                   if (!firetable.preview) {
                     firetable.scwidget.pause();
-                    player.loadVideoById(firetable.song.cid, secSince, "large");
+                    if (!firetable.disableMediaPlayback) player.loadVideoById(firetable.song.cid, secSince, "large");
                   }
                 } else if (firetable.song.type == 2) {
                   if (!firetable.preview) {
                     if (firetable.ytLoaded) player.stopVideo();
                     firetable.scSeek = timeSince;
-                    firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
+                    if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
                       auto_play: true
                     });
                   }
