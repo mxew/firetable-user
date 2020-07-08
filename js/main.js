@@ -43,7 +43,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.06.00";
+firetable.version = "01.06.10";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -1215,6 +1215,12 @@ firetable.ui = {
     var doc = firetable.parser.parseFromString(html, 'text/html');
     return doc.body.textContent || "";
   },
+  hidePlayerControls: function(){
+    $("head").append("<style class='playerControlsHider'>.previewicon { display: none !important; } div#playerControls { display: none !important; } </style>");
+  },
+  showPlayerControls: function(){
+    $(".playerControlsHider").remove();
+  },
   showImages: function(chatTxt) {
     if (firetable.showImages) {
       var imageUrlRegex = /((http(s?):)([/|.|\w|\s|-])*\.(?:jpe?g|gif|png))/g;
@@ -1368,6 +1374,9 @@ firetable.ui = {
       disableMediaPlayback = JSON.parse(disableMediaPlayback);
       firetable.disableMediaPlayback = disableMediaPlayback;
       $("#mediaDisableToggle").prop("checked", disableMediaPlayback);
+      if (disableMediaPlayback){
+        firetable.ui.hidePlayerControls();
+      }
     }
 
     var showImages = localStorage["firetableShowImages"];
@@ -2276,10 +2285,13 @@ firetable.ui = {
         firetable.disableMediaPlayback = true;
         if (firetable.scLoaded) firetable.scwidget.pause();
         if (firetable.ytLoaded) player.stopVideo();
+        firetable.ui.hidePlayerControls();
       } else {
         firetable.debug && console.log("media disable off");
         localStorage["firetableDisableMedia"] = false;
         firetable.disableMediaPlayback = false;
+        firetable.ui.showPlayerControls();
+        firetable.actions.reloadtrack();
       }
     });
     $('#showAvatarsToggle').change(function() {
