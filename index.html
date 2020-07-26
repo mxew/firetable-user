@@ -11,7 +11,7 @@
 	<link rel="stylesheet" href="css/perfect-scrollbar.css" />
   	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' type='text/css'>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-	<link rel="stylesheet" href="css/looks.css?v=01.06.10" type="text/css" />
+	<link rel="stylesheet" href="css/looks.css?v=01.07.10" type="text/css" />
 </head>
 
 <body>
@@ -435,18 +435,19 @@
 				</div>
 				<div class="modalContent scrollit">
 					<div id="importSources" class="tabs">
-						<button role="button" class="tab on" id="ytimportchoice">Youtube</button><button role="button" class="tab" id="scimportchoice">Soundcloud</button>
+						<button role="button" class="tab on" id="ytimportchoice">Youtube</button><button role="button" class="tab" id="scimportchoice">Soundcloud</button><button role="button" class="tab" id="dtimportchoice">Dubtrack</button>
 					</div>
 					<div id="importContent">
-						<div id="byId">
-							<input type="text" placeholder="Enter a YouTube playlist ID" id="plMachineById"></input>
-							<button role="button" class="butt graybutt iconbutt" disabled>
-								<i class="material-icons" title="Import"></i>
-							</button>
-						</div>
-						<div class="ortxt">or</div>
 						<input type="text" placeholder="Search Playlists" id="plMachine"></input>
 						<div id="importResults"></div>
+					</div>
+					<div id="importDubContent">
+						<div>
+							Select an "interactive webpage" .html file from <a target="_blank" href="https://exporter.dubtrack.net">Dubtrack</a>.
+						</div>
+						<input name='myFileDubList' id="dubtrackimportfile" type="file">
+						<div id="importDubResults"></div>
+						<div id="dubimportButton"><button id="importDubGo">Import Selected List</button></div>
 					</div>
 				</div>
 			</div>
@@ -477,8 +478,8 @@
 	<script src="https://apis.google.com/js/client.js?onload=googleApiClientReady"></script>
 	<script src="https://w.soundcloud.com/player/api.js" type="text/javascript"></script>
 	<script src="https://www.youtube.com/iframe_api"></script>
-	<script type="text/javascript" src="js/firetable.js?v=01.06.10"></script>
-	<script type="text/javascript" src="js/main.js?v=01.06.10"></script>
+	<script type="text/javascript" src="js/firetable.js?v=01.07.10"></script>
+	<script type="text/javascript" src="js/main.js?v=01.07.10"></script>
 
 </body>
 

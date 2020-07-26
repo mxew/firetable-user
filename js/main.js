@@ -30,6 +30,8 @@ var firetable = {
   scwidget: null,
   searchSelectsChoice: 1,
   importSelectsChoice: 1,
+  dtImportName: null,
+  dtImportList: [],
   lastChatPerson: false,
   lastChatId: false,
   tagUpdate: null,
@@ -43,7 +45,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.06.10";
+firetable.version = "01.07.10";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -252,6 +254,24 @@ firetable.init = function() {
 };
 
 firetable.actions = {
+  dubtrackImport: function() {
+    $("#importDubResults").html("importing (0/"+firetable.dtImportList.length+")...");
+    $("#dubimportButton").hide();
+    var listid = ftapi.actions.createList(firetable.dtImportName);
+    var name = firetable.dtImportName;
+
+    $("#listpicker").append("<option id=\"pdopt" + listid + "\" value=\"" + listid + "\">" + name + "</option>");
+    var trackarray = firetable.dtImportList;
+    for (var e = 0; e < trackarray.length; e++) {
+      var thetype = 1;
+      if (trackarray[e].type == "soundcloud") thetype = 2;
+      var numbo = e + 1;
+      $("#importDubResults").html("importing ("+numbo+"/"+firetable.dtImportList.length+")...");
+      if (numbo == firetable.dtImportList.length) $("#importDubResults").html("Import complete! You can now select another file if you'd like to do another!");
+      ftapi.actions.addToList(thetype, trackarray[e].name, trackarray[e].cid, listid);
+
+    }
+  },
   localChatResponse: function(txt) {
     if (txt.length) {
       $("#chats").append("<div class=\"newChat\"><div class=\"lcrsp\">" + txt + "</div></div>");
@@ -1211,14 +1231,59 @@ firetable.ui = {
 
     return text;
   },
+  dubtrackImportFileSelect: function(evt) {
+    var files = evt.target.files; // FileList object
+    var file = files[0];
+    // read the file contents
+    var reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = function(event) {
+      try {
+        var allthestuff = event.currentTarget.result;
+        console.log(allthestuff);
+        firetable.dtImportName = firetable.ui.strip(allthestuff.split('<h4>')[1].split('</h4>')[0]);
+        var hams = allthestuff.split('<li class="list-group-item list-group-item-dark" ');
+        hams.shift();
+        firetable.dtImportList = [];
+        for (var i = 0; i < hams.length; i++) {
+          var thingsRegex = /(type\=\"(.*))(" id\=\"(.*)\")>(.*)<\/li>/gm;
+          var matches = thingsRegex.exec(hams[i])
+          var type = matches[2];
+          var cid = matches[4];
+          var name = firetable.ui.strip(matches[5]);
+          firetable.dtImportList.push({
+            type: type,
+            cid: cid,
+            name: name
+          });
+        }
+        console.log(firetable.dtImportList);
+        console.log(firetable.dtImportName);
+        if (firetable.dtImportList.length) {
+          $("#importDubResults").text("Ok... import " + firetable.dtImportName + " (" + firetable.dtImportList.length + " tracks)?")
+          $("#dubimportButton").show();
+        } else {
+          $("#importDubResults").text("ERROR... NO TRAX?")
+          $("#dubimportButton").hide();
+        }
+      } catch (e) {
+        console.log(e);
+        $("#importDubResults").text("ERROR")
+        $("#dubimportButton").hide();
+      }
+
+
+    };
+
+  },
   strip: function(html) {
     var doc = firetable.parser.parseFromString(html, 'text/html');
     return doc.body.textContent || "";
   },
-  hidePlayerControls: function(){
+  hidePlayerControls: function() {
     $("head").append("<style class='playerControlsHider'>.previewicon { display: none !important; } div#playerControls { display: none !important; } </style>");
   },
-  showPlayerControls: function(){
+  showPlayerControls: function() {
     $(".playerControlsHider").remove();
   },
   showImages: function(chatTxt) {
@@ -1374,7 +1439,7 @@ firetable.ui = {
       disableMediaPlayback = JSON.parse(disableMediaPlayback);
       firetable.disableMediaPlayback = disableMediaPlayback;
       $("#mediaDisableToggle").prop("checked", disableMediaPlayback);
-      if (disableMediaPlayback){
+      if (disableMediaPlayback) {
         firetable.ui.hidePlayerControls();
       }
     }
@@ -1940,14 +2005,14 @@ firetable.ui = {
         try {
           if (ftapi.users[ftapi.uid].mod || ftapi.users[ftapi.uid].supermod) {
             var canBeDeleted = false;
-            if (ftapi.users[chatData.id]){
+            if (ftapi.users[chatData.id]) {
               if (!ftapi.users[chatData.id].mod && !ftapi.users[chatData.id].supermod && !chatData.hidden) {
                 canBeDeleted = true;
               }
             } else {
               canBeDeleted = true;
             }
-            if (canBeDeleted && !chatData.hidden){
+            if (canBeDeleted && !chatData.hidden) {
               // add delete button
               $chatthing.find(".chatText").addClass("deleteMe");
               $chatthing.find(".chatText").append("<div class=\"modDelete\">x</div>");
@@ -2186,6 +2251,8 @@ firetable.ui = {
       }
     });
     $("#reloadtrack").bind("click", firetable.actions.reloadtrack);
+
+    $("#importDubGo").bind("click", firetable.actions.dubtrackImport);
 
     $("#volstatus").bind("click", function() {
       firetable.actions.muteToggle();
@@ -2426,6 +2493,10 @@ firetable.ui = {
       firetable.debug && console.log("sc import");
       firetable.importSelectsChoice = 2;
     });
+    $("#dtimportchoice").bind("click", function() {
+      firetable.debug && console.log("dt import");
+      firetable.importSelectsChoice = 3;
+    });
     $("#tagMachine").bind("keyup", function(e) {
       if (e.which == 13) {
         if (firetable.songToEdit) {
@@ -2458,6 +2529,7 @@ firetable.ui = {
         }
       }
     });
+    $('#dubtrackimportfile').bind('change', firetable.ui.dubtrackImportFileSelect);
     $("#supercopSearch").bind("keyup", function(e) {
       if (e.which == 13) {
         var val = $("#supercopSearch").val();
@@ -2484,55 +2556,15 @@ firetable.ui = {
     });
     $("#importSources .tab").bind("click", function(e) {
       var searchFrom = firetable.importSelectsChoice;
-      if (searchFrom == 2) {
-        $("#byId").hide();
+      if (searchFrom == 3) {
+        $("#importDubContent").show();
+        $("#importContent").hide();
       } else {
-        $("#byId").show();
+        $("#importDubContent").hide();
+        $("#importContent").show();
       }
       $(this).siblings().removeClass('on');
       $(this).addClass('on');
-    });
-    $("#plMachineById").bind("change keyup input", function(e) {
-      var searchFrom = firetable.importSelectsChoice;
-      // YouTube playlist IDs are 34 characters. Full URL is 72 characters
-      if ((searchFrom == 1 && this.value.length === 18) || (searchFrom == 1 && this.value.length === 34) || (searchFrom == 1 && this.value.length === 56) || (searchFrom == 1 && this.value.length === 72)) {
-        $("#plMachineById + button").prop('disabled', false);
-      } else {
-        $("#plMachineById + button").prop('disabled', true);
-      };
-    });
-    $("#plMachineById + button").bind("click", function(e) {
-      var regex = /(?:list=)/
-      var ytPlId = $("#plMachineById").val().split(regex);
-
-      function keyWordsearch() {
-        gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
-        gapi.client.load('youtube', 'v3', function() {
-          makeRequest();
-        });
-      }
-
-      function makeRequest() {
-        var request = gapi.client.youtube.playlists.list({
-          id: ytPlId[ytPlId.length - 1],
-          part: 'snippet'
-        });
-        request.execute(function(response) {
-          if (response.result) {
-            if (response.result.items) {
-              if (response.result.items.length === 1) {
-                var playlistTitle = response.result.items[0].snippet.title;
-                confirm("Importing playlist: " + playlistTitle);
-                firetable.actions.importList(ytPlId[ytPlId.length - 1], playlistTitle, 1);
-                $("#plMachineById + button").prop('disabled', true);
-              } else {
-                alert("There is no YouTube playlist with that ID.");
-              }
-            }
-          }
-        })
-      }
-      keyWordsearch();
     });
     $("#plMachine").bind("keyup", function(e) {
       if (e.which == 13) {
@@ -2542,31 +2574,71 @@ firetable.ui = {
           $("#plMachine").val("");
           var searchFrom = firetable.importSelectsChoice;
           if (searchFrom == 1) {
-            //youtube
-            function keyWordsearch() {
-              gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
-              gapi.client.load('youtube', 'v3', function() {
-                makeRequest();
-              });
+            var directLink = false;
+            //see if this is a particular list's url...
+            if (val.match(/youtube.com\/watch/) || val.match(/youtube.com\/playlist/)){
+              function getQueryStringValue(str, key) {
+                return unescape(str.replace(new RegExp("^(?:.*[&\\?]" + escape(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+              }
+              var listID = getQueryStringValue(val, "list");
+              if (listID) directLink = true;
             }
 
-            function makeRequest() {
-              var request = gapi.client.youtube.search.list({
-                q: val,
-                type: 'playlist',
-                part: 'snippet',
-                maxResults: 15
-              });
-              request.execute(function(response) {
-                var srchItems = response.result.items;
-                firetable.debug && console.log('import search results:', response);
-                $.each(srchItems, function(index, item) {
-                  vidTitle = item.snippet.title;
-                  $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.snippet.title + " by " + item.snippet.channelTitle + "</div><a target=\"_blank\" href=\"https://www.youtube.com/playlist?list=" + item.id.playlistId + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id.playlistId + "', '" + firetable.utilities.htmlEscape(item.snippet.title) + "', 1)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+            if (directLink){
+              function keyWordsearch() {
+                gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
+                gapi.client.load('youtube', 'v3', function() {
+                  makeRequest();
+                });
+              }
+
+              function makeRequest() {
+                var request = gapi.client.youtube.playlists.list({
+                  id: listID,
+                  part: 'snippet'
+                });
+                request.execute(function(response) {
+                  if (response.result) {
+                    if (response.result.items) {
+                      if (response.result.items.length === 1) {
+                        var item = response.result.items[0];
+                        vidTitle = item.snippet.title;
+                        $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.snippet.title + " by " + item.snippet.channelTitle + "</div><a target=\"_blank\" href=\"https://www.youtube.com/playlist?list=" + listID + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + listID + "', '" + firetable.utilities.htmlEscape(item.snippet.title) + "', 1)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+                      } else {
+                        // no result
+                      }
+                    }
+                  }
                 })
-              })
+              }
+              keyWordsearch();
+            } else {
+              //youtube
+              function keyWordsearch() {
+                gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
+                gapi.client.load('youtube', 'v3', function() {
+                  makeRequest();
+                });
+              }
+
+              function makeRequest() {
+                var request = gapi.client.youtube.search.list({
+                  q: val,
+                  type: 'playlist',
+                  part: 'snippet',
+                  maxResults: 15
+                });
+                request.execute(function(response) {
+                  var srchItems = response.result.items;
+                  firetable.debug && console.log('import search results:', response);
+                  $.each(srchItems, function(index, item) {
+                    vidTitle = item.snippet.title;
+                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.snippet.title + " by " + item.snippet.channelTitle + "</div><a target=\"_blank\" href=\"https://www.youtube.com/playlist?list=" + item.id.playlistId + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id.playlistId + "', '" + firetable.utilities.htmlEscape(item.snippet.title) + "', 1)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+                  })
+                })
+              }
+              keyWordsearch();
             }
-            keyWordsearch();
 
           } else if (searchFrom == 2) {
             //cloud sound world dot com
