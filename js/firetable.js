@@ -49,7 +49,7 @@ ftapi.init = function(firebaseConfig) {
   ref2.orderByChild('status').equalTo(true).on('child_added', function(dataSnapshot) {
     var okdata = dataSnapshot.val();
     okdata.userid = dataSnapshot.key;
-    if (ftapi.blockedUsers[okdata.userid]){
+    if (ftapi.blockedUsers[okdata.userid]) {
       okdata.blocked = true;
     }
     ftapi.events.emit("userJoined", okdata);
@@ -57,7 +57,7 @@ ftapi.init = function(firebaseConfig) {
   ref2.orderByChild('status').equalTo(true).on('child_removed', function(dataSnapshot) {
     var okdata = dataSnapshot.val();
     okdata.userid = dataSnapshot.key;
-    if (ftapi.blockedUsers[okdata.userid]){
+    if (ftapi.blockedUsers[okdata.userid]) {
       okdata.blocked = true;
     }
     ftapi.events.emit("userLeft", okdata);
@@ -65,15 +65,15 @@ ftapi.init = function(firebaseConfig) {
   ref2.orderByChild('status').equalTo(true).on('child_changed', function(dataSnapshot) {
     var okdata = dataSnapshot.val();
     okdata.userid = dataSnapshot.key;
-    if (ftapi.blockedUsers[okdata.userid]){
+    if (ftapi.blockedUsers[okdata.userid]) {
       okdata.blocked = true;
     }
     ftapi.events.emit("userChanged", okdata);
   });
   ref2.orderByChild('status').equalTo(true).on('value', function(dataSnapshot) {
     var okdata = dataSnapshot.val();
-    for (var key in okdata){
-      if (ftapi.blockedUsers[key]){
+    for (var key in okdata) {
+      if (ftapi.blockedUsers[key]) {
         okdata[key].blocked = true;
       }
     }
@@ -204,8 +204,8 @@ ftapi.init = function(firebaseConfig) {
         };
         ftapi.uid = user.uid;
         ftapi.uname = user.uid;
-        ftapi.lookup.userByID(user.uid, function(data){
-          if (data){
+        ftapi.lookup.userByID(user.uid, function(data) {
+          if (data) {
             returnData.user = data;
             if (data.username) ftapi.uname = data.username;
           }
@@ -233,12 +233,12 @@ ftapi.init = function(firebaseConfig) {
         });
 
         // chat event emitter
-        if (!ftapi.chatEvent){
+        if (!ftapi.chatEvent) {
           var chatRef = firebase.app("firetable").database().ref("chatFeed");
           ftapi.chatEvent = chatRef.on('child_added', function(childSnapshot, prevChildKey) {
             var feedData = childSnapshot.val();
             var chatID = feedData.chatID;
-            ftapi.lookup.chatData(chatID, function(chatData){
+            ftapi.lookup.chatData(chatID, function(chatData) {
               chatData.chatID = chatID;
               chatData.feedID = childSnapshot.key;
               if (feedData.hidden) chatData.hidden = feedData.hidden;
@@ -254,26 +254,26 @@ ftapi.init = function(firebaseConfig) {
         }
 
         // fire users changed event on blocked users changes
-        if (ftapi.blockEvent){
+        if (ftapi.blockEvent) {
           ftapi.blockRef.off("value", ftapi.blockEvent);
         }
         ftapi.blockRef = firebase.app("firetable").database().ref("blocks/" + ftapi.uid);
-        ftapi.blockEvent = ftapi.blockRef.on("value", function(snap){
+        ftapi.blockEvent = ftapi.blockRef.on("value", function(snap) {
           var data = snap.val();
-          if (data){
+          if (data) {
             ftapi.blockedUsers = data;
           } else {
             ftapi.blockedUsers = {};
           }
-          for (var key in ftapi.users){
-            if (ftapi.blockedUsers[key]){
+          for (var key in ftapi.users) {
+            if (ftapi.blockedUsers[key]) {
               // person is here
               ftapi.users[key].blocked = true;
               var changeData = ftapi.users[key];
               changeData.userid = key;
               ftapi.events.emit("userChanged", changeData);
             } else {
-              if (ftapi.users[key].blocked){
+              if (ftapi.users[key].blocked) {
                 ftapi.users[key].blocked = false;
                 var changeData = ftapi.users[key];
                 changeData.userid = key;
@@ -281,7 +281,7 @@ ftapi.init = function(firebaseConfig) {
               }
             }
           }
-          if (ftapi.users){
+          if (ftapi.users) {
             ftapi.events.emit("usersChanged", ftapi.users);
           }
         });
@@ -358,11 +358,11 @@ ftapi.actions = {
       name: ftapi.uname
     };
     if (cardid) data.card = cardid;
-    var chatItem = chatData.push(data, function(){
+    var chatItem = chatData.push(data, function() {
       var feedObj = {
         chatID: chatItem.key
       };
-      var feedItem = chatFeed.push(feedObj, function(){
+      var feedItem = chatFeed.push(feedObj, function() {
         chatItem.child("feedID").set(feedItem.key);
       });
     });
@@ -640,10 +640,10 @@ ftapi.actions = {
     if (changePv) pvChangeCallback(changePv);
     ftapi.queueRef.set(newobj);
   },
-  blockUser: function(username, callback){
-    ftapi.lookup.userByName(username, function(data){
-      if (!data) return callback("There is no "+username);
-      if (data.mod || data.supermod || data.hostbot){
+  blockUser: function(username, callback) {
+    ftapi.lookup.userByName(username, function(data) {
+      if (!data) return callback("There is no " + username);
+      if (data.mod || data.supermod || data.hostbot) {
         response = "You can not block this person.";
       } else {
         ftapi.blockRef.child(data.userid).set(true);
@@ -652,10 +652,10 @@ ftapi.actions = {
       return callback(response);
     });
   },
-  unblockUser: function(username, callback){
-    ftapi.lookup.userByName(username, function(data){
-      if (!data) return callback("There is no "+username);
-      if (ftapi.blockedUsers[data.userid]){
+  unblockUser: function(username, callback) {
+    ftapi.lookup.userByName(username, function(data) {
+      if (!data) return callback("There is no " + username);
+      if (ftapi.blockedUsers[data.userid]) {
         ftapi.blockRef.child(data.userid).remove();
         response = username + " has been unblocked. You will now see their chats, and they will see your chats.";
       } else {
@@ -757,7 +757,7 @@ ftapi.actions = {
     var modp = firebase.app("firetable").database().ref("users/" + userid + "/mod");
     modp.set(false);
   },
-  deleteChat: function(feedID){
+  deleteChat: function(feedID) {
     var feedEntry = firebase.app("firetable").database().ref("chatFeed/" + feedID + "/hidden");
     feedEntry.set(true);
   }
@@ -767,7 +767,7 @@ ftapi.lookup = {
   /*
   DATA LOOKUP FUNCTIONS
   */
-  chatData: function(chatID, callback){
+  chatData: function(chatID, callback) {
     var chatData = firebase.app("firetable").database().ref("chatData/" + chatID);
     chatData.once('value')
       .then(function(snap) {
@@ -794,14 +794,14 @@ ftapi.lookup = {
   usernameTaken: function(name, callback) {
     var searchByName = firebase.app("firetable").database().ref("users");
     searchByName.orderByChild('username').equalTo(name).once("value")
-    .then(function(snapshot) {
-      var data = snapshot.val();
-      var taken = false;
-      if (data) {
-        taken = true;
-      }
-      return callback(taken);
-    });
+      .then(function(snapshot) {
+        var data = snapshot.val();
+        var taken = false;
+        if (data) {
+          taken = true;
+        }
+        return callback(taken);
+      });
   },
   userByName: function(name, callback) {
     var searchByName = firebase.app("firetable").database().ref("users");

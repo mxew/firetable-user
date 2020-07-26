@@ -45,7 +45,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.07.10";
+firetable.version = "01.07.20";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -255,7 +255,7 @@ firetable.init = function() {
 
 firetable.actions = {
   dubtrackImport: function() {
-    $("#importDubResults").html("importing (0/"+firetable.dtImportList.length+")...");
+    $("#importDubResults").html("importing (0/" + firetable.dtImportList.length + ")...");
     $("#dubimportButton").hide();
     var listid = ftapi.actions.createList(firetable.dtImportName);
     var name = firetable.dtImportName;
@@ -266,7 +266,7 @@ firetable.actions = {
       var thetype = 1;
       if (trackarray[e].type == "soundcloud") thetype = 2;
       var numbo = e + 1;
-      $("#importDubResults").html("importing ("+numbo+"/"+firetable.dtImportList.length+")...");
+      $("#importDubResults").html("importing (" + numbo + "/" + firetable.dtImportList.length + ")...");
       if (numbo == firetable.dtImportList.length) $("#importDubResults").html("Import complete! You can now select another file if you'd like to do another!");
       ftapi.actions.addToList(thetype, trackarray[e].name, trackarray[e].cid, listid);
 
@@ -2574,17 +2574,18 @@ firetable.ui = {
           $("#plMachine").val("");
           var searchFrom = firetable.importSelectsChoice;
           if (searchFrom == 1) {
+            var listID;
             var directLink = false;
             //see if this is a particular list's url...
-            if (val.match(/youtube.com\/watch/) || val.match(/youtube.com\/playlist/)){
+            if (val.match(/youtube.com\/watch/) || val.match(/youtube.com\/playlist/)) {
               function getQueryStringValue(str, key) {
                 return unescape(str.replace(new RegExp("^(?:.*[&\\?]" + escape(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
               }
-              var listID = getQueryStringValue(val, "list");
+              listID = getQueryStringValue(val, "list");
               if (listID) directLink = true;
             }
 
-            if (directLink){
+            if (directLink) {
               function keyWordsearch() {
                 gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
                 gapi.client.load('youtube', 'v3', function() {
@@ -2641,17 +2642,32 @@ firetable.ui = {
             }
 
           } else if (searchFrom == 2) {
-            //cloud sound world dot com
-            SC.get('/playlists', {
-              q: val
-            }).then(function(lists) {
-              for (var i = 0; i < lists.length; i++) {
-                var item = lists[i];
-                if (item.sharing == "public") {
-                  $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+            var listData;
+            var directLink = false;
+            //see if this is a particular list's url...
+            console.log(val);
+            if (val.match(/(?<=\/\/soundcloud.com\/).*?(?=\/sets\/)/)) {
+              var finishUp = function(item) {
+                if (item) {
+                  if (item.sharing == "public" && item.kind == "playlist") {
+                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+                  }
                 }
-              }
-            });
+              };
+              var getList = SC.resolve(val).then(finishUp);
+            } else {
+              //cloud sound world dot com
+              SC.get('/playlists', {
+                q: val
+              }).then(function(lists) {
+                for (var i = 0; i < lists.length; i++) {
+                  var item = lists[i];
+                  if (item.sharing == "public") {
+                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+                  }
+                }
+              });
+            }
           }
         }
       }
