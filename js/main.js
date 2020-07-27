@@ -45,7 +45,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.07.20";
+firetable.version = "01.07.21";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -2646,7 +2646,7 @@ firetable.ui = {
             var directLink = false;
             //see if this is a particular list's url...
             console.log(val);
-            if (val.match(/(?<=\/\/soundcloud.com\/).*?(?=\/sets\/)/)) {
+            if (val.match(/.*\/\/soundcloud\.com\/.*\/sets\/.*/)) {
               var finishUp = function(item) {
                 if (item) {
                   if (item.sharing == "public" && item.kind == "playlist") {
