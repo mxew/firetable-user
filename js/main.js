@@ -45,7 +45,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.07.21";
+firetable.version = "01.07.32";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -2677,91 +2677,130 @@ firetable.ui = {
       if (e.which == 13) {
         var txt = $("#qsearch").val();
         if (firetable.searchSelectsChoice == 1) {
-          function keyWordsearch() {
-            gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
-            gapi.client.load('youtube', 'v3', function() {
-              makeRequest();
-            });
-          }
+          var showResults = function(response) {
+            firetable.debug && console.log('queue search:', response);
+            //  $("#qsearch").val("");
+            $('#searchResults').html("");
 
-          function makeRequest() {
-            var q = $('#qsearch').val();
-            $('#searchResults').html("Searching...");
+            if (firetable.preview) {
+              if (firetable.preview.slice(0, 5) == "ytcid" || firetable.preview.slice(0, 5) == "sccid") {
+                $("#pv" + firetable.preview).html("&#xE037;");
+                clearTimeout(firetable.ptimeout);
+                firetable.ptimeout = null;
+                $("#pvbar" + firetable.preview).css("background-image", "none");
+                clearInterval(firetable.movePvBar);
+                firetable.movePvBar = null;
+                firetable.preview = false;
+                //start regular song
+                var nownow = Date.now();
+                var timeSince = nownow - firetable.song.started;
+                if (timeSince <= 0) timeSince = 0;
 
-            var request = gapi.client.youtube.search.list({
-              q: q,
-              type: 'video',
-              part: 'snippet',
-              maxResults: 15
-            });
-            request.execute(function(response) {
-              firetable.debug && console.log('queue search:', response);
-              //  $("#qsearch").val("");
-              $('#searchResults').html("");
-
-              if (firetable.preview) {
-                if (firetable.preview.slice(0, 5) == "ytcid" || firetable.preview.slice(0, 5) == "sccid") {
-                  $("#pv" + firetable.preview).html("&#xE037;");
-                  clearTimeout(firetable.ptimeout);
-                  firetable.ptimeout = null;
-                  $("#pvbar" + firetable.preview).css("background-image", "none");
-                  clearInterval(firetable.movePvBar);
-                  firetable.movePvBar = null;
-                  firetable.preview = false;
-                  //start regular song
-                  var nownow = Date.now();
-                  var timeSince = nownow - firetable.song.started;
-                  if (timeSince <= 0) timeSince = 0;
-
-                  var secSince = Math.floor(timeSince / 1000);
-                  var timeLeft = firetable.song.duration - secSince;
-                  if (firetable.song.type == 1) {
-                    if (!firetable.preview) {
-                      if (firetable.scLoaded) firetable.scwidget.pause();
-                      if (!firetable.disableMediaPlayback) player.loadVideoById(firetable.song.cid, secSince, "large");
-                    }
-                  } else if (firetable.song.type == 2) {
-                    if (!firetable.preview) {
-                      if (firetable.ytLoaded) player.stopVideo();
-                      firetable.scSeek = timeSince;
-                      if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
-                        auto_play: true
-                      });
-                    }
+                var secSince = Math.floor(timeSince / 1000);
+                var timeLeft = firetable.song.duration - secSince;
+                if (firetable.song.type == 1) {
+                  if (!firetable.preview) {
+                    if (firetable.scLoaded) firetable.scwidget.pause();
+                    if (!firetable.disableMediaPlayback) player.loadVideoById(firetable.song.cid, secSince, "large");
+                  }
+                } else if (firetable.song.type == 2) {
+                  if (!firetable.preview) {
+                    if (firetable.ytLoaded) player.stopVideo();
+                    firetable.scSeek = timeSince;
+                    if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
+                      auto_play: true
+                    });
                   }
                 }
               }
-              var srchItems = response.result.items;
-              $.each(srchItems, function(index, item) {
-                vidTitle = item.snippet.title;
-                var pkey = "ytcid" + item.id.videoId;
-                var $srli = $searchItemTemplate.clone();
-                $srli.attr('id', "pvbar" + pkey);
-                $srli.attr("data-key", pkey);
-                $srli.attr("data-cid", item.id.videoId);
-                $srli.find('.previewicon').attr('id', "pv" + pkey).on('click', function() {
-                  firetable.actions.pview($(this).parent().attr('data-key'), true, 1);
-                });
-                $srli.find('.listwords').html(vidTitle);
-                $srli.find('.queuetrack').on('click', function() {
-                  firetable.actions.queueTrack(
-                    $(this).parent().attr('data-cid'),
-                    firetable.utilities.htmlEscape($(this).parent().find('.listwords').text()),
-                    1
-                  );
-                });
-                $("#searchResults").append($srli);
-              })
+            }
+            var srchItems = response.result.items;
+            $.each(srchItems, function(index, item) {
+              console.log(item);
+              var thecid;
+              if (item.kind == "youtube#searchResult"){
+                thecid = item.id.videoId;
+              } else if (item.kind == "youtube#video") {
+                thecid = item.id;
+              }
+              vidTitle = item.snippet.title;
+              var pkey = "ytcid" + thecid;
+              var $srli = $searchItemTemplate.clone();
+              $srli.attr('id', "pvbar" + pkey);
+              $srli.attr("data-key", pkey);
+              $srli.attr("data-cid", thecid);
+              $srli.find('.previewicon').attr('id', "pv" + pkey).on('click', function() {
+                firetable.actions.pview($(this).parent().attr('data-key'), true, 1);
+              });
+              $srli.find('.listwords').html(vidTitle);
+              $srli.find('.queuetrack').on('click', function() {
+                firetable.actions.queueTrack(
+                  $(this).parent().attr('data-cid'),
+                  firetable.utilities.htmlEscape($(this).parent().find('.listwords').text()),
+                  1
+                );
+              });
+              $("#searchResults").append($srli);
             })
+          };
+          var directLink = false;
+          var thecid = false;
+          //see if this is a particular track's url...
+          if (txt.match(/youtube.com\/watch/)) {
+            function getQueryStringValue(str, key) {
+              return unescape(str.replace(new RegExp("^(?:.*[&\\?]" + escape(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+            }
+            thecid = getQueryStringValue(txt, "v");
+            if (thecid) directLink = true;
           }
-          keyWordsearch();
+          if (directLink) {
+            firetable.debug && console.log("direct yt link found");
+            function keyWordsearch() {
+              gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
+              gapi.client.load('youtube', 'v3', function() {
+                makeRequest();
+              });
+            }
 
+            function makeRequest() {
+              var request = gapi.client.youtube.videos.list({
+                id: thecid,
+                part: 'snippet',
+                maxResults: 1
+              });
+              request.execute(function(response) {
+                console.log(response);
+                showResults(response);
+              })
+            }
+            keyWordsearch();
+          } else {
+            function keyWordsearch() {
+              gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
+              gapi.client.load('youtube', 'v3', function() {
+                makeRequest();
+              });
+            }
+
+            function makeRequest() {
+              var q = $('#qsearch').val();
+              $('#searchResults').html("Searching...");
+
+              var request = gapi.client.youtube.search.list({
+                q: q,
+                type: 'video',
+                part: 'snippet',
+                maxResults: 15
+              });
+              request.execute(function(response) {
+                showResults(response);
+              })
+            }
+            keyWordsearch();
+          }
         } else if (firetable.searchSelectsChoice == 2) {
           var q = $('#qsearch').val();
-          $('#searchResults').html("Searching...");
-          SC.get('/tracks', {
-            q: q
-          }).then(function(tracks) {
+          var showResults = function(tracks) {
             firetable.debug && console.log('sc tracks:', tracks);
             // $("#qsearch").val("");
             $('#searchResults').html("");
@@ -2831,7 +2870,27 @@ firetable.ui = {
               });
               $("#searchResults").append($srli);
             })
-          });
+          }
+          var directLink = false;
+          if (q.match(/:\/\/soundcloud\.com\//)) {
+            directLink = true;
+          }
+          $('#searchResults').html("Searching...");
+          if (directLink) {
+           firetable.debug && console.log("sc direct link found");
+            var finishUp = function(item) {
+              var items = [];
+              if (item.kind == "track") items.push(item);
+              showResults(items);
+            };
+            var getList = SC.resolve(q).then(finishUp);
+          } else {
+            SC.get('/tracks', {
+              q: q
+            }).then(function(tracks) {
+              showResults(tracks);
+            });
+          }
         }
       }
     });
