@@ -45,7 +45,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.07.32";
+firetable.version = "01.07.33";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -1226,7 +1226,7 @@ firetable.utilities = {
 firetable.ui = {
   textToLinks: function(text, themeBox) {
     var re = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-    if (firetable.showImages && !themeBox) re = /(https?:\/\/(?![/|.|\w|\s|-]*(?:jpg|png|gif))[^" ]+)/g;
+    if (firetable.showImages && !themeBox) re = /(https?:\/\/(?![/|.|\w|\s|-]*(?:jpe?g|png|gif))[^" ]+)/g;
     return text.replace(re, "<a href=\"$1\" target=\"_blank\" tabindex=\"-1\">$1</a>");
 
     return text;
