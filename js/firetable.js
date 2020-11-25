@@ -168,6 +168,13 @@ ftapi.init = function(firebaseConfig) {
     ftapi.events.emit("danceStateChanged", data);
   });
 
+  // festive lights emitter
+  var lightsCheck = firebase.app("firetable").database().ref("lights");
+  lightsCheck.on('value', function(dataSnapshot) {
+    var data = dataSnapshot.val();
+    ftapi.events.emit("lightsChanged", data);
+  });
+
   // screen sync change emitter
   var thescreen = firebase.app("firetable").database().ref("thescreen");
   thescreen.on('value', function(dataSnapshot) {

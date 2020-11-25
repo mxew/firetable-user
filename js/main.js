@@ -16,6 +16,7 @@ var firetable = {
   idleChanged: null,
   sbhowImages: false,
   screenControl: "sync",
+  lights: false,
   screenSyncPos: false,
   scSeek: false,
   desktopNotifyMentions: false,
@@ -45,7 +46,7 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.07.33";
+firetable.version = "01.07.4";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -1096,6 +1097,19 @@ firetable.utilities = {
       }
     });
   },
+  hexToRGB: function(hex) {
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+      return r + r + g + g + b + b;
+    });
+
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+  },
   wrapText: function(context, text, x, y, maxWidth, lineHeight) {
     var words = text.split(' ');
     var line = '';
@@ -1735,6 +1749,19 @@ firetable.ui = {
         $("#deck").addClass("dance");
       } else {
         $("#deck").removeClass("dance");
+      }
+    });
+    ftapi.events.on("lightsChanged", function(data) {
+      firetable.debug && console.log('lights check:', data);
+      if (data) {
+        firetable.lights = true;
+        $('.festiveLights').remove();
+        var colorThing = firetable.utilities.hexToRGB(firetable.color);
+        var style = "<style class='festiveLights'>.lightrope { text-align: center; white-space: nowrap; overflow: hidden; position: absolute; z-index: 1; margin: -6px 0 0 0; padding: 0; pointer-events: none; width: 100%; z-index: 55; }ul.lightrope li{position: relative; list-style: none; margin: 0; padding: 0; display: block; width: 6px; height: 14px; border-radius: 50%; margin: 10px; display: inline-block; background: #111;} .lightrope li span { position: relative; animation-fill-mode: both; animation-iteration-count: infinite; list-style: none; margin: 0; padding: 0; display: block; width: 6px; height: 14px; border-radius: 50%; display: inline-block; background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); animation-name: flash-1; animation-duration: 2s; } .lightrope li:nth-child(2n+1) span { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.5); animation-name: flash-2; animation-duration: 0.4s; } .lightrope li:nth-child(4n+2) span { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); animation-name: flash-3; animation-duration: 1.1s; } .lightrope li:nth-child(odd) span { animation-duration: 1.8s; } .lightrope li:nth-child(3n+1) span { animation-duration: 1.4s; } .lightrope li :before { content: \"\"; position: absolute; background: #4e4e4e; width: 4px; height: 4.6666666667px; border-radius: 3px; top: -2.3333333333px; left: 1px; } .lightrope li:after { content: \"\"; top: -7px; left: 3px; position: absolute; width: 32px; height: 9.3333333333px; border-bottom: solid #4e4e4e 2px; border-radius: 50%; } .lightrope li:last-child:after { content: none; } .lightrope li:first-child { margin-left: -20px; } @keyframes flash-1 { 0%, 100% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); } 50% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.4); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.2); } } @keyframes flash-2 { 0%, 100% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); } 50% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.4); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.2); } } @keyframes flash-3 { 0%, 100% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); } 50% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.4); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.2); } }</style>";
+        $("head").append(style);
+      } else {
+        $('.festiveLights').remove();
+        firetable.lights = false;
       }
     });
     ftapi.events.on("waitlistChanged", function(data) {
@@ -2718,7 +2745,7 @@ firetable.ui = {
             $.each(srchItems, function(index, item) {
               console.log(item);
               var thecid;
-              if (item.kind == "youtube#searchResult"){
+              if (item.kind == "youtube#searchResult") {
                 thecid = item.id.videoId;
               } else if (item.kind == "youtube#video") {
                 thecid = item.id;
@@ -2755,6 +2782,7 @@ firetable.ui = {
           }
           if (directLink) {
             firetable.debug && console.log("direct yt link found");
+
             function keyWordsearch() {
               gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
               gapi.client.load('youtube', 'v3', function() {
@@ -2877,7 +2905,7 @@ firetable.ui = {
           }
           $('#searchResults').html("Searching...");
           if (directLink) {
-           firetable.debug && console.log("sc direct link found");
+            firetable.debug && console.log("sc direct link found");
             var finishUp = function(item) {
               var items = [];
               if (item.kind == "track") items.push(item);
@@ -2988,7 +3016,17 @@ firetable.ui = {
       $("#stage").css("color", firetable.countcolor);
       */
       $('.customColorStyles').remove();
+
+      $('.festiveLights').remove();
+
+      var colorThing = firetable.utilities.hexToRGB(firetable.color);
       $("head").append("<style class='customColorStyles'>:focus { box-shadow: 0 0 0.5rem " + firetable.color + "; } .djActive, #addToQueueBttn, .butt:not(.graybutt), .ui-slider-horizontal .ui-slider-range-min { background-color: " + firetable.color + "; color: " + firetable.countcolor + "; } .iconbutt.on { color: " + firetable.color + "; border-bottom: 1px solid " + firetable.color + "66; box-shadow: inset 0 0 1rem " + firetable.color + "33; }</style>");
+
+      if (firetable.lights){
+        var style = "<style class='festiveLights'>.lightrope { text-align: center; white-space: nowrap; overflow: hidden; position: absolute; z-index: 1; margin: -6px 0 0 0; padding: 0; pointer-events: none; width: 100%; z-index: 55; }ul.lightrope li{position: relative; list-style: none; margin: 0; padding: 0; display: block; width: 6px; height: 14px; border-radius: 50%; margin: 10px; display: inline-block; background: #111;} .lightrope li span { position: relative; animation-fill-mode: both; animation-iteration-count: infinite; list-style: none; margin: 0; padding: 0; display: block; width: 6px; height: 14px; border-radius: 50%; display: inline-block; background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); animation-name: flash-1; animation-duration: 2s; } .lightrope li:nth-child(2n+1) span { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.5); animation-name: flash-2; animation-duration: 0.4s; } .lightrope li:nth-child(4n+2) span { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); animation-name: flash-3; animation-duration: 1.1s; } .lightrope li:nth-child(odd) span { animation-duration: 1.8s; } .lightrope li:nth-child(3n+1) span { animation-duration: 1.4s; } .lightrope li :before { content: \"\"; position: absolute; background: #4e4e4e; width: 4px; height: 4.6666666667px; border-radius: 3px; top: -2.3333333333px; left: 1px; } .lightrope li:after { content: \"\"; top: -7px; left: 3px; position: absolute; width: 32px; height: 9.3333333333px; border-bottom: solid #4e4e4e 2px; border-radius: 50%; } .lightrope li:last-child:after { content: none; } .lightrope li:first-child { margin-left: -20px; } @keyframes flash-1 { 0%, 100% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); } 50% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.4); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.2); } } @keyframes flash-2 { 0%, 100% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); } 50% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.4); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.2); } } @keyframes flash-3 { 0%, 100% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); } 50% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.4); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.2); } }</style>";
+        $("head").append(style);
+      }
+
     });
   },
   usertab1: function() {
