@@ -508,6 +508,9 @@ code {
   padding-top: 0.5rem;
   background-color: #222;
 }
+.usersWrap {
+  overflow: auto;
+}
 #allusers,
 #justwaitlist {
   padding-top: 1rem;
@@ -1005,7 +1008,9 @@ input#qsearch {
 }
 #queuelist {
   flex: 1;
+  height: 100%;
   background-color: #181818;
+  overflow: auto;
 }
 #searchResults {
   flex: 1;
@@ -1115,6 +1120,8 @@ a.importLinkCheck {
 }
 #chatsWrap {
   flex: 1;
+  height: 100%;
+  overflow: auto;
 }
 #newchat {
   width: 100%;
@@ -1357,7 +1364,9 @@ img.emoji {
   bottom: 0;
   left: 0;
   width: 100%;
+  height: 100%;
   background: #222;
+  overflow: auto;
 }
 #thehistory .pvbar {
   display: flex;
@@ -1450,6 +1459,7 @@ img.emoji {
 #modal {
   background-color: #222;
   max-width: 90vw;
+  min-width: 300px;
   border-radius: 0.5rem;
   overflow: hidden;
 }
