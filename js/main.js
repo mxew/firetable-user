@@ -16,6 +16,7 @@ var firetable = {
   idleChanged: null,
   sbhowImages: false,
   screenControl: "sync",
+  lights: false,
   screenSyncPos: false,
   scSeek: false,
   desktopNotifyMentions: false,
@@ -30,6 +31,8 @@ var firetable = {
   scwidget: null,
   searchSelectsChoice: 1,
   importSelectsChoice: 1,
+  dtImportName: null,
+  dtImportList: [],
   lastChatPerson: false,
   lastChatId: false,
   tagUpdate: null,
@@ -43,23 +46,23 @@ var firetable = {
   debug: false
 }
 
-firetable.version = "01.05.13";
+firetable.version = "01.07.5";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
   idle: 5 * 60000,
   events: ['mousemove', 'keydown', 'mousedown', 'touchstart'],
-  onIdle: function () {
+  onIdle: function() {
     ftapi.actions.changeIdleStatus(true, 1);
   },
-  onActive: function () {
+  onActive: function() {
     ftapi.actions.changeIdleStatus(false, 1);
   },
-  onHide: function () {
+  onHide: function() {
     ftapi.actions.changeIdleStatus(true, 1);
     console.log("hide");
   },
-  onShow: function () {
+  onShow: function() {
     ftapi.actions.changeIdleStatus(false, 1);
   },
   keepTracking: true,
@@ -140,7 +143,7 @@ function initialize(event) {
     var timeLeft = data.duration - secSince;
     if (data.type == 1) {
       if (!firetable.preview) {
-        player.loadVideoById(data.cid, secSince, "large")
+        if (!firetable.disableMediaPlayback) player.loadVideoById(data.cid, secSince, "large")
       }
     }
   }
@@ -197,7 +200,7 @@ firetable.init = function() {
       if (data.type == 2) {
         if (!firetable.preview) {
           firetable.scSeek = timeSince;
-          firetable.scwidget.load("http://api.soundcloud.com/tracks/" + data.cid, {
+          if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + data.cid, {
             auto_play: true
           });
         }
@@ -252,6 +255,24 @@ firetable.init = function() {
 };
 
 firetable.actions = {
+  dubtrackImport: function() {
+    $("#importDubResults").html("importing (0/" + firetable.dtImportList.length + ")...");
+    $("#dubimportButton").hide();
+    var listid = ftapi.actions.createList(firetable.dtImportName);
+    var name = firetable.dtImportName;
+
+    $("#listpicker").append("<option id=\"pdopt" + listid + "\" value=\"" + listid + "\">" + name + "</option>");
+    var trackarray = firetable.dtImportList;
+    for (var e = 0; e < trackarray.length; e++) {
+      var thetype = 1;
+      if (trackarray[e].type == "soundcloud") thetype = 2;
+      var numbo = e + 1;
+      $("#importDubResults").html("importing (" + numbo + "/" + firetable.dtImportList.length + ")...");
+      if (numbo == firetable.dtImportList.length) $("#importDubResults").html("Import complete! You can now select another file if you'd like to do another!");
+      ftapi.actions.addToList(thetype, trackarray[e].name, trackarray[e].cid, listid);
+
+    }
+  },
   localChatResponse: function(txt) {
     if (txt.length) {
       $("#chats").append("<div class=\"newChat\"><div class=\"lcrsp\">" + txt + "</div></div>");
@@ -604,13 +625,13 @@ firetable.actions = {
       if (firetable.song.type == 1) {
         if (!firetable.preview) {
           if (firetable.scLoaded) firetable.scwidget.pause();
-          player.loadVideoById(firetable.song.cid, secSince, "large");
+          if (!firetable.disableMediaPlayback) player.loadVideoById(firetable.song.cid, secSince, "large");
         }
       } else if (firetable.song.type == 2) {
         if (!firetable.preview) {
           if (firetable.ytLoaded) player.stopVideo();
           firetable.scSeek = timeSince;
-          firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
+          if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
             auto_play: true
           });
         }
@@ -656,13 +677,13 @@ firetable.actions = {
         if (firetable.song.type == 1) {
           if (!firetable.preview) {
             if (firetable.scLoaded) firetable.scwidget.pause();
-            player.loadVideoById(firetable.song.cid, secSince, "large");
+            if (!firetable.disableMediaPlayback) player.loadVideoById(firetable.song.cid, secSince, "large");
           }
         } else if (firetable.song.type == 2) {
           if (!firetable.preview) {
             if (firetable.ytLoaded) player.stopVideo();
             firetable.scSeek = timeSince;
-            firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
+            if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
               auto_play: true
             });
           }
@@ -678,11 +699,11 @@ firetable.actions = {
       }, 200);
       if (type == 1) {
         if (firetable.scLoaded) firetable.scwidget.pause();
-        player.loadVideoById(cid, 0, "large")
+        if (!firetable.disableMediaPlayback) player.loadVideoById(cid, 0, "large")
       } else if (type == 2) {
         if (firetable.ytLoaded) player.stopVideo();
         firetable.scSeek = 0;
-        firetable.scwidget.load("http://api.soundcloud.com/tracks/" + cid, {
+        if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + cid, {
           auto_play: true
         });
       }
@@ -935,13 +956,13 @@ firetable.actions = {
     if (firetable.song.type == 1) {
       if (!firetable.preview) {
         if (firetable.scLoaded) firetable.scwidget.pause();
-        player.loadVideoById(firetable.song.cid, secSince, "large");
+        if (!firetable.disableMediaPlayback) player.loadVideoById(firetable.song.cid, secSince, "large");
       }
     } else if (firetable.song.type == 2) {
       if (!firetable.preview) {
         if (firetable.ytLoaded) player.stopVideo();
         firetable.scSeek = timeSince;
-        firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
+        if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
           auto_play: true
         }, function() {
           $('#reloadtrack').removeClass('on working');
@@ -986,13 +1007,13 @@ firetable.actions = {
         if (firetable.song.type == 1) {
           if (!firetable.preview) {
             if (firetable.scLoaded) firetable.scwidget.pause();
-            player.loadVideoById(firetable.song.cid, secSince, "large");
+            if (!firetable.disableMediaPlayback) player.loadVideoById(firetable.song.cid, secSince, "large");
           }
         } else if (firetable.song.type == 2) {
           if (!firetable.preview) {
             if (firetable.ytLoaded) player.stopVideo();
             firetable.scSeek = timeSince;
-            firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
+            if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
               auto_play: true
             });
           }
@@ -1075,6 +1096,19 @@ firetable.utilities = {
         $("#picker" + emoji.category).append("<span role=\"button\" class=\"pickerResult\" title=\"" + key + "\" data-alternative-name=\"" + words + "\">" + emoji.char + "</span>");
       }
     });
+  },
+  hexToRGB: function(hex) {
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+      return r + r + g + g + b + b;
+    });
+
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
   },
   wrapText: function(context, text, x, y, maxWidth, lineHeight) {
     var words = text.split(' ');
@@ -1206,14 +1240,65 @@ firetable.utilities = {
 firetable.ui = {
   textToLinks: function(text, themeBox) {
     var re = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-    if (firetable.showImages && !themeBox) re = /(https?:\/\/(?![/|.|\w|\s|-]*(?:jpg|png|gif))[^" ]+)/g;
+    if (firetable.showImages && !themeBox) re = /(https?:\/\/(?![/|.|\w|\s|-]*(?:jpe?g|png|gif))[^" ]+)/g;
     return text.replace(re, "<a href=\"$1\" target=\"_blank\" tabindex=\"-1\">$1</a>");
 
     return text;
   },
+  dubtrackImportFileSelect: function(evt) {
+    var files = evt.target.files; // FileList object
+    var file = files[0];
+    // read the file contents
+    var reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = function(event) {
+      try {
+        var allthestuff = event.currentTarget.result;
+        console.log(allthestuff);
+        firetable.dtImportName = firetable.ui.strip(allthestuff.split('<h4>')[1].split('</h4>')[0]);
+        var hams = allthestuff.split('<li class="list-group-item list-group-item-dark" ');
+        hams.shift();
+        firetable.dtImportList = [];
+        for (var i = 0; i < hams.length; i++) {
+          var thingsRegex = /(type\=\"(.*))(" id\=\"(.*)\")>(.*)<\/li>/gm;
+          var matches = thingsRegex.exec(hams[i])
+          var type = matches[2];
+          var cid = matches[4];
+          var name = firetable.ui.strip(matches[5]);
+          firetable.dtImportList.push({
+            type: type,
+            cid: cid,
+            name: name
+          });
+        }
+        console.log(firetable.dtImportList);
+        console.log(firetable.dtImportName);
+        if (firetable.dtImportList.length) {
+          $("#importDubResults").text("Ok... import " + firetable.dtImportName + " (" + firetable.dtImportList.length + " tracks)?")
+          $("#dubimportButton").show();
+        } else {
+          $("#importDubResults").text("ERROR... NO TRAX?")
+          $("#dubimportButton").hide();
+        }
+      } catch (e) {
+        console.log(e);
+        $("#importDubResults").text("ERROR")
+        $("#dubimportButton").hide();
+      }
+
+
+    };
+
+  },
   strip: function(html) {
     var doc = firetable.parser.parseFromString(html, 'text/html');
     return doc.body.textContent || "";
+  },
+  hidePlayerControls: function() {
+    $("head").append("<style class='playerControlsHider'>.previewicon { display: none !important; } div#playerControls { display: none !important; } </style>");
+  },
+  showPlayerControls: function() {
+    $(".playerControlsHider").remove();
   },
   showImages: function(chatTxt) {
     if (firetable.showImages) {
@@ -1359,6 +1444,20 @@ firetable.ui = {
       }
     });
     //GET SETTINGS FROM LOCALSTORAGE
+    var disableMediaPlayback = localStorage["firetableDisableMedia"];
+    if (typeof disableMediaPlayback == "undefined") {
+      localStorage["disableMediaPlayback"] = false;
+      firetable.disableMediaPlayback = false;
+      $("#mediaDisableToggle").prop("checked", false);
+    } else {
+      disableMediaPlayback = JSON.parse(disableMediaPlayback);
+      firetable.disableMediaPlayback = disableMediaPlayback;
+      $("#mediaDisableToggle").prop("checked", disableMediaPlayback);
+      if (disableMediaPlayback) {
+        firetable.ui.hidePlayerControls();
+      }
+    }
+
     var showImages = localStorage["firetableShowImages"];
     if (typeof showImages == "undefined") {
       localStorage["firetableShowImages"] = false;
@@ -1564,8 +1663,10 @@ firetable.ui = {
       firetable.debug && console.log('time since:', timeSince);
       if (data.type == 1) {
         $("#scScreen").hide();
+        $("#songlink").html('<svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="youtube" class="svg-inline--fa fa-youtube fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"></path></svg>');
       } else if (data.type == 2) {
         $("#scScreen").show();
+          $("#songlink").html('<svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="soundcloud" class="svg-inline--fa fa-soundcloud fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M111.4 256.3l5.8 65-5.8 68.3c-.3 2.5-2.2 4.4-4.4 4.4s-4.2-1.9-4.2-4.4l-5.6-68.3 5.6-65c0-2.2 1.9-4.2 4.2-4.2 2.2 0 4.1 2 4.4 4.2zm21.4-45.6c-2.8 0-4.7 2.2-5 5l-5 105.6 5 68.3c.3 2.8 2.2 5 5 5 2.5 0 4.7-2.2 4.7-5l5.8-68.3-5.8-105.6c0-2.8-2.2-5-4.7-5zm25.5-24.1c-3.1 0-5.3 2.2-5.6 5.3l-4.4 130 4.4 67.8c.3 3.1 2.5 5.3 5.6 5.3 2.8 0 5.3-2.2 5.3-5.3l5.3-67.8-5.3-130c0-3.1-2.5-5.3-5.3-5.3zM7.2 283.2c-1.4 0-2.2 1.1-2.5 2.5L0 321.3l4.7 35c.3 1.4 1.1 2.5 2.5 2.5s2.2-1.1 2.5-2.5l5.6-35-5.6-35.6c-.3-1.4-1.1-2.5-2.5-2.5zm23.6-21.9c-1.4 0-2.5 1.1-2.5 2.5l-6.4 57.5 6.4 56.1c0 1.7 1.1 2.8 2.5 2.8s2.5-1.1 2.8-2.5l7.2-56.4-7.2-57.5c-.3-1.4-1.4-2.5-2.8-2.5zm25.3-11.4c-1.7 0-3.1 1.4-3.3 3.3L47 321.3l5.8 65.8c.3 1.7 1.7 3.1 3.3 3.1 1.7 0 3.1-1.4 3.1-3.1l6.9-65.8-6.9-68.1c0-1.9-1.4-3.3-3.1-3.3zm25.3-2.2c-1.9 0-3.6 1.4-3.6 3.6l-5.8 70 5.8 67.8c0 2.2 1.7 3.6 3.6 3.6s3.6-1.4 3.9-3.6l6.4-67.8-6.4-70c-.3-2.2-2-3.6-3.9-3.6zm241.4-110.9c-1.1-.8-2.8-1.4-4.2-1.4-2.2 0-4.2.8-5.6 1.9-1.9 1.7-3.1 4.2-3.3 6.7v.8l-3.3 176.7 1.7 32.5 1.7 31.7c.3 4.7 4.2 8.6 8.9 8.6s8.6-3.9 8.6-8.6l3.9-64.2-3.9-177.5c-.4-3-2-5.8-4.5-7.2zm-26.7 15.3c-1.4-.8-2.8-1.4-4.4-1.4s-3.1.6-4.4 1.4c-2.2 1.4-3.6 3.9-3.6 6.7l-.3 1.7-2.8 160.8s0 .3 3.1 65.6v.3c0 1.7.6 3.3 1.7 4.7 1.7 1.9 3.9 3.1 6.4 3.1 2.2 0 4.2-1.1 5.6-2.5 1.7-1.4 2.5-3.3 2.5-5.6l.3-6.7 3.1-58.6-3.3-162.8c-.3-2.8-1.7-5.3-3.9-6.7zm-111.4 22.5c-3.1 0-5.8 2.8-5.8 6.1l-4.4 140.6 4.4 67.2c.3 3.3 2.8 5.8 5.8 5.8 3.3 0 5.8-2.5 6.1-5.8l5-67.2-5-140.6c-.2-3.3-2.7-6.1-6.1-6.1zm376.7 62.8c-10.8 0-21.1 2.2-30.6 6.1-6.4-70.8-65.8-126.4-138.3-126.4-17.8 0-35 3.3-50.3 9.4-6.1 2.2-7.8 4.4-7.8 9.2v249.7c0 5 3.9 8.6 8.6 9.2h218.3c43.3 0 78.6-35 78.6-78.3.1-43.6-35.2-78.9-78.5-78.9zm-296.7-60.3c-4.2 0-7.5 3.3-7.8 7.8l-3.3 136.7 3.3 65.6c.3 4.2 3.6 7.5 7.8 7.5 4.2 0 7.5-3.3 7.5-7.5l3.9-65.6-3.9-136.7c-.3-4.5-3.3-7.8-7.5-7.8zm-53.6-7.8c-3.3 0-6.4 3.1-6.4 6.7l-3.9 145.3 3.9 66.9c.3 3.6 3.1 6.4 6.4 6.4 3.6 0 6.4-2.8 6.7-6.4l4.4-66.9-4.4-145.3c-.3-3.6-3.1-6.7-6.7-6.7zm26.7 3.4c-3.9 0-6.9 3.1-6.9 6.9L227 321.3l3.9 66.4c.3 3.9 3.1 6.9 6.9 6.9s6.9-3.1 6.9-6.9l4.2-66.4-4.2-141.7c0-3.9-3-6.9-6.9-6.9z"></path></svg>');
         var biggerImg = data.image.replace('-large', '-t500x500');
         firetable.scImg = biggerImg;
         $("#albumArt").css("background-image", "url(" + biggerImg + ")")
@@ -1578,7 +1679,7 @@ firetable.ui = {
       if (data.type == 1 && firetable.ytLoaded) {
         if (!firetable.preview) {
           if (firetable.scLoaded) firetable.scwidget.pause();
-          player.loadVideoById(data.cid, secSince, "large");
+          if (!firetable.disableMediaPlayback) player.loadVideoById(data.cid, secSince, "large");
           var thevolactual = $("#slider").slider("value");
           player.setVolume(thevolactual);
           firetable.scwidget.setVolume(thevolactual);
@@ -1587,7 +1688,7 @@ firetable.ui = {
         if (!firetable.preview) {
           if (firetable.ytLoaded) player.stopVideo();
           firetable.scSeek = timeSince;
-          firetable.scwidget.load("http://api.soundcloud.com/tracks/" + data.cid, {
+          if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + data.cid, {
             auto_play: true,
             single_active: false,
             callback: function() {
@@ -1651,6 +1752,19 @@ firetable.ui = {
         $("#deck").addClass("dance");
       } else {
         $("#deck").removeClass("dance");
+      }
+    });
+    ftapi.events.on("lightsChanged", function(data) {
+      firetable.debug && console.log('lights check:', data);
+      if (data) {
+        firetable.lights = true;
+        $('.festiveLights').remove();
+        var colorThing = firetable.utilities.hexToRGB(firetable.color);
+        var style = "<style class='festiveLights'>.lightrope { text-align: center; white-space: nowrap; overflow: hidden; position: absolute; z-index: 1; margin: -6px 0 0 0; padding: 0; pointer-events: none; width: 100%; z-index: 55; }ul.lightrope li{position: relative; list-style: none; margin: 0; padding: 0; display: block; width: 6px; height: 14px; border-radius: 50%; margin: 10px; display: inline-block; background: #111;} .lightrope li span { position: relative; animation-fill-mode: both; animation-iteration-count: infinite; list-style: none; margin: 0; padding: 0; display: block; width: 6px; height: 14px; border-radius: 50%; display: inline-block; background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); animation-name: flash-1; animation-duration: 2s; } .lightrope li:nth-child(2n+1) span { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.5); animation-name: flash-2; animation-duration: 0.4s; } .lightrope li:nth-child(4n+2) span { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); animation-name: flash-3; animation-duration: 1.1s; } .lightrope li:nth-child(odd) span { animation-duration: 1.8s; } .lightrope li:nth-child(3n+1) span { animation-duration: 1.4s; } .lightrope li :before { content: \"\"; position: absolute; background: #4e4e4e; width: 4px; height: 4.6666666667px; border-radius: 3px; top: -2.3333333333px; left: 1px; } .lightrope li:after { content: \"\"; top: -7px; left: 3px; position: absolute; width: 32px; height: 9.3333333333px; border-bottom: solid #4e4e4e 2px; border-radius: 50%; } .lightrope li:last-child:after { content: none; } .lightrope li:first-child { margin-left: -20px; } @keyframes flash-1 { 0%, 100% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); } 50% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.4); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.2); } } @keyframes flash-2 { 0%, 100% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); } 50% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.4); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.2); } } @keyframes flash-3 { 0%, 100% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); } 50% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.4); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.2); } }</style>";
+        $("head").append(style);
+      } else {
+        $('.festiveLights').remove();
+        firetable.lights = false;
       }
     });
     ftapi.events.on("waitlistChanged", function(data) {
@@ -1743,9 +1857,9 @@ firetable.ui = {
       var blockcon = "";
       var herecon = "lens";
       var isIdle = "";
-      if (data.idle){
+      if (data.idle) {
         if (data.idle.isIdle && !data.hostbot) isIdle = "idle";
-        if (data.idle.audio == 2){
+        if (data.idle.audio == 2) {
           herecon = "label_important";
         }
       }
@@ -1759,22 +1873,22 @@ firetable.ui = {
       var destination = "#usersRegular";
       var rolename = "";
       if (data.mod) {
-        rolename = "cop";
+        rolename = "mod";
         destination = "#usersMod";
       }
       if (data.supermod) {
-        rolename = "supercop";
+        rolename = "supermod";
         destination = "#usersSuper";
       }
       if (data.hostbot) {
-        rolename = "robocop";
+        rolename = "robot";
         destination = "#usersBot";
       }
 
-      $(destination).append("<div id=\"user"+data.userid+"\" class=\"prson " + block + "\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon "+ isIdle +"\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span></div>");
+      $(destination).append("<div id=\"user" + data.userid + "\" class=\"prson " + block + "\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span></div>");
     });
     ftapi.events.on("userLeft", function(data) {
-      $("#user"+data.userid).remove();
+      $("#user" + data.userid).remove();
     });
     ftapi.events.on("userChanged", function(data) {
       var user = data;
@@ -1783,9 +1897,9 @@ firetable.ui = {
       var herecon = "lens";
       var isIdle = "";
       console.log("CHANGE", data)
-      if (data.idle){
+      if (data.idle) {
         if (data.idle.isIdle && !data.hostbot) isIdle = "idle";
-        if (data.idle.audio == 2){
+        if (data.idle.audio == 2) {
           herecon = "label_important";
         }
       }
@@ -1799,19 +1913,19 @@ firetable.ui = {
       var destination = "#usersRegular";
       var rolename = "";
       if (data.mod) {
-        rolename = "cop";
+        rolename = "mod";
         destination = "#usersMod";
       }
       if (data.supermod) {
-        rolename = "supercop";
+        rolename = "supermod";
         destination = "#usersSuper";
       }
       if (data.hostbot) {
-        rolename = "robocop";
+        rolename = "robot";
         destination = "#usersBot";
       }
 
-      $("#user"+data.userid).html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon "+ isIdle +"\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
+      $("#user" + data.userid).html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
     });
     ftapi.events.on("usersChanged", function(okdata) {
       if ($("#loggedInName").text() == ftapi.uid) {
@@ -1847,9 +1961,9 @@ firetable.ui = {
 
       if (ftapi.users[chatData.id]) {
         if (ftapi.users[chatData.id].username) namebo = ftapi.users[chatData.id].username;
-        if (ftapi.users[chatData.id].mod) utitle = "cop";
-        if (ftapi.users[chatData.id].supermod) utitle = "supercop";
-        if (ftapi.users[chatData.id].hostbot) utitle = "robocop";
+        if (ftapi.users[chatData.id].mod) utitle = "mod";
+        if (ftapi.users[chatData.id].supermod) utitle = "supermod";
+        if (ftapi.users[chatData.id].hostbot) utitle = "robot";
       } else if (chatData.name) {
         namebo = chatData.name;
       }
@@ -1875,7 +1989,27 @@ firetable.ui = {
         txtOut = txtOut.replace(/\`(.*?)\`/g, function(x) {
           return "<code>" + x.replace(/\`/g, "") + "</code>";
         });
+        if (chatData.hidden) txtOut = "[message removed]";
         $("#chattxt" + chatData.chatID).html(txtOut);
+        var canBeDeleted = false;
+        if (ftapi.users[ftapi.uid].mod || ftapi.users[ftapi.uid].supermod) {
+          if (ftapi.users[chatData.id]) {
+            if (!ftapi.users[chatData.id].mod && !ftapi.users[chatData.id].supermod) {
+              canBeDeleted = true;
+            }
+          } else {
+            canBeDeleted = true;
+          }
+          if (canBeDeleted && !chatData.hidden) {
+            // add delete button
+            $("#chattxt" + chatData.chatID).addClass("deleteMe");
+            $("#chattxt" + chatData.chatID).append("<div class=\"modDelete\">x</div>");
+            $("#chattxt" + chatData.chatID).find(".modDelete").on('click', function() {
+              console.log("DELETE CHAT", chatData);
+              ftapi.actions.deleteChat(chatData.feedID);
+            });
+          }
+        }
         twemoji.parse(document.getElementById("chattxt" + chatData.chatID));
 
       } else {
@@ -1892,10 +2026,36 @@ firetable.ui = {
         txtOut = txtOut.replace(/\`(.*?)\`/g, function(x) {
           return "<code>" + x.replace(/\`/g, "") + "</code>";
         });
+        if (chatData.hidden) txtOut = "[message removed]";
         $chatthing.find(".chatText").html(txtOut).attr('id', "chattxt" + chatData.chatID);
+        console.log(chatData);
+
         $chatthing.find(".chatName").text(namebo);
         twemoji.parse($chatthing.find(".chatText")[0]);
         $chatthing.appendTo("#chats");
+        try {
+          if (ftapi.users[ftapi.uid].mod || ftapi.users[ftapi.uid].supermod) {
+            var canBeDeleted = false;
+            if (ftapi.users[chatData.id]) {
+              if (!ftapi.users[chatData.id].mod && !ftapi.users[chatData.id].supermod && !chatData.hidden) {
+                canBeDeleted = true;
+              }
+            } else {
+              canBeDeleted = true;
+            }
+            if (canBeDeleted && !chatData.hidden) {
+              // add delete button
+              $chatthing.find(".chatText").addClass("deleteMe");
+              $chatthing.find(".chatText").append("<div class=\"modDelete\">x</div>");
+              $chatthing.find(".modDelete").on('click', function() {
+                console.log("DELETE CHAT", chatData);
+                ftapi.actions.deleteChat(chatData.feedID);
+              });
+            }
+          }
+        } catch (e) {
+          console.log(e)
+        }
         firetable.lastChatPerson = chatData.id;
         firetable.lastChatId = chatData.chatID;
       }
@@ -1908,6 +2068,12 @@ firetable.ui = {
       }
       scrollits['chatsWrap'].update();
       if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+    });
+
+    ftapi.events.on("chatRemoved", function(data) {
+      console.log("chat DELETE", data);
+      $("#chattxt" + data.chatID).text("[message removed]");
+      if (ftapi.users[ftapi.uid].mod || ftapi.users[ftapi.uid].supermod) $("#chattxt" + data.chatID).removeClass("deleteMe");
     });
 
     ftapi.events.on("playlistChanged", function(okdata, listID) {
@@ -2029,13 +2195,13 @@ firetable.ui = {
           if (firetable.song.type == 1) {
             if (!firetable.preview) {
               if (firetable.scLoaded) firetable.scwidget.pause();
-              player.loadVideoById(firetable.song.cid, secSince, "large");
+              if (!firetable.disableMediaPlayback) player.loadVideoById(firetable.song.cid, secSince, "large");
             }
           } else if (firetable.song.type == 2) {
             if (!firetable.preview) {
               if (firetable.ytLoaded) player.stopVideo();
               firetable.scSeek = timeSince;
-              firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
+              if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
                 auto_play: true
               });
             }
@@ -2116,6 +2282,8 @@ firetable.ui = {
       }
     });
     $("#reloadtrack").bind("click", firetable.actions.reloadtrack);
+
+    $("#importDubGo").bind("click", firetable.actions.dubtrackImport);
 
     $("#volstatus").bind("click", function() {
       firetable.actions.muteToggle();
@@ -2206,6 +2374,22 @@ firetable.ui = {
         localStorage["firetableShowImages"] = false;
         firetable.showImages = false;
 
+      }
+    });
+    $('#mediaDisableToggle').change(function() {
+      if (this.checked) {
+        firetable.debug && console.log("media disable on");
+        localStorage["firetableDisableMedia"] = true;
+        firetable.disableMediaPlayback = true;
+        if (firetable.scLoaded) firetable.scwidget.pause();
+        if (firetable.ytLoaded) player.stopVideo();
+        firetable.ui.hidePlayerControls();
+      } else {
+        firetable.debug && console.log("media disable off");
+        localStorage["firetableDisableMedia"] = false;
+        firetable.disableMediaPlayback = false;
+        firetable.ui.showPlayerControls();
+        firetable.actions.reloadtrack();
       }
     });
     $('#showAvatarsToggle').change(function() {
@@ -2340,6 +2524,10 @@ firetable.ui = {
       firetable.debug && console.log("sc import");
       firetable.importSelectsChoice = 2;
     });
+    $("#dtimportchoice").bind("click", function() {
+      firetable.debug && console.log("dt import");
+      firetable.importSelectsChoice = 3;
+    });
     $("#tagMachine").bind("keyup", function(e) {
       if (e.which == 13) {
         if (firetable.songToEdit) {
@@ -2372,6 +2560,7 @@ firetable.ui = {
         }
       }
     });
+    $('#dubtrackimportfile').bind('change', firetable.ui.dubtrackImportFileSelect);
     $("#supercopSearch").bind("keyup", function(e) {
       if (e.which == 13) {
         var val = $("#supercopSearch").val();
@@ -2387,7 +2576,7 @@ firetable.ui = {
                 $("#supercopResponse").html(person.username + " suspended.");
 
               } else {
-                $("#supercopResponse").text("Can not suspend that (or any) supercop.");
+                $("#supercopResponse").text("Can not suspend that (or any) supermod.");
               }
             } else {
               $("#supercopResponse").text(val + " not found...");
@@ -2398,55 +2587,15 @@ firetable.ui = {
     });
     $("#importSources .tab").bind("click", function(e) {
       var searchFrom = firetable.importSelectsChoice;
-      if (searchFrom == 2) {
-        $("#byId").hide();
+      if (searchFrom == 3) {
+        $("#importDubContent").show();
+        $("#importContent").hide();
       } else {
-        $("#byId").show();
+        $("#importDubContent").hide();
+        $("#importContent").show();
       }
       $(this).siblings().removeClass('on');
       $(this).addClass('on');
-    });
-    $("#plMachineById").bind("change keyup input", function(e) {
-      var searchFrom = firetable.importSelectsChoice;
-      // YouTube playlist IDs are 34 characters. Full URL is 72 characters
-      if ((searchFrom == 1 && this.value.length === 18) || (searchFrom == 1 && this.value.length === 34) || (searchFrom == 1 && this.value.length === 56) || (searchFrom == 1 && this.value.length === 72)) {
-        $("#plMachineById + button").prop('disabled', false);
-      } else {
-        $("#plMachineById + button").prop('disabled', true);
-      };
-    });
-    $("#plMachineById + button").bind("click", function(e) {
-      var regex = /(?:list=)/
-      var ytPlId = $("#plMachineById").val().split(regex);
-
-      function keyWordsearch() {
-        gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
-        gapi.client.load('youtube', 'v3', function() {
-          makeRequest();
-        });
-      }
-
-      function makeRequest() {
-        var request = gapi.client.youtube.playlists.list({
-          id: ytPlId[ytPlId.length - 1],
-          part: 'snippet'
-        });
-        request.execute(function(response) {
-          if (response.result) {
-            if (response.result.items) {
-              if (response.result.items.length === 1) {
-                var playlistTitle = response.result.items[0].snippet.title;
-                confirm("Importing playlist: " + playlistTitle);
-                firetable.actions.importList(ytPlId[ytPlId.length - 1], playlistTitle, 1);
-                $("#plMachineById + button").prop('disabled', true);
-              } else {
-                alert("There is no YouTube playlist with that ID.");
-              }
-            }
-          }
-        })
-      }
-      keyWordsearch();
     });
     $("#plMachine").bind("keyup", function(e) {
       if (e.which == 13) {
@@ -2456,44 +2605,100 @@ firetable.ui = {
           $("#plMachine").val("");
           var searchFrom = firetable.importSelectsChoice;
           if (searchFrom == 1) {
-            //youtube
-            function keyWordsearch() {
-              gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
-              gapi.client.load('youtube', 'v3', function() {
-                makeRequest();
-              });
+            var listID;
+            var directLink = false;
+            //see if this is a particular list's url...
+            if (val.match(/youtube.com\/watch/) || val.match(/youtube.com\/playlist/)) {
+              function getQueryStringValue(str, key) {
+                return unescape(str.replace(new RegExp("^(?:.*[&\\?]" + escape(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+              }
+              listID = getQueryStringValue(val, "list");
+              if (listID) directLink = true;
             }
 
-            function makeRequest() {
-              var request = gapi.client.youtube.search.list({
-                q: val,
-                type: 'playlist',
-                part: 'snippet',
-                maxResults: 15
-              });
-              request.execute(function(response) {
-                var srchItems = response.result.items;
-                firetable.debug && console.log('import search results:', response);
-                $.each(srchItems, function(index, item) {
-                  vidTitle = item.snippet.title;
-                  $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.snippet.title + " by " + item.snippet.channelTitle + "</div><a target=\"_blank\" href=\"https://www.youtube.com/playlist?list=" + item.id.playlistId + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id.playlistId + "', '" + firetable.utilities.htmlEscape(item.snippet.title) + "', 1)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+            if (directLink) {
+              function keyWordsearch() {
+                gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
+                gapi.client.load('youtube', 'v3', function() {
+                  makeRequest();
+                });
+              }
+
+              function makeRequest() {
+                var request = gapi.client.youtube.playlists.list({
+                  id: listID,
+                  part: 'snippet'
+                });
+                request.execute(function(response) {
+                  if (response.result) {
+                    if (response.result.items) {
+                      if (response.result.items.length === 1) {
+                        var item = response.result.items[0];
+                        vidTitle = item.snippet.title;
+                        $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.snippet.title + " by " + item.snippet.channelTitle + "</div><a target=\"_blank\" href=\"https://www.youtube.com/playlist?list=" + listID + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + listID + "', '" + firetable.utilities.htmlEscape(item.snippet.title) + "', 1)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+                      } else {
+                        // no result
+                      }
+                    }
+                  }
                 })
-              })
+              }
+              keyWordsearch();
+            } else {
+              //youtube
+              function keyWordsearch() {
+                gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
+                gapi.client.load('youtube', 'v3', function() {
+                  makeRequest();
+                });
+              }
+
+              function makeRequest() {
+                var request = gapi.client.youtube.search.list({
+                  q: val,
+                  type: 'playlist',
+                  part: 'snippet',
+                  maxResults: 15
+                });
+                request.execute(function(response) {
+                  var srchItems = response.result.items;
+                  firetable.debug && console.log('import search results:', response);
+                  $.each(srchItems, function(index, item) {
+                    vidTitle = item.snippet.title;
+                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.snippet.title + " by " + item.snippet.channelTitle + "</div><a target=\"_blank\" href=\"https://www.youtube.com/playlist?list=" + item.id.playlistId + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id.playlistId + "', '" + firetable.utilities.htmlEscape(item.snippet.title) + "', 1)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+                  })
+                })
+              }
+              keyWordsearch();
             }
-            keyWordsearch();
 
           } else if (searchFrom == 2) {
-            //cloud sound world dot com
-            SC.get('/playlists', {
-              q: val
-            }).then(function(lists) {
-              for (var i = 0; i < lists.length; i++) {
-                var item = lists[i];
-                if (item.sharing == "public") {
-                  $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+            var listData;
+            var directLink = false;
+            //see if this is a particular list's url...
+            console.log(val);
+            if (val.match(/.*\/\/soundcloud\.com\/.*\/sets\/.*/)) {
+              var finishUp = function(item) {
+                if (item) {
+                  if (item.sharing == "public" && item.kind == "playlist") {
+                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+                  }
                 }
-              }
-            });
+              };
+              var getList = SC.resolve(val).then(finishUp);
+            } else {
+              //cloud sound world dot com
+              SC.get('/playlists', {
+                q: val
+              }).then(function(lists) {
+                for (var i = 0; i < lists.length; i++) {
+                  var item = lists[i];
+                  if (item.sharing == "public") {
+                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+                  }
+                }
+              });
+            }
           }
         }
       }
@@ -2503,91 +2708,131 @@ firetable.ui = {
       if (e.which == 13) {
         var txt = $("#qsearch").val();
         if (firetable.searchSelectsChoice == 1) {
-          function keyWordsearch() {
-            gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
-            gapi.client.load('youtube', 'v3', function() {
-              makeRequest();
-            });
-          }
+          var showResults = function(response) {
+            firetable.debug && console.log('queue search:', response);
+            //  $("#qsearch").val("");
+            $('#searchResults').html("");
 
-          function makeRequest() {
-            var q = $('#qsearch').val();
-            $('#searchResults').html("Searching...");
+            if (firetable.preview) {
+              if (firetable.preview.slice(0, 5) == "ytcid" || firetable.preview.slice(0, 5) == "sccid") {
+                $("#pv" + firetable.preview).html("&#xE037;");
+                clearTimeout(firetable.ptimeout);
+                firetable.ptimeout = null;
+                $("#pvbar" + firetable.preview).css("background-image", "none");
+                clearInterval(firetable.movePvBar);
+                firetable.movePvBar = null;
+                firetable.preview = false;
+                //start regular song
+                var nownow = Date.now();
+                var timeSince = nownow - firetable.song.started;
+                if (timeSince <= 0) timeSince = 0;
 
-            var request = gapi.client.youtube.search.list({
-              q: q,
-              type: 'video',
-              part: 'snippet',
-              maxResults: 15
-            });
-            request.execute(function(response) {
-              firetable.debug && console.log('queue search:', response);
-              //  $("#qsearch").val("");
-              $('#searchResults').html("");
-
-              if (firetable.preview) {
-                if (firetable.preview.slice(0, 5) == "ytcid" || firetable.preview.slice(0, 5) == "sccid") {
-                  $("#pv" + firetable.preview).html("&#xE037;");
-                  clearTimeout(firetable.ptimeout);
-                  firetable.ptimeout = null;
-                  $("#pvbar" + firetable.preview).css("background-image", "none");
-                  clearInterval(firetable.movePvBar);
-                  firetable.movePvBar = null;
-                  firetable.preview = false;
-                  //start regular song
-                  var nownow = Date.now();
-                  var timeSince = nownow - firetable.song.started;
-                  if (timeSince <= 0) timeSince = 0;
-
-                  var secSince = Math.floor(timeSince / 1000);
-                  var timeLeft = firetable.song.duration - secSince;
-                  if (firetable.song.type == 1) {
-                    if (!firetable.preview) {
-                      if (firetable.scLoaded) firetable.scwidget.pause();
-                      player.loadVideoById(firetable.song.cid, secSince, "large");
-                    }
-                  } else if (firetable.song.type == 2) {
-                    if (!firetable.preview) {
-                      if (firetable.ytLoaded) player.stopVideo();
-                      firetable.scSeek = timeSince;
-                      firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
-                        auto_play: true
-                      });
-                    }
+                var secSince = Math.floor(timeSince / 1000);
+                var timeLeft = firetable.song.duration - secSince;
+                if (firetable.song.type == 1) {
+                  if (!firetable.preview) {
+                    if (firetable.scLoaded) firetable.scwidget.pause();
+                    if (!firetable.disableMediaPlayback) player.loadVideoById(firetable.song.cid, secSince, "large");
+                  }
+                } else if (firetable.song.type == 2) {
+                  if (!firetable.preview) {
+                    if (firetable.ytLoaded) player.stopVideo();
+                    firetable.scSeek = timeSince;
+                    if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
+                      auto_play: true
+                    });
                   }
                 }
               }
-              var srchItems = response.result.items;
-              $.each(srchItems, function(index, item) {
-                vidTitle = item.snippet.title;
-                var pkey = "ytcid" + item.id.videoId;
-                var $srli = $searchItemTemplate.clone();
-                $srli.attr('id', "pvbar" + pkey);
-                $srli.attr("data-key", pkey);
-                $srli.attr("data-cid", item.id.videoId);
-                $srli.find('.previewicon').attr('id', "pv" + pkey).on('click', function() {
-                  firetable.actions.pview($(this).parent().attr('data-key'), true, 1);
-                });
-                $srli.find('.listwords').html(vidTitle);
-                $srli.find('.queuetrack').on('click', function() {
-                  firetable.actions.queueTrack(
-                    $(this).parent().attr('data-cid'),
-                    firetable.utilities.htmlEscape($(this).parent().find('.listwords').text()),
-                    1
-                  );
-                });
-                $("#searchResults").append($srli);
-              })
+            }
+            var srchItems = response.result.items;
+            $.each(srchItems, function(index, item) {
+              console.log(item);
+              var thecid;
+              if (item.kind == "youtube#searchResult") {
+                thecid = item.id.videoId;
+              } else if (item.kind == "youtube#video") {
+                thecid = item.id;
+              }
+              vidTitle = item.snippet.title;
+              var pkey = "ytcid" + thecid;
+              var $srli = $searchItemTemplate.clone();
+              $srli.attr('id', "pvbar" + pkey);
+              $srli.attr("data-key", pkey);
+              $srli.attr("data-cid", thecid);
+              $srli.find('.previewicon').attr('id', "pv" + pkey).on('click', function() {
+                firetable.actions.pview($(this).parent().attr('data-key'), true, 1);
+              });
+              $srli.find('.listwords').html(vidTitle);
+              $srli.find('.queuetrack').on('click', function() {
+                firetable.actions.queueTrack(
+                  $(this).parent().attr('data-cid'),
+                  firetable.utilities.htmlEscape($(this).parent().find('.listwords').text()),
+                  1
+                );
+              });
+              $("#searchResults").append($srli);
             })
+          };
+          var directLink = false;
+          var thecid = false;
+          //see if this is a particular track's url...
+          if (txt.match(/youtube.com\/watch/)) {
+            function getQueryStringValue(str, key) {
+              return unescape(str.replace(new RegExp("^(?:.*[&\\?]" + escape(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+            }
+            thecid = getQueryStringValue(txt, "v");
+            if (thecid) directLink = true;
           }
-          keyWordsearch();
+          if (directLink) {
+            firetable.debug && console.log("direct yt link found");
 
+            function keyWordsearch() {
+              gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
+              gapi.client.load('youtube', 'v3', function() {
+                makeRequest();
+              });
+            }
+
+            function makeRequest() {
+              var request = gapi.client.youtube.videos.list({
+                id: thecid,
+                part: 'snippet',
+                maxResults: 1
+              });
+              request.execute(function(response) {
+                console.log(response);
+                showResults(response);
+              })
+            }
+            keyWordsearch();
+          } else {
+            function keyWordsearch() {
+              gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
+              gapi.client.load('youtube', 'v3', function() {
+                makeRequest();
+              });
+            }
+
+            function makeRequest() {
+              var q = $('#qsearch').val();
+              $('#searchResults').html("Searching...");
+
+              var request = gapi.client.youtube.search.list({
+                q: q,
+                type: 'video',
+                part: 'snippet',
+                maxResults: 15
+              });
+              request.execute(function(response) {
+                showResults(response);
+              })
+            }
+            keyWordsearch();
+          }
         } else if (firetable.searchSelectsChoice == 2) {
           var q = $('#qsearch').val();
-          $('#searchResults').html("Searching...");
-          SC.get('/tracks', {
-            q: q
-          }).then(function(tracks) {
+          var showResults = function(tracks) {
             firetable.debug && console.log('sc tracks:', tracks);
             // $("#qsearch").val("");
             $('#searchResults').html("");
@@ -2611,13 +2856,13 @@ firetable.ui = {
                 if (firetable.song.type == 1) {
                   if (!firetable.preview) {
                     firetable.scwidget.pause();
-                    player.loadVideoById(firetable.song.cid, secSince, "large");
+                    if (!firetable.disableMediaPlayback) player.loadVideoById(firetable.song.cid, secSince, "large");
                   }
                 } else if (firetable.song.type == 2) {
                   if (!firetable.preview) {
                     if (firetable.ytLoaded) player.stopVideo();
                     firetable.scSeek = timeSince;
-                    firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
+                    if (!firetable.disableMediaPlayback) firetable.scwidget.load("http://api.soundcloud.com/tracks/" + firetable.song.cid, {
                       auto_play: true
                     });
                   }
@@ -2657,7 +2902,27 @@ firetable.ui = {
               });
               $("#searchResults").append($srli);
             })
-          });
+          }
+          var directLink = false;
+          if (q.match(/:\/\/soundcloud\.com\//)) {
+            directLink = true;
+          }
+          $('#searchResults').html("Searching...");
+          if (directLink) {
+            firetable.debug && console.log("sc direct link found");
+            var finishUp = function(item) {
+              var items = [];
+              if (item.kind == "track") items.push(item);
+              showResults(items);
+            };
+            var getList = SC.resolve(q).then(finishUp);
+          } else {
+            SC.get('/tracks', {
+              q: q
+            }).then(function(tracks) {
+              showResults(tracks);
+            });
+          }
         }
       }
     });
@@ -2702,7 +2967,7 @@ firetable.ui = {
               });
             }
           } else if (command == "hot") {
-            ftapi.actions.sendChat(":hot:");
+            ftapi.actions.sendChat(":fire:");
             $("#cloud_with_rain").removeClass("on");
             $("#fire").addClass("on");
           } else if (command == "storm") {
@@ -2768,7 +3033,17 @@ firetable.ui = {
       $("#stage").css("color", firetable.countcolor);
       */
       $('.customColorStyles').remove();
+
+      $('.festiveLights').remove();
+
+      var colorThing = firetable.utilities.hexToRGB(firetable.color);
       $("head").append("<style class='customColorStyles'>:focus { box-shadow: 0 0 0.5rem " + firetable.color + "; } .djActive, #addToQueueBttn, .butt:not(.graybutt), .ui-slider-horizontal .ui-slider-range-min { background-color: " + firetable.color + "; color: " + firetable.countcolor + "; } .iconbutt.on { color: " + firetable.color + "; border-bottom: 1px solid " + firetable.color + "66; box-shadow: inset 0 0 1rem " + firetable.color + "33; }</style>");
+
+      if (firetable.lights){
+        var style = "<style class='festiveLights'>.lightrope { text-align: center; white-space: nowrap; overflow: hidden; position: absolute; z-index: 1; margin: -6px 0 0 0; padding: 0; pointer-events: none; width: 100%; z-index: 55; }ul.lightrope li{position: relative; list-style: none; margin: 0; padding: 0; display: block; width: 6px; height: 14px; border-radius: 50%; margin: 10px; display: inline-block; background: #111;} .lightrope li span { position: relative; animation-fill-mode: both; animation-iteration-count: infinite; list-style: none; margin: 0; padding: 0; display: block; width: 6px; height: 14px; border-radius: 50%; display: inline-block; background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); animation-name: flash-1; animation-duration: 2s; } .lightrope li:nth-child(2n+1) span { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.5); animation-name: flash-2; animation-duration: 0.4s; } .lightrope li:nth-child(4n+2) span { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); animation-name: flash-3; animation-duration: 1.1s; } .lightrope li:nth-child(odd) span { animation-duration: 1.8s; } .lightrope li:nth-child(3n+1) span { animation-duration: 1.4s; } .lightrope li :before { content: \"\"; position: absolute; background: #4e4e4e; width: 4px; height: 4.6666666667px; border-radius: 3px; top: -2.3333333333px; left: 1px; } .lightrope li:after { content: \"\"; top: -7px; left: 3px; position: absolute; width: 32px; height: 9.3333333333px; border-bottom: solid #4e4e4e 2px; border-radius: 50%; } .lightrope li:last-child:after { content: none; } .lightrope li:first-child { margin-left: -20px; } @keyframes flash-1 { 0%, 100% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); } 50% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.4); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.2); } } @keyframes flash-2 { 0%, 100% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); } 50% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.4); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.2); } } @keyframes flash-3 { 0%, 100% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); } 50% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.4); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.2); } }</style>";
+        $("head").append(style);
+      }
+
     });
   },
   usertab1: function() {

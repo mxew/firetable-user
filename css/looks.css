@@ -1169,6 +1169,35 @@ a.importLinkCheck {
   font-weight: 700;
   color: rgba(255,255,255,0.4);
 }
+.modDelete {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size:1rem;
+    padding-left:0.25rem;
+    font-weight:400;
+    padding-right:0.25rem;
+    background-color: #333;
+    cursor: pointer;
+    display:none;
+    color: #999;
+}
+
+.modDelete:hover{
+  background-color: #dd2e44;
+  color: #ddd;
+}
+
+.chatText {
+    position: relative;
+}
+
+.chatText.deleteMe:hover{
+    background-color:#282828;
+}
+.chatText.deleteMe:hover .modDelete{
+    display:block;
+}
 .chatText a {
   position: relative;
   display: block;
@@ -1474,6 +1503,10 @@ span.cardShareChat:hover {
   display: block;
 }
 
+#importDubContent{
+  display:none;
+}
+
 #rsnCredit {
   margin-top: var(--pad1);
   font-size: 10px;
@@ -1484,13 +1517,25 @@ input#tagMachine, #supercopSearch, #changeUsername {
   padding: 5px;
   margin-bottom: 15px;
 }
+#songlink{
+  border-radius: 0.25rem;
+}
+#songlink svg{
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+}
 #importSources {
   padding: 0;
   background: none;
 }
-#importContent {
+#importContent, #importDubContent {
   padding: var(--pad2) var(--pad3);
   background-color: #282828;
+}
+#dubimportButton{
+  margin-top:10px;
+  display:none;
 }
 #byId {
   display: flex;

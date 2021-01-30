@@ -9,9 +9,9 @@
 	<link rel="shortcut icon" href="favicon.png">
 	<link rel="stylesheet" href="css/reset.css" type="text/css" />
 	<link rel="stylesheet" href="css/perfect-scrollbar.css" />
-  	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' type='text/css'>
+	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' type='text/css'>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-	<link rel="stylesheet" href="css/looks.css?v=01.05.13" type="text/css" />
+	<link rel="stylesheet" href="css/looks.css?v=01.07.5" type="text/css" />
 </head>
 
 <body>
@@ -37,6 +37,50 @@
 					<div id="playerArea"></div>
 					<div id="scScreen"></div>
 					<div id="screenover"></div>
+					<ul class="lightrope">
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+						<li><span></span></li>
+					</ul>
 				</div>
 				<div id="nowplaying">
 					<div id="albumArt"></div>
@@ -66,7 +110,7 @@
 						<button role="button" class="butt graybutt iconbutt" id="grab" tabindex="0">
 							<i class="material-icons"> &#xE03B; </i>
 						</button>
-						<a target="_blank" role="button" class="butt graybutt iconbutt"  id="songlink" tabindex="0">
+						<a target="_blank" role="button" class="butt graybutt iconbutt" id="songlink" tabindex="0">
 							<i class="material-icons"> link </i>
 						</a>
 					</div>
@@ -101,7 +145,8 @@
 		<div id="actualChat">
 			<div id="chatsWrap" class="scrollit">
 				<div id="chats">
-					<div id="chatKEY" class="newChat"><!-- template for chat items -->
+					<div id="chatKEY" class="newChat">
+						<!-- template for chat items -->
 						<div class="botson"></div>
 						<div class="chatContent">
 							<div class="chatHead">
@@ -116,7 +161,7 @@
 			</div>
 			<div id="chatbottom">
 				<form id="newchatForm" autocomplete="off" onsubmit="return false;">
-				<input maxlength="240" autocomplete="off" name="newchat" placeholder="Chat a thing" type="text" id="newchat" tabindex="0">
+					<input maxlength="240" autocomplete="off" name="newchat" placeholder="Chat a thing" type="text" id="newchat" tabindex="0">
 				</form>
 				<button role="button" class="butt graybutt iconbutt" id="pickEmoji"><i class="material-icons"> insert_emoticon </i></button>
 				<div id="emojiPicker">
@@ -205,8 +250,11 @@
 					<div id="mergeArrow"></div>
 					<div id="mergeBox">
 						<div id="mergeSetup">
-							<select id="mergepicker"> <option value="0">Default Queue</option> </select> <i class="material-icons"> arrow_right_alt </i> <select id="mergepicker2"> <option value="0">Default Queue</option> </select> <button role="button" class=
-							"butt" id="startMerge">Merge</button>
+							<select id="mergepicker">
+								<option value="0">Default Queue</option>
+							</select> <i class="material-icons"> arrow_right_alt </i> <select id="mergepicker2">
+								<option value="0">Default Queue</option>
+							</select> <button role="button" class="butt" id="startMerge">Merge</button>
 						</div>
 						<div id="mergeHappening">Merge in progress... Please stand by...</div>
 						<div id="mergeCompleted">Congratulations! Merge completed. <button role="button" class="butt" id="mergeOK">Ok Fine</button></div>
@@ -214,14 +262,15 @@
 				</div>
 				<div id="filterMachine">
 					<form id="queueFilterForm" autocomplete="off" onsubmit="return false;">
-					<input type="text" autocomplete="off" placeholder="Filter your list..." name="queueFilter" id="queueFilter">
+						<input type="text" autocomplete="off" placeholder="Filter your list..." name="queueFilter" id="queueFilter">
 					</form>
 				</div>
 			</div>
 			<div id="queuelist" class="scrollit">
 				<div id="mainqueuestuff">
 					<div id="mainqueue" class="innr">
-						<div class="pvbar" id="pvbarKEY"><!-- template for playlist items -->
+						<div class="pvbar" id="pvbarKEY">
+							<!-- template for playlist items -->
 							<i role="button" id="pvKEY" class="material-icons previewicon"></i>
 							<span class="track-warning"></span>
 							<div class="listwords"></div>
@@ -244,7 +293,8 @@
 						<span class="tab on" id="ytsearchSelect">Youtube</span><span id="scsearchSelect" class="tab">Soundcloud</span>
 					</div>
 					<div id="searchResults" class="scrollit">
-						<div class="pvbar" id="pvbarKEY"><!-- template for search result items -->
+						<div class="pvbar" id="pvbarKEY">
+							<!-- template for search result items -->
 							<i role="button" id="pvKEY" class="material-icons previewicon">&#xE037;</i>
 							<div class="listwords"></div>
 							<i role="button" id="pvKEY" class="material-icons queuetrack">&#xE03B;</i>
@@ -334,7 +384,8 @@
 					<div>Edit the song tag + hit enter to save.</div>
 					<div><a target="_blank" href="https://youtube.com" id="tagSongLink">Track Link</a></div>
 					<div><input type="text" placeholder="Artist - Song Title" id="tagMachine"></input></div>
-					<strong>Tag Formatting Guidelines</strong><br/> Standard: <i>Artist - Song Title</i><br/> Remix: <i>Artist - Song Title (Remixartist Remix)</i><br/> Featuring: <i>Artist - Song Title feat. Subartist</i><br/> Featuring + Remix: <i>Artist - Song Title feat. Subartist (Remixartist Remix)</i>
+					<strong>Tag Formatting Guidelines</strong><br /> Standard: <i>Artist - Song Title</i><br /> Remix: <i>Artist - Song Title (Remixartist Remix)</i><br /> Featuring: <i>Artist - Song Title feat. Subartist</i><br /> Featuring + Remix: <i>Artist
+						- Song Title feat. Subartist (Remixartist Remix)</i>
 					<div id="rsnCredit">Rohn Standard Notation 2015</div>
 				</div>
 			</div>
@@ -345,8 +396,8 @@
 					<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
 				</div>
 				<div class="modalContent scrollit">
-					So you want to delete a playlist huh? This action is <strong>irreversible.</strong><br/> If you're super sure you want to do this, pick a playlist to delete below.
-					<br/><br/>
+					So you want to delete a playlist huh? This action is <strong>irreversible.</strong><br /> If you're super sure you want to do this, pick a playlist to delete below.
+					<br /><br />
 					<div class="inputline">
 						<select placeholder="Pick a Playlist To Delete" id="deletepicker"></select>
 						<button role="button" class="butt redbutt" id="pldeleteButton">Delete This Playlist</button>
@@ -361,7 +412,7 @@
 				</div>
 				<div class="modalContent scrollit">
 					Set all of the things here on the table.
-					<br/><br/>
+					<br /><br />
 					<div class="settingline">
 						<input type="checkbox" id="badoopToggle" name="badoopToggle">
 						<label for="badoopToggle">Badoop sound for @mentions</label>
@@ -372,9 +423,13 @@
 					</div>
 					<div class="settingline">
 						<input type="checkbox" id="showImagesToggle" name="showImagesToggle">
-						<label for="showImagesToggle">Show images in chat</label><br/>
+						<label for="showImagesToggle">Show images in chat</label><br />
 						<input type="checkbox" id="showAvatarsToggle" name="showAvatarsToggle">
 						<label for="showAvatarsToggle">Show user avatars in chat</label>
+					</div>
+					<div class="settingline">
+						<input type="checkbox" id="mediaDisableToggle" name="mediaDisableToggle">
+						<label for="mediaDisableToggle">Disable Media Playback</label><br />
 					</div>
 					<div class="settingline">
 						<input id="screenControlTogsync" type="radio" name="screenControl" value="sync">
@@ -404,7 +459,7 @@
 				</div>
 				<div class="modalContent scrollit">
 					<div id="accountSettingsMain"></div>
-					Change your username to some other thing...<br/><br/>
+					Change your username to some other thing...<br /><br />
 					<input type="text" placeholder="Change Username" id="changeUsername"></input>
 					<div class="responseBox" id="usernameResponse"></div>
 				</div>
@@ -412,11 +467,11 @@
 
 			<div class="modalThing" id="supercopBox">
 				<div class="modalHeader">
-					<h2>Supercop Control Panel</h2>
+					<h2>Supermod Control Panel</h2>
 					<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
 				</div>
 				<div class="modalContent scrollit">
-					Suspend a user's account, or manage active suspentions.<br/><br/>
+					Suspend a user's account, or manage active suspentions.<br /><br />
 					<input type="text" placeholder="Enter Username to Suspend User's Account" id="supercopSearch"></input>
 					<div class="responseBox" id="supercopResponse"></div>
 					<h3>Active Suspentions</h3>
@@ -431,18 +486,19 @@
 				</div>
 				<div class="modalContent scrollit">
 					<div id="importSources" class="tabs">
-						<button role="button" class="tab on" id="ytimportchoice">Youtube</button><button role="button" class="tab" id="scimportchoice">Soundcloud</button>
+						<button role="button" class="tab on" id="ytimportchoice">Youtube</button><button role="button" class="tab" id="scimportchoice">Soundcloud</button><button role="button" class="tab" id="dtimportchoice">Dubtrack</button>
 					</div>
 					<div id="importContent">
-						<div id="byId">
-							<input type="text" placeholder="Enter a YouTube playlist ID" id="plMachineById"></input>
-							<button role="button" class="butt graybutt iconbutt" disabled>
-								<i class="material-icons" title="Import"></i>
-							</button>
-						</div>
-						<div class="ortxt">or</div>
 						<input type="text" placeholder="Search Playlists" id="plMachine"></input>
 						<div id="importResults"></div>
+					</div>
+					<div id="importDubContent">
+						<div>
+							Select an "interactive webpage" .html file from <a target="_blank" href="https://exporter.dubtrack.net">Dubtrack</a>.
+						</div>
+						<input name='myFileDubList' id="dubtrackimportfile" type="file">
+						<div id="importDubResults"></div>
+						<div id="dubimportButton"><button id="importDubGo">Import Selected List</button></div>
 					</div>
 				</div>
 			</div>
@@ -453,11 +509,14 @@
 	<div id="stealContain">
 		<div id="stealArrow"></div>
 		<div id="stealBox">
-			<select id="stealpicker"> <option value="0">Default Queue</option> </select>
+			<select id="stealpicker">
+				<option value="0">Default Queue</option>
+			</select>
 		</div>
 	</div>
 
-	<iframe allow="autoplay; encrypted-media" id="sc-widget" width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F1848notarealidthanks538&show_artwork=false"></iframe>
+	<iframe allow="autoplay; encrypted-media" id="sc-widget" width="100%" height="166" scrolling="no" frameborder="no"
+		src="https://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F1848notarealidthanks538&show_artwork=false"></iframe>
 
 	<audio autoplay="autoplay" id="audilert"></audio>
 
@@ -473,14 +532,15 @@
 	<script src="https://apis.google.com/js/client.js?onload=googleApiClientReady"></script>
 	<script src="https://w.soundcloud.com/player/api.js" type="text/javascript"></script>
 	<script src="https://www.youtube.com/iframe_api"></script>
-	<script type="text/javascript" src="js/firetable.js?v=01.05.13"></script>
-	<script type="text/javascript" src="js/main.js?v=01.05.13"></script>
+	<script type="text/javascript" src="js/firetable.js?v=01.07.5"></script>
+	<script type="text/javascript" src="js/main.js?v=01.07.5"></script>
 
 </body>
 
 <div class="notice">
-		<p>Your account has been suspended due to a perceived violation of our <a href="terms">Terms of Service</a>. If you believe your account has been suspended by mistake or as the result of a misunderstanding, please contact chris@indiediscotheque.com.</p>
-		<p>We reserve the right to modify, suspend, or terminate the Service for any reason, without notice, at any time.</p>
+	<p>Your account has been suspended due to a perceived violation of our <a href="terms">Terms of Service</a>. If you believe your account has been suspended by mistake or as the result of a misunderstanding, please contact
+		chris@indiediscotheque.com.</p>
+	<p>We reserve the right to modify, suspend, or terminate the Service for any reason, without notice, at any time.</p>
 </div>
 
 </html>
