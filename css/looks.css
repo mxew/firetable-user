@@ -169,6 +169,10 @@ code {
   background-color: rgba(123,123,123,0.5);
 }
 
+.simplebar-scrollbar:before {
+  background: var(--orange);
+}
+
 .previewicon {
   display: flex;
   align-items: center;
@@ -1484,6 +1488,7 @@ img.emoji {
 
 .settingline {
   margin-bottom: var(--pad2);
+  white-space: nowrap;
 }
 
 .caseCard {
