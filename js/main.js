@@ -2546,16 +2546,21 @@ firetable.ui = {
     });
     $("#changeUsername").bind("keyup", function(e) {
       if (e.which == 13) {
-        var val = $("#changeUsername").val();
+        var oldDjName = ftapi.users[ftapi.uid].username;
+        var newDjName = $("#changeUsername").val();
         $("#usernameResponse").html("");
-        if (val != "") {
+        if (newDjName != "") {
           // try to change name
-          ftapi.actions.changeName(val, function(error) {
+          ftapi.actions.changeName(newDjName, function(error) {
             if (error) {
               alert(error);
               $("#usernameResponse").text(error);
             } else {
-              $("#usernameResponse").text("Great job! Your name is now " + val);
+              $("#usernameResponse").text("Great job! Your name is now " + newDjName);
+              $("#loggedInName").text(newDjName);
+              $(".djname").filter(function(){
+                return $(this).text() == oldDjName;
+              }).text(newDjName).parent().prev(".avtr").css("background-image","url('https://indiediscotheque.com/robots/" + ftapi.uid + newDjName + ".png?size=175x175')")
             }
           });
         }
