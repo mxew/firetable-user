@@ -2556,6 +2556,7 @@ firetable.ui = {
               alert(error);
               $("#usernameResponse").text(error);
             } else {
+              ftapi.users[ftapi.uid].username = newDjName;
               $("#usernameResponse").text("Great job! Your name is now " + newDjName);
               $("#loggedInName").text(newDjName);
               $(".djname").filter(function(){
