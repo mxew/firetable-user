@@ -46,6 +46,9 @@ var firetable = {
   debug: false
 }
 
+var chatScroll = new SimpleBar(document.getElementById('chatsWrap'));
+chatScroll.getScrollElement(); //.addEventListener('scroll', function(){ console.log(chatScroll); });
+
 firetable.version = "01.07.5";
 var player, $playlistItemTemplate;
 
@@ -60,7 +63,7 @@ var idlejs = new IdleJs({
   },
   onHide: function() {
     ftapi.actions.changeIdleStatus(true, 1);
-    console.log("hide");
+    firetable.debug && console.log("hide");
   },
   onShow: function() {
     ftapi.actions.changeIdleStatus(false, 1);
@@ -156,7 +159,20 @@ function onPlayerStateChange(event) {
 }
 
 firetable.init = function() {
-  console.log("Yo sup welcome to firetable my name is chris rohn.");
+  console.log(`
+Welcome to
+
+ (                           )             )   (          
+ )\\ )   (    (       (    ( /(      )   ( /(   )\\     (   
+(()/(   )\\   )(     ))\\   )\\())  ( /(   )\\()) (_))   ))\\  
+ /(_)) ((_) (()\\   /((_) (_))/   )(_)) ((_)\\  | |   /((_) 
+(_) _|  (_)  ((_) (_))   | |_   ((_)_  | |(_) | |  (_))   
+ |  _|  | | | '_| / -_)  |  _|  / _' | | '_ \\ | |  / -_)  
+ |_|    |_| |_|   \\___|   \\__|  \\__,_| |_.__/ |_|  \\___|
+
+Your host, Chris Rohn (@Chris)
+
+`);
   firetable.started = true;
   var firebaseConfig = {
     apiKey: "AIzaSyB1I9rU2_3Bsf81BmPA-eVZX8qm3LLuFaA",
@@ -174,9 +190,9 @@ firetable.init = function() {
       'left': $('#grab').offset().left - 16
     });
     setup();
-    var objDiv = document.getElementById("chatsWrap");
-    objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+    firetable.utilities.scrollToBottom();
   }, 500));
+  firetable.utilities.scrollToBottom();
   var widgetIframe = document.getElementById('sc-widget');
   firetable.scwidget = SC.Widget(widgetIframe);
   firetable.scwidget.bind(SC.Widget.Events.READY, function() {
@@ -276,8 +292,7 @@ firetable.actions = {
   localChatResponse: function(txt) {
     if (txt.length) {
       $("#chats").append("<div class=\"newChat\"><div class=\"lcrsp\">" + txt + "</div></div>");
-      var objDiv = document.getElementById("chatsWrap");
-      objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+      firetable.utilities.scrollToBottom();
     }
   },
   logOut: function() {
@@ -293,9 +308,7 @@ firetable.actions = {
     if (firetable.loginForm && !$("#login").html()) {
       $("#mainGrid").append("<div id=\"login\" class=\"scrollit\">" + firetable.loginForm + "</div>");
       firetable.ui.loginEventsInit();
-      scrollits["login"] = new PerfectScrollbar($("#login")[0], {
-        minScrollbarLength: 30
-      });
+      // simplebar scroll
     }
   },
   logIn: function(email, password) {
@@ -315,7 +328,7 @@ firetable.actions = {
     firetable.debug && console.log("user signed in!");
     if ($("#login").html()) {
       firetable.loginForm = $("#login").html();
-      scrollits["login"].destroy();
+      // destroy login simplebar scroll?
       firetable.ui.loginEventsDestroy();
       $("#login").remove();
     }
@@ -553,7 +566,7 @@ firetable.actions = {
         $(q).hide()
       }
     });
-    scrollits["queuelist"].update();
+    // simplebar scroll update?
   },
   muteToggle: function(zeroMute) {
 
@@ -1078,7 +1091,7 @@ firetable.emojis = {
         $(q).hide()
       }
     });
-    scrollits["pickerResults"].update();
+    // simplebar scroll update?
   }
 };
 
@@ -1166,12 +1179,13 @@ firetable.utilities = {
     $('body').addClass('screen');
   },
   isChatPrettyMuchAtBottom: function() {
-    var objDiv = document.getElementById("chatsWrap");
-    var answr = false;
-    var thing1 = objDiv.scrollHeight - objDiv.clientHeight;
-    var thing2 = objDiv.scrollTop;
-    if (Math.abs(thing1 - thing2) <= 5) answr = true;
-    return answr;
+    var scrollable = chatScroll.contentEl.scrollHeight - chatScroll.el.clientHeight;
+    var scrolled = chatScroll.contentWrapperEl.scrollTop;
+    console.log('near bottom?',scrollable,scrolled);
+    return (Math.abs(scrollable - scrolled) <= 25);
+  },
+  scrollToBottom: function() {
+    chatScroll.contentWrapperEl.scrollTop = chatScroll.contentEl.scrollHeight;
   },
   htmlEscape: function(s, preserveCR) {
     preserveCR = preserveCR ? '&#13;' : '\n';
@@ -1308,10 +1322,7 @@ firetable.ui = {
         chatTxt = chatTxt.replace(imageUrlRegex, function(imageUrl) {
           var chatImage = new Image();
           chatImage.onload = function() {
-            var objDiv = document.getElementById("chatsWrap");
-            var thing1 = objDiv.scrollHeight - objDiv.clientHeight;
-            var thing2 = objDiv.scrollTop;
-            if (Math.abs(thing1 - thing2) <= (parseInt(chatImage.height) + 20)) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+            if (firetable.utilities.isChatPrettyMuchAtBottom()) firetable.utilities.scrollToBottom();
           }
           chatImage.src = imageUrl;
           return '<a class="inlineImgLink" href="' + imageUrl + '" target="_blank" tabindex="-1"><img src="' + imageUrl + '" class="inlineImage" /><span role=\"button\" class="hideImage">&times;</span></a>'
@@ -1557,7 +1568,7 @@ firetable.ui = {
       });
       $histItem.find('.histart').css('background-image', 'url(' + data.img + ')');
       $histItem.prependTo("#thehistory");
-      scrollits['thehistoryWrap'].update();
+      // simplebar scroll update?
     });
     ftapi.events.on("newTheme", function(data) {
       if (!data) {
@@ -1582,9 +1593,6 @@ firetable.ui = {
           $("#track").text(firetable.ui.strip(data.adamData.track_name));
           $("#artist").text(firetable.ui.strip(data.adamData.artist));
           var nicename = firetable.song.djname;
-          var objDiv = document.getElementById("chatsWrap");
-          scrollDown = false;
-          if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
           var showPlaycount = false;
           if (data.adamData.playcount) {
             if (data.adamData.playcount > 0) {
@@ -1608,8 +1616,7 @@ firetable.ui = {
             $("#playCount").text("");
             $(".npmsg" + data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong></div>");
           }
-          scrollits['chatsWrap'].update();
-          if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+          if (firetable.utilities.isChatPrettyMuchAtBottom()) firetable.utilities.scrollToBottom();
           window.dispatchEvent(new Event('resize'));
         }
       }
@@ -1706,16 +1713,13 @@ firetable.ui = {
         if (firetable.nonpmsg) {
           firetable.nonpmsg = false;
         } else {
-          scrollDown = false;
-          var objDiv = document.getElementById("chatsWrap");
-          if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
           if (showPlaycount) {
             $("#chats").append("<div class=\"newChat nowplayn npmsg" + data.cid + "\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong><br/>This song has been played " + firetable.tagUpdate.adamData.playcount + " times.</div>")
           } else {
             $("#chats").append("<div class=\"newChat nowplayn npmsg" + data.cid + "\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
           }
-          scrollits['chatsWrap'].update();
-          if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+          // simplebar scroll update?
+          if (firetable.utilities.isChatPrettyMuchAtBottom()) firetable.utilities.scrollToBottom();
           firetable.lastChatPerson = false;
           firetable.lastChatId = false;
         }
@@ -1949,8 +1953,10 @@ firetable.ui = {
     var $chatTemplate = $('#chatKEY').remove();
     ftapi.events.on("newChat", function(chatData) {
       var namebo = chatData.id;
-      var objDiv = document.getElementById("chatsWrap");
       var utitle = "";
+
+      var atBottom = false;
+      if (firetable.utilities.isChatPrettyMuchAtBottom()) atBottom = true;
 
       var you = ftapi.uid;
       if (ftapi.users[ftapi.uid]) {
@@ -1975,8 +1981,6 @@ firetable.ui = {
           badoop = true;
         }
       }
-      scrollDown = false;
-      if (firetable.utilities.isChatPrettyMuchAtBottom()) scrollDown = true;
       if (chatData.id == firetable.lastChatPerson && !badoop) {
         $("#chat" + firetable.lastChatId + " .chatContent").append("<div id=\"chattxt" + chatData.chatID + "\" class=\"chatText\"></div>");
         $("#chatTime" + firetable.lastChatId).text(firetable.utilities.format_time(chatData.time));
@@ -2046,7 +2050,6 @@ firetable.ui = {
               $chatthing.find(".chatText").addClass("deleteMe");
               $chatthing.find(".chatText").append("<div class=\"modDelete\">x</div>");
               $chatthing.find(".modDelete").on('click', function() {
-                console.log("DELETE CHAT", chatData);
                 ftapi.actions.deleteChat(chatData.feedID);
               });
             }
@@ -2064,12 +2067,12 @@ firetable.ui = {
         firetable.actions.showCard(chatData.card, chatData.chatID);
         firetable.debug && console.log("showin card");
       }
-      scrollits['chatsWrap'].update();
-      if (scrollDown) objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+
+      if (atBottom || ftapi.uid == chatData.id) firetable.utilities.scrollToBottom();
     });
 
     ftapi.events.on("chatRemoved", function(data) {
-      console.log("chat DELETE", data);
+      console.log("CHAT DELETED", data);
       $("#chattxt" + data.chatID).text("[message removed]");
       if (ftapi.users[ftapi.uid].mod || ftapi.users[ftapi.uid].supermod) $("#chattxt" + data.chatID).removeClass("deleteMe");
     });
@@ -2128,11 +2131,11 @@ firetable.ui = {
       // if this is a different list, reset scrollerboy
       if (firetable.listShowing) {
         if (firetable.listShowing !== listID) {
-          scrollits['queuelist'].update();
+          // queuelist simplebar scroll update?
         }
       } else {
         firetable.listShowing = listID;
-        scrollits['queuelist'].update();
+        // queuelist simplebar scroll update?
       }
     });
 
@@ -2991,8 +2994,6 @@ firetable.ui = {
         $("#newchat").val("");
         $("#emojiPicker").slideUp();
         $("#pickEmoji").removeClass("on");
-        var objDiv = document.getElementById("chatsWrap");
-        objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
       }
 
     });
@@ -3022,7 +3023,7 @@ firetable.ui = {
       $('.festiveLights').remove();
 
       var colorThing = firetable.utilities.hexToRGB(firetable.color);
-      $("head").append("<style class='customColorStyles'>:focus { box-shadow: 0 0 0.5rem " + firetable.color + "; } .djActive, #addToQueueBttn, .butt:not(.graybutt), .ui-slider-horizontal .ui-slider-range-min { background-color: " + firetable.color + "; color: " + firetable.countcolor + "; } .iconbutt.on { color: " + firetable.color + "; border-bottom: 1px solid " + firetable.color + "66; box-shadow: inset 0 0 1rem " + firetable.color + "33; }</style>");
+      $("head").append("<style class='customColorStyles'>:focus { box-shadow: 0 0 0.5rem " + firetable.color + "; } .djActive, #addToQueueBttn, .butt:not(.graybutt), .ui-slider-horizontal .ui-slider-range-min { background-color: " + firetable.color + "; color: " + firetable.countcolor + "; } .iconbutt.on { color: " + firetable.color + "; border-bottom: 1px solid " + firetable.color + "66; box-shadow: inset 0 0 1rem " + firetable.color + "33; } .simplebar-scrollbar:before { background: " + firetable.color + "; }</style>");
 
       if (firetable.lights){
         var style = "<style class='festiveLights'>.lightrope { text-align: center; white-space: nowrap; overflow: hidden; position: absolute; z-index: 1; margin: -6px 0 0 0; padding: 0; pointer-events: none; width: 100%; z-index: 55; }ul.lightrope li{position: relative; list-style: none; margin: 0; padding: 0; display: block; width: 6px; height: 14px; border-radius: 50%; margin: 10px; display: inline-block; background: #111;} .lightrope li span { position: relative; animation-fill-mode: both; animation-iteration-count: infinite; list-style: none; margin: 0; padding: 0; display: block; width: 6px; height: 14px; border-radius: 50%; display: inline-block; background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); animation-name: flash-1; animation-duration: 2s; } .lightrope li:nth-child(2n+1) span { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.5); animation-name: flash-2; animation-duration: 0.4s; } .lightrope li:nth-child(4n+2) span { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); animation-name: flash-3; animation-duration: 1.1s; } .lightrope li:nth-child(odd) span { animation-duration: 1.8s; } .lightrope li:nth-child(3n+1) span { animation-duration: 1.4s; } .lightrope li :before { content: \"\"; position: absolute; background: #4e4e4e; width: 4px; height: 4.6666666667px; border-radius: 3px; top: -2.3333333333px; left: 1px; } .lightrope li:after { content: \"\"; top: -7px; left: 3px; position: absolute; width: 32px; height: 9.3333333333px; border-bottom: solid #4e4e4e 2px; border-radius: 50%; } .lightrope li:last-child:after { content: none; } .lightrope li:first-child { margin-left: -20px; } @keyframes flash-1 { 0%, 100% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); } 50% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.4); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.2); } } @keyframes flash-2 { 0%, 100% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); } 50% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.4); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.2); } } @keyframes flash-3 { 0%, 100% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 1); } 50% { background: rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.4); box-shadow: 0px 2.3333333333px 12px 1.5px rgba("+colorThing.r+","+colorThing.g+","+colorThing.b+", 0.2); } }</style>";
@@ -3115,13 +3116,6 @@ firetable.ui = {
 
 }
 
-var scrollits = [];
-$('.scrollit').each(function() {
-  scrollits[$(this).attr('id')] = new PerfectScrollbar($(this)[0], {
-    minScrollbarLength: 30
-  });
-});
-firetable.debug && console.log('scrollits', scrollits);
 
 
 let isLoaded = false;
@@ -3130,7 +3124,7 @@ let imgSrc = '';
 
 function setup(useThis) {
   if (!useThis) useThis = firetable.scImg;
-  background(0);
+  //background(0);
   let cnv = createCanvas($('#djStage').outerWidth(), $('#djStage').outerHeight());
   cnv.parent('scScreen');
   loadImage(useThis, function(img) {
@@ -3144,7 +3138,7 @@ function setup(useThis) {
 
 function draw() {
   clear();
-  background(0);
+  //background(0);
 
   if (isLoaded) {
     glitch.show();
