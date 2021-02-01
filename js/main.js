@@ -49,7 +49,7 @@ var firetable = {
 var chatScroll = new SimpleBar(document.getElementById('chatsWrap'));
 chatScroll.getScrollElement(); //.addEventListener('scroll', function(){ console.log(chatScroll); });
 
-firetable.version = "01.07.5";
+firetable.version = "01.08.0";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -162,12 +162,12 @@ firetable.init = function() {
   console.log(`
 Welcome to
 
- (                           )             )   (          
- )\\ )   (    (       (    ( /(      )   ( /(   )\\     (   
-(()/(   )\\   )(     ))\\   )\\())  ( /(   )\\()) (_))   ))\\  
- /(_)) ((_) (()\\   /((_) (_))/   )(_)) ((_)\\  | |   /((_) 
-(_) _|  (_)  ((_) (_))   | |_   ((_)_  | |(_) | |  (_))   
- |  _|  | | | '_| / -_)  |  _|  / _' | | '_ \\ | |  / -_)  
+ (                           )             )   (
+ )\\ )   (    (       (    ( /(      )   ( /(   )\\     (
+(()/(   )\\   )(     ))\\   )\\())  ( /(   )\\()) (_))   ))\\
+ /(_)) ((_) (()\\   /((_) (_))/   )(_)) ((_)\\  | |   /((_)
+(_) _|  (_)  ((_) (_))   | |_   ((_)_  | |(_) | |  (_))
+ |  _|  | | | '_| / -_)  |  _|  / _' | | '_ \\ | |  / -_)
  |_|    |_| |_|   \\___|   \\__|  \\__,_| |_.__/ |_|  \\___|
 
 Your host, Chris Rohn (@Chris)
