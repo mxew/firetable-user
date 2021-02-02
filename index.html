@@ -277,8 +277,22 @@
 							<i role="button" class="material-icons bumpsongs" title="Send to top">vertical_align_top</i>
 							<i role="button" class="material-icons bottomsongs" title="Send to bottom">vertical_align_bottom</i>
 							<i role="button" class="material-icons edittags" title="Edit tags">edit</i>
-							<i role="button" class="material-icons deletesong" title="Delete track">&#xE5C9;</i>
+							<i role="button" class="material-icons closeeditor" title="Close tags editor">close</i>
+							<i role="button" class="material-icons deletesong" title="Delete track">delete</i>
 						</div>
+						<div class="tagPromptBox">
+							<div class="tagsNlink">
+								<input type="text" placeholder="Artist - Song Title" class="tagMachine"></input>
+								<a target="_blank" href="https://youtube.com" class="tagSongLink"><i role="button" class="material-icons tracklink" title="Track link">link</i></a>
+							</div>
+							<small><i>Edit the song tag + hit enter to save</i></small><br>
+							<br>
+							<b>Rohn Standard Notation</b><br>
+							Standard: <i>Artist - Song Title</i><br>
+							Remix: <i>Artist - Song Title (Remixartist Remix)</i><br>
+							Featuring: <i>Artist - Song Title feat. Subartist</i><br>
+							Featuring + Remix: <i>Artist - Song Title feat. Subartist (Remixartist Remix)</i>
+						</div>					
 					</div>
 				</div>
 				<div id="plmanager">
@@ -373,137 +387,120 @@
 	</div>
 
 	<div id="overlay">
-		<div id="modal">
 
-			<div class="modalThing" id="tagPromptBox">
-				<div class="modalHeader">
-					<h2>Tag Editor</h2>
-					<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
-				</div>
-				<div class="modalContent" data-simplebar>
-					<div>Edit the song tag + hit enter to save.</div>
-					<div><a target="_blank" href="https://youtube.com" id="tagSongLink">Track Link</a></div>
-					<div><input type="text" placeholder="Artist - Song Title" id="tagMachine"></input></div>
-					<strong>Tag Formatting Guidelines</strong><br /> Standard: <i>Artist - Song Title</i><br /> Remix: <i>Artist - Song Title (Remixartist Remix)</i><br /> Featuring: <i>Artist - Song Title feat. Subartist</i><br /> Featuring + Remix: <i>Artist
-						- Song Title feat. Subartist (Remixartist Remix)</i>
-					<div id="rsnCredit">Rohn Standard Notation 2015</div>
+		<div class="modalThing" id="deletePromptBox">
+			<div class="modalHeader">
+				<h2>Playlist Deletion Zone</h2>
+				<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+			</div>
+			<div class="modalContent" data-simplebar>
+				So you want to delete a playlist huh? This action is <strong>irreversible.</strong><br /> If you're super sure you want to do this, pick a playlist to delete below.
+				<br /><br />
+				<div class="inputline">
+					<select placeholder="Pick a Playlist To Delete" id="deletepicker"></select>
+					<button role="button" class="butt redbutt" id="pldeleteButton">Delete This Playlist</button>
 				</div>
 			</div>
-
-			<div class="modalThing" id="deletePromptBox">
-				<div class="modalHeader">
-					<h2>Playlist Deletion Zone</h2>
-					<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
-				</div>
-				<div class="modalContent" data-simplebar>
-					So you want to delete a playlist huh? This action is <strong>irreversible.</strong><br /> If you're super sure you want to do this, pick a playlist to delete below.
-					<br /><br />
-					<div class="inputline">
-						<select placeholder="Pick a Playlist To Delete" id="deletepicker"></select>
-						<button role="button" class="butt redbutt" id="pldeleteButton">Delete This Playlist</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="modalThing" id="settingsBox">
-				<div class="modalHeader">
-					<h2>Setthings</h2>
-					<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
-				</div>
-				<div class="modalContent" data-simplebar>
-					Set all of the things here on the table.
-					<br /><br />
-					<div class="settingline">
-						<input type="checkbox" id="badoopToggle" name="badoopToggle">
-						<label for="badoopToggle">Badoop sound for @mentions</label>
-					</div>
-					<div class="settingline">
-						<input type="checkbox" id="desktopNotifyMentionsToggle" name="DTNMToggle">
-						<label for="DTNMToggle">Desktop notifications for @mentions</label>
-					</div>
-					<div class="settingline">
-						<input type="checkbox" id="showImagesToggle" name="showImagesToggle">
-						<label for="showImagesToggle">Show images in chat</label><br />
-						<input type="checkbox" id="showAvatarsToggle" name="showAvatarsToggle">
-						<label for="showAvatarsToggle">Show user avatars in chat</label>
-					</div>
-					<div class="settingline">
-						<input type="checkbox" id="mediaDisableToggle" name="mediaDisableToggle">
-						<label for="mediaDisableToggle">Disable Media Playback</label><br />
-					</div>
-					<div class="settingline">
-						<input id="screenControlTogsync" type="radio" name="screenControl" value="sync">
-						<label for="screenControlTogsync">Screen Sync</label><br>
-						<input id="screenControlTogon" type="radio" name="screenControl" value="on">
-						<label for="screenControlTogon">Screen Always</label><br>
-						<input id="screenControlTogoff" type="radio" name="screenControl" value="off">
-						<label for="screenControlTogoff">Screen Disabled</label>
-					</div>
-				</div>
-			</div>
-
-			<div class="modalThing" id="cardsBox">
-				<div class="modalHeader">
-					<h2>Your Card Case</h2>
-					<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
-				</div>
-				<div class="modalContent" data-simplebar>
-					<div id="cardsMain"></div>
-				</div>
-			</div>
-
-			<div class="modalThing" id="accountSettingsBox">
-				<div class="modalHeader">
-					<h2>Your Account</h2>
-					<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
-				</div>
-				<div class="modalContent" data-simplebar>
-					<div id="accountSettingsMain"></div>
-					Change your username to some other thing...<br /><br />
-					<input type="text" placeholder="Change Username" id="changeUsername"></input>
-					<div class="responseBox" id="usernameResponse"></div>
-				</div>
-			</div>
-
-			<div class="modalThing" id="supercopBox">
-				<div class="modalHeader">
-					<h2>Supermod Control Panel</h2>
-					<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
-				</div>
-				<div class="modalContent" data-simplebar>
-					Suspend a user's account, or manage active suspentions.<br /><br />
-					<input type="text" placeholder="Enter Username to Suspend User's Account" id="supercopSearch"></input>
-					<div class="responseBox" id="supercopResponse"></div>
-					<h3>Active Suspentions</h3>
-					<div id="activeSuspentions"></div>
-				</div>
-			</div>
-
-			<div class="modalThing" id="importPromptBox">
-				<div class="modalHeader">
-					<h2>Playlist Import Machine</h2>
-					<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
-				</div>
-				<div class="modalContent" data-simplebar>
-					<div id="importSources" class="tabs">
-						<button role="button" class="tab on" id="ytimportchoice">Youtube</button><button role="button" class="tab" id="scimportchoice">Soundcloud</button><button role="button" class="tab" id="dtimportchoice">Dubtrack</button>
-					</div>
-					<div id="importContent">
-						<input type="text" placeholder="Search Playlists" id="plMachine"></input>
-						<div id="importResults"></div>
-					</div>
-					<div id="importDubContent">
-						<div>
-							Select an "interactive webpage" .html file from <a target="_blank" href="https://exporter.dubtrack.net">Dubtrack</a>.
-						</div>
-						<input name='myFileDubList' id="dubtrackimportfile" type="file">
-						<div id="importDubResults"></div>
-						<div id="dubimportButton"><button id="importDubGo">Import Selected List</button></div>
-					</div>
-				</div>
-			</div>
-
 		</div>
+
+		<div class="modalThing" id="settingsBox">
+			<div class="modalHeader">
+				<h2>Setthings</h2>
+				<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+			</div>
+			<div class="modalContent" data-simplebar>
+				Set all of the things here on the table.
+				<br /><br />
+				<div class="settingline">
+					<input type="checkbox" id="badoopToggle" name="badoopToggle">
+					<label for="badoopToggle">Badoop sound for @mentions</label>
+				</div>
+				<div class="settingline">
+					<input type="checkbox" id="desktopNotifyMentionsToggle" name="DTNMToggle">
+					<label for="DTNMToggle">Desktop notifications for @mentions</label>
+				</div>
+				<div class="settingline">
+					<input type="checkbox" id="showImagesToggle" name="showImagesToggle">
+					<label for="showImagesToggle">Show images in chat</label><br />
+					<input type="checkbox" id="showAvatarsToggle" name="showAvatarsToggle">
+					<label for="showAvatarsToggle">Show user avatars in chat</label>
+				</div>
+				<div class="settingline">
+					<input type="checkbox" id="mediaDisableToggle" name="mediaDisableToggle">
+					<label for="mediaDisableToggle">Disable Media Playback</label><br />
+				</div>
+				<div class="settingline">
+					<input id="screenControlTogsync" type="radio" name="screenControl" value="sync">
+					<label for="screenControlTogsync">Screen Sync</label><br>
+					<input id="screenControlTogon" type="radio" name="screenControl" value="on">
+					<label for="screenControlTogon">Screen Always</label><br>
+					<input id="screenControlTogoff" type="radio" name="screenControl" value="off">
+					<label for="screenControlTogoff">Screen Disabled</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="modalThing" id="cardsBox">
+			<div class="modalHeader">
+				<h2>Your Card Case</h2>
+				<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+			</div>
+			<div class="modalContent" data-simplebar>
+				<div id="cardsMain">loading your cards...</div>
+			</div>
+		</div>
+
+		<div class="modalThing" id="accountSettingsBox">
+			<div class="modalHeader">
+				<h2>Your Account</h2>
+				<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+			</div>
+			<div class="modalContent" data-simplebar>
+				<div id="accountSettingsMain"></div>
+				Change your username to some other thing...<br /><br />
+				<input type="text" placeholder="Change Username" id="changeUsername"></input>
+				<div class="responseBox" id="usernameResponse"></div>
+			</div>
+		</div>
+
+		<div class="modalThing" id="supercopBox">
+			<div class="modalHeader">
+				<h2>Supermod Control Panel</h2>
+				<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+			</div>
+			<div class="modalContent" data-simplebar>
+				Suspend a user's account, or manage active suspentions.<br /><br />
+				<input type="text" placeholder="Enter Username to Suspend User's Account" id="supercopSearch"></input>
+				<div class="responseBox" id="supercopResponse"></div>
+				<h3>Active Suspentions</h3>
+				<div id="activeSuspentions"></div>
+			</div>
+		</div>
+
+		<div class="modalThing" id="importPromptBox">
+			<div class="modalHeader">
+				<h2>Playlist Import Machine</h2>
+				<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+			</div>
+			<div class="modalContent" data-simplebar>
+				<div id="importSources" class="tabs">
+					<button role="button" class="tab on" id="ytimportchoice">Youtube</button><button role="button" class="tab" id="scimportchoice">Soundcloud</button><button role="button" class="tab" id="dtimportchoice">Dubtrack</button>
+				</div>
+				<div id="importContent">
+					<input type="text" placeholder="Search Playlists" id="plMachine"></input>
+					<div id="importResults"></div>
+				</div>
+				<div id="importDubContent">
+					<div>
+						Select an "interactive webpage" .html file from <a target="_blank" href="https://exporter.dubtrack.net">Dubtrack</a>.
+					</div>
+					<input name='myFileDubList' id="dubtrackimportfile" type="file">
+					<div id="importDubResults"></div>
+					<div id="dubimportButton"><button id="importDubGo">Import Selected List</button></div>
+				</div>
+			</div>
+		</div>
+
 	</div>
 
 	<div id="stealContain">
