@@ -49,7 +49,7 @@ var firetable = {
 var chatScroll = new SimpleBar(document.getElementById('chatsWrap'));
 chatScroll.getScrollElement(); //.addEventListener('scroll', function(){ console.log(chatScroll); });
 
-firetable.version = "01.08.0";
+firetable.version = "01.08.1";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -1057,13 +1057,13 @@ firetable.emojis = {
     firetable.debug && console.log('emoji sec:', sec);
     var selectedSec = $("#pickerNav > .on");
     var thething = sec.substr(1);
-
+    console.log(thething);
     if (selectedSec.length) {
       firetable.debug && console.log("already selected sec");
       if (selectedSec[0].id == sec) {
         firetable.debug && console.log("toggle selected... back to FULL LIST");
         $("#" + selectedSec[0].id).removeClass("on");
-        $("#pickerResults div").show();
+        $("#pickerContents div").show();
       } else {
         //new sec selected
         $("#" + selectedSec[0].id).removeClass("on");
@@ -1074,7 +1074,7 @@ firetable.emojis = {
     } else {
       firetable.debug && console.log("first select");
       $("#" + sec).addClass("on");
-      $("#pickerResults div").hide();
+      $("#pickerContents div").hide();
       $("#" + thething).show();
     }
   },
@@ -2559,12 +2559,8 @@ firetable.ui = {
               alert(error);
               $("#usernameResponse").text(error);
             } else {
-              ftapi.users[ftapi.uid].username = newDjName;
               $("#usernameResponse").text("Great job! Your name is now " + newDjName);
               $("#loggedInName").text(newDjName);
-              $(".djname").filter(function(){
-                return $(this).text() == oldDjName;
-              }).text(newDjName).parent().prev(".avtr").css("background-image","url('https://indiediscotheque.com/robots/" + ftapi.uid + newDjName + ".png?size=175x175')")
             }
           });
         }

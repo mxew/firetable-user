@@ -1342,7 +1342,7 @@ a.importLinkCheck {
   background-color: #282828;
 }
 #pickerResults {
-  overflow-y: scroll;
+  overflow-y: auto;
   height: 33vh;
   overflow-x: hidden;
   text-align:center;
