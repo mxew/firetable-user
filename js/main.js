@@ -831,7 +831,7 @@ firetable.actions = {
     $('#mainqueue .pvbar.editing').removeClass('editing');
     $('.tagPromptBox').remove();
     $pvbar.addClass('editing');
-    var $tags = $tagEditorTemplate.clone().insertAfter($pvbar);
+    var $tags = $tagEditorTemplate.clone().appendTo($pvbar);
     $tags.find(".tagMachine").val(song.name);
     if (song.type == 1) {
       $tags.find(".tagSongLink").attr("href", "https://youtube.com/watch?v=" + song.cid);
@@ -2123,7 +2123,7 @@ firetable.ui = {
 
           }
           $newli.find('.edittags').on('click', function() {
-            firetable.actions.editTagsPrompt($(this).parent().attr('data-key'))
+            firetable.actions.editTagsPrompt($(this).closest('.pvbar').attr('data-key'))
           });
           $newli.find('.deletesong').on('click', function() {
             firetable.actions.deleteSong($(this).parent().attr('data-key'))
