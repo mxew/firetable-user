@@ -2305,7 +2305,7 @@ firetable.ui = {
       $("#plMachine").val("");
     });
     $(document).on("click", ".closeeditor", function() {
-      $(this).parent().removeClass('editing').next('.tagPromptBox').remove();
+      $(this).closest('.pvbar').removeClass('editing').find('.tagPromptBox').remove();
       firetable.songToEdit = null;
     });
     $("#cardCaseButton").bind("click", function() {
