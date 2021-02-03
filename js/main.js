@@ -27,7 +27,7 @@ var firetable = {
   scLoaded: null,
   listShowing: null,
   parser: null,
-  songTagToEdit: null,
+  songToEdit: null,
   scwidget: null,
   searchSelectsChoice: 1,
   importSelectsChoice: 1,
@@ -49,7 +49,7 @@ var firetable = {
 var chatScroll = new SimpleBar(document.getElementById('chatsWrap'));
 chatScroll.getScrollElement(); //.addEventListener('scroll', function(){ console.log(chatScroll); });
 
-firetable.version = "01.08.0";
+firetable.version = "01.08.1";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -226,6 +226,7 @@ Your host, Chris Rohn (@Chris)
   });
 
   $playlistItemTemplate = $('#mainqueue .pvbar').remove();
+  $tagEditorTemplate = $('.tagPromptBox').remove();
 
   ftapi.init(firebaseConfig);
 
@@ -826,17 +827,22 @@ firetable.actions = {
   },
   editTagsPrompt: function(songid) {
     var song = firetable.queue[songid];
-    $("#tagMachine").val(song.name);
+    var $pvbar = $('#mainqueue .pvbar[data-key="' + songid + '"]');
+    $('#mainqueue .pvbar.editing').removeClass('editing');
+    $('.tagPromptBox').remove();
+    $pvbar.addClass('editing');
+    var $tags = $tagEditorTemplate.clone().insertAfter($pvbar);
+    $tags.find(".tagMachine").val(song.name);
     if (song.type == 1) {
-      $("#tagSongLink").attr("href", "https://youtube.com/watch?v=" + song.cid);
+      $tags.find(".tagSongLink").attr("href", "https://youtube.com/watch?v=" + song.cid);
     } else if (song.type == 2) {
       SC.get('/tracks', {
         ids: song.cid
       }).then(function(tracks) {
         if (tracks.length) {
-          $("#tagSongLink").attr("href", tracks[0].permalink_url);
+          $tags.find(".tagSongLink").attr("href", tracks[0].permalink_url);
         } else {
-          $("#tagSongLink").attr("href", "http://howtojointheindiediscothequewaitlist.com/ThisSongIsBroken?thanks=true");
+          $tags.find(".tagSongLink").attr("href", "http://howtojointheindiediscothequewaitlist.com/ThisSongIsBroken?thanks=true");
         }
       });
     }
@@ -846,13 +852,10 @@ firetable.actions = {
       song: song,
       key: songid
     };
-    $("#overlay").css("display", "flex");
-    $(".modalThing").hide();
-    $('#tagPromptBox').show();
   },
   importList(id, name, type) {
     //time to IMPORT SOME LISTS!
-    $("#overlay").hide();
+    $("#overlay").removeClass('show');
     $("#importResults").html("");
     $("#plMachine").val("");
     if (type == 1) {
@@ -1054,13 +1057,13 @@ firetable.emojis = {
     firetable.debug && console.log('emoji sec:', sec);
     var selectedSec = $("#pickerNav > .on");
     var thething = sec.substr(1);
-
+    console.log(thething);
     if (selectedSec.length) {
       firetable.debug && console.log("already selected sec");
       if (selectedSec[0].id == sec) {
         firetable.debug && console.log("toggle selected... back to FULL LIST");
         $("#" + selectedSec[0].id).removeClass("on");
-        $("#pickerResults div").show();
+        $("#pickerContents div").show();
       } else {
         //new sec selected
         $("#" + selectedSec[0].id).removeClass("on");
@@ -1071,7 +1074,7 @@ firetable.emojis = {
     } else {
       firetable.debug && console.log("first select");
       $("#" + sec).addClass("on");
-      $("#pickerResults div").hide();
+      $("#pickerContents div").hide();
       $("#" + thething).show();
     }
   },
@@ -2291,18 +2294,19 @@ firetable.ui = {
     });
     $(".openModal").bind("click", function() {
       var modalContentID = $(this).attr('data-modal');
-      $(".modalThing").hide();
-      $("#overlay").css("display", "flex");
-      $("#" + modalContentID).show();
+      $(".modalThing").removeClass('show');
+      $("#overlay").addClass('show');
+      $("#" + modalContentID).addClass('show');
     });
     $(".closeModal").bind("click", function() {
-      $("#overlay").hide();
-      $("#tagMachine").val("");
-      $("#tagSongLink").attr("href", "https://youtube.com");
-      firetable.songTagToEdit = null;
+      $("#overlay").removeClass('show');
       $("#deletepicker").html("");
       firetable.actions.cardCase();
       $("#plMachine").val("");
+    });
+    $(document).on("click", ".closeeditor", function() {
+      $(this).parent().removeClass('editing').next('.tagPromptBox').remove();
+      firetable.songToEdit = null;
     });
     $("#cardCaseButton").bind("click", function() {
       firetable.actions.cardCase();
@@ -2470,12 +2474,12 @@ firetable.ui = {
       }
       ftapi.actions.deleteList(val);
       $("#pdopt" + val).remove();
-      $("#overlay").hide();
+      $("#overlay").removeClass('show');
     });
     $("#plimportLauncher").bind("click", function() {
-      $("#overlay").css("display", "flex");
-      $(".modalThing").hide();
-      $('#importPromptBox').show();
+      $("#overlay").addClass('show');
+      $(".modalThing").removeClass('show');
+      $('#importPromptBox').addClass('show');
     });
     $("#pldeleteLauncher").bind("click", function() {
       ftapi.lookup.allLists(function(allPlaylists) {
@@ -2485,9 +2489,9 @@ firetable.ui = {
             $("#deletepicker").append("<option value=\"" + key + "\">" + allPlaylists[key].name + "</option>");
           }
         }
-        $("#overlay").css("display", "flex");
-        $(".modalThing").hide();
-        $('#deletePromptBox').show();
+        $("#overlay").addClass('show');
+        $(".modalThing").removeClass('show');
+        $('#deletePromptBox').addClass('show');
       });
     });
     $("#pickerSearch").on("change paste keyup", function() {
@@ -2529,33 +2533,34 @@ firetable.ui = {
       firetable.debug && console.log("dt import");
       firetable.importSelectsChoice = 3;
     });
-    $("#tagMachine").bind("keyup", function(e) {
+    $(document).on("keyup", ".tagMachine", function(e) {
       if (e.which == 13) {
+        var songKey = $(this).closest('.tagPromptBox').prev('.pvbar').attr('data-key');
         if (firetable.songToEdit) {
-          var val = $("#tagMachine").val();
+          var val = $(this).val();
           if (val != "") {
             var obj = firetable.songToEdit;
             ftapi.actions.editTrackTag(obj.key, obj.song.cid, val);
             firetable.songToEdit = null;
-            $("#tagMachine").val("");
-            $("#tagSongLink").attr("href", "https://youtube.com");
-            $("#overlay").hide();
+            $(this).closest('.editing').removeClass('editing').next('.tagPromptBox').remove();
           }
         }
       }
     });
     $("#changeUsername").bind("keyup", function(e) {
       if (e.which == 13) {
-        var val = $("#changeUsername").val();
+        var oldDjName = ftapi.users[ftapi.uid].username;
+        var newDjName = $("#changeUsername").val();
         $("#usernameResponse").html("");
-        if (val != "") {
+        if (newDjName != "") {
           // try to change name
-          ftapi.actions.changeName(val, function(error) {
+          ftapi.actions.changeName(newDjName, function(error) {
             if (error) {
               alert(error);
               $("#usernameResponse").text(error);
             } else {
-              $("#usernameResponse").text("Great job! Your name is now " + val);
+              $("#usernameResponse").text("Great job! Your name is now " + newDjName);
+              $("#loggedInName").text(newDjName);
             }
           });
         }

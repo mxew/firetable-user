@@ -334,6 +334,11 @@ code {
   font-size: 1.43rem;
 }
 
+.scrollWrap {
+  height: 100%;
+  overflow: auto;
+}
+
 .working .material-icons {
   animation: spin 3s infinite linear;
 }
@@ -969,6 +974,12 @@ div#filterMachine {
   cursor: -moz-grab;
   cursor: -webkit-grab;
 }
+#queuelist .pvbar.editing .edittags {
+  display: none;
+}
+#queuelist .pvbar.editing .closeeditor {
+  display: block;
+}
 #queuelist .listwords {
   flex: 1;
   margin-left: var(--pad2);
@@ -1088,6 +1099,29 @@ a.importLinkCheck {
 .imtxt {
   flex: 1;
   padding-right: var(--pad2);
+}
+.tagPromptBox {
+  padding: var(--pad3);
+  font-size: .875rem;
+}
+.tagPromptBox .closebutt {
+  float: right;
+}
+.closeeditor {
+  display: none;
+}
+.tagsNlink {
+  display: flex;
+}
+.tagsNlink input.tagMachine {
+  flex: 1;
+  margin: 0;
+}
+.tagSongLink {
+  padding: var(--pad1) var(--pad1) var(--pad1) var(--pad2);
+}
+#mainqueue .material-icons.tracklink {
+  font-size: 1.5rem;
 }
 
 
@@ -1308,7 +1342,7 @@ a.importLinkCheck {
   background-color: #282828;
 }
 #pickerResults {
-  overflow-y: scroll;
+  overflow-y: auto;
   height: 33vh;
   overflow-x: hidden;
   text-align:center;
@@ -1449,53 +1483,78 @@ img.emoji {
 /* Modals */
 
 #overlay {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.85);
-}
-#modal {
-  background-color: #222;
-  max-width: 90vw;
-  min-width: 300px;
-  border-radius: 0.5rem;
   overflow: hidden;
+}
+#overlay.show {
+  display: flex;
 }
 .modalThing {
-  display: flex;
+  display: none;
   flex-direction: column;
+  max-width: 80vw;
   max-height: 80vh;
+  background-color: #111;
   overflow: hidden;
+}
+.modalThing.show {
+  display: flex;
 }
 .modalHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--pad2) var(--pad3);
+  padding: var(--pad4);
   color: #eee;
-  background-color: #333;
+  background-color: #222;
+}
+.closeModal {
+  margin-left: var(--pad3);
 }
 .modalContent {
   flex: 1;
-  padding: var(--pad2) var(--pad3);
+  display: flex;
+  padding: var(--pad4);
+  overflow: auto;
+}
+
+#settingsBox .modalContent {
+  min-width: 320px;
+}
+#cardsBox .modalContent {
+  width: 80vw;
+  height: 80vh;
+}
+#importPromptBox .modalContent {
+  width: 480px;
 }
 
 .settingline {
   margin-bottom: var(--pad2);
-  white-space: nowrap;
 }
 
+#cardsMain {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(225px, 1fr) ) ;
+}
 .caseCard {
   margin: var(--pad2);
 }
 .caseCardSpot {
     position: relative;
+}
+.caseCardSpot canvas {
+    border: 1px solid #333;
 }
 span.cardShareChat {
     position: absolute;
@@ -1531,12 +1590,7 @@ span.cardShareChat:hover {
   display:none;
 }
 
-#rsnCredit {
-  margin-top: var(--pad1);
-  font-size: 10px;
-  color: #999;
-}
-input#tagMachine, #supercopSearch, #changeUsername {
+input.tagMachine, #supercopSearch, #changeUsername {
   width: 100%;
   padding: 5px;
   margin-bottom: 15px;
@@ -1591,6 +1645,7 @@ input#plMachineById {
 #shuffleQueue {
   margin-left:1em;
 }
+
 
 
 /* Unauthenticated state */
