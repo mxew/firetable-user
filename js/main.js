@@ -46,6 +46,8 @@ var firetable = {
   debug: false
 }
 
+if (typeof ftconfigs == "undefined") throw "config.js is missing! Copy config.js.example and rename to config.js. Edit this file and add your own app's information.";
+
 var chatScroll = new SimpleBar(document.getElementById('chatsWrap'));
 chatScroll.getScrollElement(); //.addEventListener('scroll', function(){ console.log(chatScroll); });
 
@@ -174,11 +176,11 @@ Your host, Chris Rohn (@Chris)
 
 `);
   firetable.started = true;
-  var firebaseConfig = {
-    apiKey: "AIzaSyB1I9rU2_3Bsf81BmPA-eVZX8qm3LLuFaA",
-    authDomain: "firetable-e10fd.firebaseapp.com",
-    databaseURL: "https://firetable-e10fd.firebaseio.com"
-  };
+
+  $("#idtitle").text(ftconfigs.roomName);
+  document.title = ftconfigs.roomName + " | firetable";
+  if (ftconfigs.roomInfoUrl.length) $("#roomInfo").attr("href", ftconfigs.roomInfoUrl);
+
   firetable.utilities.getEmojiMap();
   firetable.parser = new DOMParser();
   $(window).resize(firetable.utilities.debounce(function() {
@@ -228,10 +230,10 @@ Your host, Chris Rohn (@Chris)
   $playlistItemTemplate = $('#mainqueue .pvbar').remove();
   $tagEditorTemplate = $('.tagPromptBox').remove();
 
-  ftapi.init(firebaseConfig);
+  ftapi.init(ftconfigs.firebase);
 
   SC.initialize({
-    client_id: "27028829630d95b0f9d362951de3ba2c"
+    client_id: ftconfigs.soundcloudKey
   });
 
   ftapi.events.on("loggedIn", function(data) {
@@ -426,6 +428,7 @@ firetable.actions = {
       }
     }
 
+    if (data.image == "img/idlogo.png" && ftconfigs.defaultAlbumArtUrl.length) data.image = ftconfigs.defaultAlbumArtUrl;
     var canvas = document.getElementById('cardMaker' + chatid);
 
     if (canvas.getContext) {
@@ -464,7 +467,7 @@ firetable.actions = {
 
       ctx.font = "400 8px Helvetica, Arial, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("Printed " + firetable.utilities.format_date(data.date) + " | Indie Discotheque", 112.5, 299);
+      ctx.fillText("Printed " + firetable.utilities.format_date(data.date) + " | " + ftconfigs.roomNameShort, 112.5, 299);
 
       ctx.font = "700 10px Helvetica, Arial, sans-serif";
       ctx.textAlign = "left";
@@ -754,7 +757,7 @@ firetable.actions = {
       var therealid = getQueryStringValue(link, "v");
       if (therealid) {
         function keyWordsearch() {
-          gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
+          gapi.client.setApiKey(ftconfigs.youtubeKey);
           gapi.client.load('youtube', 'v3', function() {
             makeRequest();
           });
@@ -863,7 +866,7 @@ firetable.actions = {
       var finalList = [];
 
       function keyWordsearch(pg) {
-        gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
+        gapi.client.setApiKey(ftconfigs.youtubeKey);
         gapi.client.load('youtube', 'v3', function() {
           makeRequest(pg);
         });
@@ -1537,6 +1540,7 @@ firetable.ui = {
     }
     var $historyItem = $('#thehistory .pvbar').remove();
     ftapi.events.on('newHistory', function(data) {
+      if (data.img == "img/idlogo.png" && ftconfigs.defaultAlbumArtUrl.length) data.img = ftconfigs.defaultAlbumArtUrl;
       var firstpart = "yt";
       if (data.type == 2) firstpart == "sc";
       var pkey = firstpart + "cid" + data.cid;
@@ -1638,6 +1642,7 @@ firetable.ui = {
         clearInterval(firetable.moveBar);
         firetable.moveBar = null;
       }
+      if (data.image == "img/idlogo.png" && ftconfigs.defaultAlbumArtUrl.length) data.image = ftconfigs.defaultAlbumArtUrl;
       $("#prgbar").css("background", "#151515");
       var showPlaycount = false;
       if (firetable.tagUpdate) {
@@ -2624,7 +2629,7 @@ firetable.ui = {
 
             if (directLink) {
               function keyWordsearch() {
-                gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
+                gapi.client.setApiKey(ftconfigs.youtubeKey);
                 gapi.client.load('youtube', 'v3', function() {
                   makeRequest();
                 });
@@ -2653,7 +2658,7 @@ firetable.ui = {
             } else {
               //youtube
               function keyWordsearch() {
-                gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
+                gapi.client.setApiKey(ftconfigs.youtubeKey);
                 gapi.client.load('youtube', 'v3', function() {
                   makeRequest();
                 });
@@ -2794,7 +2799,7 @@ firetable.ui = {
             firetable.debug && console.log("direct yt link found");
 
             function keyWordsearch() {
-              gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
+              gapi.client.setApiKey(ftconfigs.youtubeKey);
               gapi.client.load('youtube', 'v3', function() {
                 makeRequest();
               });
@@ -2814,7 +2819,7 @@ firetable.ui = {
             keyWordsearch();
           } else {
             function keyWordsearch() {
-              gapi.client.setApiKey('AIzaSyBnfoJ0RhHhL5KqxZFT295mZ3o1sVnUZHM');
+              gapi.client.setApiKey(ftconfigs.youtubeKey);
               gapi.client.load('youtube', 'v3', function() {
                 makeRequest();
               });
@@ -3129,7 +3134,7 @@ let imgSrc = '';
 
 function setup(useThis) {
   if (!useThis) useThis = firetable.scImg;
-  //background(0);
+  background(0);
   let cnv = createCanvas($('#djStage').outerWidth(), $('#djStage').outerHeight());
   cnv.parent('scScreen');
   loadImage(useThis, function(img) {
@@ -3143,7 +3148,7 @@ function setup(useThis) {
 
 function draw() {
   clear();
-  //background(0);
+  background(0);
 
   if (isLoaded) {
     glitch.show();
