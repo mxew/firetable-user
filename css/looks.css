@@ -1446,6 +1446,8 @@ img.emoji {
   grid-area: login;
   padding: var(--pad5);
   background: #151515;
+  overflow: auto;
+  height: 100%;
 }
 #login h4 {
   font-size: 1.25rem;

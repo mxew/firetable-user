@@ -51,7 +51,7 @@ if (typeof ftconfigs == "undefined") throw "config.js is missing! Copy config.js
 var chatScroll = new SimpleBar(document.getElementById('chatsWrap'));
 chatScroll.getScrollElement(); //.addEventListener('scroll', function(){ console.log(chatScroll); });
 
-firetable.version = "01.08.2";
+firetable.version = "01.08.3";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -309,7 +309,8 @@ firetable.actions = {
     $('#mainGrid').removeClass().addClass('login');
     $("#grab").css("display", "none");
     if (firetable.loginForm && !$("#login").html()) {
-      $("#mainGrid").append("<div id=\"login\" class=\"scrollit\">" + firetable.loginForm + "</div>");
+      $("#mainGrid").append("<div id=\"login\" data-simplebar>" + firetable.loginForm + "</div>");
+
       firetable.ui.loginEventsInit();
       // simplebar scroll
     }
