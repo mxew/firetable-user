@@ -339,6 +339,10 @@ code {
   overflow: auto;
 }
 
+.pvbarWrap {
+  display: flex;
+}
+
 .working .material-icons {
   animation: spin 3s infinite linear;
 }
@@ -963,8 +967,6 @@ div#filterMachine {
   font-size: 1.2rem;
 }
 #queuelist .pvbar {
-  display: flex;
-  align-items: center;
   padding: var(--pad2) var(--pad2);
   background-color: #222;
   border-bottom: 1px solid black;
@@ -973,6 +975,9 @@ div#filterMachine {
   cursor: grab;
   cursor: -moz-grab;
   cursor: -webkit-grab;
+}
+#queuelist .pvbarWrap {
+  align-items: center;
 }
 #queuelist .pvbar.editing .edittags {
   display: none;
@@ -1101,7 +1106,7 @@ a.importLinkCheck {
   padding-right: var(--pad2);
 }
 .tagPromptBox {
-  padding: var(--pad3);
+  padding: var(--pad3) 0 var(--pad1) var(--pad2);
   font-size: .875rem;
 }
 .tagPromptBox .closebutt {
@@ -1407,7 +1412,6 @@ img.emoji {
   overflow: auto;
 }
 #thehistory .pvbar {
-  display: flex;
   padding: var(--pad2) var(--pad2) var(--pad2) var(--pad2);
   border-bottom: 1px solid black;
 }

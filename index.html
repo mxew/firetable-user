@@ -271,18 +271,19 @@
 			<div id="queuelist" data-simplebar>
 				<div id="mainqueuestuff">
 					<div id="mainqueue" class="innr">
-						<div class="pvbar" id="pvbarKEY">
-							<!-- template for playlist items -->
-							<i role="button" id="pvKEY" class="material-icons previewicon"></i>
-							<span class="track-warning"></span>
-							<div class="listwords"></div>
-							<i role="button" class="material-icons bumpsongs" title="Send to top">vertical_align_top</i>
-							<i role="button" class="material-icons bottomsongs" title="Send to bottom">vertical_align_bottom</i>
-							<i role="button" class="material-icons edittags" title="Edit tags">edit</i>
-							<i role="button" class="material-icons closeeditor" title="Close tags editor">close</i>
-							<i role="button" class="material-icons deletesong" title="Delete track">delete</i>
+						<div class="pvbar" id="pvbarKEY"><!-- template for playlist items -->
+							<div class="pvbarWrap">
+								<i role="button" id="pvKEY" class="material-icons previewicon"></i>
+								<span class="track-warning"></span>
+								<div class="listwords"></div>
+								<i role="button" class="material-icons bumpsongs" title="Send to top">vertical_align_top</i>
+								<i role="button" class="material-icons bottomsongs" title="Send to bottom">vertical_align_bottom</i>
+								<i role="button" class="material-icons edittags" title="Edit tags">edit</i>
+								<i role="button" class="material-icons closeeditor" title="Close tags editor">close</i>
+								<i role="button" class="material-icons deletesong" title="Delete track">delete</i>
+							</div>
 						</div>
-						<div class="tagPromptBox">
+						<div class="tagPromptBox"><!-- template for tag editor -->
 							<div class="tagsNlink">
 								<input type="text" placeholder="Artist - Song Title" class="tagMachine"></input>
 								<a target="_blank" href="https://youtube.com" class="tagSongLink"><i role="button" class="material-icons tracklink" title="Track link">link</i></a>
@@ -309,11 +310,12 @@
 						<span class="tab on" id="ytsearchSelect">Youtube</span><span id="scsearchSelect" class="tab">Soundcloud</span>
 					</div>
 					<div id="searchResults" data-simplebar>
-						<div class="pvbar" id="pvbarKEY">
-							<!-- template for search result items -->
-							<i role="button" id="pvKEY" class="material-icons previewicon">&#xE037;</i>
-							<div class="listwords"></div>
-							<i role="button" id="pvKEY" class="material-icons queuetrack">&#xE03B;</i>
+						<div class="pvbar" id="pvbarKEY"><!-- template for search result items -->
+							<div class="pvbarWrap">
+								<i role="button" id="pvKEY" class="material-icons previewicon">&#xE037;</i>
+								<div class="listwords"></div>
+								<i role="button" id="pvKEY" class="material-icons queuetrack">&#xE03B;</i>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -323,14 +325,16 @@
 		<div id="thehistoryWrap" data-simplebar>
 			<div id="thehistory">
 				<div class="pvbar" id="pvbar0">
-					<div class="histart">
-						<i role="button" id="pv0" class="material-icons previewicon">&#xE037;</i>
+					<div class="pvbarWrap">
+						<div class="histart">
+							<i role="button" id="pv0" class="material-icons previewicon">&#xE037;</i>
+						</div>
+						<div class="qtxt">
+							<div class="listwords"><a target="_blank" href="" class="histlink"></a></div>
+							<div class="histmoreinfo">played by <span class="histdj"></span> on <span class="histdate"></span> at <span class="histtime"></span></div>
+						</div>
+						<div role="button" class="histeal"><i id="apvX0" class="material-icons">&#xE03B;</i></div>
 					</div>
-					<div class="qtxt">
-						<div class="listwords"><a target="_blank" href="" class="histlink"></a></div>
-						<div class="histmoreinfo">played by <span class="histdj"></span> on <span class="histdate"></span> at <span class="histtime"></span></div>
-					</div>
-					<div role="button" class="histeal"><i id="apvX0" class="material-icons">&#xE03B;</i></div>
 				</div>
 			</div>
 		</div>

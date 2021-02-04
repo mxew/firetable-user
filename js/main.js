@@ -831,7 +831,7 @@ firetable.actions = {
     $('#mainqueue .pvbar.editing').removeClass('editing');
     $('.tagPromptBox').remove();
     $pvbar.addClass('editing');
-    var $tags = $tagEditorTemplate.clone().insertAfter($pvbar);
+    var $tags = $tagEditorTemplate.clone().appendTo($pvbar);
     $tags.find(".tagMachine").val(song.name);
     if (song.type == 1) {
       $tags.find(".tagSongLink").attr("href", "https://youtube.com/watch?v=" + song.cid);
@@ -2095,15 +2095,15 @@ firetable.ui = {
           $newli.attr("data-key", key);
           $newli.attr("data-type", thisone.type);
           $newli.find('.previewicon').attr('id', "pv" + key).on('click', function() {
-            firetable.actions.pview($(this).parent().attr('data-key'), false, $(this).parent().attr('data-type'));
+            firetable.actions.pview($(this).closest('.pvbar').attr('data-key'), false, $(this).closest('.pvbar').attr('data-type'));
           }).html(psign);
           $newli.find('.listwords').html(thisone.name);
           $newli.find('.bumpsongs').on('click', function() {
-            firetable.actions.bumpSongInQueue($(this).parent().attr('data-key'))
+            firetable.actions.bumpSongInQueue($(this).closest('.pvbar').attr('data-key'))
           });
           $newli.find('.bottomsongs').on('click', function() {
-            var oldID = $(this).parent().attr('data-key');
-            ftapi.actions.moveTrackToBottom($(this).parent().attr('data-key'), function(newID) {
+            var oldID = $(this).closest('.pvbar').attr('data-key');
+            ftapi.actions.moveTrackToBottom($(this).closest('.pvbar').attr('data-key'), function(newID) {
               if (firetable.preview) {
                 // visually update preview in the new location if applicable
                 if (firetable.preview == oldID) {
@@ -2117,16 +2117,16 @@ firetable.ui = {
             $newli.find('.track-warning').html("<span class=\"material-icons\"> warning </span>");
             $newli.find('.track-warning').prop('title', 'Flagged as broken on ' + firetable.utilities.format_date(thisone.flagged.date) + '. Click to remove flag.');
             $newli.find('.track-warning').on('click', function() {
-              ftapi.actions.unflagTrack($(this).parent().attr('data-key'));
+              ftapi.actions.unflagTrack($(this).closest('.pvbar').attr('data-key'));
               $(this).html("");
             });
 
           }
           $newli.find('.edittags').on('click', function() {
-            firetable.actions.editTagsPrompt($(this).parent().attr('data-key'))
+            firetable.actions.editTagsPrompt($(this).closest('.pvbar').attr('data-key'))
           });
           $newli.find('.deletesong').on('click', function() {
-            firetable.actions.deleteSong($(this).parent().attr('data-key'))
+            firetable.actions.deleteSong($(this).closest('.pvbar').attr('data-key'))
           });
           $('#mainqueue').append($newli);
         }
@@ -2305,7 +2305,7 @@ firetable.ui = {
       $("#plMachine").val("");
     });
     $(document).on("click", ".closeeditor", function() {
-      $(this).parent().removeClass('editing').next('.tagPromptBox').remove();
+      $(this).closest('.pvbar').removeClass('editing').find('.tagPromptBox').remove();
       firetable.songToEdit = null;
     });
     $("#cardCaseButton").bind("click", function() {
@@ -2767,13 +2767,13 @@ firetable.ui = {
               $srli.attr("data-key", pkey);
               $srli.attr("data-cid", thecid);
               $srli.find('.previewicon').attr('id', "pv" + pkey).on('click', function() {
-                firetable.actions.pview($(this).parent().attr('data-key'), true, 1);
+                firetable.actions.pview($(this).closest('.pvbar').attr('data-key'), true, 1);
               });
               $srli.find('.listwords').html(vidTitle);
               $srli.find('.queuetrack').on('click', function() {
                 firetable.actions.queueTrack(
-                  $(this).parent().attr('data-cid'),
-                  firetable.utilities.htmlEscape($(this).parent().find('.listwords').text()),
+                  $(this).closest('.pvbar').attr('data-cid'),
+                  firetable.utilities.htmlEscape($(this).closest('.pvbar').find('.listwords').text()),
                   1
                 );
               });
@@ -2893,7 +2893,7 @@ firetable.ui = {
               $srli.attr("data-cid", item.id);
               $srli.find('.previewicon').attr('id', "pv" + pkey).on('click', function() {
                 firetable.actions.pview(
-                  $(this).parent().attr('data-key'),
+                  $(this).closest('.pvbar').attr('data-key'),
                   true,
                   2
                 );
@@ -2901,8 +2901,8 @@ firetable.ui = {
               $srli.find('.listwords').html(vidTitle);
               $srli.find('.queuetrack').on('click', function() {
                 firetable.actions.queueTrack(
-                  $(this).parent().attr('data-cid'),
-                  firetable.utilities.htmlEscape($(this).parent().find('.listwords').text()),
+                  $(this).closest('.pvbar').attr('data-cid'),
+                  firetable.utilities.htmlEscape($(this).closest('.pvbar').find('.listwords').text()),
                   2
                 );
               });
