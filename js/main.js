@@ -51,7 +51,7 @@ if (typeof ftconfigs == "undefined") throw "config.js is missing! Copy config.js
 var chatScroll = new SimpleBar(document.getElementById('chatsWrap'));
 chatScroll.getScrollElement(); //.addEventListener('scroll', function(){ console.log(chatScroll); });
 
-firetable.version = "01.08.1";
+firetable.version = "01.08.2";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
