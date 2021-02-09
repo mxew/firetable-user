@@ -51,7 +51,7 @@ if (typeof ftconfigs == "undefined") throw "config.js is missing! Copy config.js
 var chatScroll = new SimpleBar(document.getElementById('chatsWrap'));
 chatScroll.getScrollElement(); //.addEventListener('scroll', function(){ console.log(chatScroll); });
 
-firetable.version = "01.08.4";
+firetable.version = "01.08.6";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -162,8 +162,6 @@ function onPlayerStateChange(event) {
 
 firetable.init = function() {
   console.log(`
-Welcome to
-
  (                           )             )   (
  )\\ )   (    (       (    ( /(      )   ( /(   )\\     (
 (()/(   )\\   )(     ))\\   )\\())  ( /(   )\\()) (_))   ))\\
@@ -171,16 +169,13 @@ Welcome to
 (_) _|  (_)  ((_) (_))   | |_   ((_)_  | |(_) | |  (_))
  |  _|  | | | '_| / -_)  |  _|  / _' | | '_ \\ | |  / -_)
  |_|    |_| |_|   \\___|   \\__|  \\__,_| |_.__/ |_|  \\___|
-
-Your host, Chris Rohn (@Chris)
-
 `);
   firetable.started = true;
 
   $("#idtitle").text(ftconfigs.roomName);
   document.title = ftconfigs.roomName + " | firetable";
   if (ftconfigs.roomInfoUrl.length) $("#roomInfo").attr("href", ftconfigs.roomInfoUrl);
-
+  $("#version").text("You're running firetable v"+firetable.version+".");
   firetable.utilities.getEmojiMap();
   firetable.parser = new DOMParser();
   $(window).resize(firetable.utilities.debounce(function() {
@@ -775,7 +770,17 @@ firetable.actions = {
             if (response.result) {
               if (response.result.items) {
                 if (response.result.items.length) {
-                  firetable.actions.queueTrack(response.result.items[0].id, response.result.items[0].snippet.title, 1);
+                  var goodtitle = response.result.items[0].snippet.title;
+                  var yargo = response.result.items[0].snippet.title.split(" - ");
+                  var sartist = yargo[0];
+                  var stitle = yargo[1];
+                  if (!stitle) {
+                    // yt title not formatted artist - title. use uploader name instead as artist
+                    stitle = sartist;
+                    sartist = response.result.items[0].snippet.channelTitle.replace(" - Topic", "");
+                  }
+                  goodtitle = sartist + " - " + stitle;
+                  firetable.actions.queueTrack(response.result.items[0].id, goodtitle, 1);
                 }
               }
             }
@@ -901,7 +906,9 @@ firetable.actions = {
             var listid = ftapi.actions.createList(name);
             $("#listpicker").append("<option id=\"pdopt" + listid + "\" value=\"" + listid + "\">" + name + "</option>");
             for (var i = 0; i < finalList.length; i++) {
-              ftapi.actions.addToList(1, finalList[i].snippet.title, finalList[i].snippet.resourceId.videoId, listid);
+              var goodTitle = finalList[i].snippet.title;
+              // can't use youtube uploader name to fix tags here because YOUTUBE DECIDED NOT TO INCLUDE THAT INFORMATION >:o
+              ftapi.actions.addToList(1, goodTitle, finalList[i].snippet.resourceId.videoId, listid);
             }
           }
         })
@@ -2766,7 +2773,16 @@ firetable.ui = {
               } else if (item.kind == "youtube#video") {
                 thecid = item.id;
               }
-              vidTitle = item.snippet.title;
+              vidtitle = item.snippet.title;
+              var yargo = item.snippet.title.split(" - ");
+              var sartist = yargo[0];
+              var stitle = yargo[1];
+              if (!stitle) {
+                // yt title not formatted artist - title. use uploader name instead as artist
+                stitle = sartist;
+                sartist = item.snippet.channelTitle.replace(" - Topic", "");
+              }
+              vidTitle = sartist + " - " + stitle;
               var pkey = "ytcid" + thecid;
               var $srli = $searchItemTemplate.clone();
               $srli.attr('id', "pvbar" + pkey);
