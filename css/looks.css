@@ -1763,7 +1763,7 @@ div#blog {
   }
 
   #thehistoryWrap {
-    grid-area: mmopts / users;
+    grid-area: queues;
     display: block;
     position: relative;
     top: auto !important;
