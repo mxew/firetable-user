@@ -1803,12 +1803,12 @@ firetable.ui = {
         var countr = 0;
         for (var key in data) {
           if (data.hasOwnProperty(key)) {
-            ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"avtr\" id=\"avtr" + countr + "\" style=\"background-image: url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><div id=\"djthing" + countr + "\" class=\"djplaque\"><div class=\"djname\">" + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div></div>";
+            ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"avtr\" id=\"avtr" + countr + "\" style=\"background-image: url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><div id=\"djthing" + countr + "\" class=\"djplaque\"><div class=\"djname\"><span>" + data[key].name + "</span><button role=\"button\" class=\"nobutt\" id=\"removeme\" tabindex=\"0\">click here to step down</button></div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div></div>";
             countr++;
           }
         }
         if (countr < 4) {
-          ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\">!addme</div><div class=\"playcount\"></div></div></div>";
+          ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\"><button role=\"button\" class=\"nobutt\" id=\"addme\" tabindex=\"0\">click here to dj</button></div><div class=\"playcount\"></div></div></div>";
           countr++;
           for (var i = countr; i < 4; i++) {
             ok1 += "<div class=\"spot empty\"><div class=\"djplaque\">&nbsp;</div></div>";
@@ -1816,7 +1816,7 @@ firetable.ui = {
         }
 
       } else {
-        ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\">!addme</div><div class=\"playcount\"></div></div></div>";
+        ok1 += "<div class=\"spot empty\"><div class=\"djplaque\"><div class=\"djname\"><button role=\"button\" class=\"nobutt\" id=\"addme\" tabindex=\"0\">click here to dj</button></div><div class=\"playcount\"></div></div></div>";
         for (var i = 0; i < 3; i++) {
           ok1 += "<div class=\"spot empty\"><div class=\"djplaque\">&nbsp;</div></div>";
         }
@@ -2351,6 +2351,14 @@ firetable.ui = {
       ftapi.actions.sendChat(":cloud_with_rain:");
       $("#cloud_with_rain").addClass("on");
       $("#fire").removeClass("on");
+    });
+
+    $(document).on('click', '#addme', function(){
+      ftapi.actions.sendChat("!addme");
+    });
+
+    $(document).on('click', '#removeme', function(){
+      ftapi.actions.sendChat("!removeme");
     });
 
 
