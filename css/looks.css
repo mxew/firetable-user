@@ -1533,15 +1533,12 @@ img.emoji {
   overflow: auto;
 }
 
-#settingsBox .modalContent {
+#settingsBox .modalContent, #accountSettingsBox .modalContent {
   min-width: 320px;
 }
 #cardsBox .modalContent {
   width: 80vw;
   height: 80vh;
-}
-#importPromptBox .modalContent {
-  width: 480px;
 }
 
 .settingline {
@@ -1717,7 +1714,9 @@ div#blog {
   #mainGrid {
     gap: 0 5px;
   }
-
+  #importPromptBox .modalContent {
+    width: 480px;
+  }
   #mainGrid,
   #mainGrid.mmchat {
     grid-template-rows: auto auto auto 1fr;
