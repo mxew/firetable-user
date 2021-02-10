@@ -20,28 +20,22 @@
 }
 @keyframes MoveSideSide {
   5% {
-    transform: rotate(0deg);
-    translateY(0.1rem);
+    transform: rotate(0deg) translateY(0.1rem);
   }
   25% {
-    transform: rotate(-3deg);
-    translateY(0.1rem);
+    transform: rotate(-3deg) translateY(0.1rem);
   }
   45% {
-    transform: rotate(0deg);
-    translateY(0.1rem);
+    transform: rotate(0deg) translateY(0.1rem);
   }
   55% {
-    transform: rotate(0deg);
-    translateY(0.1rem);
+    transform: rotate(0deg) translateY(0.1rem);
   }
   75% {
-    transform: rotate(3deg);
-    translateY(0.1rem);
+    transform: rotate(3deg) translateY(0.1rem);
   }
   95% {
-    transform: rotate(0deg);
-    translateY(0.1rem);
+    transform: rotate(0deg) translateY(0.1rem);
   }
 }
 @keyframes pulse {
