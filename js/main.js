@@ -187,7 +187,6 @@ firetable.init = function() {
       'left': $('#grab').offset().left - 16
     });
     setup();
-    firetable.utilities.scrollToBottom();
   }, 500));
   firetable.utilities.scrollToBottom();
   var widgetIframe = document.getElementById('sc-widget');
@@ -307,7 +306,6 @@ firetable.actions = {
       $("#mainGrid").append("<div id=\"login\" data-simplebar>" + firetable.loginForm + "</div>");
 
       firetable.ui.loginEventsInit();
-      // simplebar scroll
     }
   },
   logIn: function(email, password) {
@@ -327,7 +325,6 @@ firetable.actions = {
     firetable.debug && console.log("user signed in!");
     if ($("#login").html()) {
       firetable.loginForm = $("#login").html();
-      // destroy login simplebar scroll?
       firetable.ui.loginEventsDestroy();
       $("#login").remove();
     }
@@ -566,7 +563,6 @@ firetable.actions = {
         $(q).hide()
       }
     });
-    // simplebar scroll update?
   },
   muteToggle: function(zeroMute) {
 
@@ -1632,7 +1628,6 @@ firetable.ui = {
             $(".npmsg" + data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong></div>");
           }
           if (firetable.utilities.isChatPrettyMuchAtBottom()) firetable.utilities.scrollToBottom();
-          window.dispatchEvent(new Event('resize'));
         }
       }
     });
@@ -1734,7 +1729,6 @@ firetable.ui = {
           } else {
             $("#chats").append("<div class=\"newChat nowplayn npmsg" + data.cid + "\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
           }
-          // simplebar scroll update?
           if (firetable.utilities.isChatPrettyMuchAtBottom()) firetable.utilities.scrollToBottom();
           firetable.lastChatPerson = false;
           firetable.lastChatId = false;
@@ -2143,15 +2137,6 @@ firetable.ui = {
           });
           $('#mainqueue').append($newli);
         }
-      }
-      // if this is a different list, reset scrollerboy
-      if (firetable.listShowing) {
-        if (firetable.listShowing !== listID) {
-          // queuelist simplebar scroll update?
-        }
-      } else {
-        firetable.listShowing = listID;
-        // queuelist simplebar scroll update?
       }
     });
 
