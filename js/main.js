@@ -51,7 +51,7 @@ if (typeof ftconfigs == "undefined") throw "config.js is missing! Copy config.js
 var chatScroll = new SimpleBar(document.getElementById('chatsWrap'));
 chatScroll.getScrollElement(); //.addEventListener('scroll', function(){ console.log(chatScroll); });
 
-firetable.version = "01.08.7";
+firetable.version = "01.08.8";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -1620,6 +1620,7 @@ firetable.ui = {
           } else {
             $("#firstPlay").text("");
           }
+          var doTheScrollThing = firetable.utilities.isChatPrettyMuchAtBottom();
           if (showPlaycount) {
             $("#playCount").text(data.adamData.playcount + " plays");
             $(".npmsg" + data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong><br/>This song has been played " + data.adamData.playcount + " times.</div>");
@@ -1627,7 +1628,7 @@ firetable.ui = {
             $("#playCount").text("");
             $(".npmsg" + data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong></div>");
           }
-          if (firetable.utilities.isChatPrettyMuchAtBottom()) firetable.utilities.scrollToBottom();
+          if (doTheScrollThing) firetable.utilities.scrollToBottom();
         }
       }
     });
@@ -1724,12 +1725,13 @@ firetable.ui = {
         if (firetable.nonpmsg) {
           firetable.nonpmsg = false;
         } else {
+          var doTheScrollThing = firetable.utilities.isChatPrettyMuchAtBottom();
           if (showPlaycount) {
             $("#chats").append("<div class=\"newChat nowplayn npmsg" + data.cid + "\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong><br/>This song has been played " + firetable.tagUpdate.adamData.playcount + " times.</div>")
           } else {
             $("#chats").append("<div class=\"newChat nowplayn npmsg" + data.cid + "\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
           }
-          if (firetable.utilities.isChatPrettyMuchAtBottom()) firetable.utilities.scrollToBottom();
+          if (doTheScrollThing) firetable.utilities.scrollToBottom();
           firetable.lastChatPerson = false;
           firetable.lastChatId = false;
         }
