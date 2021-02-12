@@ -51,7 +51,7 @@ if (typeof ftconfigs == "undefined") throw "config.js is missing! Copy config.js
 var chatScroll = new SimpleBar(document.getElementById('chatsWrap'));
 chatScroll.getScrollElement(); //.addEventListener('scroll', function(){ console.log(chatScroll); });
 
-firetable.version = "01.08.8";
+firetable.version = "01.08.9";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -1791,7 +1791,9 @@ firetable.ui = {
           firetable.debug && console.log('waitlist', data);
           if (data.hasOwnProperty(key)) {
             cnt = countr;
-            ok1 += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><span class=\"prsnName\">" + countr + ". " + data[key].name + "</span></div>";
+            var removeMe = "";
+            if (data[key].removeAfter) removeMe = "departure_board"
+            ok1 += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><span class=\"prsnName\">" + countr + ". " + data[key].name + " <span class=\"removemeIcon material-icons\"> " + removeMe + " </span></span></div>";
             countr++;
           }
         }
@@ -1805,7 +1807,10 @@ firetable.ui = {
         var countr = 0;
         for (var key in data) {
           if (data.hasOwnProperty(key)) {
-            ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"avtr\" id=\"avtr" + countr + "\" style=\"background-image: url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><div id=\"djthing" + countr + "\" class=\"djplaque\"><div class=\"djname\">" + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div></div>";
+            var removeMe = "";
+            if (data[key].removeAfter) removeMe = "departure_board"
+
+            ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"avtr\" id=\"avtr" + countr + "\" style=\"background-image: url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><div id=\"djthing" + countr + "\" class=\"djplaque\"><div class=\"djname\"><span class=\"removemeIcon material-icons\"> " + removeMe + " </span> " + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div></div>";
             countr++;
           }
         }

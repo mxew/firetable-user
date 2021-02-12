@@ -273,6 +273,11 @@ code {
   margin-left: 5px;;
 }
 
+span.removemeIcon.material-icons {
+    font-size: 1rem;
+    vertical-align: middle;
+}
+
 .butt {
   display: flex;
   justify-content: center;
