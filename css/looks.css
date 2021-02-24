@@ -532,10 +532,17 @@ span.removemeIcon.material-icons {
   height: 100%;
 }
 .prson {
+  cursor: pointer;
   display: flex;
   align-items: center;
   min-width: 0;
   padding: var(--pad1) var(--pad4);
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 }
 .prsnName {
   flex: 1;

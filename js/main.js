@@ -1950,7 +1950,17 @@ firetable.ui = {
         destination = "#usersBot";
       }
 
-      $(destination).append("<div id=\"user" + data.userid + "\" class=\"prson " + block + "\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span></div>");
+      var newUserToAddX = $("<div></div>");
+      newUserToAddX.addClass("prson "+block);
+      newUserToAddX.attr("id", "user"+data.userid);
+      newUserToAddX.html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
+      newUserToAddX.bind("click", function( index ) {
+        var nameToAt = $(this).find(".prsnName").text();
+        $("#newchat").val( function( i, val ) {
+          return val + "@" + nameToAt + " ";
+        }).focus();
+      });
+      $(destination).append( newUserToAddX );
     });
     ftapi.events.on("userLeft", function(data) {
       $("#user" + data.userid).remove();
