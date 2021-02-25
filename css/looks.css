@@ -1196,6 +1196,7 @@ a.importLinkCheck {
   margin: 0.15rem var(--pad3) 0 0;
   width: 2rem;
   height: 2rem;
+  cursor: pointer;
 }
 #actualChat.avatarsOff .botson {
   display: none;
@@ -1235,6 +1236,7 @@ a.importLinkCheck {
   font-size: 0.75rem;
   font-weight: 700;
   color: rgba(255,255,255,0.4);
+  cursor: pointer;
 }
 .modDelete {
     position: absolute;
@@ -1708,6 +1710,12 @@ div#blog {
 
 
 /*------------------------------------ Media Queries -*/
+@media only screen and (max-width: 799px) {
+  #allusersWrap .prson{
+    cursor: none;
+    pointer-events:none;
+  }
+}
 
 @media only screen and (min-width: 800px) {
 
@@ -1725,6 +1733,7 @@ div#blog {
   #importPromptBox .modalContent {
     width: 480px;
   }
+
   #mainGrid,
   #mainGrid.mmchat {
     grid-template-rows: auto auto auto 1fr;
