@@ -51,7 +51,7 @@ if (typeof ftconfigs == "undefined") throw "config.js is missing! Copy config.js
 var chatScroll = new SimpleBar(document.getElementById('chatsWrap'));
 chatScroll.getScrollElement(); //.addEventListener('scroll', function(){ console.log(chatScroll); });
 
-firetable.version = "01.08.92";
+firetable.version = "01.08.93";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -1304,6 +1304,22 @@ firetable.utilities = {
       timeout = setTimeout(later, wait);
       if (callNow) func.apply(context, args);
     };
+  },
+  chatAt: function( element ) {
+    element.bind("click", function() {
+      console.log( element );
+      var nameToAt;
+      if( element[0].className == "prson" ) {
+        nameToAt = $(this).find(".prsnName").text();
+      } else if( element[0].className == "botson" ) {
+        nameToAt = $(this).next(".chatContent").find(".chatName").text();
+      } else if( element[0].className == "chatName" ) {
+        nameToAt = $(this).text();
+      }
+      $("#newchat").val( function( i, val ) {
+        return val + "@" + nameToAt + " ";
+      }).focus();
+    })
   }
 };
 
@@ -1954,12 +1970,7 @@ firetable.ui = {
       newUserToAddX.addClass("prson "+block);
       newUserToAddX.attr("id", "user"+data.userid);
       newUserToAddX.html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
-      newUserToAddX.bind("click", function( index ) {
-        var nameToAt = $(this).find(".prsnName").text();
-        $("#newchat").val( function( i, val ) {
-          return val + "@" + nameToAt + " ";
-        }).focus();
-      });
+      firetable.utilities.chatAt( newUserToAddX ); // adds the click event to @ the user
       $(destination).append( newUserToAddX );
     });
     ftapi.events.on("userLeft", function(data) {
@@ -2106,6 +2117,8 @@ firetable.ui = {
         console.log(chatData);
 
         $chatthing.find(".chatName").text(namebo);
+        firetable.utilities.chatAt( $chatthing.find('.botson') ); // adds the click event to @ the user
+        firetable.utilities.chatAt( $chatthing.find('.chatName') ); // adds the click event to @ the user
         twemoji.parse($chatthing.find(".chatText")[0]);
         $chatthing.appendTo("#chats");
         try {
