@@ -530,9 +530,9 @@ firetable.actions = {
               ctx.drawImage(this, 180, 50, 35, 35);
               doImages();
             };
-            eight.src = 'https://indiediscotheque.com/basement/img/8.png';
+            eight.src = 'img/8.png';
           };
-          cake.src = 'https://indiediscotheque.com/basement/img/cake.png';
+          cake.src = 'img/cake.png';
 
         } else if (data.special == "id9") {
           ctx.fillStyle = data.colors.color;
@@ -555,9 +555,9 @@ firetable.actions = {
             eight.xvalue = 0;
             eight.onload = function() {
               ctx.save();
-              ctx.translate(this.width * 0.5, this.height * 0.5);
+              ctx.translate(75 * 0.5, 75 * 0.5);
               ctx.rotate(0.959931);
-              ctx.translate(-this.width * 0.5, -this.height * 0.5);
+              ctx.translate(-75 * 0.5, -75 * 0.5);
 
               ctx.drawImage(this, 125, -81, 75, 75);
               ctx.restore();
@@ -575,11 +575,11 @@ firetable.actions = {
                 };
                 picboy2.src = data.image;
               };
-              picboy.src = 'https://indiediscotheque.com/basement/img/id9.png';
+              picboy.src = 'img/id9.png';
             };
-            eight.src = 'https://indiediscotheque.com/robots/' + data.djid + data.djname + '.png?size=75x75';
+            eight.src = 'https://indiediscotheque.com/robots/' + data.djid + data.djname + '.png?size=110x110';
           };
-          cake.src = 'https://indiediscotheque.com/basement/img/arnold.png';
+          cake.src = 'img/arnold.png';
         }
       } else {
         doImages();
