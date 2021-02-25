@@ -115,6 +115,7 @@ ftapi.init = function(firebaseConfig) {
   var tagUpdate = firebase.app("firetable").database().ref("tagUpdate");
   tagUpdate.on('value', function(dataSnapshot) {
     var data = dataSnapshot.val();
+    if (!data) return;
     ftapi.events.emit("tagUpdate", data);
   });
 
@@ -172,6 +173,7 @@ ftapi.init = function(firebaseConfig) {
   var lightsCheck = firebase.app("firetable").database().ref("lights");
   lightsCheck.on('value', function(dataSnapshot) {
     var data = dataSnapshot.val();
+    if (!data) return;
     ftapi.events.emit("lightsChanged", data);
   });
 
