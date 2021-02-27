@@ -49,7 +49,9 @@ var firetable = {
 if (typeof ftconfigs == "undefined") throw "config.js is missing! Copy config.js.example and rename to config.js. Edit this file and add your own app's information.";
 
 var chatScroll = new SimpleBar(document.getElementById('chatsWrap'));
-chatScroll.getScrollElement(); //.addEventListener('scroll', function(){ console.log(chatScroll); });
+chatScroll.getScrollElement().addEventListener('scroll', function(){
+  if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
+});
 
 firetable.version = "01.08.93";
 var player, $playlistItemTemplate;
@@ -2155,6 +2157,7 @@ firetable.ui = {
       }
 
       if (atBottom || ftapi.uid == chatData.id) firetable.utilities.scrollToBottom();
+      else $('#morechats').addClass('show');
     });
 
     ftapi.events.on("chatRemoved", function(data) {
@@ -2415,6 +2418,10 @@ firetable.ui = {
           $('#newchat').focus();
         });
       }
+    });
+
+    $("#morechats .butt").bind("click", function() {
+      firetable.utilities.scrollToBottom();
     });
 
     $("#fire").bind("click", function() {
