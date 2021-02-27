@@ -43,6 +43,9 @@ var firetable = {
   loginForm: null,
   emojiMap: null,
   pickerInit: false,
+  atUSers: ["everyone"],
+  atString: "",
+  atLand: false,
   debug: false
 }
 
@@ -1320,6 +1323,32 @@ firetable.utilities = {
         return val + "@" + nameToAt + " ";
       }).focus();
     })
+  },
+  exitAtLand: function() {
+    firetable.atLand = false;
+    firetable.atUsers = ["everyone"];
+    firetable.atString = "";
+    $('#atPicker').removeClass('show').html('');
+  },
+  updateAtLand: function(atUsers) {
+    atUsers = atUsers.filter(user => user.toLowerCase().startsWith(firetable.atString.toLowerCase())).sort();
+    console.log(firetable.atString,atUsers);
+    $('#atPicker').html('');
+    if ( atUsers.length ) {
+      for ( var user of atUsers ) {
+        $('<div class="atPickerThing"><button class="butt graybutt" role="button">@' + user + '</button></div>').appendTo('#atPicker');
+      }
+    }
+    else {
+      $('<div class="atPickerThing"><i>No users match</i></div>').appendTo('#atPicker');
+    }
+    return atUsers;
+  },
+  chooseAt: function(atPeep) {
+    var $chatText = $('#newchat');
+    $chatText.val($chatText.val().slice(0,firetable.atString.length*-1));
+    $chatText.val($chatText.val() + atPeep + " ");
+    firetable.utilities.exitAtLand();
   }
 };
 
@@ -3016,7 +3045,13 @@ firetable.ui = {
       }
     });
     $("#newchat").bind("keyup", function(e) {
-      if (e.which == 13) {
+      console.log('key',e.key);
+      firetable.atUsers = ["everyone"];
+      for ( var user in ftapi.users ) {
+        firetable.atUsers.push(ftapi.users[user].username);
+      }
+      firetable.atUsers.sort();
+      if (e.key == "Enter") {
         var txt = $("#newchat").val();
         if (txt == "") return;
         var matches = txt.match(/^(?:[\/])(\w+)\s*(.*)/i);
@@ -3082,8 +3117,60 @@ firetable.ui = {
         $("#newchat").val("");
         $("#emojiPicker").slideUp();
         $("#pickEmoji").removeClass("on");
+        firetable.utilities.exitAtLand();
       }
-
+      else if (e.key == "@") { // open the door to @ land
+        if (firetable.atLand) { // double @@
+          firetable.utilities.exitAtLand();
+        }
+        else { // first step into @ land
+          firetable.atLand = true;
+          firetable.atString = "";
+          for ( var user of firetable.atUsers ) {
+            $('#atPicker').addClass('show');
+            $('<div class="atPickerThing"><button class="butt graybutt" role="button">@' + user + '</button></div>').appendTo('#atPicker');
+          }
+        }
+      }
+      else if ( firetable.atLand && e.key != "Shift" ) { // we're in @ land, don't leave on Shift release
+        if ( e.key == "Backspace" ) {
+          if (!firetable.atString) { // now exiting @ land
+            firetable.utilities.exitAtLand();
+          }
+          else { // still got someone we're lookin for
+            firetable.atString = firetable.atString.slice(0,-1);
+            firetable.atUsers = firetable.utilities.updateAtLand(firetable.atUsers);
+          }
+        }
+        else if ( e.key == " " || e.key == "Spacebar" ) { // we've got what we want
+          firetable.utilities.exitAtLand();
+        }
+        else if ( !e.key.match(/[0-9a-zA-Z_]/) ) { // not possibly part of a name
+          firetable.atString += e.key;
+          $('#atPicker').html('');
+          $('<div class="atPickerThing"><i>Users cannot contain "' + e.key + '"</i></div>').appendTo('#atPicker');
+        }
+        else { // we're still in @ land
+          firetable.atString += e.key;
+          firetable.atUsers = firetable.utilities.updateAtLand(firetable.atUsers);
+        }
+      }
+    });
+    $("#newchat").bind("keydown", function(e) {
+      if ( e.key == "Tab") {
+        if ( firetable.atUsers.length === 1 ) {
+          $("#newchat").one("blur", function(e){
+            $("#newchat").focus();
+          });
+          firetable.utilities.chooseAt(firetable.atUsers[0]);
+        }
+        else {
+          firetable.utilities.exitAtLand();
+        }
+      }
+    });
+    $(document).on('click', '#atPicker .butt', function() {
+      firetable.utilities.chooseAt($(this).text());
     });
     ftapi.events.on("colorsChanged", function(data) {
       firetable.debug && console.log("COLOR CHANGE!", data);
