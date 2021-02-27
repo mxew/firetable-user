@@ -1826,9 +1826,17 @@ firetable.ui = {
     ftapi.events.on("danceStateChanged", function(data) {
       firetable.debug && console.log('dance check:', data);
       if (data) {
-        $("#deck").addClass("dance");
+        $("#stage").addClass("dance");
       } else {
-        $("#deck").removeClass("dance");
+        $("#stage").removeClass("dance");
+      }
+    });
+    ftapi.events.on("discoballStateChanged", function(data) {
+      firetable.debug && console.log('discoball check:', data);
+      if (data) {
+        $("#stage").addClass("discoball");
+      } else {
+        $("#stage").removeClass("discoball");
       }
     });
     ftapi.events.on("lightsChanged", function(data) {

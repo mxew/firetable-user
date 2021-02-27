@@ -169,6 +169,13 @@ ftapi.init = function(firebaseConfig) {
     ftapi.events.emit("danceStateChanged", data);
   });
 
+  // discoball state emitter
+  var discoballCheck = firebase.app("firetable").database().ref("discoball");
+  discoballCheck.on('value', function(dataSnapshot) {
+    var data = dataSnapshot.val();
+    ftapi.events.emit("discoballStateChanged", data);
+  });
+
   // festive lights emitter
   var lightsCheck = firebase.app("firetable").database().ref("lights");
   lightsCheck.on('value', function(dataSnapshot) {

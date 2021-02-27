@@ -1,12 +1,3 @@
-
-@-moz-keyframes spin {
-  from { -moz-transform: rotate(0deg); }
-  to { -moz-transform: rotate(359deg); }
-}
-@-webkit-keyframes spin {
-  from { -webkit-transform: rotate(0deg); }
-  to { -webkit-transform: rotate(359deg); }
-}
 @keyframes spin {
   from {transform:rotate(0deg);}
   to {transform:rotate(359deg);}
@@ -19,23 +10,20 @@
    }
 }
 @keyframes MoveSideSide {
-  5% {
-    transform: rotate(0deg) translateY(0.1rem);
+  0% {
+    transform: rotate(-3deg);
   }
   25% {
-    transform: rotate(-3deg) translateY(0.1rem);
+    transform: rotate(0deg);
   }
-  45% {
-    transform: rotate(0deg) translateY(0.1rem);
-  }
-  55% {
-    transform: rotate(0deg) translateY(0.1rem);
+  50% {
+    transform: rotate(3deg);
   }
   75% {
-    transform: rotate(3deg) translateY(0.1rem);
+    transform: rotate(0deg);
   }
-  95% {
-    transform: rotate(0deg) translateY(0.1rem);
+  100% {
+    transform: rotate(-3deg);
   }
 }
 @keyframes pulse {
@@ -703,12 +691,28 @@ span.block:empty{
 }
 
 
+#discoball {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  height: 15vh;
+  max-height: 200px;
+  min-height: 10rem;
+  width: auto;
+  transition: transform 4s ease-in-out;
+}
+#stage.dance.discoball #discoball {
+  transform: translate(-50%, 0%);
+}
+
+
 #deck {
   grid-area: deck;
   display: flex;
   max-width: 100vw;
 }
-#deck.dance .avtr:not(.animate) {
+#stage.dance .avtr:not(.animate) {
   transform-origin: bottom;
   animation: MoveSideSide 2s linear infinite;
 }
