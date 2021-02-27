@@ -3044,7 +3044,8 @@ firetable.ui = {
       }
     });
     $("#newchat").bind("keyup", function(e) {
-      firetable.debug && firetable.atUsers = ["everyone"];
+      firetable.debug && console.log('key',e.key);
+      firetable.atUsers = ["everyone"];
       for ( var user in ftapi.users ) {
         firetable.atUsers.push(ftapi.users[user].username);
       }
