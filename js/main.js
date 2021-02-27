@@ -1332,7 +1332,6 @@ firetable.utilities = {
   },
   updateAtLand: function(atUsers) {
     atUsers = atUsers.filter(user => user.toLowerCase().startsWith(firetable.atString.toLowerCase())).sort();
-    console.log(firetable.atString,atUsers);
     $('#atPicker').html('');
     if ( atUsers.length ) {
       for ( var user of atUsers ) {
@@ -3045,8 +3044,7 @@ firetable.ui = {
       }
     });
     $("#newchat").bind("keyup", function(e) {
-      console.log('key',e.key);
-      firetable.atUsers = ["everyone"];
+      firetable.debug && firetable.atUsers = ["everyone"];
       for ( var user in ftapi.users ) {
         firetable.atUsers.push(ftapi.users[user].username);
       }
