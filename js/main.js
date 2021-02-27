@@ -3147,7 +3147,7 @@ firetable.ui = {
         else if ( !e.key.match(/[0-9a-zA-Z_]/) ) { // not possibly part of a name
           firetable.atString += e.key;
           $('#atPicker').html('');
-          $('<div class="atPickerThing"><i>Users cannot contain "' + e.key + '"</i></div>').appendTo('#atPicker');
+          $('<div class="atPickerThing"><i>Usernames cannot contain "' + e.key + '"</i></div>').appendTo('#atPicker');
         }
         else { // we're still in @ land
           firetable.atString += e.key;
