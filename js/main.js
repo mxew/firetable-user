@@ -3171,7 +3171,7 @@ firetable.ui = {
       if ( e.key == "Tab") {
         if ( firetable.atUsers.length === 1 ) {
           $("#newchat").one("blur", function(e){
-            $("#newchat").focus();
+            $("#newchat").focus().val($("#newchat").val());
           });
           firetable.utilities.chooseAt(firetable.atUsers[0]);
         }
@@ -3184,7 +3184,11 @@ firetable.ui = {
       e.preventDefault();
       console.log($(this).text());
       firetable.utilities.chooseAt($(this).text().replace("@",""));
-      setTimeout(() => { $('#newchat').focus(); }, 250);
+      setTimeout(() => {
+        var tempText = $("#newchat").val();
+        $('#newchat').focus().val('');
+        $('#newchat').val(tempText);
+      }, 250);
     });
     $(document).on('keyup', '#atPicker .butt:focus', function(e) {
       if ( e.key == "ArrowUp" ) {
