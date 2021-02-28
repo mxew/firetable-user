@@ -1348,7 +1348,9 @@ firetable.utilities = {
   },
   chooseAt: function(atPeep) {
     var $chatText = $('#newchat');
-    $chatText.val($chatText.val().slice(0,firetable.atString.length*-1));
+    console.log($chatText.val() + " " +firetable.atString.length*-1);
+    if (firetable.atString.length > 0) $chatText.val($chatText.val().slice(0,firetable.atString.length*-1));
+    console.log(atPeep + " " +firetable.atString);
     $chatText.val($chatText.val() + atPeep + " ");
     firetable.utilities.exitAtLand();
   },
@@ -3180,7 +3182,8 @@ firetable.ui = {
     });
     $(document).on('click', '#atPicker .butt', function(e) {
       e.preventDefault();
-      firetable.utilities.chooseAt($(this).text());
+      console.log($(this).text());
+      firetable.utilities.chooseAt($(this).text().replace("@",""));
       setTimeout(() => { $('#newchat').focus(); }, 250);
     });
     $(document).on('keyup', '#atPicker .butt:focus', function(e) {
