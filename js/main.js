@@ -44,7 +44,8 @@ var firetable = {
   emojiMap: null,
   pickerInit: false,
   atLand: false,
-  atUsers: ["everyone"],
+  atUsers: [],
+  atUsersFiltered: [],
   atString: "",
   debug: false
 }
@@ -1331,32 +1332,29 @@ firetable.utilities = {
     for ( var user in ftapi.users ) {
       firetable.atUsers.push(ftapi.users[user].username);
     }
-    firetable.atUsers.sort();
+    firetable.atUsersFiltered = firetable.atUsers.sort();
   },
-  updateAtLand: function(atUsers) {
-    atUsers = atUsers.filter(user => user.toLowerCase().startsWith(firetable.atString.toLowerCase())).sort();
+  updateAtLand: function() {
+    firetable.atUsersFiltered = firetable.atUsers.filter(user => user.toLowerCase().startsWith(firetable.atString.toLowerCase())).sort();
     $('#atPicker').html('');
-    if ( atUsers.length ) {
-      for ( var user of atUsers ) {
+    if ( firetable.atUsersFiltered.length ) {
+      for ( var user of firetable.atUsersFiltered ) {
         $('<div class="atPickerThing"><button class="butt graybutt" role="button">@' + user + '</button></div>').appendTo('#atPicker');
       }
     }
     else {
       $('<div class="atPickerThing"><i>No users match</i></div>').appendTo('#atPicker');
     }
-    return atUsers;
   },
   chooseAt: function(atPeep) {
     var $chatText = $('#newchat');
-    console.log($chatText.val() + " " +firetable.atString.length*-1);
     if (firetable.atString.length > 0) $chatText.val($chatText.val().slice(0,firetable.atString.length*-1));
-    console.log(atPeep + " " +firetable.atString);
     $chatText.val($chatText.val() + atPeep + " ");
     firetable.utilities.exitAtLand();
   },
   exitAtLand: function() {
     firetable.atLand = false;
-    firetable.atUsers = ["everyone"];
+    firetable.atUsersFiltered = [];
     firetable.atString = "";
     $('#atPicker').removeClass('show').html('');
   }
@@ -3054,8 +3052,8 @@ firetable.ui = {
         }
       }
     });
-    $("#newchat").bind("keyup", function(e) {
-      firetable.debug && console.log('chat keyup',e.key);
+    $("#newchat").bind("keypress", function(e) {
+      firetable.debug && console.log('chat key',e.key);
       if (e.key == "Enter") {
         var txt = $("#newchat").val();
         if (txt == "") return;
@@ -3130,21 +3128,36 @@ firetable.ui = {
         }
         else { // first step into @ land
           firetable.utilities.initAtLand();
-          for ( var user of firetable.atUsers ) {
+          for ( var user of firetable.atUsersFiltered ) {
             $('#atPicker').addClass('show');
             $('<div class="atPickerThing"><button class="butt graybutt" role="button">@' + user + '</button></div>').appendTo('#atPicker');
           }
         }
       }
-      else if ( firetable.atLand && e.key != "Shift" ) { // we're in @ land, don't leave on Shift release
+      else if ( firetable.atLand ) { // we're in @ land
+        if ( e.key == " " || e.key == "Spacebar" ) { // we've got what we want
+          firetable.utilities.exitAtLand();
+        }
+        else if ( !e.key.match(/[0-9a-zA-Z_]/) ) { // not possibly a characer from a name
+          firetable.atString += e.key;
+          $('#atPicker').html('');
+          $('<div class="atPickerThing"><i>Usernames cannot contain "' + e.key + '"</i></div>').appendTo('#atPicker');
+        }
+        else { // we're still in @ land
+          firetable.atString += e.key;
+          firetable.utilities.updateAtLand();
+        }
+      }
+    });
+    $("#newchat").bind("keyup", function(e) {
+      if ( firetable.atLand ) { // we're in @ land
         if ( e.key == "Backspace" ) {
-          if (!firetable.atString) { // now exiting @ land
+          if (!firetable.atString) { // deleting the @, exit @ land
             firetable.utilities.exitAtLand();
           }
           else { // still got someone we're lookin for
             firetable.atString = firetable.atString.slice(0,-1);
-            if (!firetable.atString) firetable.utilities.initAtLand();
-            firetable.atUsers = firetable.utilities.updateAtLand(firetable.atUsers);
+            firetable.utilities.updateAtLand();
           }
         }
         else if ( e.key == "ArrowUp" ) { // i see my @, go up!
@@ -3153,27 +3166,15 @@ firetable.ui = {
         else if ( e.key == "ArrowDown" ) { // i see my @, go down!
           $('#atPicker .butt:first').focus();
         }
-        else if ( e.key == " " || e.key == "Spacebar" ) { // we've got what we want
-          firetable.utilities.exitAtLand();
-        }
-        else if ( !e.key.match(/[0-9a-zA-Z_]/) ) { // not possibly part of a name
-          firetable.atString += e.key;
-          $('#atPicker').html('');
-          $('<div class="atPickerThing"><i>Usernames cannot contain "' + e.key + '"</i></div>').appendTo('#atPicker');
-        }
-        else { // we're still in @ land
-          firetable.atString += e.key;
-          firetable.atUsers = firetable.utilities.updateAtLand(firetable.atUsers);
-        }
       }
     });
     $("#newchat").bind("keydown", function(e) {
       if ( e.key == "Tab") {
-        if ( firetable.atUsers.length === 1 ) {
+        if ( firetable.atUsersFiltered.length === 1 ) {
           $("#newchat").one("blur", function(e){
             $("#newchat").focus().val($("#newchat").val());
           });
-          firetable.utilities.chooseAt(firetable.atUsers[0]);
+          firetable.utilities.chooseAt(firetable.atUsersFiltered[0]);
         }
         else {
           firetable.utilities.exitAtLand();
@@ -3182,7 +3183,6 @@ firetable.ui = {
     });
     $(document).on('click', '#atPicker .butt', function(e) {
       e.preventDefault();
-      console.log($(this).text());
       firetable.utilities.chooseAt($(this).text().replace("@",""));
       setTimeout(() => {
         var tempText = $("#newchat").val();
