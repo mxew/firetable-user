@@ -1407,6 +1407,33 @@ img.emoji {
   margin: 0 .05em 0 .1em;
   vertical-align: -0.1em;
 }
+#morechats {
+  position: absolute;
+  bottom: 100%;
+  display: none;
+  justify-content: center;
+  width: 100%;
+  pointer-events: none;
+}
+#morechats.show {
+  display: flex;
+}
+#morechats .butt {
+  height: auto;
+  padding: 0.2em;
+  font-size: 0.7rem;
+  background-color: #222;
+  border-bottom-color: #222;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: none;
+  pointer-events: auto;
+}
+#morechats .butt i {
+  margin: 0 0.25em;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
 
 
 /* History */
