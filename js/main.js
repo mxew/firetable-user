@@ -43,9 +43,9 @@ var firetable = {
   loginForm: null,
   emojiMap: null,
   pickerInit: false,
-  atUSers: ["everyone"],
-  atString: "",
   atLand: false,
+  atUsers: ["everyone"],
+  atString: "",
   debug: false
 }
 
@@ -1324,11 +1324,14 @@ firetable.utilities = {
       }).focus();
     })
   },
-  exitAtLand: function() {
-    firetable.atLand = false;
-    firetable.atUsers = ["everyone"];
+  initAtLand: function() {
+    firetable.atLand = true;
     firetable.atString = "";
-    $('#atPicker').removeClass('show').html('');
+    firetable.atUsers = ["everyone"];
+    for ( var user in ftapi.users ) {
+      firetable.atUsers.push(ftapi.users[user].username);
+    }
+    firetable.atUsers.sort();
   },
   updateAtLand: function(atUsers) {
     atUsers = atUsers.filter(user => user.toLowerCase().startsWith(firetable.atString.toLowerCase())).sort();
@@ -1348,6 +1351,12 @@ firetable.utilities = {
     $chatText.val($chatText.val().slice(0,firetable.atString.length*-1));
     $chatText.val($chatText.val() + atPeep + " ");
     firetable.utilities.exitAtLand();
+  },
+  exitAtLand: function() {
+    firetable.atLand = false;
+    firetable.atUsers = ["everyone"];
+    firetable.atString = "";
+    $('#atPicker').removeClass('show').html('');
   }
 };
 
@@ -3044,12 +3053,7 @@ firetable.ui = {
       }
     });
     $("#newchat").bind("keyup", function(e) {
-      firetable.debug && console.log('key',e.key);
-      firetable.atUsers = ["everyone"];
-      for ( var user in ftapi.users ) {
-        firetable.atUsers.push(ftapi.users[user].username);
-      }
-      firetable.atUsers.sort();
+      firetable.debug && console.log('chat keyup',e.key);
       if (e.key == "Enter") {
         var txt = $("#newchat").val();
         if (txt == "") return;
@@ -3123,8 +3127,7 @@ firetable.ui = {
           firetable.utilities.exitAtLand();
         }
         else { // first step into @ land
-          firetable.atLand = true;
-          firetable.atString = "";
+          firetable.utilities.initAtLand();
           for ( var user of firetable.atUsers ) {
             $('#atPicker').addClass('show');
             $('<div class="atPickerThing"><button class="butt graybutt" role="button">@' + user + '</button></div>').appendTo('#atPicker');
@@ -3138,8 +3141,15 @@ firetable.ui = {
           }
           else { // still got someone we're lookin for
             firetable.atString = firetable.atString.slice(0,-1);
+            if (!firetable.atString) firetable.utilities.initAtLand();
             firetable.atUsers = firetable.utilities.updateAtLand(firetable.atUsers);
           }
+        }
+        else if ( e.key == "ArrowUp" ) { // i see my @, go up!
+          $('#atPicker .butt:last').focus();
+        }
+        else if ( e.key == "ArrowDown" ) { // i see my @, go down!
+          $('#atPicker .butt:first').focus();
         }
         else if ( e.key == " " || e.key == "Spacebar" ) { // we've got what we want
           firetable.utilities.exitAtLand();
@@ -3168,9 +3178,30 @@ firetable.ui = {
         }
       }
     });
-    $(document).on('click', '#atPicker .butt', function() {
+    $(document).on('click', '#atPicker .butt', function(e) {
+      e.preventDefault();
       firetable.utilities.chooseAt($(this).text());
+      setTimeout(() => { $('#newchat').focus(); }, 250);
     });
+    $(document).on('keyup', '#atPicker .butt:focus', function(e) {
+      if ( e.key == "ArrowUp" ) {
+        if ( $('#atPicker .butt:focus').parent().prev().length ) {
+          $('#atPicker .butt:focus').parent().prev().find('.butt').focus();
+        }
+        else {
+          $('#atPicker .butt:last').focus();
+        }
+      }
+      else if ( e.key == "ArrowDown" ) {
+        if ( $('#atPicker .butt:focus').parent().next().length ) {
+          $('#atPicker .butt:focus').parent().next().find('.butt').focus();
+        }
+        else {
+          $('#atPicker .butt:first').focus();
+        }
+      }
+    });
+
     ftapi.events.on("colorsChanged", function(data) {
       firetable.debug && console.log("COLOR CHANGE!", data);
 
