@@ -43,6 +43,10 @@ var firetable = {
   loginForm: null,
   emojiMap: null,
   pickerInit: false,
+  atLand: false,
+  atUsers: [],
+  atUsersFiltered: [],
+  atString: "",
   debug: false
 }
 
@@ -1322,6 +1326,39 @@ firetable.utilities = {
         return val + "@" + nameToAt + " ";
       }).focus();
     })
+  },
+  initAtLand: function() {
+    firetable.atLand = true;
+    firetable.atString = "";
+    firetable.atUsers = ["everyone"];
+    for ( var user in ftapi.users ) {
+      firetable.atUsers.push(ftapi.users[user].username);
+    }
+    firetable.atUsersFiltered = firetable.atUsers.sort();
+  },
+  updateAtLand: function() {
+    firetable.atUsersFiltered = firetable.atUsers.filter(user => user.toLowerCase().startsWith(firetable.atString.toLowerCase())).sort();
+    $('#atPicker').html('');
+    if ( firetable.atUsersFiltered.length ) {
+      for ( var user of firetable.atUsersFiltered ) {
+        $('<div class="atPickerThing"><button class="butt graybutt" role="button">@' + user + '</button></div>').appendTo('#atPicker');
+      }
+    }
+    else {
+      $('<div class="atPickerThing"><i>No users match</i></div>').appendTo('#atPicker');
+    }
+  },
+  chooseAt: function(atPeep) {
+    var $chatText = $('#newchat');
+    if (firetable.atString.length > 0) $chatText.val($chatText.val().slice(0,firetable.atString.length*-1));
+    $chatText.val($chatText.val() + atPeep + " ");
+    firetable.utilities.exitAtLand();
+  },
+  exitAtLand: function() {
+    firetable.atLand = false;
+    firetable.atUsersFiltered = [];
+    firetable.atString = "";
+    $('#atPicker').removeClass('show').html('');
   }
 };
 
@@ -3022,8 +3059,9 @@ firetable.ui = {
         }
       }
     });
-    $("#newchat").bind("keyup", function(e) {
-      if (e.which == 13) {
+    $("#newchat").bind("keypress", function(e) {
+      firetable.debug && console.log('chat key',e.key);
+      if (e.key == "Enter") {
         var txt = $("#newchat").val();
         if (txt == "") return;
         var matches = txt.match(/^(?:[\/])(\w+)\s*(.*)/i);
@@ -3089,9 +3127,95 @@ firetable.ui = {
         $("#newchat").val("");
         $("#emojiPicker").slideUp();
         $("#pickEmoji").removeClass("on");
+        firetable.utilities.exitAtLand();
       }
-
+      else if (e.key == "@") { // open the door to @ land
+        if (firetable.atLand) { // double @@
+          firetable.utilities.exitAtLand();
+        }
+        else { // first step into @ land
+          firetable.utilities.initAtLand();
+          for ( var user of firetable.atUsersFiltered ) {
+            $('#atPicker').addClass('show');
+            $('<div class="atPickerThing"><button class="butt graybutt" role="button">@' + user + '</button></div>').appendTo('#atPicker');
+          }
+        }
+      }
+      else if ( firetable.atLand ) { // we're in @ land
+        if ( e.key == " " || e.key == "Spacebar" ) { // we've got what we want
+          firetable.utilities.exitAtLand();
+        }
+        else if ( !e.key.match(/[0-9a-zA-Z_]/) ) { // not possibly a characer from a name
+          firetable.atString += e.key;
+          $('#atPicker').html('');
+          $('<div class="atPickerThing"><i>Usernames cannot contain "' + e.key + '"</i></div>').appendTo('#atPicker');
+        }
+        else { // we're still in @ land
+          firetable.atString += e.key;
+          firetable.utilities.updateAtLand();
+        }
+      }
     });
+    $("#newchat").bind("keyup", function(e) {
+      if ( firetable.atLand ) { // we're in @ land
+        if ( e.key == "Backspace" ) {
+          if (!firetable.atString) { // deleting the @, exit @ land
+            firetable.utilities.exitAtLand();
+          }
+          else { // still got someone we're lookin for
+            firetable.atString = firetable.atString.slice(0,-1);
+            firetable.utilities.updateAtLand();
+          }
+        }
+        else if ( e.key == "ArrowUp" ) { // i see my @, go up!
+          $('#atPicker .butt:last').focus();
+        }
+        else if ( e.key == "ArrowDown" ) { // i see my @, go down!
+          $('#atPicker .butt:first').focus();
+        }
+      }
+    });
+    $("#newchat").bind("keydown", function(e) {
+      if ( e.key == "Tab") {
+        if ( firetable.atUsersFiltered.length === 1 ) {
+          $("#newchat").one("blur", function(e){
+            $("#newchat").focus().val($("#newchat").val());
+          });
+          firetable.utilities.chooseAt(firetable.atUsersFiltered[0]);
+        }
+        else {
+          firetable.utilities.exitAtLand();
+        }
+      }
+    });
+    $(document).on('click', '#atPicker .butt', function(e) {
+      e.preventDefault();
+      firetable.utilities.chooseAt($(this).text().replace("@",""));
+      setTimeout(() => {
+        var tempText = $("#newchat").val();
+        $('#newchat').focus().val('');
+        $('#newchat').val(tempText);
+      }, 250);
+    });
+    $(document).on('keyup', '#atPicker .butt:focus', function(e) {
+      if ( e.key == "ArrowUp" ) {
+        if ( $('#atPicker .butt:focus').parent().prev().length ) {
+          $('#atPicker .butt:focus').parent().prev().find('.butt').focus();
+        }
+        else {
+          $('#atPicker .butt:last').focus();
+        }
+      }
+      else if ( e.key == "ArrowDown" ) {
+        if ( $('#atPicker .butt:focus').parent().next().length ) {
+          $('#atPicker .butt:focus').parent().next().find('.butt').focus();
+        }
+        else {
+          $('#atPicker .butt:first').focus();
+        }
+      }
+    });
+
     ftapi.events.on("colorsChanged", function(data) {
       firetable.debug && console.log("COLOR CHANGE!", data);
 
