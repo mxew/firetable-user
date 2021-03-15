@@ -2237,8 +2237,27 @@ firetable.ui = {
             });
           });
           if (thisone.flagged) {
-            $newli.find('.track-warning').html("<span class=\"material-icons\"> warning </span>");
-            $newli.find('.track-warning').prop('title', 'Flagged as broken on ' + firetable.utilities.format_date(thisone.flagged.date) + '. Click to remove flag.');
+            var flagLabel = "broken";
+            var flagIcon = "warning";
+            if (thisone.flagged.code == 7){
+              flagLabel = "age restricted";
+            } else if (thisone.flagged.code >=8){
+
+              if (thisone.flagged.code == 8){
+              // manual broken flagged by mod
+                flagLabel = "broken (manual)";
+              } else if (thisone.flagged.code == 9){
+                // low quality
+                flagLabel = "low audio quality";
+                flagIcon = "disc_full";
+              } else if (thisone.flagged.code == 10){
+                // offtheme
+                flagLabel = "offtheme";
+                flagIcon = "flag";
+              }
+            }
+            $newli.find('.track-warning').html("<span class=\"material-icons\"> " + flagIcon + " </span>");
+            $newli.find('.track-warning').prop('title', 'Flagged as ' + flagLabel + ' on ' + firetable.utilities.format_date(thisone.flagged.date) + '. Click to remove flag.');
             $newli.find('.track-warning').on('click', function() {
               ftapi.actions.unflagTrack($(this).closest('.pvbar').attr('data-key'));
               $(this).html("");
