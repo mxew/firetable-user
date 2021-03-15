@@ -11,7 +11,7 @@
 	<link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css" />
 	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' type='text/css'>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-	<link rel="stylesheet" href="css/looks.css?v=01.08.94" type="text/css" />
+	<link rel="stylesheet" href="css/looks.css?v=01.08.95" type="text/css" />
 </head>
 
 <body>
@@ -346,10 +346,11 @@
 
 		<div id="login" data-simplebar>
 			<div id="welcomeInfo">
-				<h2>Welcome To Firetable!</h2>
+				<h2>Welcome To <span id="welcomeName">Firetable</span>!</h2>
 				<p>Want to jump on the DJ table and pick some h0t tunes to play? Just want to join the conversation?</p>
 			</div>
-			<div id="logscreen">
+			<div id="logscreen" style="display:none;">
+				<h4>Log In</h4>
 				<div class="inputline">
 					<label>Email:</label>
 					<input type="text" id="loginemail">
@@ -361,8 +362,8 @@
 					<button role="button" class="butt" id="loginBttn">Log In</button>
 				</div>
 			</div>
-			<div id="createscreen" style="display:none;">
-				<h4>Sign Up</h4>
+			<div id="createscreen">
+				<h4>Create an Account</h4>
 				<div class="inputline">
 					Email: <input type="text" id="newemail">
 				</div>
@@ -374,6 +375,9 @@
 				</div>
 				<div class="inputline">
 					Repeat Password: <input type="password" id="newpass2">
+				</div>
+				<div class="inputline">
+					<span id="termsAgreement"><input type="checkbox" id="agreetoterms"> I have read, understand, and agree to the <a href="terms" target="_blank">Terms of Service</a> and <a href="privacy" target="_blank">Privacy Policy</a>.</span>
 				</div>
 				<div class="inputline">
 					<button role="button" class="butt" id="createAccountBttn">Create Account</button>
@@ -391,7 +395,7 @@
 
 			</div>
 			<div id="formlinks" class="formlinks">
-				<a id="loginlink" class="loginlink selected">Log In</a> <a id="signuplink">Sign Up</a><a id="resetpass">Reset Password</a>
+				<a id="loginlink" class="loginlink">Log In</a> <a id="signuplink" class="selected">Create Account</a><a id="resetpass">Reset Password</a>
 			</div>
 		</div>
 
@@ -544,8 +548,8 @@
 	<script src="https://w.soundcloud.com/player/api.js" type="text/javascript"></script>
 	<script src="https://www.youtube.com/iframe_api"></script>
 	<script type="text/javascript" src="config.js"></script>
-	<script type="text/javascript" src="js/firetable.js?v=01.08.94"></script>
-	<script type="text/javascript" src="js/main.js?v=01.08.94"></script>
+	<script type="text/javascript" src="js/firetable.js?v=01.08.95"></script>
+	<script type="text/javascript" src="js/main.js?v=01.08.95"></script>
 
 </body>
 

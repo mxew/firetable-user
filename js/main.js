@@ -57,7 +57,7 @@ chatScroll.getScrollElement().addEventListener('scroll', function(){
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-firetable.version = "01.08.94";
+firetable.version = "01.08.95";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -179,6 +179,7 @@ firetable.init = function() {
   firetable.started = true;
 
   $("#idtitle").text(ftconfigs.roomName);
+  $("#welcomeName").text(ftconfigs.roomName);
   document.title = ftconfigs.roomName + " | firetable";
   if (ftconfigs.roomInfoUrl.length) $("#roomInfo").attr("href", ftconfigs.roomInfoUrl);
   $("#version").text("You're running firetable v" + firetable.version + ".");
@@ -1509,11 +1510,14 @@ firetable.ui = {
       var email = $("#newemail").val();
       var pass = $("#newpass").val();
       var pass2 = $("#newpass2").val();
+      var termsAgreedTo = $("#agreetoterms").is(":checked");
       var username = $("#newusername").val();
-      if (pass == pass2) {
-        firetable.actions.signUp(email, pass, username);
-      } else {
+      if (!termsAgreedTo){
+        alert("You must read and agree to the Terms of Service and Privacy Policy before you can create an account.");
+      } else if (pass != pass2) {
         alert("Those passwords do not match!");
+      } else {
+        firetable.actions.signUp(email, pass, username);
       }
     });
     $("#resetPassBttn").bind("click", function() {
@@ -2242,7 +2246,6 @@ firetable.ui = {
             if (thisone.flagged.code == 7){
               flagLabel = "age restricted";
             } else if (thisone.flagged.code >=8){
-
               if (thisone.flagged.code == 8){
               // manual broken flagged by mod
                 flagLabel = "broken (manual)";
