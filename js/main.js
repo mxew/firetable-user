@@ -57,7 +57,7 @@ chatScroll.getScrollElement().addEventListener('scroll', function() {
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-firetable.version = "01.08.96";
+firetable.version = "01.08.97";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -1215,6 +1215,8 @@ firetable.utilities = {
       var shortname = x.replace(/\:/g, "");
       if (firetable.emojiMap[shortname]) {
         response = "<span title=\"" + x + "\">" + firetable.emojiMap[shortname] + "</span>";
+      } else if (shortname == "rohn"){
+        response = "<span class=\"rohnmoji\" title=\":rohn:\"></span>";
       }
       return response;
     });
