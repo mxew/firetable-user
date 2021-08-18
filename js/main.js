@@ -57,7 +57,7 @@ chatScroll.getScrollElement().addEventListener('scroll', function() {
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-firetable.version = "01.08.97";
+firetable.version = "01.08.98";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -844,8 +844,7 @@ firetable.actions = {
         return SC.get("tracks/" + track.id);
       };
 
-      var listComments = function(tracks) {
-        firetable.debug && console.log('sc tracks for comments:', tracks);
+      firetable.actions.resolveSCLink(link, function(tracks){
         if (tracks) {
           var yargo = tracks.title.split(" - ");
           var sartist = yargo[0];
@@ -857,10 +856,23 @@ firetable.actions = {
           var goodTitle = sartist + " - " + stitle;
           firetable.actions.queueTrack(tracks.id, goodTitle, 2);
         }
-      };
-      SC.resolve(link).then(getComments).then(listComments);
+      });
+      //SC.resolve(link).then(getComments).then(listComments);
 
     }
+  },
+  resolveSCLink: function(link, callback){
+    var importantStuff = link.replace("https://soundcloud.com/","");
+    importantStuff = importantStuff.replace("http://soundcloud.com/","");
+    $.ajax({
+            url: "https://thompsn.com/resolvesc/?q="+importantStuff,
+            type: 'GET',
+            dataType: 'json', // added data type
+            success: function(res) {
+                console.log(res);
+                callback(res.response);
+            }
+        });
   },
   updateQueue: function() {
     //this fires when someone drags a song to a new spot in the queue
@@ -2827,14 +2839,15 @@ firetable.ui = {
             //see if this is a particular list's url...
             console.log(val);
             if (val.match(/.*\/\/soundcloud\.com\/.*\/sets\/.*/)) {
-              var finishUp = function(item) {
+              firetable.actions.resolveSCLink(val, function(item){
                 if (item) {
                   if (item.sharing == "public" && item.kind == "playlist") {
                     $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
                   }
                 }
-              };
-              var getList = SC.resolve(val).then(finishUp);
+              });
+              //var getList = SC.resolve(val).then(finishUp);
+
             } else {
               //cloud sound world dot com
               SC.get('/playlists', {
@@ -3068,12 +3081,12 @@ firetable.ui = {
           $('#searchResults').html("Searching...");
           if (directLink) {
             firetable.debug && console.log("sc direct link found");
-            var finishUp = function(item) {
+            firetable.actions.resolveSCLink(q, function(item){
               var items = [];
               if (item.kind == "track") items.push(item);
               showResults(items);
-            };
-            var getList = SC.resolve(q).then(finishUp);
+            });
+            //var getList = SC.resolve(q).then(finishUp);
           } else {
             SC.get('/tracks', {
               q: q
