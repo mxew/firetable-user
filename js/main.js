@@ -47,7 +47,7 @@ var firetable = {
   atUsers: [],
   atUsersFiltered: [],
   atString: "",
-  debug: false
+  debug: true
 }
 
 if (typeof ftconfigs == "undefined") throw "config.js is missing! Copy config.js.example and rename to config.js. Edit this file and add your own app's information.";
@@ -1175,17 +1175,31 @@ firetable.emojis = {
 firetable.utilities = {
   getEmojiMap: function() {
     firetable.emojiMap = {};
-    fetch("https://unpkg.com/emojilib@^2.0.0/emojis.json").then(data => data.json()).then(json => {
-      for (key in json) {
-        var emoji = json[key]
-        firetable.emojiMap[key] = emoji.char;
-        var words = key;
-        for (var i = 0; i < emoji.keywords.length; i++) {
-          words += ", " + emoji.keywords[i];
+    (async function(){
+      urls = [
+        "https://unpkg.com/unicode-emoji-json@0.3.0/data-by-group.json",
+        "https://unpkg.com/emojilib@3.0.4/dist/emoji-en-US.json"
+      ];
+      try {
+        const requests = urls.map((url) => fetch(url)); 
+        const responses = await Promise.all(requests); 
+        const promises = responses.map((response) => response.json());
+        const data = await Promise.all(promises);
+        for (const [category, emojisArr] of Object.entries(data[0])) {
+          let catid = category.replace(/[\s&]+/g, '_').toLowerCase();
+          $('#pickerNav').append('<span id="bpicker'+catid+'" title="'+category+'">'+emojisArr[0].emoji+'</span>');
+          $('#pickerContents').append('<div id="picker'+catid+'"><h3>'+category+'</h3></div>');
+          for (let i in emojisArr) {
+            firetable.emojiMap[emojisArr[i].slug] = emojisArr[i].emoji;
+            var words = ( data[1][emojisArr[i].emoji] !== undefined ) ? data[1][emojisArr[i].emoji].join(',') : "";
+            $("#picker" + catid).append('<span role="button" class="pickerResult" title="' + emojisArr[i].slug + '" data-alternative-name="' + words + '">' + emojisArr[i].emoji + '</span>');
+          }
         }
-        $("#picker" + emoji.category).append("<span role=\"button\" class=\"pickerResult\" title=\"" + key + "\" data-alternative-name=\"" + words + "\">" + emoji.char + "</span>");
+        twemoji.parse(document.getElementById("pickerNav"));
       }
-    });
+      catch(err) {
+      };
+    })()
   },
   hexToRGB: function(hex) {
     var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -2463,7 +2477,7 @@ firetable.ui = {
       firetable.actions.cardCase();
       $("#cardsOverlay").show();
     });
-    $("#pickerNav").on("click", "i", function() {
+    $("#pickerNav").on("click", "span", function() {
       try {
         var sec = $(this)[0].id;
         firetable.emojis.sec(sec);
