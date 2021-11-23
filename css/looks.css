@@ -1565,6 +1565,7 @@ a.importLinkCheck {
 #pickerNav {
   overflow: hidden;
   white-space: nowrap;
+  text-align: center;
 }
 
 input#pickerSearch {
@@ -1572,13 +1573,17 @@ input#pickerSearch {
   margin: var(--pad2) 0;
 }
 
-#pickerNav i {
+#pickerNav span {
   margin-right: var(--pad2);
   cursor: pointer;
+  filter: saturate(0);
+  opacity: .6;
 }
 
 #pickerNav .on {
   color: var(--orange);
+  filter: none;
+  opacity: 1;
 }
 
 img.emoji {
