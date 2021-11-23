@@ -47,7 +47,7 @@ var firetable = {
   atUsers: [],
   atUsersFiltered: [],
   atString: "",
-  debug: true
+  debug: false
 }
 
 if (typeof ftconfigs == "undefined") throw "config.js is missing! Copy config.js.example and rename to config.js. Edit this file and add your own app's information.";
@@ -57,7 +57,7 @@ chatScroll.getScrollElement().addEventListener('scroll', function() {
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-firetable.version = "01.08.98";
+firetable.version = "01.09.00";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -844,7 +844,7 @@ firetable.actions = {
         return SC.get("tracks/" + track.id);
       };
 
-      firetable.actions.resolveSCLink(link, function(tracks){
+      firetable.actions.resolveSCLink(link, function(tracks) {
         if (tracks) {
           var yargo = tracks.title.split(" - ");
           var sartist = yargo[0];
@@ -861,18 +861,29 @@ firetable.actions = {
 
     }
   },
-  resolveSCLink: function(link, callback){
-    var importantStuff = link.replace("https://soundcloud.com/","");
-    importantStuff = importantStuff.replace("http://soundcloud.com/","");
+  resolveSCLink: function(link, callback) {
+    var importantStuff = link.replace("https://soundcloud.com/", "");
+    importantStuff = importantStuff.replace("http://soundcloud.com/", "");
     $.ajax({
-            url: "https://thompsn.com/resolvesc/?q="+importantStuff,
-            type: 'GET',
-            dataType: 'json', // added data type
-            success: function(res) {
-                console.log(res);
-                callback(res.response);
-            }
-        });
+      url: "https://thompsn.com/resolvesc/?q=" + importantStuff,
+      type: 'GET',
+      dataType: 'json',
+      success: function(res) {
+        console.log(res);
+        callback(res.response);
+      }
+    });
+  },
+  scGet: function(type, q, callback) {
+    $.ajax({
+      url: "https://thompsn.com/soundcloud/?type=" + type + "&q=" + q,
+      type: 'GET',
+      dataType: 'json',
+      success: function(res) {
+        console.log(res);
+        callback(res.response);
+      }
+    });
   },
   updateQueue: function() {
     //this fires when someone drags a song to a new spot in the queue
@@ -906,11 +917,9 @@ firetable.actions = {
     if (song.type == 1) {
       $tags.find(".tagSongLink").attr("href", "https://youtube.com/watch?v=" + song.cid);
     } else if (song.type == 2) {
-      SC.get('/tracks', {
-        ids: song.cid
-      }).then(function(tracks) {
-        if (tracks.length) {
-          $tags.find(".tagSongLink").attr("href", tracks[0].permalink_url);
+      firetable.actions.scGet('tracks', song.cid, function(tracks) {
+        if (tracks.permalink_url) {
+          $tags.find(".tagSongLink").attr("href", tracks.permalink_url);
         } else {
           $tags.find(".tagSongLink").attr("href", "http://howtojointheindiediscothequewaitlist.com/ThisSongIsBroken?thanks=true");
         }
@@ -979,19 +988,24 @@ firetable.actions = {
       keyWordsearch();
 
     } else if (type == 2) {
-      SC.get('/playlists/' + id).then(function(listinfo) {
+      firetable.actions.scGet('playlists', id, function(listinfo) {
         firetable.debug && console.log('sc tracks:', listinfo.tracks);
         var listid = ftapi.actions.createList(name);
         $("#listpicker").append("<option id=\"pdopt" + listid + "\" value=\"" + listid + "\">" + name + "</option>");
         for (var i = 0; i < listinfo.tracks.length; i++) {
-          var yargo = listinfo.tracks[i].title.split(" - ");
-          var sartist = yargo[0];
-          var stitle = yargo[1];
-          if (!stitle) {
-            stitle = sartist;
-            sartist = listinfo.tracks[i].user.username;
+          if (listinfo.tracks[i].title) {
+            var yargo = listinfo.tracks[i].title.split(" - ");
+            var sartist = yargo[0];
+            var stitle = yargo[1];
+            if (!stitle) {
+              stitle = sartist;
+              sartist = listinfo.tracks[i].user.username;
+            }
+            var goodTitle = sartist + " - " + stitle;
+          } else {
+            var goodTitle = "Unknown";
           }
-          var goodTitle = sartist + " - " + stitle;
+
           ftapi.actions.addToList(2, goodTitle, listinfo.tracks[i].id, listid);
         }
       });
@@ -1175,30 +1189,28 @@ firetable.emojis = {
 firetable.utilities = {
   getEmojiMap: function() {
     firetable.emojiMap = {};
-    (async function(){
+    (async function() {
       urls = [
         "https://unpkg.com/unicode-emoji-json@0.3.0/data-by-group.json",
         "https://unpkg.com/emojilib@3.0.4/dist/emoji-en-US.json"
       ];
       try {
-        const requests = urls.map((url) => fetch(url)); 
-        const responses = await Promise.all(requests); 
+        const requests = urls.map((url) => fetch(url));
+        const responses = await Promise.all(requests);
         const promises = responses.map((response) => response.json());
         const data = await Promise.all(promises);
         for (const [category, emojisArr] of Object.entries(data[0])) {
           let catid = category.replace(/[\s&]+/g, '_').toLowerCase();
-          $('#pickerNav').append('<span id="bpicker'+catid+'" title="'+category+'">'+emojisArr[0].emoji+'</span>');
-          $('#pickerContents').append('<div id="picker'+catid+'"><h3>'+category+'</h3></div>');
+          $('#pickerNav').append('<span id="bpicker' + catid + '" title="' + category + '">' + emojisArr[0].emoji + '</span>');
+          $('#pickerContents').append('<div id="picker' + catid + '"><h3>' + category + '</h3></div>');
           for (let i in emojisArr) {
             firetable.emojiMap[emojisArr[i].slug] = emojisArr[i].emoji;
-            var words = ( data[1][emojisArr[i].emoji] !== undefined ) ? data[1][emojisArr[i].emoji].join(',') : "";
+            var words = (data[1][emojisArr[i].emoji] !== undefined) ? data[1][emojisArr[i].emoji].join(',') : "";
             $("#picker" + catid).append('<span role="button" class="pickerResult" title="' + emojisArr[i].slug + '" data-alternative-name="' + words + '">' + emojisArr[i].emoji + '</span>');
           }
         }
         twemoji.parse(document.getElementById("pickerNav"));
-      }
-      catch(err) {
-      };
+      } catch (err) {};
     })()
   },
   hexToRGB: function(hex) {
@@ -1241,7 +1253,7 @@ firetable.utilities = {
       var shortname = x.replace(/\:/g, "");
       if (firetable.emojiMap[shortname]) {
         response = "<span title=\"" + x + "\">" + firetable.emojiMap[shortname] + "</span>";
-      } else if (shortname == "rohn"){
+      } else if (shortname == "rohn") {
         response = "<span class=\"rohnmoji\" title=\":rohn:\"></span>";
       }
       return response;
@@ -2853,7 +2865,7 @@ firetable.ui = {
             //see if this is a particular list's url...
             console.log(val);
             if (val.match(/.*\/\/soundcloud\.com\/.*\/sets\/.*/)) {
-              firetable.actions.resolveSCLink(val, function(item){
+              firetable.actions.resolveSCLink(val, function(item) {
                 if (item) {
                   if (item.sharing == "public" && item.kind == "playlist") {
                     $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
@@ -3095,7 +3107,7 @@ firetable.ui = {
           $('#searchResults').html("Searching...");
           if (directLink) {
             firetable.debug && console.log("sc direct link found");
-            firetable.actions.resolveSCLink(q, function(item){
+            firetable.actions.resolveSCLink(q, function(item) {
               var items = [];
               if (item.kind == "track") items.push(item);
               showResults(items);
