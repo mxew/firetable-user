@@ -57,7 +57,7 @@ chatScroll.getScrollElement().addEventListener('scroll', function() {
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-firetable.version = "01.09.00";
+firetable.version = "01.09.10";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -1205,7 +1205,7 @@ firetable.utilities = {
           $('#pickerContents').append('<div id="picker' + catid + '"><h3>' + category + '</h3></div>');
           for (let i in emojisArr) {
             firetable.emojiMap[emojisArr[i].slug] = emojisArr[i].emoji;
-            var words = (data[1][emojisArr[i].emoji] !== undefined) ? data[1][emojisArr[i].emoji].join(',') : "";
+            var words = (data[1][emojisArr[i].emoji] !== undefined) ? data[1][emojisArr[i].emoji].join(',') : emojisArr[i].slug;
             $("#picker" + catid).append('<span role="button" class="pickerResult" title="' + emojisArr[i].slug + '" data-alternative-name="' + words + '">' + emojisArr[i].emoji + '</span>');
           }
         }
