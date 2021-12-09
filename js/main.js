@@ -1194,6 +1194,32 @@ firetable.utilities = {
         "https://unpkg.com/unicode-emoji-json@0.3.0/data-by-group.json",
         "https://unpkg.com/emojilib@3.0.4/dist/emoji-en-US.json"
       ];
+      duhdoymojis = {
+        '☕': ['coffee'],
+        '🚩': ['triangular_flag_on_post'],
+        '👋': ['wave'],
+        '🆔': ['id'],
+        '📈': ['chart_with_upwards_trend'],
+        '🚨': ['rotating_light'],
+        '🌧️': ['rain'],
+        '✅': ['white_check_mark'],
+        '🛰️': ['artificial_satellite'],
+        '🍵': ['tea'],
+        '❤️': ['heart'],
+        '💦': ['splash'],
+        '💩': ['poop'],
+        '💯': ['100'],
+        '💨': ['dash'],
+        '🤡': ['clown'],
+        '🥱': ['yawn'],
+        '🙂': ['smile'],
+        '👌': ['ok'],
+        '💥': ['boom'],
+        '🍺': ['beer'],
+        '🍻': ['beers'],
+        '🥃': ['whiskey'],
+        '🌨️': ['snow'],
+      };
       try {
         const requests = urls.map((url) => fetch(url));
         const responses = await Promise.all(requests);
@@ -1205,8 +1231,20 @@ firetable.utilities = {
           $('#pickerContents').append('<div id="picker' + catid + '"><h3>' + category + '</h3></div>');
           for (let i in emojisArr) {
             firetable.emojiMap[emojisArr[i].slug] = emojisArr[i].emoji;
-            var words = (data[1][emojisArr[i].emoji] !== undefined) ? data[1][emojisArr[i].emoji].join(',') : "";
+            var words = "";
+            words += (data[1][emojisArr[i].emoji] !== undefined) ? data[1][emojisArr[i].emoji].join(',') : "";
+            words += (duhdoymojis[emojisArr[i].emoji] !== undefined) ? ','+duhdoymojis[emojisArr[i].emoji].join(',') : "";
             $("#picker" + catid).append('<span role="button" class="pickerResult" title="' + emojisArr[i].slug + '" data-alternative-name="' + words + '">' + emojisArr[i].emoji + '</span>');
+          }
+          for (let i in data[1]) {
+            for (let j in data[1][i]) {
+              firetable.emojiMap[data[1][i][j]] = i;
+            }
+          }
+          for (let i in duhdoymojis) {
+            for (let j in duhdoymojis[i]) {
+              firetable.emojiMap[duhdoymojis[i][j]] = i;
+            }
           }
         }
         twemoji.parse(document.getElementById("pickerNav"));
