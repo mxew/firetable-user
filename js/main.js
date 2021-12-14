@@ -57,11 +57,8 @@ chatScroll.getScrollElement().addEventListener('scroll', function() {
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-<<<<<<< HEAD
-firetable.version = "01.09.10";
-=======
 firetable.version = "01.09.01";
->>>>>>> emojiupdate
+
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -1236,13 +1233,9 @@ firetable.utilities = {
           $('#pickerContents').append('<div id="picker' + catid + '"><h3>' + category + '</h3></div>');
           for (let i in emojisArr) {
             firetable.emojiMap[emojisArr[i].slug] = emojisArr[i].emoji;
-<<<<<<< HEAD
-            var words = (data[1][emojisArr[i].emoji] !== undefined) ? data[1][emojisArr[i].emoji].join(',') : emojisArr[i].slug;
-=======
             var words = "";
             words += (data[1][emojisArr[i].emoji] !== undefined) ? data[1][emojisArr[i].emoji].join(',') : "";
             words += (duhdoymojis[emojisArr[i].emoji] !== undefined) ? ','+duhdoymojis[emojisArr[i].emoji].join(',') : "";
->>>>>>> emojiupdate
             $("#picker" + catid).append('<span role="button" class="pickerResult" title="' + emojisArr[i].slug + '" data-alternative-name="' + words + '">' + emojisArr[i].emoji + '</span>');
           }
           for (let i in duhdoymojis) {
