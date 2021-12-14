@@ -57,7 +57,7 @@ chatScroll.getScrollElement().addEventListener('scroll', function() {
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-firetable.version = "01.09.00";
+firetable.version = "01.09.01";
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -1206,6 +1206,7 @@ firetable.utilities = {
         '🛰️': ['artificial_satellite'],
         '🍵': ['tea'],
         '❤️': ['heart'],
+        '🌊': ['ocean'],
         '💦': ['splash'],
         '💩': ['poop'],
         '💯': ['100'],
@@ -1235,11 +1236,6 @@ firetable.utilities = {
             words += (data[1][emojisArr[i].emoji] !== undefined) ? data[1][emojisArr[i].emoji].join(',') : "";
             words += (duhdoymojis[emojisArr[i].emoji] !== undefined) ? ','+duhdoymojis[emojisArr[i].emoji].join(',') : "";
             $("#picker" + catid).append('<span role="button" class="pickerResult" title="' + emojisArr[i].slug + '" data-alternative-name="' + words + '">' + emojisArr[i].emoji + '</span>');
-          }
-          for (let i in data[1]) {
-            for (let j in data[1][i]) {
-              firetable.emojiMap[data[1][i][j]] = i;
-            }
           }
           for (let i in duhdoymojis) {
             for (let j in duhdoymojis[i]) {
