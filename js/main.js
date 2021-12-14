@@ -57,7 +57,7 @@ chatScroll.getScrollElement().addEventListener('scroll', function() {
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-firetable.version = "01.09.01";
+firetable.version = "01.09.02";
 
 var player, $playlistItemTemplate;
 
@@ -181,6 +181,7 @@ firetable.init = function() {
 
   $("#idtitle").text(ftconfigs.roomName);
   $("#welcomeName").text(ftconfigs.roomName);
+  if (ftconfigs.logoImage) $("#roomlogo").css("background-image", "url("+ftconfigs.logoImage+")")
   document.title = ftconfigs.roomName + " | firetable";
   if (ftconfigs.roomInfoUrl.length) $("#roomInfo").attr("href", ftconfigs.roomInfoUrl);
   $("#version").text("You're running firetable v" + firetable.version + ".");
