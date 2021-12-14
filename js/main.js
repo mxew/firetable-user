@@ -57,7 +57,7 @@ chatScroll.getScrollElement().addEventListener('scroll', function() {
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-firetable.version = "01.09.03";
+firetable.version = "01.09.04";
 
 var player, $playlistItemTemplate;
 
@@ -195,6 +195,11 @@ if (ftconfigs.redditURL){
 if (ftconfigs.lastfmURL){
   $(".sociallogo.lastfm").attr("href", ftconfigs.lastfmURL);
   $(".sociallogo.lastfm").css("display", "inline-block");
+}
+
+if (ftconfigs.discordURL){
+  $(".sociallogo.discord").attr("href", ftconfigs.discordURL);
+  $(".sociallogo.discord").css("display", "inline-block");
 }
 
 if (ftconfigs.soundcloudURL){

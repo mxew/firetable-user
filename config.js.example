@@ -14,6 +14,7 @@ var ftconfigs = {
    soundcloudURL: "",
    redditURL: "",
    lastfmURL: "",
+   discordURL: "",
    roomInfoUrl: "", // Change what the "?" button at the top of the page links to. This can be any URL
    firebase:{ // put the info from your Firebase app here. can be found in the Firebase console
     apiKey: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
