@@ -57,7 +57,7 @@ chatScroll.getScrollElement().addEventListener('scroll', function() {
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-firetable.version = "01.09.02";
+firetable.version = "01.09.03";
 
 var player, $playlistItemTemplate;
 
@@ -181,6 +181,27 @@ firetable.init = function() {
 
   $("#idtitle").text(ftconfigs.roomName);
   $("#welcomeName").text(ftconfigs.roomName);
+
+if (ftconfigs.facebookURL){
+  $(".sociallogo.facebook").attr("href", ftconfigs.facebookURL);
+  $(".sociallogo.facebook").css("display", "inline-block");
+}
+
+if (ftconfigs.redditURL){
+  $(".sociallogo.reddit").attr("href", ftconfigs.redditURL);
+  $(".sociallogo.reddit").css("display", "inline-block");
+}
+
+if (ftconfigs.lastfmURL){
+  $(".sociallogo.lastfm").attr("href", ftconfigs.lastfmURL);
+  $(".sociallogo.lastfm").css("display", "inline-block");
+}
+
+if (ftconfigs.soundcloudURL){
+  $(".sociallogo.soundcloud").attr("href", ftconfigs.soundcloudURL);
+  $(".sociallogo.soundcloud").css("display", "inline-block");
+}
+
   if (ftconfigs.logoImage) $("#roomlogo").css("background-image", "url("+ftconfigs.logoImage+")")
   document.title = ftconfigs.roomName + " | firetable";
   if (ftconfigs.roomInfoUrl.length) $("#roomInfo").attr("href", ftconfigs.roomInfoUrl);
