@@ -9,6 +9,12 @@ var ftconfigs = {
    roomName: "Indie Discotheque's Basement", // what you'd like your room name to be displayed as
    roomNameShort: "Indie Discotheque", // if you have a long room name, put a shorter version here (like 2 words probably max).
    defaultAlbumArtUrl: "", // url of an image to use for tracks with no album art. should be a square and at least 500x500 px for best results.
+   logoImage: "", // url of an image to use for logo
+   facebookURL: "",
+   soundcloudURL: "",
+   redditURL: "",
+   lastfmURL: "",
+   discordURL: "",
    roomInfoUrl: "", // Change what the "?" button at the top of the page links to. This can be any URL
    firebase:{ // put the info from your Firebase app here. can be found in the Firebase console
     apiKey: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",

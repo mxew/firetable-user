@@ -434,7 +434,41 @@ span.removemeIcon.material-icons {
   display: none;
   font-size: 1rem;
   color: #fff;
-  font-weight: 400;
+  font-weight: 700;
+  margin-right:1rem;
+}
+
+#socialthings{
+}
+
+a.sociallogo{
+  text-decoration:none;
+  display:none;
+  margin: 0.2rem 0.2rem 0 0.2rem;
+
+}
+
+.sociallogo svg:hover{
+  fill: #fff;
+}
+.sociallogo svg {
+    width: 1.2rem;
+    height: 1.2rem;
+    fill: #888;
+}
+
+div#sociallthings {
+    margin-top: 0.25rem;
+}
+
+div#roomlogo {
+  background-image: url(../img/idlogo2.png);
+  background-size: contain;
+  width: 3rem;
+  height: 3rem;
+  margin-right: 1.5rem;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 #loggedInName {
@@ -1600,7 +1634,7 @@ img.emoji {
   vertical-align: -0.1em;
   background-image: url(../img/rohn.png);
   display: inline-block;
-  background-size:cover;
+  background-size: cover;
 }
 
 #morechats {

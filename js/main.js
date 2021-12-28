@@ -57,7 +57,8 @@ chatScroll.getScrollElement().addEventListener('scroll', function() {
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-firetable.version = "01.09.01";
+firetable.version = "01.09.04";
+
 var player, $playlistItemTemplate;
 
 var idlejs = new IdleJs({
@@ -180,6 +181,33 @@ firetable.init = function() {
 
   $("#idtitle").text(ftconfigs.roomName);
   $("#welcomeName").text(ftconfigs.roomName);
+
+if (ftconfigs.facebookURL){
+  $(".sociallogo.facebook").attr("href", ftconfigs.facebookURL);
+  $(".sociallogo.facebook").css("display", "inline-block");
+}
+
+if (ftconfigs.redditURL){
+  $(".sociallogo.reddit").attr("href", ftconfigs.redditURL);
+  $(".sociallogo.reddit").css("display", "inline-block");
+}
+
+if (ftconfigs.lastfmURL){
+  $(".sociallogo.lastfm").attr("href", ftconfigs.lastfmURL);
+  $(".sociallogo.lastfm").css("display", "inline-block");
+}
+
+if (ftconfigs.discordURL){
+  $(".sociallogo.discord").attr("href", ftconfigs.discordURL);
+  $(".sociallogo.discord").css("display", "inline-block");
+}
+
+if (ftconfigs.soundcloudURL){
+  $(".sociallogo.soundcloud").attr("href", ftconfigs.soundcloudURL);
+  $(".sociallogo.soundcloud").css("display", "inline-block");
+}
+
+  if (ftconfigs.logoImage) $("#roomlogo").css("background-image", "url("+ftconfigs.logoImage+")")
   document.title = ftconfigs.roomName + " | firetable";
   if (ftconfigs.roomInfoUrl.length) $("#roomInfo").attr("href", ftconfigs.roomInfoUrl);
   $("#version").text("You're running firetable v" + firetable.version + ".");
@@ -1192,40 +1220,18 @@ firetable.utilities = {
     (async function() {
       urls = [
         "https://unpkg.com/unicode-emoji-json@0.3.0/data-by-group.json",
+        "https://unpkg.com/emojilib@2.4.0/emojis.json",
         "https://unpkg.com/emojilib@3.0.4/dist/emoji-en-US.json"
       ];
-      duhdoymojis = {
-        '☕': ['coffee'],
-        '🚩': ['triangular_flag_on_post'],
-        '👋': ['wave'],
-        '🆔': ['id'],
-        '📈': ['chart_with_upwards_trend'],
-        '🚨': ['rotating_light'],
-        '🌧️': ['rain'],
-        '✅': ['white_check_mark'],
-        '🛰️': ['artificial_satellite'],
-        '🍵': ['tea'],
-        '❤️': ['heart'],
-        '🌊': ['ocean'],
-        '💦': ['splash'],
-        '💩': ['poop'],
-        '💯': ['100'],
-        '💨': ['dash'],
-        '🤡': ['clown'],
-        '🥱': ['yawn'],
-        '🙂': ['smile'],
-        '👌': ['ok'],
-        '💥': ['boom'],
-        '🍺': ['beer'],
-        '🍻': ['beers'],
-        '🥃': ['whiskey'],
-        '🌨️': ['snow'],
-      };
       try {
         const requests = urls.map((url) => fetch(url));
         const responses = await Promise.all(requests);
         const promises = responses.map((response) => response.json());
         const data = await Promise.all(promises);
+        let oldmojis = {};
+        for (const [oldSlug, emojiObj] of Object.entries(data[1])) {
+          oldmojis[emojiObj.char] = oldSlug;
+        }
         for (const [category, emojisArr] of Object.entries(data[0])) {
           let catid = category.replace(/[\s&]+/g, '_').toLowerCase();
           $('#pickerNav').append('<span id="bpicker' + catid + '" title="' + category + '">' + emojisArr[0].emoji + '</span>');
@@ -1233,14 +1239,12 @@ firetable.utilities = {
           for (let i in emojisArr) {
             firetable.emojiMap[emojisArr[i].slug] = emojisArr[i].emoji;
             var words = "";
-            words += (data[1][emojisArr[i].emoji] !== undefined) ? data[1][emojisArr[i].emoji].join(',') : "";
-            words += (duhdoymojis[emojisArr[i].emoji] !== undefined) ? ','+duhdoymojis[emojisArr[i].emoji].join(',') : "";
+            words += (data[2][emojisArr[i].emoji] !== undefined) ? data[2][emojisArr[i].emoji].join(',') : "";
+            words += (oldmojis[emojisArr[i].emoji] !== undefined) ? ','+oldmojis[emojisArr[i].emoji] : "";
             $("#picker" + catid).append('<span role="button" class="pickerResult" title="' + emojisArr[i].slug + '" data-alternative-name="' + words + '">' + emojisArr[i].emoji + '</span>');
           }
-          for (let i in duhdoymojis) {
-            for (let j in duhdoymojis[i]) {
-              firetable.emojiMap[duhdoymojis[i][j]] = i;
-            }
+          for (let i in oldmojis) {
+            firetable.emojiMap[oldmojis[i]] = i;
           }
         }
         twemoji.parse(document.getElementById("pickerNav"));
