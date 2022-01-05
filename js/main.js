@@ -57,7 +57,7 @@ chatScroll.getScrollElement().addEventListener('scroll', function() {
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-firetable.version = "01.09.04";
+firetable.version = "01.09.05";
 
 var player, $playlistItemTemplate;
 
