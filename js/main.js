@@ -47,7 +47,7 @@ var firetable = {
     atUsers: [],
     atUsersFiltered: [],
     atString: "",
-    debug: false,
+    debug: true,
 };
 
 if (typeof ftconfigs == "undefined")
@@ -183,27 +183,22 @@ firetable.init = function () {
 
     if (ftconfigs.facebookURL) {
         $(".sociallogo.facebook").attr("href", ftconfigs.facebookURL);
-        $(".sociallogo.facebook").css("display", "inline-block");
     }
 
     if (ftconfigs.redditURL) {
         $(".sociallogo.reddit").attr("href", ftconfigs.redditURL);
-        $(".sociallogo.reddit").css("display", "inline-block");
     }
 
     if (ftconfigs.lastfmURL) {
         $(".sociallogo.lastfm").attr("href", ftconfigs.lastfmURL);
-        $(".sociallogo.lastfm").css("display", "inline-block");
     }
 
     if (ftconfigs.discordURL) {
         $(".sociallogo.discord").attr("href", ftconfigs.discordURL);
-        $(".sociallogo.discord").css("display", "inline-block");
     }
 
     if (ftconfigs.soundcloudURL) {
         $(".sociallogo.soundcloud").attr("href", ftconfigs.soundcloudURL);
-        $(".sociallogo.soundcloud").css("display", "inline-block");
     }
 
     if (ftconfigs.logoImage) $("#roomlogo").css("background-image", "url(" + ftconfigs.logoImage + ")");
@@ -337,7 +332,7 @@ firetable.actions = {
     },
     showLoginScreen: function () {
         $("#cardCaseButton").hide();
-        $("#loggedInName").hide();
+        $("#loggedInUser").hide();
         $("#logOutButton").hide().off();
         $("#mainGrid").removeClass().addClass("login");
         $("#grab").css("display", "none");
@@ -361,7 +356,7 @@ firetable.actions = {
         });
     },
     loggedIn: function (user) {
-        firetable.debug && console.log("user signed in!");
+        firetable.debug && console.log("user signed in!", user.uid, ftapi.uid, ftapi.users);
         if ($("#login").html()) {
             firetable.loginForm = $("#login").html();
             firetable.ui.loginEventsDestroy();
@@ -370,12 +365,26 @@ firetable.actions = {
 
         if (ftapi.users[ftapi.uid]) {
             if (ftapi.users[ftapi.uid].username) {
-                $("#loggedInName").text(ftapi.users[ftapi.uid].username);
+                $("#loggedInUser .botson").css(
+                    "background-image",
+                    "url(https://indiediscotheque.com/robots/" +
+                        ftapi.uid +
+                        ftapi.users[ftapi.uid].username +
+                        ".png?size=175x175)"
+                );
             } else {
-                $("#loggedInName").text(user.uid);
+                $("#loggedInUser .botson").data("uid", user.uid);
+                $("#loggedInUser .botson").css(
+                    "background-image",
+                    "url(https://indiediscotheque.com/robots/" + user.uid + ".png?size=175x175)"
+                );
             }
         } else {
-            $("#loggedInName").text(user.uid);
+            $("#loggedInUser .botson").data("uid", user.uid);
+            $("#loggedInUser .botson").css(
+                "background-image",
+                "url(https://indiediscotheque.com/robots/" + user.uid + ".png?size=175x175)"
+            );
         }
 
         ftapi.lookup.allLists(function (allPlaylists) {
@@ -427,7 +436,7 @@ firetable.actions = {
             });
         });
         $("#cardCaseButton").show();
-        $("#loggedInName").show();
+        $("#loggedInUser").show();
         $("#logOutButton").show().on("click", firetable.actions.logOut);
         firetable.debug && console.log("remove login class from mainGrid");
         $("#mainGrid").removeClass().addClass("mmusrs");
@@ -1394,10 +1403,10 @@ firetable.utilities = {
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;")
                 /*
-      You may add other replacements here for HTML only
-      (but it's not necessary).
-      Or for XML, only if the named entities are defined in its DTD.
-      */
+			You may add other replacements here for HTML only
+			(but it's not necessary).
+			Or for XML, only if the named entities are defined in its DTD.
+			*/
                 .replace(/\r\n/g, preserveCR) /* Must be before the next replacement. */
                 .replace(/[\r\n]/g, preserveCR)
         );
@@ -2467,10 +2476,16 @@ firetable.ui = {
             );
         });
         ftapi.events.on("usersChanged", function (okdata) {
-            if ($("#loggedInName").text() == ftapi.uid) {
+            if ($("#loggedInUser .botson").data("uid") == ftapi.uid) {
                 if (ftapi.users[ftapi.uid]) {
                     if (ftapi.users[ftapi.uid].username) {
-                        $("#loggedInName").text(ftapi.users[ftapi.uid].username);
+                        $("#loggedInUser .botson").css(
+                            "background-image",
+                            "url(https://indiediscotheque.com/robots/" +
+                                ftapi.uid +
+                                ftapi.users[ftapi.uid].username +
+                                ".png?size=175x175)"
+                        );
                     }
                 }
             }
@@ -3159,7 +3174,13 @@ firetable.ui = {
                             $("#usernameResponse").text(error);
                         } else {
                             $("#usernameResponse").text("Great job! Your name is now " + newDjName);
-                            $("#loggedInName").text(newDjName);
+                            $("#loggedInUser .botson").css(
+                                "background-image",
+                                "url(https://indiediscotheque.com/robots/" +
+                                    ftapi.uid +
+                                    newDjName +
+                                    ".png?size=175x175)"
+                            );
                         }
                     });
                 }
@@ -3798,14 +3819,14 @@ firetable.ui = {
                 $("#stage").css("background-color", data.color);
             }
             /*
-      if (firetable.countcolor == "#fff"){
-        firetable.countcolor = "#ffffffc9";
-      } else if (firetable.countcolor == "#000"){
-        firetable.debug && console.log("a")
-        firetable.countcolor = "#000000c9";
-      }
-      $("#stage").css("color", firetable.countcolor);
-      */
+			if (firetable.countcolor == "#fff"){
+				firetable.countcolor = "#ffffffc9";
+			} else if (firetable.countcolor == "#000"){
+				firetable.debug && console.log("a")
+				firetable.countcolor = "#000000c9";
+			}
+			$("#stage").css("color", firetable.countcolor);
+			*/
             $(".customColorStyles").remove();
 
             $(".festiveLights").remove();

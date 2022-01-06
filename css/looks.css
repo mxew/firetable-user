@@ -440,12 +440,17 @@ span.removemeIcon.material-icons {
 }
 
 #socialthings {
+    display: flex;
 }
 
 a.sociallogo {
     text-decoration: none;
     display: none;
     margin: 0.2rem 0.2rem 0 0.2rem;
+}
+
+a.sociallogo[href] {
+    display: block;
 }
 
 .sociallogo svg:hover {
@@ -457,11 +462,7 @@ a.sociallogo {
     fill: #888;
 }
 
-div#sociallthings {
-    margin-top: 0.25rem;
-}
-
-div#roomlogo {
+#roomlogo {
     background-image: url(../img/idlogo2.png);
     background-size: contain;
     width: 3rem;
@@ -471,13 +472,18 @@ div#roomlogo {
     background-position: center;
 }
 
-#loggedInName {
-    margin: 0 var(--pad2);
+#loggedInUser {
+    margin-left: var(--pad2);
     cursor: pointer;
     text-decoration: none;
 }
 
-#loggedInName:hover {
+#loggedInUser .botson {
+    width: 2rem;
+    height: 2rem;
+}
+
+#loggedInUser:hover {
     text-decoration: underline;
 }
 
@@ -1834,6 +1840,10 @@ img.emoji {
     padding: var(--pad4);
     color: #eee;
     background-color: #222;
+}
+
+.modalHeader h2 {
+    margin-right: auto;
 }
 
 .closeModal {
