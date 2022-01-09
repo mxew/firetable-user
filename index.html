@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" type="text/css" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
         <link rel="stylesheet" href="css/looks.css?v=01.09.05" type="text/css" />
     </head>
 
@@ -245,21 +246,31 @@
             </div>
 
             <div id="usersbox">
-                <div id="usertabs" class="tabs">
-                    <button role="button" class="tab on" id="label1">Everyone<span class="count"></span></button>
-                    <button role="button" class="tab" id="label2">Waitlist<span class="count"></span></button>
-                </div>
-                <div id="userslist">
-                    <div id="allusersWrap" class="usersWrap" data-simplebar>
-                        <div id="allusers">
-                            <div id="usersBot"></div>
-                            <div id="usersSuper"></div>
-                            <div id="usersMod"></div>
-                            <div id="usersRegular"></div>
-                        </div>
+                <div id="usersHeader">
+                    <h2><span id="numListeners"></span> Users</h2>
+                    <div class="listenerType">
+                        <i class="material-icons">room</i> <span id="numRoomListeners"></span>
                     </div>
-                    <div id="justwaitWrap" class="usersWrap">
-                        <div id="justwaitlist" data-simplebar>Loading waitlist...</div>
+                    <div class="listenerType">
+                        <i class="material-icons">radio</i> <span id="numStreamListeners"></span>
+                    </div>
+                </div>
+                <div id="allUsersWrap" class="usersWrap" data-simplebar>
+                    <div id="allUsers">
+                        <div id="userKEY" class="prson">
+                            <!-- template for users -->
+                            <div class="botson">
+                                <span class="material-icons blockon">block</span>
+                                <span class="material-icons imptcon">label_important</span>
+                            </div>
+                            <span class="prsnName"></span>
+                            <span class="djOrder"></span>
+                            <span class="material-icons prsnRole"></span>
+                        </div>
+                        <div id="usersBot"></div>
+                        <div id="usersSuper"></div>
+                        <div id="usersMod"></div>
+                        <div id="usersRegular"></div>
                     </div>
                 </div>
             </div>

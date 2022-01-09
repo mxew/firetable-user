@@ -221,31 +221,38 @@ code {
     display: none;
 }
 
-.utitle,
-.prsnJoined {
-    color: rgba(255, 255, 255, 0.4);
+.prsnRole {
+    font-size: 1.125rem;
+    color: #43b581;
+}
+
+.utitle {
     font-size: 0.66rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.4);
 }
 
-.herecon {
-    color: #43b581;
-    background-color: #282828;
+.imptcon {
+    display: none;
+    position: absolute;
+    right: -0.25rem;
     height: calc(0.75rem + 4px);
     width: calc(0.75rem + 4px);
     padding: 2px;
     font-size: 0.75em;
-    display: block;
-    position: absolute;
-    bottom: 0;
+    color: var(--orange);
+    background-color: #282828;
     border-radius: 999px;
-    right: -0.25rem;
 }
 
-.herecon.idle {
-    color: #faa61a;
+.prson.idle .prsnRole {
+    color: var(--orange);
+}
+
+.prson.idlething .imptcon {
+    display: block;
 }
 
 .notice {
@@ -597,31 +604,47 @@ a.sociallogo[href] {
     grid-area: users;
     display: flex;
     flex-direction: column;
+    background-color: #181818;
     overflow: hidden;
-}
-
-#userslist {
-    flex: 1;
-    background-color: #282828;
-    overflow: hidden;
-}
-
-#usertabs {
-    padding-top: 0.5rem;
-    background-color: #222;
 }
 
 .usersWrap {
     overflow: auto;
 }
 
-#allusers,
-#justwaitlist {
+#usersHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: var(--pad2) var(--pad3);
+    color: #888;
+    background-color: #282828;
+}
+
+#usersHeader h2 {
+    margin-right: auto;
+    font-size: 1rem;
+    color: inherit;
+}
+
+#usersHeader .listenerType {
+    /*    display: flex;*/
+    display: none;
+    align-items: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+#usersHeader .material-icons {
+    font-size: 1rem;
+    color: #888;
+}
+
+#allUsers {
     padding-top: 1rem;
 }
 
-#allusersWrap,
-#justwaitWrap {
+#allUsersWrap {
     height: 100%;
 }
 
@@ -632,8 +655,7 @@ a.sociallogo[href] {
     padding: var(--pad1) var(--pad4);
 }
 
-#allusersWrap .prson {
-    cursor: pointer;
+#allUsersWrap .prson {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -646,32 +668,38 @@ a.sociallogo[href] {
     flex: 1;
     font-size: 0.9rem;
     font-weight: 700;
-    line-height: 1.5;
+    line-height: 2;
     white-space: nowrap;
     overflow-x: hidden;
     text-overflow: ellipsis;
 }
 
-#userslist .utitle {
+.djOrder {
+    display: flex;
+    align-items: center;
+    margin-right: 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #888;
+}
+
+.djOrder .material-icons-outlined {
+    margin-right: 0.15rem;
+    font-size: 1.25rem;
+    color: #888;
+}
+
+#usersbox .prsnRole {
     margin-left: auto;
 }
 
-#userslist .prson .prsnJoined {
-    display: none;
-}
-
-#userslist .prson:hover .prsnJoined {
-    display: block;
-}
-
-#userslist .prson:hover .utitle {
-    display: none;
-}
-
-#userslist .prson.blockd .prsnName,
-#userslist .prson.blockd .prsnJoined,
-#userslist .prson.blockd .utitle {
+#usersbox .prson.blockd .prsnName,
+#usersbox .prson.blockd .prsnRole {
     opacity: 0.5;
+}
+#usersbox .prson.blockd .blockon {
+    display: block;
 }
 
 .botson {
@@ -683,14 +711,17 @@ a.sociallogo[href] {
     border-bottom: 1px solid #888;
 }
 
-#userslist .botson {
+#usersbox .botson {
+    display: flex;
+    align-items: center;
     margin-right: 0.75rem;
     width: 2rem;
     height: 2rem;
     position: relative;
 }
 
-span.block {
+span.blockon {
+    display: none;
     width: 2rem;
     height: 2rem;
     font-size: 2rem;
@@ -699,7 +730,7 @@ span.block {
     border-radius: 999px;
 }
 
-span.block:empty {
+span.blockon:empty {
     display: none;
 }
 
@@ -745,17 +776,6 @@ span.block:empty {
         "art plays plays";
     margin-bottom: auto;
     padding: var(--pad4);
-}
-
-#nowplaying::before {
-    content: "";
-    position: absolute;
-    top: 3rem;
-    left: 3rem;
-    width: 15rem;
-    height: 5rem;
-    background-color: rgba(0, 0, 0, 0.25);
-    box-shadow: 0 0 10rem 10rem rgba(0, 0, 0, 0.25);
 }
 
 #albumArt {
@@ -1335,7 +1355,7 @@ a.importLinkCheck {
     text-align: center;
     white-space: nowrap;
     text-overflow: ellipsis;
-    background-color: #333;
+    background-color: #282828;
     border-bottom: 1px solid #111;
     overflow: hidden;
 }
@@ -2035,7 +2055,6 @@ div#blog {
 #ftSuperCopButton,
 #audilert,
 #sc-widget,
-#justwaitWrap,
 .notice,
 #emojiPicker,
 #overlay {
@@ -2044,7 +2063,7 @@ div#blog {
 
 /*------------------------------------ Media Queries -*/
 @media only screen and (max-width: 799px) {
-    #allusersWrap .prson {
+    #allUsersWrap .prson {
         cursor: none;
         pointer-events: none;
     }
@@ -2165,11 +2184,6 @@ div#blog {
         display: none;
     }
 
-    #usertabs {
-        padding-top: 0;
-        background-color: black;
-    }
-
     #djStage {
         height: 30vh;
         min-height: 15rem;
@@ -2283,16 +2297,12 @@ div#blog {
         box-shadow: 0 -0.2rem 0.5rem -0.2rem black;
     }
 
-    #userslist {
-        display: flex;
-    }
-
     .usersWrap {
         display: block !important;
         flex: 1;
     }
 
-    #allusersWrap {
+    #allUsersWrap {
         border-right: 5px solid black;
     }
 }
