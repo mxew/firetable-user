@@ -83,6 +83,7 @@
     --pad4: 1.5rem;
     --pad5: 4rem;
     --pad6: 8rem;
+    --height-footer: 3rem;
 }
 
 *,
@@ -433,7 +434,7 @@ span.removemeIcon.material-icons {
     align-items: center;
     padding: var(--pad1) var(--pad3);
     color: #fff;
-    background-color: black;
+    background-color: #111;
 }
 
 .ftlogo {
@@ -518,7 +519,7 @@ a.sociallogo[href] {
     grid-area: main;
     flex: 1;
     display: grid;
-    grid-template-rows: auto auto auto 1fr;
+    grid-template-rows: auto auto 1fr auto;
     grid-template-columns: 1fr;
     grid-template-areas:
         "stage"
@@ -531,9 +532,9 @@ a.sociallogo[href] {
 #mainGrid.mmusrs {
     grid-template-areas:
         "stage"
-        "theme"
         "mmopts"
-        "users";
+        "users"
+        "theme";
 }
 
 #mainGrid.mmusrs #queuebox,
@@ -546,9 +547,9 @@ a.sociallogo[href] {
 #mainGrid.mmqueue {
     grid-template-areas:
         "stage"
-        "theme"
         "mmopts"
-        "queues";
+        "queues"
+        "theme";
 }
 
 #mainGrid.mmqueue #usersbox,
@@ -561,9 +562,9 @@ a.sociallogo[href] {
 #mainGrid.mmchat {
     grid-template-areas:
         "stage"
-        "theme"
         "mmopts"
-        "chat";
+        "chat"
+        "theme";
 }
 
 #mainGrid.mmchat #usersbox,
@@ -609,7 +610,7 @@ a.sociallogo[href] {
     grid-area: users;
     display: flex;
     flex-direction: column;
-    background-color: #181818;
+    background-color: #222;
     overflow: hidden;
 }
 
@@ -617,22 +618,23 @@ a.sociallogo[href] {
     overflow: auto;
 }
 
-#usersHeader {
+#usersFooter {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    padding: var(--pad2) var(--pad3);
+    padding: var(--pad2) var(--pad3) 0 var(--pad3);
     color: #888;
-    background-color: #282828;
+    background-color: #111;
 }
 
-#usersHeader h2 {
-    margin-right: auto;
-    font-size: 1rem;
+#usersFooter h2 {
+    padding: 0.2rem 0;
+    font-size: 0.75rem;
     color: inherit;
 }
 
-#usersHeader .listenerType {
+#usersFooter .listenerType {
     /*    display: flex;*/
     display: none;
     align-items: center;
@@ -640,7 +642,7 @@ a.sociallogo[href] {
     font-weight: 700;
 }
 
-#usersHeader .material-icons {
+#usersFooter .material-icons {
     font-size: 1rem;
     color: #888;
 }
@@ -1351,13 +1353,15 @@ a.importLinkCheck {
 #themebox {
     grid-area: theme;
     z-index: 15;
+    display: flex;
+    align-items: center;
+    height: var(--height-footer);
     padding: var(--pad2);
     font-size: 1rem;
     text-align: center;
     white-space: nowrap;
     text-overflow: ellipsis;
-    background-color: #282828;
-    border-bottom: 1px solid #111;
+    background-color: #111;
     overflow: hidden;
 }
 
@@ -1374,7 +1378,7 @@ a.importLinkCheck {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background-color: #181818;
+    background-color: #222;
 }
 
 #chatsWrap {
@@ -1399,7 +1403,6 @@ a.importLinkCheck {
     margin: var(--pad3);
     color: #ddd;
     word-break: break-word;
-    background-color: #181818;
 }
 
 .newChat .botson {
@@ -1586,8 +1589,9 @@ a.importLinkCheck {
     position: relative;
     display: flex;
     align-items: center;
+    height: var(--height-footer);
     padding: var(--pad1);
-    background-color: #282828;
+    background-color: #111;
 }
 
 #pickerResults {
@@ -1844,8 +1848,8 @@ img.emoji {
 .modalThing {
     display: none;
     flex-direction: column;
-    max-width: 80vw;
-    max-height: 80vh;
+    max-width: 100vw;
+    max-height: 100vh;
     background-color: #111;
     overflow: hidden;
 }
@@ -2079,39 +2083,35 @@ div#blog {
         top: 0;
     }
 
-    #mainGrid {
-        gap: 0 5px;
-    }
-
     #importPromptBox .modalContent {
         width: 480px;
     }
 
     #mainGrid,
     #mainGrid.mmchat {
-        grid-template-rows: auto auto auto 1fr;
+        grid-template-rows: auto auto 1fr auto;
         grid-template-columns: 60vw 40vw;
         grid-template-areas:
-            "stage theme"
             "stage chat"
             "mmopts chat"
-            "users chat";
+            "users chat"
+            "theme chat";
     }
 
     #mainGrid.mmusrs {
         grid-template-areas:
-            "stage theme"
             "stage chat"
             "mmopts chat"
-            "users chat";
+            "users chat"
+            "theme chat";
     }
 
     #mainGrid.mmqueue {
         grid-template-areas:
-            "stage theme"
             "stage chat"
             "mmopts chat"
-            "queues chat";
+            "queues chat"
+            "theme chat";
     }
 
     #mainGrid.mmchat #usersbox,
@@ -2151,6 +2151,10 @@ div#blog {
     #mainGrid.mmqueue #thehistoryWrap {
         grid-area: mmopts / queues;
     }
+
+    #actualChat {
+        background-color: #181818;
+    }
 }
 
 @media only screen and (min-width: 1200px) {
@@ -2158,12 +2162,12 @@ div#blog {
     #mainGrid.mmqueue,
     #mainGrid.mmchat,
     #mainGrid.mmusrs {
-        grid-template-rows: auto auto 1fr;
+        grid-template-rows: auto 1fr auto;
         grid-template-columns: minmax(16rem, 20rem) minmax(40vw, 100vw) minmax(24rem, 36rem);
         grid-template-areas:
-            "users stage theme"
             "users stage chat"
-            "users queues chat";
+            "users queues chat"
+            "users theme chat";
     }
 
     #mainGrid.mmusrs #queuebox,
@@ -2210,6 +2214,20 @@ div#blog {
 
     #thehistoryWrap {
         grid-area: queues !important;
+    }
+
+    #usersbox {
+        background-color: #181818;
+    }
+
+    #themebox {
+        text-align: right;
+    }
+
+    #usersFooter {
+        justify-content: flex-start;
+        height: var(--height-footer);
+        padding: var(--pad3);
     }
 }
 
