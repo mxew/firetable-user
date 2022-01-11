@@ -365,13 +365,16 @@ firetable.actions = {
 
         if (ftapi.users[ftapi.uid]) {
             if (ftapi.users[ftapi.uid].username) {
-                $("#loggedInUser .botson").css(
-                    "background-image",
-                    "url(https://indiediscotheque.com/robots/" +
-                        ftapi.uid +
-                        ftapi.users[ftapi.uid].username +
-                        ".png?size=175x175)"
-                );
+                $("#loggedInUser .botson")
+                    .css(
+                        "background-image",
+                        "url(https://indiediscotheque.com/robots/" +
+                            ftapi.uid +
+                            ftapi.users[ftapi.uid].username +
+                            ".png?size=175x175)"
+                    )
+                    .prop("title", "You're logged in as " + ftapi.users[ftapi.uid].username);
+                $("#loggedInUsername").text(ftapi.users[ftapi.uid].username);
             } else {
                 $("#loggedInUser .botson").data("uid", user.uid);
                 $("#loggedInUser .botson").css(
@@ -2234,14 +2237,6 @@ firetable.ui = {
             }
         });
         ftapi.events.on("waitlistChanged", function (data) {
-            /*
-            {
-                id: [string], // user id
-                name: [string], // user name
-                plays: [int], // number of songs played as dj
-                removeAfter: [bool] // has the user requested the bot to remove them after?
-            }
-            */
             if (data) {
                 $("#allUsers .djOrder.waitlist").html("").removeClass("waitlist");
                 for (var key in data) {
@@ -2249,7 +2244,12 @@ firetable.ui = {
                     firetable.debug && console.log("waitlist", position, data);
                     if (data.hasOwnProperty(key)) {
                         $("#user" + data[key].id + " .djOrder")
-                            .html('<i class="material-icons-outlined">pending</i> ' + position)
+                            .html(
+                                '<i class="material-icons" title="#' +
+                                    position +
+                                    ' on the waitlist">pending_actions</i> ' +
+                                    position
+                            )
                             .removeClass("ondeck")
                             .addClass("waitlist");
                     }
@@ -2291,7 +2291,7 @@ firetable.ui = {
                             "</span></div></div></div>";
                         countr++;
                         $("#user" + data[key].id + " .djOrder")
-                            .html('<i class="material-icons-outlined">album</i> ' + countr)
+                            .html('<i class="material-icons" title="On deck #' + countr + '">album</i> ' + countr)
                             .removeClass("waitlist")
                             .addClass("ondeck");
                     }
@@ -2371,20 +2371,24 @@ firetable.ui = {
 
             var destination = "#usersRegular";
             var rolename = "";
-            var rolecon = "";
+            var rolecon = "lens";
+            var smallcon = true;
             if (data.mod) {
                 rolename = "mod";
                 rolecon = "shield";
+                smallcon = false;
                 destination = "#usersMod";
             }
             if (data.supermod) {
                 rolename = "supermod";
                 rolecon = "local_police";
+                smallcon = false;
                 destination = "#usersSuper";
             }
             if (data.hostbot) {
                 rolename = "robot";
                 rolecon = "smart_toy";
+                smallcon = false;
                 destination = "#usersBot";
             }
 
@@ -2396,7 +2400,9 @@ firetable.ui = {
                     "url(https://indiediscotheque.com/robots/" + data.userid + data.username + ".png?size=110x110)"
                 );
             $newUser.find(".prsnName").text(data.username);
-            $newUser.find(".prsnRole").text(rolecon).prop("title", rolename);
+            $newUser.find(".prsnRole").text(rolecon);
+            if (rolename) $newUser.find(".prsnRole").prop("title", rolename);
+            if (smallcon) $newUser.addClass("smallIcon");
             $newUser.prop("title", "joined " + firetable.utilities.format_date(data.joined));
             firetable.utilities.chatAt($newUser); // adds the click event to @ the user
             $(destination).append($newUser);
@@ -2420,20 +2426,24 @@ firetable.ui = {
 
             var destination = "#usersRegular";
             var rolename = "";
-            var rolecon = "";
+            var rolecon = "lens";
+            var smallcon = true;
             if (data.mod) {
                 rolename = "mod";
                 rolecon = "shield";
+                smallcon = false;
                 destination = "#usersMod";
             }
             if (data.supermod) {
                 rolename = "supermod";
                 rolecon = "local_police";
+                smallcon = false;
                 destination = "#usersSuper";
             }
             if (data.hostbot) {
                 rolename = "robot";
                 rolecon = "smart_toy";
+                smallcon = false;
                 destination = "#usersBot";
             }
 
@@ -2444,19 +2454,24 @@ firetable.ui = {
                     "url(https://indiediscotheque.com/robots/" + data.userid + data.username + ".png?size=110x110)"
                 );
             $thisUser.find(".prsnName").text(data.username);
-            $thisUser.find(".prsnRole").text(rolecon).prop("title", rolename);
+            $thisUser.find(".prsnRole").text(rolecon);
+            if (rolename) $thisUser.find(".prsnRole").prop("title", rolename);
+            if (smallcon) $thisUser.addClass("smallIcon");
         });
         ftapi.events.on("usersChanged", function (okdata) {
             if ($("#loggedInUser .botson").data("uid") == ftapi.uid) {
                 if (ftapi.users[ftapi.uid]) {
                     if (ftapi.users[ftapi.uid].username) {
-                        $("#loggedInUser .botson").css(
-                            "background-image",
-                            "url(https://indiediscotheque.com/robots/" +
-                                ftapi.uid +
-                                ftapi.users[ftapi.uid].username +
-                                ".png?size=175x175)"
-                        );
+                        $("#loggedInUser .botson")
+                            .css(
+                                "background-image",
+                                "url(https://indiediscotheque.com/robots/" +
+                                    ftapi.uid +
+                                    ftapi.users[ftapi.uid].username +
+                                    ".png?size=175x175)"
+                            )
+                            .prop("title", "You're logged in as " + ftapi.users[ftapi.uid].username);
+                        $("#loggedInUsername").text(ftapi.users[ftapi.uid].username);
                     }
                 }
             }
@@ -3143,13 +3158,16 @@ firetable.ui = {
                             $("#usernameResponse").text(error);
                         } else {
                             $("#usernameResponse").text("Great job! Your name is now " + newDjName);
-                            $("#loggedInUser .botson").css(
-                                "background-image",
-                                "url(https://indiediscotheque.com/robots/" +
-                                    ftapi.uid +
-                                    newDjName +
-                                    ".png?size=175x175)"
-                            );
+                            $("#loggedInUser .botson")
+                                .css(
+                                    "background-image",
+                                    "url(https://indiediscotheque.com/robots/" +
+                                        ftapi.uid +
+                                        newDjName +
+                                        ".png?size=175x175)"
+                                )
+                                .prop("title", "You're logged in as " + ftapi.users[ftapi.uid].username);
+                            $("#loggedInUsername").text(ftapi.users[ftapi.uid].username);
                         }
                     });
                 }

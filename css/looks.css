@@ -225,6 +225,11 @@ code {
     font-size: 1.125rem;
     color: #43b581;
 }
+.smallIcon .prsnRole {
+    margin-right: 0.15rem;
+    margin-left: 0.15rem;
+    font-size: 0.75rem;
+}
 
 .utitle {
     font-size: 0.66rem;
@@ -684,14 +689,10 @@ a.sociallogo[href] {
     color: #888;
 }
 
-.djOrder .material-icons-outlined {
+.djOrder .material-icons {
     margin-right: 0.15rem;
     font-size: 1.25rem;
     color: #888;
-}
-
-#usersbox .prsnRole {
-    margin-left: auto;
 }
 
 #usersbox .prson.blockd .prsnName,
