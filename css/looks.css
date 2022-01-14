@@ -73,10 +73,15 @@
 }
 
 :root {
-    --orange: #f4810b;
-    --orangelite: #f6993c;
-    --orange66: #f4810b66;
-    --orange33: #f4810b33;
+    --color-bg: #181818;
+    --color-bg-s1: #151515;
+    --color-bg-s2: #111111;
+    --color-bg-t1: #222222;
+    --color-bg-t2: #282828;
+    --color-orange: #f4810b;
+    --color-orangelite: #f6993c;
+    --color-orange66: #f4810b66;
+    --color-orange33: #f4810b33;
     --pad1: 0.25rem;
     --pad2: 0.5rem;
     --pad3: 1rem;
@@ -110,7 +115,7 @@ body {
     margin: 0;
     font-size: 1rem;
     color: #bbbbbb;
-    background-color: #000;
+    background: var(--color-bg);
     overflow: hidden;
 }
 
@@ -129,7 +134,7 @@ h2 {
 }
 
 a {
-    color: var(--orange);
+    color: var(--color-orange);
     text-decoration: none;
 }
 
@@ -139,7 +144,7 @@ a {
 
 :focus {
     outline: none;
-    box-shadow: 0 0 0.5rem var(--orange);
+    box-shadow: 0 0 0.5rem var(--color-orange);
 }
 
 input:not([type="checkbox"]):not([type="radio"]),
@@ -150,7 +155,7 @@ button {
     font-size: 0.9rem;
     font-family: "Open Sans", helvetica, arial, sans-serif;
     color: #eee;
-    background-color: rgba(123, 123, 123, 0.15);
+    background-color: rgba(255, 255, 255, 0.05);
     border: 1px solid transparent;
     border-bottom-color: rgba(0, 0, 0, 0.85);
     border-top-color: rgba(255, 255, 255, 0.15);
@@ -159,6 +164,7 @@ button {
 }
 
 input:not([type="checkbox"]):not([type="radio"]) {
+    background-color: rgba(0, 0, 0, 0.5);
     border-top-color: rgba(0, 0, 0, 0.85);
     border-bottom-color: rgba(255, 255, 255, 0.15);
     transform: translateY(-1px);
@@ -196,7 +202,7 @@ code {
 }
 
 .simplebar-scrollbar:before {
-    background: var(--orange);
+    background: var(--color-orange);
 }
 
 .previewicon {
@@ -214,7 +220,7 @@ code {
 }
 
 .track-warning {
-    color: var(--orange);
+    color: var(--color-orange);
     cursor: pointer;
 }
 
@@ -223,7 +229,10 @@ code {
 }
 
 .prsnRole {
+    z-index: 2;
+    margin-right: 0.5rem;
     font-size: 1.125rem;
+    line-height: 0;
     color: #43b581;
 }
 .smallIcon .prsnRole {
@@ -248,13 +257,13 @@ code {
     width: calc(0.75rem + 4px);
     padding: 2px;
     font-size: 0.75em;
-    color: var(--orange);
-    background-color: #282828;
+    color: var(--color-orange);
+    background-color: var(--color-bg-t2);
     border-radius: 999px;
 }
 
 .prson.idle .prsnRole {
-    color: var(--orange);
+    color: rgba(255, 255, 255, 0.33);
 }
 
 .prson.idlething .imptcon {
@@ -263,7 +272,7 @@ code {
 
 .notice {
     margin: 0;
-    background-color: #222;
+    background-color: var(--color-bg-t1);
     overflow: hidden;
     height: 100%;
     padding: var(--pad4);
@@ -284,7 +293,6 @@ code {
 
 .tabs {
     display: flex;
-    background-color: black;
 }
 
 .tab {
@@ -294,7 +302,7 @@ code {
     font-size: 0.85rem;
     color: #999;
     text-align: center;
-    background-color: #222;
+    background-color: var(--color-bg);
     border: 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 0;
@@ -313,7 +321,7 @@ code {
 
 .tab.on {
     color: #ffffff;
-    background-color: #282828;
+    background: linear-gradient(var(--color-bg-t1), var(--color-bg));
     box-shadow: 0 -0.2rem 0.5rem -0.2rem black;
 }
 
@@ -337,7 +345,7 @@ span.removemeIcon.material-icons {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     text-decoration: none;
-    background-color: var(--orange);
+    background-color: var(--color-orange);
     border-top: 1px solid rgba(255, 255, 255, 0.3);
     border-bottom: 1px solid black;
     transition: all 100ms ease-in-out;
@@ -345,12 +353,12 @@ span.removemeIcon.material-icons {
 }
 
 .butt:hover {
-    background-color: var(--orangelite);
+    background-color: var(--color-orangelite);
 }
 
 .graybutt {
     color: #888;
-    background: rgba(255, 255, 255, 0.066);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .graybutt:hover {
@@ -376,11 +384,11 @@ span.removemeIcon.material-icons {
 }
 
 .iconbutt.on {
-    color: var(--orange);
+    color: var(--color-orange);
     background: rgba(255, 255, 255, 0.033);
     border-top: 1px solid black;
-    border-bottom: 1px solid var(--orange66);
-    box-shadow: inset 0 0 1rem var(--orange33);
+    border-bottom: 1px solid var(--color-orange66);
+    box-shadow: inset 0 0 1rem var(--color-orange33);
 }
 
 .iconbutt .material-icons {
@@ -430,25 +438,26 @@ span.removemeIcon.material-icons {
 
 /* Top Bar / Site Header */
 #topbar {
+    grid-area: head;
     display: flex;
     align-items: center;
     padding: var(--pad1) var(--pad3);
     color: #fff;
-    background-color: #111;
 }
 
 .ftlogo {
     margin-right: 0.5rem;
-    color: var(--orange);
+    color: var(--color-orange);
     font-size: 1.25rem;
     font-weight: 700;
 }
 
 #idtitle {
     display: none;
+    margin-top: 0.5em;
     font-size: 1rem;
     color: #fff;
-    font-weight: 700;
+    font-weight: 100;
     margin-right: 1rem;
 }
 
@@ -459,7 +468,7 @@ span.removemeIcon.material-icons {
 a.sociallogo {
     text-decoration: none;
     display: none;
-    margin: 0.2rem 0.2rem 0 0.2rem;
+    margin: 0.5rem 0.2rem 0 0.2rem;
 }
 
 a.sociallogo[href] {
@@ -480,7 +489,7 @@ a.sociallogo[href] {
     background-size: contain;
     width: 3rem;
     height: 3rem;
-    margin-right: 1.5rem;
+    margin-right: 1rem;
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -501,12 +510,13 @@ a.sociallogo[href] {
 }
 
 .header_icon {
-    margin: 0.2rem 0.2rem 0 0.2rem;
+    margin: 0.5rem 0.2rem 0 0.2rem;
     padding: 0;
     font-size: 0;
     line-height: 0;
     background: none;
     border: 0;
+    box-shadow: none;
 }
 
 .header_icon .material-icons {
@@ -519,22 +529,25 @@ a.sociallogo[href] {
     grid-area: main;
     flex: 1;
     display: grid;
-    grid-template-rows: auto auto 1fr auto;
+    grid-template-rows: auto auto auto auto 1fr;
     grid-template-columns: 1fr;
     grid-template-areas:
+        "head"
         "stage"
         "main"
         "main"
         "main";
+    justify-content: center;
     overflow: hidden;
 }
 
 #mainGrid.mmusrs {
     grid-template-areas:
+        "head"
+        "theme"
         "stage"
         "mmopts"
-        "users"
-        "theme";
+        "users";
 }
 
 #mainGrid.mmusrs #queuebox,
@@ -546,10 +559,11 @@ a.sociallogo[href] {
 
 #mainGrid.mmqueue {
     grid-template-areas:
+        "head"
+        "theme"
         "stage"
         "mmopts"
-        "queues"
-        "theme";
+        "queues";
 }
 
 #mainGrid.mmqueue #usersbox,
@@ -561,10 +575,11 @@ a.sociallogo[href] {
 
 #mainGrid.mmchat {
     grid-template-areas:
+        "head"
+        "theme"
         "stage"
         "mmopts"
-        "chat"
-        "theme";
+        "chat";
 }
 
 #mainGrid.mmchat #usersbox,
@@ -575,8 +590,9 @@ a.sociallogo[href] {
 }
 
 #mainGrid.login {
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto auto 1fr;
     grid-template-areas:
+        "head"
         "stage"
         "login";
 }
@@ -598,11 +614,11 @@ a.sociallogo[href] {
 }
 
 #minimodeoptions .tab {
-    background-color: #1b1b1b;
+    background-color: var(--color-bg-s2);
 }
 
 #minimodeoptions .tab.on {
-    background-color: #222;
+    background-color: var(--color-bg);
 }
 
 /* Users Lists */
@@ -610,31 +626,32 @@ a.sociallogo[href] {
     grid-area: users;
     display: flex;
     flex-direction: column;
-    background-color: #222;
+    width: 100%;
     overflow: hidden;
 }
 
 .usersWrap {
+    max-width: 20rem;
     overflow: auto;
 }
 
-#usersFooter {
-    display: flex;
+#usersStats {
+    /*    display: flex;*/
+    display: none;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
     padding: var(--pad2) var(--pad3) 0 var(--pad3);
     color: #888;
-    background-color: #111;
 }
 
-#usersFooter h2 {
+#usersStats h2 {
     padding: 0.2rem 0;
     font-size: 0.75rem;
     color: inherit;
 }
 
-#usersFooter .listenerType {
+#usersStats .listenerType {
     /*    display: flex;*/
     display: none;
     align-items: center;
@@ -642,17 +659,19 @@ a.sociallogo[href] {
     font-weight: 700;
 }
 
-#usersFooter .material-icons {
+#usersStats .material-icons {
     font-size: 1rem;
     color: #888;
 }
 
 #allUsers {
-    padding-top: 1rem;
+    padding-top: var(--height-footer);
 }
 
 #allUsersWrap {
     height: 100%;
+    width: 100%;
+    align-self: center;
 }
 
 .prson {
@@ -673,9 +692,10 @@ a.sociallogo[href] {
 
 .prsnName {
     flex: 1;
-    font-size: 0.9rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 400;
     line-height: 2;
+    color: #bbb;
     white-space: nowrap;
     overflow-x: hidden;
     text-overflow: ellipsis;
@@ -684,16 +704,19 @@ a.sociallogo[href] {
 .djOrder {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     margin-right: 0.75rem;
+    width: 2.5rem;
     font-size: 0.85rem;
     font-weight: 700;
-    line-height: 1;
+    line-height: 0;
     color: #888;
 }
 
 .djOrder .material-icons {
-    margin-right: 0.15rem;
+    margin-left: 0.25rem;
     font-size: 1.25rem;
+    line-height: 0;
     color: #888;
 }
 
@@ -729,7 +752,7 @@ span.blockon {
     height: 2rem;
     font-size: 2rem;
     background-color: rgba(0, 0, 0, 0.5);
-    color: var(--orange);
+    color: var(--color-orange);
     border-radius: 999px;
 }
 
@@ -746,17 +769,6 @@ span.blockon:empty {
     overflow: hidden;
 }
 
-#stage::before {
-    content: "";
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.55));
-}
-
 #stage > div:not(#screenBox) {
     position: relative;
     z-index: 2;
@@ -766,6 +778,7 @@ span.blockon:empty {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-shadow: inset 0 -4rem 4rem -3rem rgba(0, 0, 0, 0.25), inset 0 4rem 4rem -3rem rgba(0, 0, 0, 0.25);
 }
 
 #nowplaying {
@@ -779,6 +792,7 @@ span.blockon:empty {
         "art plays plays";
     margin-bottom: auto;
     padding: var(--pad4);
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
 }
 
 #albumArt {
@@ -803,13 +817,14 @@ span.blockon:empty {
     font-weight: 700;
     letter-spacing: 0.05em;
     text-align: right;
+    color: rgba(255, 255, 255, 0.66);
 }
 
 #artist {
     grid-area: artist;
     margin-bottom: var(--pad2);
-    font-size: 1rem;
-    font-weight: 400;
+    font-size: 0.875rem;
+    font-weight: 700;
     overflow: hidden;
     color: white;
     white-space: nowrap;
@@ -892,7 +907,7 @@ span.blockon:empty {
     font-size: 0.75rem;
     line-height: 1.5rem;
     text-align: center;
-    background-color: #151515;
+    background-color: var(--color-bg-s1);
     border-top-left-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
 }
@@ -926,8 +941,10 @@ span.blockon:empty {
 
 #volandthings {
     position: relative;
-    background-color: #151515;
+    background-color: var(--color-bg-s1);
     border-bottom: 1px solid #333;
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
 }
 
 #songthings,
@@ -1007,7 +1024,7 @@ select#stealpicker {
     font-size: 1rem;
     border: none;
     font-family: "Open Sans", helvetica, arial, sans-serif;
-    background-color: #222;
+    background-color: var(--color-bg-t1);
     padding-left: var(--pad1);
     color: #eee;
     white-space: nowrap;
@@ -1016,7 +1033,7 @@ select#stealpicker {
 #addToQueueBttn {
     margin-left: 1em;
     color: white;
-    background-color: var(--orange);
+    background-color: var(--color-orange);
     border-right: 1px solid black;
     border-left: 1px solid black;
     border-radius: 5px;
@@ -1057,7 +1074,7 @@ select#stealpicker {
 
 .ui-slider-horizontal .ui-slider-range-min {
     left: 0;
-    background-color: var(--orange);
+    background-color: var(--color-orange);
 }
 
 .ui-slider-horizontal {
@@ -1143,7 +1160,7 @@ input#queueFilter {
 }
 
 div#filterMachine {
-    padding: var(--pad2);
+    padding: 0 var(--pad2) var(--pad2) var(--pad2);
 }
 
 #mainqueue .material-icons {
@@ -1153,7 +1170,7 @@ div#filterMachine {
 
 #queuelist .pvbar {
     padding: var(--pad2) var(--pad2);
-    background-color: #222;
+    background-color: var(--color-bg-t1);
     border-bottom: 1px solid black;
     cursor: move;
     /* fallback if grab cursor is unsupported */
@@ -1185,13 +1202,7 @@ div#filterMachine {
 
 select#listpicker {
     width: 100%;
-    background-color: #333;
     padding-left: var(--pad2);
-}
-
-#queueControls,
-#filterMachine {
-    background-color: #222;
 }
 
 #qControlButtons {
@@ -1208,7 +1219,6 @@ button#cancelqsearch {
     display: none;
     flex-direction: column;
     height: 100%;
-    background-color: #222;
     overflow: hidden;
 }
 
@@ -1228,13 +1238,12 @@ input#qsearch {
 #queuelist {
     flex: 1;
     height: 100%;
-    background-color: #181818;
     overflow: auto;
 }
 
 #searchResults {
     flex: 1;
-    background-color: #282828;
+    background-color: var(--color-bg-t2);
 }
 
 #mergeContain {
@@ -1254,11 +1263,11 @@ input#qsearch {
     height: 0;
     border-left: 1rem solid transparent;
     border-right: 1rem solid transparent;
-    border-bottom: 1rem solid #333;
+    border-bottom: 1rem solid var(--color-bg-t2);
 }
 
 #mergeBox {
-    background-color: #333;
+    background-color: var(--color-bg-t2);
     padding: 15px;
     border-radius: 5px;
 }
@@ -1279,10 +1288,8 @@ select#mergepicker,
     font-size: 14px;
     border: none;
     font-family: "Open Sans", helvetica, arial, sans-serif;
-    background-color: #222;
     padding-left: 5px;
     color: #eee;
-    height: 24px;
     white-space: nowrap;
 }
 
@@ -1301,7 +1308,7 @@ select#mergepicker,
     display: flex;
     align-items: center;
     padding: var(--pad1) 0;
-    border-bottom: 1px solid #111;
+    border-bottom: 1px solid var(--color-bg-s2);
 }
 
 .importResult .material-icons {
@@ -1355,14 +1362,13 @@ a.importLinkCheck {
     z-index: 15;
     display: flex;
     align-items: center;
-    height: var(--height-footer);
     padding: var(--pad2);
     font-size: 1rem;
     text-align: center;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    background-color: #111;
-    overflow: hidden;
+    background-color: var(--color-bg-s1);
+    border-top: 2px solid black;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
 }
 
 #currentTheme {
@@ -1378,7 +1384,6 @@ a.importLinkCheck {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background-color: #222;
 }
 
 #chatsWrap {
@@ -1392,8 +1397,8 @@ a.importLinkCheck {
 }
 
 #newchatForm {
-    flex: 1;
-    margin-right: var(--pad1);
+    grid-column: 2/3;
+    width: 100%;
 }
 
 .newChat {
@@ -1401,14 +1406,15 @@ a.importLinkCheck {
     display: flex;
     justify-content: space-between;
     margin: var(--pad3);
-    color: #ddd;
+    font-size: 0.875rem;
+    color: #bbb;
     word-break: break-word;
 }
 
 .newChat .botson {
     position: relative;
     z-index: 2;
-    margin: 0.15rem var(--pad3) 0 0;
+    margin: 0 var(--pad3) 0 0;
     width: 2rem;
     height: 2rem;
     cursor: pointer;
@@ -1437,13 +1443,13 @@ a.importLinkCheck {
     color: #888;
     font-size: 0.75rem;
     text-align: center;
-    background-color: #282828;
+    background-color: var(--color-bg-t1);
     border-radius: var(--pad1);
 }
 
 .chatContent {
     flex: 1;
-    padding: 0 var(--pad4) 0 0;
+    padding: 0 var(--pad3) 0 0;
 }
 
 .chatContent .utitle {
@@ -1487,7 +1493,7 @@ a.importLinkCheck {
 }
 
 .chatText.deleteMe:hover {
-    background-color: #282828;
+    background-color: var(--color-bg-t2);
 }
 
 .chatText.deleteMe:hover .modDelete {
@@ -1574,9 +1580,11 @@ a.importLinkCheck {
 .chatTime {
     position: relative;
     z-index: 2;
+    width: 3rem;
     font-weight: 400;
     font-size: 0.66rem;
     color: rgba(255, 255, 255, 0.47);
+    text-align: right;
     white-space: nowrap;
 }
 
@@ -1587,11 +1595,15 @@ a.importLinkCheck {
 
 #chatbottom {
     position: relative;
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 3.5rem 1fr var(--pad3);
+    justify-items: center;
     height: var(--height-footer);
-    padding: var(--pad1);
-    background-color: #111;
+}
+
+#pickEmoji {
+    grid-column: 1/2;
+    margin-left: var(--pad2);
 }
 
 #pickerResults {
@@ -1621,12 +1633,13 @@ a.importLinkCheck {
 #emojiPicker {
     position: absolute;
     z-index: 99;
-    left: 0;
-    bottom: 100%;
-    width: 100%;
+    left: 1.5rem;
+    right: 1.5rem;
+    bottom: calc(100% + 0.5rem);
     padding: var(--pad3);
-    background-color: #2d2d2d;
-    box-shadow: 0 -0.25rem 0.5rem black;
+    background-color: var(--color-bg-t2);
+    box-shadow: 0 0.25rem 1rem black;
+    border-radius: 0.5rem;
 }
 
 #pickerNav {
@@ -1648,7 +1661,7 @@ input#pickerSearch {
 }
 
 #pickerNav .on {
-    color: var(--orange);
+    color: var(--color-orange);
     filter: none;
     opacity: 1;
 }
@@ -1687,8 +1700,8 @@ img.emoji {
     height: auto;
     padding: 0.2em;
     font-size: 0.7rem;
-    background-color: #222;
-    border-bottom-color: #222;
+    background-color: var(--color-bg-t1);
+    border-bottom-color: var(--color-bg-t1);
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     box-shadow: none;
@@ -1708,7 +1721,7 @@ img.emoji {
     bottom: 100%;
     left: 1.5rem;
     padding: 0.25rem;
-    background: #222;
+    background: var(--color-bg-t1);
     box-shadow: 0 -0.25rem 0.5rem black;
 }
 
@@ -1739,7 +1752,7 @@ img.emoji {
     left: 0;
     width: 100%;
     height: 100%;
-    background: #222;
+    background: var(--color-bg-t1);
     overflow: auto;
 }
 
@@ -1780,7 +1793,7 @@ img.emoji {
 #login {
     grid-area: login;
     padding: var(--pad5);
-    background: #151515;
+    background: var(--color-bg-s1);
     overflow: auto;
     height: 100%;
 }
@@ -1850,7 +1863,7 @@ img.emoji {
     flex-direction: column;
     max-width: 100vw;
     max-height: 100vh;
-    background-color: #111;
+    background-color: var(--color-bg-s2);
     overflow: hidden;
 }
 
@@ -1864,7 +1877,7 @@ img.emoji {
     justify-content: space-between;
     padding: var(--pad4);
     color: #eee;
-    background-color: #222;
+    background-color: var(--color-bg-t1);
 }
 
 .modalHeader h2 {
@@ -1938,7 +1951,7 @@ span.cardGiftChat {
 
 span.cardGiftChat:hover,
 span.cardShareChat:hover {
-    background-color: var(--orange);
+    background-color: var(--color-orange);
     color: #000;
 }
 
@@ -1977,7 +1990,7 @@ input.tagMachine,
 #importContent,
 #importDubContent {
     padding: var(--pad2) var(--pad3);
-    background-color: #282828;
+    background-color: var(--color-bg-t2);
 }
 
 #dubimportButton {
@@ -2006,7 +2019,7 @@ input#plMachineById {
 }
 
 .responseBox {
-    background-color: var(--orange);
+    background-color: var(--color-orange);
     margin: 10px;
     padding: 5px;
     color: #000;
@@ -2053,7 +2066,7 @@ body.blog {
 div#blog {
     flex: 1;
     padding: var(--pad5);
-    background-color: #282828;
+    background-color: var(--color-bg-t2);
 }
 
 /* Initially hidden stuff */
@@ -2089,29 +2102,32 @@ div#blog {
 
     #mainGrid,
     #mainGrid.mmchat {
-        grid-template-rows: auto auto 1fr auto;
+        grid-template-rows: auto auto auto auto 1fr;
         grid-template-columns: 60vw 40vw;
         grid-template-areas:
+            "head chat"
+            "theme chat"
             "stage chat"
             "mmopts chat"
-            "users chat"
-            "theme chat";
+            "users chat";
     }
 
     #mainGrid.mmusrs {
         grid-template-areas:
+            "head chat"
+            "theme chat"
             "stage chat"
             "mmopts chat"
-            "users chat"
-            "theme chat";
+            "users chat";
     }
 
     #mainGrid.mmqueue {
         grid-template-areas:
+            "head chat"
+            "theme chat"
             "stage chat"
             "mmopts chat"
-            "queues chat"
-            "theme chat";
+            "queues chat";
     }
 
     #mainGrid.mmchat #usersbox,
@@ -2122,6 +2138,7 @@ div#blog {
 
     #mainGrid.login {
         grid-template-areas:
+            "head queues"
             "stage queues"
             "login queues";
     }
@@ -2136,8 +2153,34 @@ div#blog {
         display: none;
     }
 
+    #themebox,
+    #stage,
+    #minimodeoptions {
+        justify-self: center;
+        width: 100%;
+        max-width: 48rem;
+    }
+
+    #topbar,
+    #queuebox,
+    #thehistoryWrap {
+        justify-self: center;
+        width: 100%;
+        max-width: 40rem;
+    }
+
+    #topbar {
+        padding-right: var(--pad4);
+        padding-left: var(--pad4);
+    }
+
     #idtitle {
         display: block;
+    }
+
+    #actualChat {
+        min-width: 20rem;
+        max-width: 30rem;
     }
 
     #thehistoryWrap {
@@ -2151,23 +2194,24 @@ div#blog {
     #mainGrid.mmqueue #thehistoryWrap {
         grid-area: mmopts / queues;
     }
-
-    #actualChat {
-        background-color: #181818;
-    }
 }
 
 @media only screen and (min-width: 1200px) {
+    body {
+        background: linear-gradient(var(--color-bg-t1), var(--color-bg));
+    }
+
     #mainGrid,
     #mainGrid.mmqueue,
     #mainGrid.mmchat,
     #mainGrid.mmusrs {
-        grid-template-rows: auto 1fr auto;
-        grid-template-columns: minmax(16rem, 20rem) minmax(40vw, 100vw) minmax(24rem, 36rem);
+        grid-template-rows: auto auto auto 1fr;
+        grid-template-columns: minmax(20rem, 20vw) minmax(30rem, 48rem) 30vw;
         grid-template-areas:
+            "users head chat"
+            "users theme chat"
             "users stage chat"
-            "users queues chat"
-            "users theme chat";
+            "users queues chat";
     }
 
     #mainGrid.mmusrs #queuebox,
@@ -2187,6 +2231,10 @@ div#blog {
 
     #mainGrid #minimodeoptions {
         display: none;
+    }
+
+    #topbar {
+        padding: 0;
     }
 
     #djStage {
@@ -2216,85 +2264,23 @@ div#blog {
         grid-area: queues !important;
     }
 
-    #usersbox {
-        background-color: #181818;
+    #allUsersWrap {
+        align-self: flex-end;
     }
 
-    #themebox {
-        text-align: right;
-    }
-
-    #usersFooter {
+    #usersStats {
         justify-content: flex-start;
-        height: var(--height-footer);
-        padding: var(--pad3);
+        padding: var(--pad3) var(--pad4);
     }
 }
 
-@media only screen and (min-width: 1680px) {
-    #mainGrid,
-    #mainGrid.mmqueue,
-    #mainGrid.mmchat,
-    #mainGrid.mmusrs {
-        grid-template-columns: minmax(16rem, 20rem) minmax(50vw, 100vw) minmax(24rem, 36rem);
-    }
-
-    #mainGrid.login {
-        grid-template-areas:
-            "stage stage queues"
-            "login login queues";
-    }
-
+@media only screen and (min-width: 1370px) {
     #mainGrid.login #queuebox {
         display: none;
     }
 
     #mainGrid.login #thehistoryWrap {
         width: 100%;
-    }
-
-    #history {
-        position: absolute;
-        left: 60%;
-        bottom: -1px;
-        width: auto;
-        padding: 0 var(--pad2);
-        border-left: var(--pad1) solid #151515;
-        border-bottom-color: #222;
-        border-radius: 0;
-        clip-path: polygon(
-            0% 0%,
-            0% 0%,
-            calc(100% - var(--pad2)) 0%,
-            100% var(--pad2),
-            100% 100%,
-            100% 100%,
-            0% 100%,
-            0% 0%
-        );
-        pointer-events: none;
-    }
-
-    #history::after {
-        content: "Recent Plays";
-        margin-left: var(--pad1);
-        font-size: 0.85rem;
-        font-weight: 400;
-        text-transform: none;
-        letter-spacing: 0;
-    }
-
-    #queuebox {
-        width: 60%;
-    }
-
-    #thehistoryWrap {
-        display: block !important;
-        grid-area: queues;
-        justify-self: flex-end;
-        z-index: auto;
-        width: 40%;
-        border-left: var(--pad1) solid #151515;
     }
 }
 
@@ -2312,7 +2298,7 @@ div#blog {
 
     #usersbox .tab {
         color: #ffffff;
-        background-color: #282828;
+        background-color: var(--color-bg-t2);
         box-shadow: 0 -0.2rem 0.5rem -0.2rem black;
     }
 

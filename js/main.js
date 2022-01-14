@@ -2245,10 +2245,10 @@ firetable.ui = {
                     if (data.hasOwnProperty(key)) {
                         $("#user" + data[key].id + " .djOrder")
                             .html(
-                                '<i class="material-icons" title="#' +
+                                position +
+                                    ' <i class="material-icons" title="#' +
                                     position +
-                                    ' on the waitlist">pending_actions</i> ' +
-                                    position
+                                    ' on the waitlist">pending_actions</i>'
                             )
                             .removeClass("ondeck")
                             .addClass("waitlist");
@@ -2291,7 +2291,7 @@ firetable.ui = {
                             "</span></div></div></div>";
                         countr++;
                         $("#user" + data[key].id + " .djOrder")
-                            .html('<i class="material-icons" title="On deck #' + countr + '">album</i> ' + countr)
+                            .html(countr + ' <i class="material-icons" title="On deck #' + countr + '">album</i>')
                             .removeClass("waitlist")
                             .addClass("ondeck");
                     }
@@ -2403,6 +2403,7 @@ firetable.ui = {
             $newUser.find(".prsnRole").text(rolecon);
             if (rolename) $newUser.find(".prsnRole").prop("title", rolename);
             if (smallcon) $newUser.addClass("smallIcon");
+            else $newUser.removeClass("smallIcon");
             $newUser.prop("title", "joined " + firetable.utilities.format_date(data.joined));
             firetable.utilities.chatAt($newUser); // adds the click event to @ the user
             $(destination).append($newUser);
@@ -2457,6 +2458,7 @@ firetable.ui = {
             $thisUser.find(".prsnRole").text(rolecon);
             if (rolename) $thisUser.find(".prsnRole").prop("title", rolename);
             if (smallcon) $thisUser.addClass("smallIcon");
+            else $thisUser.removeClass("smallIcon");
         });
         ftapi.events.on("usersChanged", function (okdata) {
             if ($("#loggedInUser .botson").data("uid") == ftapi.uid) {
@@ -3801,9 +3803,9 @@ firetable.ui = {
             if (data.color == "#fff" || data.color == "#7f7f7f") {
                 firetable.color = firetable.orange;
                 firetable.countcolor = "#fff";
-                $("#stage").css("background-color", "#fff");
+                $("#djStage").css("background-color", "#fff");
             } else {
-                $("#stage").css("background-color", data.color);
+                $("#djStage").css("background-color", data.color);
             }
             /*
 			if (firetable.countcolor == "#fff"){

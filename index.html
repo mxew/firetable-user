@@ -8,70 +8,71 @@
         <link rel="shortcut icon" href="favicon.png" />
         <link rel="stylesheet" href="css/reset.css" type="text/css" />
         <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" type="text/css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" type="text/css" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
         <link rel="stylesheet" href="css/looks.css?v=01.09.05" type="text/css" />
     </head>
 
     <body>
-        <header id="topbar">
-            <div id="roomlogo"></div>
-            <div id="idtitle"></div>
-            <div id="socialthings">
-                <a title="Soundcloud" target="_blank" class="header_icon sociallogo soundcloud">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                        <path
-                            d="M7 17.939h-1v-8.068c.308-.231.639-.429 1-.566v8.634zm3 0h1v-9.224c-.229.265-.443.548-.621.857l-.379-.184v8.551zm-2 0h1v-8.848c-.508-.079-.623-.05-1-.01v8.858zm-4 0h1v-7.02c-.312.458-.555.971-.692 1.535l-.308-.182v5.667zm-3-5.25c-.606.547-1 1.354-1 2.268 0 .914.394 1.721 1 2.268v-4.536zm18.879-.671c-.204-2.837-2.404-5.079-5.117-5.079-1.022 0-1.964.328-2.762.877v10.123h9.089c1.607 0 2.911-1.393 2.911-3.106 0-2.233-2.168-3.772-4.121-2.815zm-16.879-.027c-.302-.024-.526-.03-1 .122v5.689c.446.143.636.138 1 .138v-5.949z"
-                        />
-                    </svg>
-                </a>
-                <a title="Last.fm" target="_blank" class="header_icon sociallogo lastfm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                        <path
-                            d="M10.584 17.209l-.88-2.392s-1.43 1.595-3.573 1.595c-1.897 0-3.244-1.65-3.244-4.289 0-3.381 1.704-4.591 3.382-4.591 2.419 0 3.188 1.567 3.849 3.574l.88 2.75c.879 2.667 2.528 4.811 7.284 4.811 3.409 0 5.719-1.044 5.719-3.793 0-2.227-1.265-3.381-3.629-3.932l-1.76-.385c-1.209-.275-1.566-.77-1.566-1.594 0-.935.742-1.485 1.952-1.485 1.319 0 2.034.495 2.144 1.677l2.749-.33c-.22-2.474-1.924-3.491-4.729-3.491-2.474 0-4.893.935-4.893 3.931 0 1.87.907 3.052 3.188 3.602l1.869.439c1.402.33 1.869.907 1.869 1.705 0 1.017-.989 1.43-2.858 1.43-2.776 0-3.932-1.457-4.591-3.464l-.907-2.749c-1.155-3.574-2.997-4.894-6.653-4.894-4.041-.001-6.186 2.556-6.186 6.899 0 4.179 2.145 6.433 5.993 6.433 3.107.001 4.591-1.457 4.591-1.457z"
-                        />
-                    </svg>
-                </a>
-                <a title="Discord" target="_blank" class="header_icon sociallogo discord">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                        <path
-                            d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"
-                        />
-                    </svg>
-                </a>
-                <a title="Facebook" target="_blank" class="header_icon sociallogo facebook">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                        <path
-                            d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"
-                        />
-                    </svg>
-                </a>
-                <a title="Reddit" target="_blank" class="header_icon sociallogo reddit">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                        <path
-                            d="M24 11.779c0-1.459-1.192-2.645-2.657-2.645-.715 0-1.363.286-1.84.746-1.81-1.191-4.259-1.949-6.971-2.046l1.483-4.669 4.016.941-.006.058c0 1.193.975 2.163 2.174 2.163 1.198 0 2.172-.97 2.172-2.163s-.975-2.164-2.172-2.164c-.92 0-1.704.574-2.021 1.379l-4.329-1.015c-.189-.046-.381.063-.44.249l-1.654 5.207c-2.838.034-5.409.798-7.3 2.025-.474-.438-1.103-.712-1.799-.712-1.465 0-2.656 1.187-2.656 2.646 0 .97.533 1.811 1.317 2.271-.052.282-.086.567-.086.857 0 3.911 4.808 7.093 10.719 7.093s10.72-3.182 10.72-7.093c0-.274-.029-.544-.075-.81.832-.447 1.405-1.312 1.405-2.318zm-17.224 1.816c0-.868.71-1.575 1.582-1.575.872 0 1.581.707 1.581 1.575s-.709 1.574-1.581 1.574-1.582-.706-1.582-1.574zm9.061 4.669c-.797.793-2.048 1.179-3.824 1.179l-.013-.003-.013.003c-1.777 0-3.028-.386-3.824-1.179-.145-.144-.145-.379 0-.523.145-.145.381-.145.526 0 .65.647 1.729.961 3.298.961l.013.003.013-.003c1.569 0 2.648-.315 3.298-.962.145-.145.381-.144.526 0 .145.145.145.379 0 .524zm-.189-3.095c-.872 0-1.581-.706-1.581-1.574 0-.868.709-1.575 1.581-1.575s1.581.707 1.581 1.575-.709 1.574-1.581 1.574z"
-                        />
-                    </svg>
-                </a>
-            </div>
-            <div class="flexpacer"></div>
-            <a id="roomInfo" class="header_icon" target="_blank" href="about"><i class="material-icons">&#xE887;</i></a>
-            <button role="button" class="header_icon openModal" data-modal="settingsBox" id="ftSettings">
-                <i class="material-icons">settings</i>
-            </button>
-            <button role="button" class="header_icon openModal" data-modal="supercopBox" id="ftSuperCopButton">
-                <i class="material-icons">security</i>
-            </button>
-            <button role="button" class="header_icon openModal" data-modal="cardsBox" id="cardCaseButton">
-                <i class="material-icons">business_center</i>
-            </button>
-            <div id="loggedInUser" class="openModal" data-modal="accountSettingsBox">
-                <div class="botson"></div>
-            </div>
-            <div id="reconnecting">Reconnecting...</div>
-        </header>
-
         <div id="mainGrid" class="mmusrs">
+            <header id="topbar">
+                <div id="roomlogo"></div>
+                <div id="idtitle"></div>
+                <div id="socialthings">
+                    <a title="Soundcloud" target="_blank" class="header_icon sociallogo soundcloud">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path
+                                d="M7 17.939h-1v-8.068c.308-.231.639-.429 1-.566v8.634zm3 0h1v-9.224c-.229.265-.443.548-.621.857l-.379-.184v8.551zm-2 0h1v-8.848c-.508-.079-.623-.05-1-.01v8.858zm-4 0h1v-7.02c-.312.458-.555.971-.692 1.535l-.308-.182v5.667zm-3-5.25c-.606.547-1 1.354-1 2.268 0 .914.394 1.721 1 2.268v-4.536zm18.879-.671c-.204-2.837-2.404-5.079-5.117-5.079-1.022 0-1.964.328-2.762.877v10.123h9.089c1.607 0 2.911-1.393 2.911-3.106 0-2.233-2.168-3.772-4.121-2.815zm-16.879-.027c-.302-.024-.526-.03-1 .122v5.689c.446.143.636.138 1 .138v-5.949z"
+                            />
+                        </svg>
+                    </a>
+                    <a title="Last.fm" target="_blank" class="header_icon sociallogo lastfm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path
+                                d="M10.584 17.209l-.88-2.392s-1.43 1.595-3.573 1.595c-1.897 0-3.244-1.65-3.244-4.289 0-3.381 1.704-4.591 3.382-4.591 2.419 0 3.188 1.567 3.849 3.574l.88 2.75c.879 2.667 2.528 4.811 7.284 4.811 3.409 0 5.719-1.044 5.719-3.793 0-2.227-1.265-3.381-3.629-3.932l-1.76-.385c-1.209-.275-1.566-.77-1.566-1.594 0-.935.742-1.485 1.952-1.485 1.319 0 2.034.495 2.144 1.677l2.749-.33c-.22-2.474-1.924-3.491-4.729-3.491-2.474 0-4.893.935-4.893 3.931 0 1.87.907 3.052 3.188 3.602l1.869.439c1.402.33 1.869.907 1.869 1.705 0 1.017-.989 1.43-2.858 1.43-2.776 0-3.932-1.457-4.591-3.464l-.907-2.749c-1.155-3.574-2.997-4.894-6.653-4.894-4.041-.001-6.186 2.556-6.186 6.899 0 4.179 2.145 6.433 5.993 6.433 3.107.001 4.591-1.457 4.591-1.457z"
+                            />
+                        </svg>
+                    </a>
+                    <a title="Discord" target="_blank" class="header_icon sociallogo discord">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path
+                                d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"
+                            />
+                        </svg>
+                    </a>
+                    <a title="Facebook" target="_blank" class="header_icon sociallogo facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path
+                                d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"
+                            />
+                        </svg>
+                    </a>
+                    <a title="Reddit" target="_blank" class="header_icon sociallogo reddit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path
+                                d="M24 11.779c0-1.459-1.192-2.645-2.657-2.645-.715 0-1.363.286-1.84.746-1.81-1.191-4.259-1.949-6.971-2.046l1.483-4.669 4.016.941-.006.058c0 1.193.975 2.163 2.174 2.163 1.198 0 2.172-.97 2.172-2.163s-.975-2.164-2.172-2.164c-.92 0-1.704.574-2.021 1.379l-4.329-1.015c-.189-.046-.381.063-.44.249l-1.654 5.207c-2.838.034-5.409.798-7.3 2.025-.474-.438-1.103-.712-1.799-.712-1.465 0-2.656 1.187-2.656 2.646 0 .97.533 1.811 1.317 2.271-.052.282-.086.567-.086.857 0 3.911 4.808 7.093 10.719 7.093s10.72-3.182 10.72-7.093c0-.274-.029-.544-.075-.81.832-.447 1.405-1.312 1.405-2.318zm-17.224 1.816c0-.868.71-1.575 1.582-1.575.872 0 1.581.707 1.581 1.575s-.709 1.574-1.581 1.574-1.582-.706-1.582-1.574zm9.061 4.669c-.797.793-2.048 1.179-3.824 1.179l-.013-.003-.013.003c-1.777 0-3.028-.386-3.824-1.179-.145-.144-.145-.379 0-.523.145-.145.381-.145.526 0 .65.647 1.729.961 3.298.961l.013.003.013-.003c1.569 0 2.648-.315 3.298-.962.145-.145.381-.144.526 0 .145.145.145.379 0 .524zm-.189-3.095c-.872 0-1.581-.706-1.581-1.574 0-.868.709-1.575 1.581-1.575s1.581.707 1.581 1.575-.709 1.574-1.581 1.574z"
+                            />
+                        </svg>
+                    </a>
+                </div>
+                <div class="flexpacer"></div>
+                <a id="roomInfo" class="header_icon" target="_blank" href="about"
+                    ><i class="material-icons">&#xE887;</i></a
+                >
+                <button role="button" class="header_icon openModal" data-modal="settingsBox" id="ftSettings">
+                    <i class="material-icons">settings</i>
+                </button>
+                <button role="button" class="header_icon openModal" data-modal="supercopBox" id="ftSuperCopButton">
+                    <i class="material-icons">security</i>
+                </button>
+                <button role="button" class="header_icon openModal" data-modal="cardsBox" id="cardCaseButton">
+                    <i class="material-icons">business_center</i>
+                </button>
+                <div id="loggedInUser" class="openModal" data-modal="accountSettingsBox">
+                    <div class="botson"></div>
+                </div>
+                <div id="reconnecting">Reconnecting...</div>
+            </header>
             <div id="stage">
                 <div id="djStage">
                     <div id="screenBox">
@@ -213,6 +214,9 @@
                     </div>
                 </div>
                 <div id="chatbottom">
+                    <button role="button" class="butt graybutt iconbutt" id="pickEmoji">
+                        <i class="material-icons"> insert_emoticon </i>
+                    </button>
                     <form id="newchatForm" autocomplete="off" onsubmit="return false;">
                         <input
                             maxlength="240"
@@ -224,9 +228,6 @@
                             tabindex="0"
                         />
                     </form>
-                    <button role="button" class="butt graybutt iconbutt" id="pickEmoji">
-                        <i class="material-icons"> insert_emoticon </i>
-                    </button>
                     <div id="emojiPicker">
                         <div id="pickerNav"></div>
                         <input type="text" placeholder="Filter emoji things..." id="pickerSearch" tabindex="-1" />
@@ -245,31 +246,31 @@
             </div>
 
             <div id="usersbox">
-                <div id="allUsersWrap" class="usersWrap" data-simplebar>
-                    <div id="allUsers">
-                        <div id="userKEY" class="prson">
-                            <!-- template for users -->
-                            <div class="botson">
-                                <span class="material-icons blockon">block</span>
-                                <span class="material-icons imptcon">label_important</span>
-                            </div>
-                            <span class="prsnName"></span>
-                            <span class="djOrder"></span>
-                            <span class="material-icons prsnRole"></span>
-                        </div>
-                        <div id="usersBot"></div>
-                        <div id="usersSuper"></div>
-                        <div id="usersMod"></div>
-                        <div id="usersRegular"></div>
-                    </div>
-                </div>
-                <div id="usersFooter">
-                    <h2><span id="numListeners"></span> Users</h2>
+                <div id="usersStats">
+                    <h2><span id="numListeners"></span> People</h2>
                     <div class="listenerType">
                         <i class="material-icons">room</i> <span id="numRoomListeners"></span>
                     </div>
                     <div class="listenerType">
                         <i class="material-icons">radio</i> <span id="numStreamListeners"></span>
+                    </div>
+                </div>
+                <div id="allUsersWrap" class="usersWrap" data-simplebar>
+                    <div id="allUsers">
+                        <div id="userKEY" class="prson">
+                            <!-- template for users -->
+                            <span class="djOrder"></span>
+                            <span class="material-icons prsnRole"></span>
+                            <div class="botson">
+                                <span class="material-icons blockon">block</span>
+                                <span class="material-icons imptcon">label_important</span>
+                            </div>
+                            <span class="prsnName"></span>
+                        </div>
+                        <div id="usersBot"></div>
+                        <div id="usersSuper"></div>
+                        <div id="usersMod"></div>
+                        <div id="usersRegular"></div>
                     </div>
                 </div>
             </div>
