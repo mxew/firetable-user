@@ -3803,7 +3803,7 @@ firetable.ui = {
             if (data.color == "#fff" || data.color == "#7f7f7f") {
                 firetable.color = firetable.orange;
                 firetable.countcolor = "#fff";
-                $("#djStage").css("background-color", "#fff");
+                $("#djStage").css("background-color", "#ccc");
             } else {
                 $("#djStage").css("background-color", data.color);
             }
@@ -3828,7 +3828,9 @@ firetable.ui = {
                     firetable.color +
                     "; color: " +
                     firetable.countcolor +
-                    "; } .iconbutt.on { color: " +
+                    "; } #nowplaying #track, #nowplaying #artist, #nowplaying #plays, #nowplaying #timr { color: " +
+                    firetable.countcolor +
+                    "} .iconbutt.on { color: " +
                     firetable.color +
                     "; border-bottom: 1px solid " +
                     firetable.color +

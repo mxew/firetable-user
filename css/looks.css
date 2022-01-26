@@ -236,7 +236,6 @@ code {
     color: #43b581;
 }
 .smallIcon .prsnRole {
-    margin-right: 0.15rem;
     margin-left: 0.15rem;
     font-size: 0.75rem;
 }
@@ -263,7 +262,7 @@ code {
 }
 
 .prson.idle .prsnRole {
-    color: rgba(255, 255, 255, 0.33);
+    color: #faa61a;
 }
 
 .prson.idlething .imptcon {
@@ -544,8 +543,8 @@ a.sociallogo[href] {
 #mainGrid.mmusrs {
     grid-template-areas:
         "head"
-        "theme"
         "stage"
+        "theme"
         "mmopts"
         "users";
 }
@@ -560,8 +559,8 @@ a.sociallogo[href] {
 #mainGrid.mmqueue {
     grid-template-areas:
         "head"
-        "theme"
         "stage"
+        "theme"
         "mmopts"
         "queues";
 }
@@ -576,8 +575,8 @@ a.sociallogo[href] {
 #mainGrid.mmchat {
     grid-template-areas:
         "head"
-        "theme"
         "stage"
+        "theme"
         "mmopts"
         "chat";
 }
@@ -593,8 +592,8 @@ a.sociallogo[href] {
     grid-template-rows: auto auto auto 1fr;
     grid-template-areas:
         "head"
-        "theme"
         "stage"
+        "theme"
         "login";
 }
 
@@ -767,6 +766,9 @@ span.blockon:empty {
     flex-direction: column;
     position: relative;
     overflow: hidden;
+    border-top: 2px solid black;
+border-top-left-radius: 0.5rem;
+border-top-right-radius: 0.5rem;
 }
 
 #stage > div:not(#screenBox) {
@@ -792,7 +794,6 @@ span.blockon:empty {
         "art plays plays";
     margin-bottom: auto;
     padding: var(--pad4);
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
 }
 
 #albumArt {
@@ -873,7 +874,7 @@ span.blockon:empty {
     margin-right: var(--pad2);
     margin-left: var(--pad2);
     min-width: 0;
-    height: 1.5rem;
+    height: 1rem;
 }
 
 .spot.empty .djplaque {
@@ -942,9 +943,7 @@ span.blockon:empty {
 #volandthings {
     position: relative;
     background-color: var(--color-bg-s1);
-    border-bottom: 1px solid #333;
-    border-bottom-left-radius: 0.5rem;
-    border-bottom-right-radius: 0.5rem;
+    border-bottom: 1px solid #333
 }
 
 #songthings,
@@ -1366,9 +1365,9 @@ a.importLinkCheck {
     font-size: 1rem;
     text-align: center;
     background-color: var(--color-bg-s1);
-    border-top: 2px solid black;
-    border-top-left-radius: 0.5rem;
-    border-top-right-radius: 0.5rem;
+    border-bottom: 2px solid black;
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
 }
 
 #currentTheme {
@@ -2108,8 +2107,8 @@ div#blog {
         grid-template-columns: 60vw 40vw;
         grid-template-areas:
             "head chat"
-            "theme chat"
             "stage chat"
+            "theme chat"
             "mmopts chat"
             "users chat";
     }
@@ -2117,8 +2116,8 @@ div#blog {
     #mainGrid.mmusrs {
         grid-template-areas:
             "head chat"
-            "theme chat"
             "stage chat"
+            "theme chat"
             "mmopts chat"
             "users chat";
     }
@@ -2126,8 +2125,8 @@ div#blog {
     #mainGrid.mmqueue {
         grid-template-areas:
             "head chat"
-            "theme chat"
             "stage chat"
+            "theme chat"
             "mmopts chat"
             "queues chat";
     }
@@ -2141,8 +2140,8 @@ div#blog {
     #mainGrid.login {
         grid-template-areas:
             "head queues"
-            "theme queues"
             "stage queues"
+            "theme queues"
             "login queues";
     }
 
@@ -2213,8 +2212,8 @@ div#blog {
         grid-template-columns: minmax(20rem, 20vw) minmax(30rem, 48rem) 30vw;
         grid-template-areas:
             "users head chat"
-            "users theme chat"
             "users stage chat"
+            "users theme chat"
             "users queues chat";
     }
 
@@ -2230,8 +2229,8 @@ div#blog {
     #mainGrid.login {
         grid-template-areas:
             "head head queues"
-            "theme theme queues"
             "stage stage queues"
+            "theme theme queues"
             "login login queues";
     }
 

@@ -124,6 +124,42 @@
                             <li><span></span></li>
                         </ul>
                     </div>
+                    <div id="volandthings">
+                        <div id="songthings">
+                            <div id="songActions">
+                                <button role="button" class="butt graybutt iconbutt" id="grab" tabindex="0">
+                                    <i class="material-icons"> &#xE03B; </i>
+                                </button>
+                                <a target="_blank" role="button" class="butt graybutt iconbutt" id="songlink" tabindex="0">
+                                    <i class="material-icons"> link </i>
+                                </a>
+                            </div>
+                            <div id="playerControls">
+                                <button
+                                    role="button"
+                                    class="butt graybutt iconbutt"
+                                    id="reloadtrack"
+                                    title="reload audio"
+                                    tabindex="0"
+                                >
+                                    <i class="material-icons"> refresh </i>
+                                </button>
+                                <button
+                                    role="button"
+                                    class="butt graybutt iconbutt"
+                                    id="volstatus"
+                                    title="mute"
+                                    tabindex="0"
+                                >
+                                    <i class="material-icons"> &#xE050; </i>
+                                </button>
+                                <div id="volplace">
+                                    <div id="slider"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                     <div id="nowplaying">
                         <div id="albumArt"></div>
                         <div id="track">Loading firetable...</div>
@@ -137,57 +173,14 @@
                     </div>
                     <div id="deck"></div>
                 </div>
-                <div id="prgbar"></div>
-                <div id="volandthings">
-                    <div id="songthings">
-                        <div id="voteActions">
-                            <button role="button" class="butt graybutt iconbutt" id="fire" tabindex="0">
-                                <i class="material-icons"> thumb_up </i>
-                            </button>
-                            <button role="button" class="butt graybutt iconbutt" id="cloud_with_rain" tabindex="0">
-                                <i class="material-icons"> thumb_down </i>
-                            </button>
-                        </div>
-                        <div id="songActions">
-                            <button role="button" class="butt graybutt iconbutt" id="grab" tabindex="0">
-                                <i class="material-icons"> &#xE03B; </i>
-                            </button>
-                            <a target="_blank" role="button" class="butt graybutt iconbutt" id="songlink" tabindex="0">
-                                <i class="material-icons"> link </i>
-                            </a>
-                        </div>
-                        <div id="playerControls">
-                            <button
-                                role="button"
-                                class="butt graybutt iconbutt"
-                                id="reloadtrack"
-                                title="reload audio"
-                                tabindex="0"
-                            >
-                                <i class="material-icons"> refresh </i>
-                            </button>
-                            <button
-                                role="button"
-                                class="butt graybutt iconbutt"
-                                id="volstatus"
-                                title="mute"
-                                tabindex="0"
-                            >
-                                <i class="material-icons"> &#xE050; </i>
-                            </button>
-                            <div id="volplace">
-                                <div id="slider"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <button role="button" class="butt graybutt iconbutt" id="history" tabindex="0">
-                        <i class="material-icons">history</i>
-                    </button>
-                </div>
+
             </div>
 
             <div id="themebox">
                 <div id="currentTheme"></div>
+                <button role="button" class="butt graybutt iconbutt" id="history" tabindex="0">
+                    <i class="material-icons">history</i>
+                </button>
             </div>
 
             <div id="minimodeoptions" class="tabs">
