@@ -228,45 +228,12 @@ code {
     display: none;
 }
 
-.prsnRole {
-    z-index: 2;
-    margin-right: 0.5rem;
-    font-size: 1.125rem;
-    line-height: 0;
-    color: #43b581;
-}
-.smallIcon .prsnRole {
-    margin-left: 0.15rem;
-    font-size: 0.75rem;
-}
-
 .utitle {
     font-size: 0.66rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: rgba(255, 255, 255, 0.4);
-}
-
-.imptcon {
-    display: none;
-    position: absolute;
-    right: -0.25rem;
-    height: calc(0.75rem + 4px);
-    width: calc(0.75rem + 4px);
-    padding: 2px;
-    font-size: 0.75em;
-    color: var(--color-orange);
-    background-color: var(--color-bg-t2);
-    border-radius: 999px;
-}
-
-.prson.idle .prsnRole {
-    color: #faa61a;
-}
-
-.prson.idlething .imptcon {
-    display: block;
 }
 
 .notice {
@@ -474,7 +441,7 @@ a.sociallogo[href] {
     display: block;
 }
 
-.sociallogo svg:hover {
+.sociallogo:hover svg {
     fill: #fff;
 }
 .sociallogo svg {
@@ -521,6 +488,10 @@ a.sociallogo[href] {
 .header_icon .material-icons {
     font-size: 1.2rem;
     color: #888;
+}
+
+.header_icon:hover .material-icons {
+    color: white;
 }
 
 /*------------------------------------ MAIN BODY THINGS */
@@ -664,7 +635,16 @@ a.sociallogo[href] {
 }
 
 #allUsers {
-    padding-top: var(--height-footer);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--pad2);
+    padding: var(--height-footer) var(--pad4) var(--pad5) var(--pad4);
+}
+
+#allUsers > *,
+#allUsers .prson {
+    display: contents;
 }
 
 #allUsersWrap {
@@ -673,39 +653,71 @@ a.sociallogo[href] {
     align-self: center;
 }
 
-.prson {
-    display: flex;
-    align-items: center;
-    min-width: 0;
-    padding: var(--pad1) var(--pad4);
+.prson.idlething .imptcon {
+    display: block;
 }
 
-#allUsersWrap .prson {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+.prsnStatus {
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    right: -0.2rem;
+    font-size: 0.75rem;
+    color: #43b581;
+    transform: rotate(-45deg);
+}
+.prson.idle .prsnStatus {
+    color: var(--color-orange);
+}
+
+.prsnNameRole {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 2.2rem;
+}
+.prson.blockd .prsnNameRole {
+    opacity: 0.5;
 }
 
 .prsnName {
-    flex: 1;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 2;
+    font-weight: 700;
     color: #bbb;
     white-space: nowrap;
     overflow-x: hidden;
     text-overflow: ellipsis;
 }
 
+.prsnRole {
+    z-index: 2;
+    margin-left: 0.5rem;
+    font-size: 1em;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.33);
+}
+.smallIcon .prsnRole {
+    margin-left: 0.15rem;
+    font-size: 0.5em;
+}
+
+.imptcon {
+    display: none;
+    position: absolute;
+    right: -0.25rem;
+    height: calc(0.75rem + 4px);
+    width: calc(0.75rem + 4px);
+    padding: 2px;
+    font-size: 0.75em;
+    color: var(--color-orange);
+    background-color: var(--color-bg-t2);
+    border-radius: 999px;
+}
+
 .djOrder {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    margin-right: 0.75rem;
-    width: 2.5rem;
     font-size: 0.85rem;
     font-weight: 700;
     line-height: 0;
@@ -719,14 +731,6 @@ a.sociallogo[href] {
     color: #888;
 }
 
-#usersbox .prson.blockd .prsnName,
-#usersbox .prson.blockd .prsnRole {
-    opacity: 0.5;
-}
-#usersbox .prson.blockd .blockon {
-    display: block;
-}
-
 .botson {
     background-color: #000;
     background-size: auto 100%;
@@ -734,28 +738,32 @@ a.sociallogo[href] {
     background-position: center 55%;
     background-repeat: no-repeat;
     border-bottom: 1px solid #888;
+    clip-path: circle(60px at center);
 }
 
-#usersbox .botson {
+#allUsers .botson {
     display: flex;
     align-items: center;
-    margin-right: 0.75rem;
-    width: 2rem;
-    height: 2rem;
     position: relative;
+    margin-right: 0.5rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    background-position: -33%;
 }
 
-span.blockon {
+.blockon {
     display: none;
-    width: 2rem;
-    height: 2rem;
-    font-size: 2rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    font-size: 2.2rem;
     background-color: rgba(0, 0, 0, 0.5);
     color: var(--color-orange);
     border-radius: 999px;
 }
-
-span.blockon:empty {
+.prson.blockd .blockon {
+    display: block;
+}
+.blockon:empty {
     display: none;
 }
 
@@ -767,8 +775,8 @@ span.blockon:empty {
     position: relative;
     overflow: hidden;
     border-top: 2px solid black;
-border-top-left-radius: 0.5rem;
-border-top-right-radius: 0.5rem;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
 }
 
 #stage > div:not(#screenBox) {
@@ -943,7 +951,7 @@ border-top-right-radius: 0.5rem;
 #volandthings {
     position: relative;
     background-color: var(--color-bg-s1);
-    border-bottom: 1px solid #333
+    border-bottom: 1px solid #333;
 }
 
 #songthings,

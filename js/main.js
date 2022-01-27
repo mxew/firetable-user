@@ -2357,108 +2357,81 @@ firetable.ui = {
             }
         });
         var $userTemplate = $("#userKEY").remove();
-        ftapi.events.on("userJoined", function (data) {
-            console.log("user joined", data);
-            var $newUser = $userTemplate.clone();
+        function userBits(data) {
             if (!data.username) data.username = data.userid;
             if (data.idle) {
-                if (data.idle.isIdle && !data.hostbot) $newUser.addClass("idle");
-                if (data.idle.audio == 2) $newUser.addClass("idlething");
+                if (data.idle.isIdle && !data.hostbot)
+                    data.html.addClass("idle").find(".prsnStatus").text("nightlight");
+                if (data.idle.audio == 2) data.html.addClass("idlething");
             }
             if (data.blocked) {
-                $newUser.addClass("blockd");
+                data.html.addClass("blockd");
             }
 
-            var destination = "#usersRegular";
-            var rolename = "";
-            var rolecon = "lens";
-            var smallcon = true;
+            data.destination = "#usersRegular";
+            data.rolename = "";
+            data.rolecon = "";
+            data.smallcon = true;
             if (data.mod) {
-                rolename = "mod";
-                rolecon = "shield";
-                smallcon = false;
-                destination = "#usersMod";
+                data.rolename = "mod";
+                data.rolecon = "star";
+                data.smallcon = false;
+                data.destination = "#usersMod";
             }
             if (data.supermod) {
-                rolename = "supermod";
-                rolecon = "local_police";
-                smallcon = false;
-                destination = "#usersSuper";
+                data.rolename = "supermod";
+                data.rolecon = "local_police";
+                data.smallcon = false;
+                data.destination = "#usersSuper";
             }
             if (data.hostbot) {
-                rolename = "robot";
-                rolecon = "smart_toy";
-                smallcon = false;
-                destination = "#usersBot";
+                data.rolename = "robot";
+                data.rolecon = "smart_toy";
+                data.smallcon = false;
+                data.destination = "#usersBot";
             }
-
-            $newUser.attr("id", "user" + data.userid);
-            $newUser
+            return data;
+        }
+        ftapi.events.on("userJoined", function (data) {
+            console.log("user joined", data);
+            data.html = $userTemplate.clone();
+            data = userBits(data);
+            data.html.attr("id", "user" + data.userid);
+            data.html
                 .find(".botson")
                 .css(
                     "background-image",
                     "url(https://indiediscotheque.com/robots/" + data.userid + data.username + ".png?size=110x110)"
                 );
-            $newUser.find(".prsnName").text(data.username);
-            $newUser.find(".prsnRole").text(rolecon);
-            if (rolename) $newUser.find(".prsnRole").prop("title", rolename);
-            if (smallcon) $newUser.addClass("smallIcon");
-            else $newUser.removeClass("smallIcon");
-            $newUser.prop("title", "joined " + firetable.utilities.format_date(data.joined));
-            firetable.utilities.chatAt($newUser); // adds the click event to @ the user
-            $(destination).append($newUser);
+            data.html.find(".prsnName").text(data.username);
+            data.html.find(".prsnRole").text(data.rolecon);
+            if (data.rolename) data.html.find(".prsnRole").prop("title", data.rolename);
+            if (data.smallcon) data.html.addClass("smallIcon");
+            else data.html.removeClass("smallIcon");
+            data.html.prop("title", "joined " + firetable.utilities.format_date(data.joined));
+            firetable.utilities.chatAt(data.html); // adds the click event to @ the user
+            $(data.destination).append(data.html);
         });
         ftapi.events.on("userLeft", function (data) {
             $("#user" + data.userid).remove();
         });
         ftapi.events.on("userChanged", function (data) {
             console.log("user changed", data);
-            $thisUser = $("#user" + data.userid);
-            $thisUser.removeClass("idle");
-            $thisUser.removeClass("blockd");
-            if (!data.username) data.username = data.userid;
-            if (data.idle) {
-                if (data.idle.isIdle && !data.hostbot) $thisUser.addClass("idle");
-                if (data.idle.audio == 2) $thisUser.addClass("idlething");
-            }
-            if (data.blocked) {
-                $thisUser.addClass("blockd");
-            }
-
-            var destination = "#usersRegular";
-            var rolename = "";
-            var rolecon = "lens";
-            var smallcon = true;
-            if (data.mod) {
-                rolename = "mod";
-                rolecon = "shield";
-                smallcon = false;
-                destination = "#usersMod";
-            }
-            if (data.supermod) {
-                rolename = "supermod";
-                rolecon = "local_police";
-                smallcon = false;
-                destination = "#usersSuper";
-            }
-            if (data.hostbot) {
-                rolename = "robot";
-                rolecon = "smart_toy";
-                smallcon = false;
-                destination = "#usersBot";
-            }
-
-            $thisUser
+            data.html = $("#user" + data.userid);
+            data.html.removeClass("idle").find(".prsnStatus").text("lens");
+            data.html.removeClass("blockd");
+            data = userBits(data);
+            data.html
                 .find(".botson")
                 .css(
                     "background-image",
                     "url(https://indiediscotheque.com/robots/" + data.userid + data.username + ".png?size=110x110)"
                 );
-            $thisUser.find(".prsnName").text(data.username);
-            $thisUser.find(".prsnRole").text(rolecon);
-            if (rolename) $thisUser.find(".prsnRole").prop("title", rolename);
-            if (smallcon) $thisUser.addClass("smallIcon");
-            else $thisUser.removeClass("smallIcon");
+            data.html.find(".prsnName").text(data.username);
+            data.html.find(".prsnRole").text(data.rolecon);
+            if (data.rolename) data.html.find(".prsnRole").prop("title", data.rolename);
+            if (data.smallcon) data.html.addClass("smallIcon");
+            else data.html.removeClass("smallIcon");
         });
         ftapi.events.on("usersChanged", function (okdata) {
             if ($("#loggedInUser .botson").data("uid") == ftapi.uid) {
