@@ -259,6 +259,7 @@ code {
 
 .tabs {
     display: flex;
+    align-items: flex-end;
 }
 
 .tab {
@@ -788,7 +789,7 @@ a.sociallogo[href] {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: inset 0 -4rem 4rem -3rem rgba(0, 0, 0, 0.25), inset 0 4rem 4rem -3rem rgba(0, 0, 0, 0.25);
+    box-shadow: inset 0 -4rem 4rem -3rem rgba(0, 0, 0, 0.5), inset 0 4rem 4rem -3rem rgba(0, 0, 0, 0.5);
 }
 
 #nowplaying {
@@ -896,7 +897,7 @@ a.sociallogo[href] {
     z-index: 0;
     bottom: 1.4rem;
     width: 100%;
-    height: 8rem;
+    height: 6rem;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center bottom;
@@ -912,7 +913,7 @@ a.sociallogo[href] {
     display: flex;
     justify-content: space-between;
     min-width: 0;
-    padding: 0 var(--pad3);
+    padding: 0 var(--pad2);
     font-size: 0.75rem;
     line-height: 1.5rem;
     text-align: center;
@@ -1373,7 +1374,7 @@ a.importLinkCheck {
     font-size: 1rem;
     text-align: center;
     background-color: var(--color-bg-s1);
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.125);
     border-bottom-left-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
 }
@@ -2089,6 +2090,61 @@ div#blog {
 }
 
 /*------------------------------------ Media Queries -*/
+@media only screen and (min-width: 640px) {
+    #mainGrid,
+    #mainGrid.mmchat {
+        grid-template-rows: auto auto auto 1fr;
+        grid-template-columns: minmax(28rem, 1fr) minmax(18rem, 24rem);
+        grid-template-areas:
+            "head mmopts"
+            "stage chat"
+            "theme chat"
+            "queues chat";
+    }
+
+    #mainGrid.mmusrs {
+        grid-template-areas:
+            "head mmopts"
+            "stage users"
+            "theme users"
+            "queues users";
+    }
+
+    #mainGrid.login {
+        grid-template-areas:
+            "head queues"
+            "stage queues"
+            "theme queues"
+            "login queues";
+    }
+
+    #mainGrid.login #queuebox,
+    #mainGrid.login #thehistoryWrap,
+    #mainGrid.mmchat #actualChat,
+    #mainGrid.mmusrs #usersbox,
+    #mainGrid.mmchat #queuebox,
+    #mainGrid.mmusrs #queuebox {
+        display: flex;
+    }
+
+    #mainGrid.login .histeal,
+    #mmqueue {
+        display: none;
+    }
+
+    #thehistoryWrap {
+        grid-area: queues;
+        display: block;
+        position: relative;
+        top: auto !important;
+        bottom: auto;
+    }
+
+    #mainGrid.mmqueue #thehistoryWrap {
+        grid-area: queues;
+    }
+}
+
 @media only screen and (max-width: 799px) {
     #allUsersWrap .prson {
         cursor: none;
@@ -2109,77 +2165,6 @@ div#blog {
         width: 480px;
     }
 
-    #mainGrid,
-    #mainGrid.mmchat {
-        grid-template-rows: auto auto auto auto 1fr;
-        grid-template-columns: 60vw 40vw;
-        grid-template-areas:
-            "head chat"
-            "stage chat"
-            "theme chat"
-            "mmopts chat"
-            "users chat";
-    }
-
-    #mainGrid.mmusrs {
-        grid-template-areas:
-            "head chat"
-            "stage chat"
-            "theme chat"
-            "mmopts chat"
-            "users chat";
-    }
-
-    #mainGrid.mmqueue {
-        grid-template-areas:
-            "head chat"
-            "stage chat"
-            "theme chat"
-            "mmopts chat"
-            "queues chat";
-    }
-
-    #mainGrid.mmchat #usersbox,
-    #mainGrid.mmqueue #actualChat,
-    #mainGrid.mmusrs #actualChat {
-        display: flex;
-    }
-
-    #mainGrid.login {
-        grid-template-areas:
-            "head queues"
-            "stage queues"
-            "theme queues"
-            "login queues";
-    }
-
-    #mainGrid.login #queuebox,
-    #mainGrid.login #thehistoryWrap {
-        display: block;
-    }
-
-    #mainGrid.login .histeal,
-    #mmchat {
-        display: none;
-    }
-
-    #themebox,
-    #stage,
-    #minimodeoptions,
-    #login {
-        justify-self: center;
-        width: 100%;
-        max-width: 48rem;
-    }
-
-    #topbar,
-    #queuebox,
-    #thehistoryWrap {
-        justify-self: center;
-        width: 100%;
-        max-width: 40rem;
-    }
-
     #topbar {
         padding-right: var(--pad4);
         padding-left: var(--pad4);
@@ -2193,21 +2178,9 @@ div#blog {
         min-width: 20rem;
         max-width: 30rem;
     }
-
-    #thehistoryWrap {
-        grid-area: queues;
-        display: block;
-        position: relative;
-        top: auto !important;
-        bottom: auto;
-    }
-
-    #mainGrid.mmqueue #thehistoryWrap {
-        grid-area: mmopts / queues;
-    }
 }
 
-@media only screen and (min-width: 1200px) {
+@media only screen and (min-width: 1000px) {
     body {
         background: linear-gradient(var(--color-bg-t1), var(--color-bg));
     }

@@ -3801,7 +3801,9 @@ firetable.ui = {
                     firetable.color +
                     "; color: " +
                     firetable.countcolor +
-                    "; } #nowplaying #track, #nowplaying #artist, #nowplaying #plays, #nowplaying #timr { color: " +
+                    "; } .djActive { background-image: linear-gradient(to bottom, var(--color-bg-s1) -200%, " +
+                    firetable.color +
+                    "); } #nowplaying #track, #nowplaying #artist, #nowplaying #plays, #nowplaying #timr { color: " +
                     firetable.countcolor +
                     "} .iconbutt.on { color: " +
                     firetable.color +
