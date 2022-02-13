@@ -210,7 +210,7 @@ firetable.init = function () {
     $(window).resize(
         firetable.utilities.debounce(function () {
             // This will execute whenever the window is resized
-            $("#thehistory").css("top", $("#stage").outerHeight() + $("#topbar").outerHeight());
+            $("#thehistory").css("top", $("#djStage").outerHeight() + $("#topbar").outerHeight());
             $("#playerArea,#scScreen").width($("#djStage").outerWidth()).height($("#djStage").outerHeight());
             $("#stealContain").css({
                 top: $("#grab").offset().top + $("#grab").height(),
@@ -660,19 +660,31 @@ firetable.actions = {
     filterQueue: function (val) {
         if (val.length == 0) {
             $("#mainqueue .pvbar").show();
+            $("#mainqueue").removeClass("overFiltered");
             return;
-        } else {
         }
         val = val.toLowerCase();
-        $("#mainqueue .pvbar").each(function (p, q) {
-            var txt = $(q).find(".listwords").text();
-            var regex = new RegExp(val, "ig");
-            if (txt.match(regex)) {
-                $(q).show();
-            } else {
-                $(q).hide();
-            }
-        });
+        numresults = 0;
+        $("#mainqueue .pvbar")
+            .each(function (p, q) {
+                var txt = $(q).find(".listwords").text();
+                var regex = new RegExp(val, "ig");
+                if (txt.match(regex)) {
+                    $(q).show();
+                    numresults++;
+                } else {
+                    $(q).hide();
+                }
+            })
+            .promise()
+            .done(function () {
+                console.log(numresults);
+                if (!numresults) {
+                    $("#mainqueue").addClass("overFiltered");
+                } else {
+                    $("#mainqueue").removeClass("overFiltered");
+                }
+            });
     },
     muteToggle: function (zeroMute) {
         var muted = localStorage["firetableMute"];
@@ -1718,6 +1730,7 @@ firetable.ui = {
     },
     init: function () {
         $("#mainqueue").sortable({
+            axis: "y",
             start: function (event, ui) {
                 var start_pos = ui.item.index();
                 ui.item.data("start_pos", start_pos);
@@ -2245,10 +2258,10 @@ firetable.ui = {
                     if (data.hasOwnProperty(key)) {
                         $("#user" + data[key].id + " .djOrder")
                             .html(
-                                position +
-                                    ' <i class="material-icons" title="#' +
+                                '<i class="material-icons" title="#' +
                                     position +
-                                    ' on the waitlist">pending_actions</i>'
+                                    ' on the waitlist">pending_actions</i> ' +
+                                    position
                             )
                             .removeClass("ondeck")
                             .addClass("waitlist");
@@ -2291,7 +2304,7 @@ firetable.ui = {
                             "</span></div></div></div>";
                         countr++;
                         $("#user" + data[key].id + " .djOrder")
-                            .html(countr + ' <i class="material-icons" title="On deck #' + countr + '">album</i>')
+                            .html('<i class="material-icons" title="On deck #' + countr + '">album</i> ' + countr)
                             .removeClass("waitlist")
                             .addClass("ondeck");
                     }
@@ -2478,9 +2491,9 @@ firetable.ui = {
 
             if (ftapi.users[chatData.id]) {
                 if (ftapi.users[chatData.id].username) namebo = ftapi.users[chatData.id].username;
-                if (ftapi.users[chatData.id].mod) utitle = "mod";
-                if (ftapi.users[chatData.id].supermod) utitle = "supermod";
-                if (ftapi.users[chatData.id].hostbot) utitle = "robot";
+                if (ftapi.users[chatData.id].mod) utitle = "stars";
+                if (ftapi.users[chatData.id].supermod) utitle = "local_police";
+                if (ftapi.users[chatData.id].hostbot) utitle = "smart_toy";
             } else if (chatData.name) {
                 namebo = chatData.name;
             }
@@ -2615,8 +2628,11 @@ firetable.ui = {
         });
 
         ftapi.events.on("playlistChanged", function (okdata, listID) {
+            firetable.debug && console.log(okdata.length);
             firetable.queue = okdata;
-            $("#mainqueue").html("");
+            $("#mainqueue").html("").removeClass("emptyList overFiltered").addClass("loading");
+            $("#queueFilterForm")[0].reset();
+            if ($.isEmptyObject(okdata)) $("#mainqueue").addClass("emptyList");
             for (var key in okdata) {
                 if (okdata.hasOwnProperty(key)) {
                     var $newli = $playlistItemTemplate.clone();
@@ -2699,6 +2715,7 @@ firetable.ui = {
                     $("#mainqueue").append($newli);
                 }
             }
+            $("#mainqueue").removeClass("loading");
         });
 
         firetable.ui.LinkGrabber.start();
@@ -2806,7 +2823,7 @@ firetable.ui = {
         $("#history").bind("click", function () {
             $("#thehistoryWrap")
                 .slideToggle()
-                .css("top", $("#stage").outerHeight() + $("#topbar").outerHeight());
+                .css("top", $("#djStage").outerHeight() + $("#topbar").outerHeight());
             $(this).toggleClass("on");
         });
         $("#startMerge").bind("click", function () {
@@ -3772,7 +3789,7 @@ firetable.ui = {
             firetable.debug && console.log("COLOR CHANGE!", data);
 
             firetable.color = data.color;
-            firetable.countcolor = data.txt;
+            //firetable.countcolor = data.txt;
             if (data.color == "#fff" || data.color == "#7f7f7f") {
                 firetable.color = firetable.orange;
                 firetable.countcolor = "#fff";
@@ -3787,7 +3804,7 @@ firetable.ui = {
 				firetable.debug && console.log("a")
 				firetable.countcolor = "#000000c9";
 			}
-			$("#stage").css("color", firetable.countcolor);
+			$("#djStage").css("color", firetable.countcolor);
 			*/
             $(".customColorStyles").remove();
 
@@ -3797,13 +3814,11 @@ firetable.ui = {
             $("head").append(
                 "<style class='customColorStyles'>:focus { box-shadow: 0 0 0.5rem " +
                     firetable.color +
-                    "; } .djActive, #addToQueueBttn, .butt:not(.graybutt), .ui-slider-horizontal .ui-slider-range-min { background-color: " +
+                    "; } .djplaque, #addToQueueBttn, .butt:not(.graybutt), .ui-slider-horizontal .ui-slider-range-min { background-color: " +
                     firetable.color +
                     "; color: " +
                     firetable.countcolor +
-                    "; } .djActive { background-image: linear-gradient(to bottom, var(--color-bg-s1) -200%, " +
-                    firetable.color +
-                    "); } #nowplaying #track, #nowplaying #artist, #nowplaying #plays, #nowplaying #timr { color: " +
+                    "; }  #nowplaying #track, #nowplaying #artist, #nowplaying #plays, #nowplaying #timr { color: " +
                     firetable.countcolor +
                     "} .iconbutt.on { color: " +
                     firetable.color +

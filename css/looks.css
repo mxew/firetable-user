@@ -229,10 +229,8 @@ code {
 }
 
 .utitle {
-    font-size: 0.66rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+    font-size: 1rem;
+    font-weight: 100;
     color: rgba(255, 255, 255, 0.4);
 }
 
@@ -315,6 +313,7 @@ span.removemeIcon.material-icons {
     background-color: var(--color-orange);
     border-top: 1px solid rgba(255, 255, 255, 0.3);
     border-bottom: 1px solid black;
+    box-shadow: 0 0.25rem 0.5rem -0.25rem black;
     transition: all 100ms ease-in-out;
     user-select: none;
 }
@@ -428,14 +427,9 @@ span.removemeIcon.material-icons {
     margin-right: 1rem;
 }
 
-#socialthings {
-    display: flex;
-}
-
 a.sociallogo {
     text-decoration: none;
     display: none;
-    margin: 0.5rem 0.2rem 0 0.2rem;
 }
 
 a.sociallogo[href] {
@@ -479,6 +473,7 @@ a.sociallogo[href] {
 .header_icon {
     margin: 0.5rem 0.2rem 0 0.2rem;
     padding: 0;
+    height: auto;
     font-size: 0;
     line-height: 0;
     background: none;
@@ -500,11 +495,12 @@ a.sociallogo[href] {
     grid-area: main;
     flex: 1;
     display: grid;
-    grid-template-rows: auto auto auto auto 1fr;
+    grid-template-rows: auto auto auto auto auto 1fr;
     grid-template-columns: 1fr;
     grid-template-areas:
         "head"
-        "stage"
+        "player"
+        "playingstage"
         "main"
         "main"
         "main";
@@ -515,7 +511,8 @@ a.sociallogo[href] {
 #mainGrid.mmusrs {
     grid-template-areas:
         "head"
-        "stage"
+        "player"
+        "playingstage"
         "theme"
         "mmopts"
         "users";
@@ -531,7 +528,8 @@ a.sociallogo[href] {
 #mainGrid.mmqueue {
     grid-template-areas:
         "head"
-        "stage"
+        "player"
+        "playingstage"
         "theme"
         "mmopts"
         "queues";
@@ -547,7 +545,8 @@ a.sociallogo[href] {
 #mainGrid.mmchat {
     grid-template-areas:
         "head"
-        "stage"
+        "player"
+        "playingstage"
         "theme"
         "mmopts"
         "chat";
@@ -564,7 +563,7 @@ a.sociallogo[href] {
     grid-template-rows: auto auto auto 1fr;
     grid-template-areas:
         "head"
-        "stage"
+        "playingstage"
         "theme"
         "login";
 }
@@ -602,7 +601,7 @@ a.sociallogo[href] {
 }
 
 .usersWrap {
-    max-width: 20rem;
+    max-width: 18rem;
     overflow: auto;
 }
 
@@ -640,7 +639,7 @@ a.sociallogo[href] {
     grid-template-columns: auto 1fr auto;
     align-items: center;
     gap: var(--pad2);
-    padding: var(--height-footer) var(--pad4) var(--pad5) var(--pad4);
+    padding: var(--pad4);
 }
 
 #allUsers > *,
@@ -651,7 +650,6 @@ a.sociallogo[href] {
 #allUsersWrap {
     height: 100%;
     width: 100%;
-    align-self: center;
 }
 
 .prson.idlething .imptcon {
@@ -674,9 +672,10 @@ a.sociallogo[href] {
 .prsnNameRole {
     display: flex;
     align-items: center;
-    font-size: 1rem;
+    justify-content: flex-start;
+    margin-left: 0.25rem;
+    font-size: 0.875rem;
     font-weight: 400;
-    line-height: 2.2rem;
 }
 .prson.blockd .prsnNameRole {
     opacity: 0.5;
@@ -693,7 +692,7 @@ a.sociallogo[href] {
 .prsnRole {
     z-index: 2;
     margin-left: 0.5rem;
-    font-size: 1em;
+    font-size: 1.125rem;
     line-height: 1;
     color: rgba(255, 255, 255, 0.33);
 }
@@ -724,19 +723,25 @@ a.sociallogo[href] {
     line-height: 0;
     color: #888;
 }
-
 .djOrder .material-icons {
-    margin-left: 0.25rem;
+    margin-right: 0.25rem;
     font-size: 1.25rem;
     line-height: 0;
+    color: rgba(123, 123, 123, 0.5);
+}
+.djOrder.ondeck .material-icons,
+.djOrder.waitlist .material-icons {
     color: #888;
+}
+.djOrder span {
+    width: 1rem;
 }
 
 .botson {
     background-color: #000;
-    background-size: auto 100%;
+    background-size: auto 125%;
     border-radius: 999px;
-    background-position: center 55%;
+    background-position: center 66%;
     background-repeat: no-repeat;
     border-bottom: 1px solid #888;
     clip-path: circle(60px at center);
@@ -747,9 +752,9 @@ a.sociallogo[href] {
     align-items: center;
     position: relative;
     margin-right: 0.5rem;
-    width: 2.2rem;
-    height: 2.2rem;
-    background-position: -33%;
+    width: 2rem;
+    height: 2rem;
+    background-position: 66% 72%;
 }
 
 .blockon {
@@ -768,31 +773,9 @@ a.sociallogo[href] {
     display: none;
 }
 
-/* The Stage */
-#stage {
-    grid-area: stage;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-    border-top: 2px solid black;
-    border-top-left-radius: 0.5rem;
-    border-top-right-radius: 0.5rem;
-}
-
-#stage > div:not(#screenBox) {
-    position: relative;
-    z-index: 2;
-}
-
-#djStage {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    box-shadow: inset 0 -4rem 4rem -3rem rgba(0, 0, 0, 0.5), inset 0 4rem 4rem -3rem rgba(0, 0, 0, 0.5);
-}
-
+/* Now Playing */
 #nowplaying {
+    grid-area: playingstage;
     position: relative;
     display: grid;
     grid-template-columns: auto 1fr auto;
@@ -802,7 +785,7 @@ a.sociallogo[href] {
         "art artist artist"
         "art plays plays";
     margin-bottom: auto;
-    padding: var(--pad4);
+    padding: var(--pad4) var(--pad4) 2.5rem var(--pad4);
 }
 
 #albumArt {
@@ -863,96 +846,21 @@ a.sociallogo[href] {
     display: none;
 }
 
-#deck {
-    grid-area: deck;
-    display: flex;
-    max-width: 100vw;
-}
-
-#deck.dance .avtr:not(.animate) {
-    transform-origin: bottom;
-    animation: MoveSideSide 2s linear infinite;
-}
-
-.spot {
-    flex: 1;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    margin-right: var(--pad2);
-    margin-left: var(--pad2);
-    min-width: 0;
-    height: 1rem;
-}
-
-.spot.empty .djplaque {
-    flex-direction: column;
-    color: rgba(255, 2556, 255, 0.5);
-}
-
-.avtr {
-    display: none;
-    position: absolute;
-    z-index: 0;
-    bottom: 1.4rem;
-    width: 100%;
-    height: 6rem;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center bottom;
-}
-
-.avtr.animate {
-    animation: MoveUpDown 1s linear infinite;
-}
-
-.djplaque {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    justify-content: space-between;
-    min-width: 0;
-    padding: 0 var(--pad2);
-    font-size: 0.75rem;
-    line-height: 1.5rem;
-    text-align: center;
-    background-color: var(--color-bg-s1);
-    border-top-left-radius: 0.5rem;
-    border-top-right-radius: 0.5rem;
-}
-
-.djname {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    padding-right: 5px;
-}
-
-.playcount {
-    white-space: nowrap;
-}
-
-#prgbar {
-    width: 100%;
-    height: 0.5rem;
-    border-bottom: 1px solid #333;
-    margin-bottom: 0;
-}
-
+/* Player */
 #volandthings,
 #queueControls {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: 0.4rem 0.5rem;
     white-space: nowrap;
 }
 
 #volandthings {
+    grid-area: player;
     position: relative;
-    background-color: var(--color-bg-s1);
-    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
 }
 
 #songthings,
@@ -963,7 +871,6 @@ a.sociallogo[href] {
     white-space: nowrap;
 }
 
-#songthings,
 #playerControls {
     flex: 1;
 }
@@ -974,10 +881,6 @@ a.sociallogo[href] {
 
 #voteActions {
     margin-right: 1rem;
-}
-
-#playerControls {
-    margin-left: 1rem;
 }
 
 #volplace {
@@ -1048,9 +951,10 @@ select#stealpicker {
 }
 
 #slider {
-    margin-right: var(--pad2);
+    margin-right: var(--pad1);
     width: 100%;
     max-width: 10rem;
+    min-width: 6rem;
 }
 
 .ui-slider {
@@ -1065,8 +969,8 @@ select#stealpicker {
     height: 1.25rem;
     cursor: grab;
     background-color: #bbb;
-    border: 0.2rem solid #666;
-    border-radius: 999px;
+    border-radius: 0.4rem;
+    box-shadow: 0 0.5rem 0.5rem -0.25rem black;
     -ms-touch-action: none;
     touch-action: none;
 }
@@ -1127,6 +1031,106 @@ html .ui-button.ui-state-disabled:active {
     color: #333333;
 }
 
+/* The Stage */
+#djStage > div:not(#screenBox) {
+    position: relative;
+    z-index: 2;
+}
+
+#djStage {
+    grid-area: playingstage;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+    overflow: hidden;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    box-shadow: inset 0 -4rem 4rem -3rem rgba(0, 0, 0, 0.5), inset 0 16rem 32rem -3rem rgba(0, 0, 0, 0.75),
+        inset 0 4rem 2rem -4rem black;
+}
+
+#deck {
+    grid-area: deck;
+    display: flex;
+    max-width: 100vw;
+}
+
+#deck.dance .avtr:not(.animate) {
+    transform-origin: bottom;
+    animation: MoveSideSide 2s linear infinite;
+}
+
+.spot {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin-right: var(--pad2);
+    margin-left: var(--pad2);
+    min-width: 0;
+}
+
+.spot.empty .djplaque {
+    flex-direction: column;
+    color: rgba(255, 2556, 255, 0.5);
+}
+
+.avtr {
+    display: none;
+    position: absolute;
+    z-index: 0;
+    bottom: 1.4rem;
+    width: 100%;
+    height: 6rem;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+}
+
+.avtr.animate {
+    animation: MoveUpDown 1s linear infinite;
+}
+
+.djplaque {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    min-width: 0;
+    padding: 0 var(--pad2);
+    font-size: 0.75rem;
+    line-height: 1.5rem;
+    text-align: center;
+    color: #fff;
+    background-color: var(--color-bg-s1);
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.125), rgba(0, 0, 0, 0));
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+.djActive {
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+    background-color: var(--color-bg-s1) !important;
+}
+
+.djname {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    padding-right: 5px;
+}
+
+.playcount {
+    white-space: nowrap;
+}
+
+#prgbar {
+    width: 100%;
+    height: 0.5rem;
+    border-bottom: 1px solid #333;
+    margin-bottom: 0;
+}
 #screenBox {
     position: absolute;
     top: -100%;
@@ -1151,7 +1155,7 @@ html .ui-button.ui-state-disabled:active {
     top: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.1));
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.15));
 }
 
 /* Queues / Playlists */
@@ -1163,12 +1167,45 @@ html .ui-button.ui-state-disabled:active {
     overflow: hidden;
 }
 
+.queuetop {
+    background-color: var(--color-bg-t1);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
 input#queueFilter {
     width: 100%;
+    border-bottom: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 
 div#filterMachine {
-    padding: 0 var(--pad2) var(--pad2) var(--pad2);
+    padding: 0;
+}
+
+#mainqueue {
+    padding: var(--pad1) var(--pad2);
+}
+#mainqueue.emptyList:before,
+#mainqueue.loading:before,
+#mainqueue.overFiltered:before {
+    display: flex;
+    justify-content: center;
+    padding: var(--pad2);
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.4);
+}
+#mainqueue.emptyList:before {
+    content: "this playlist is empty";
+}
+#mainqueue.loading:before {
+    content: "loading...";
+}
+#mainqueue.overFiltered:before {
+    content: "no tracks meet your search criteria";
 }
 
 #mainqueue .material-icons {
@@ -1177,9 +1214,12 @@ div#filterMachine {
 }
 
 #queuelist .pvbar {
+    margin: var(--pad1) 0;
     padding: var(--pad2) var(--pad2);
     background-color: var(--color-bg-t1);
-    border-bottom: 1px solid black;
+    border-top: 1px solid var(--color-bg-t2);
+    border-bottom: 1px solid var(--color-bg);
+    border-radius: 0.5rem;
     cursor: move;
     /* fallback if grab cursor is unsupported */
     cursor: grab;
@@ -1370,13 +1410,12 @@ a.importLinkCheck {
     z-index: 15;
     display: flex;
     align-items: center;
+    max-width: 100vw;
     padding: var(--pad2);
     font-size: 1rem;
     text-align: center;
+    color: #fff;
     background-color: var(--color-bg-s1);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.125);
-    border-bottom-left-radius: 0.5rem;
-    border-bottom-right-radius: 0.5rem;
 }
 
 #currentTheme {
@@ -1414,7 +1453,6 @@ a.importLinkCheck {
     display: flex;
     justify-content: space-between;
     margin: var(--pad3);
-    font-size: 0.875rem;
     color: #bbb;
     word-break: break-word;
 }
@@ -1422,7 +1460,7 @@ a.importLinkCheck {
 .newChat .botson {
     position: relative;
     z-index: 2;
-    margin: 0 var(--pad3) 0 0;
+    margin: 0.1rem var(--pad3) 0 0;
     width: 2rem;
     height: 2rem;
     cursor: pointer;
@@ -1461,18 +1499,23 @@ a.importLinkCheck {
 }
 
 .chatContent .utitle {
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.25);
+    position: absolute;
+    z-index: 2;
+    left: -1.5rem;
+    color: #666;
 }
 
 .chatHead {
+    position: relative;
     display: flex;
+    align-items: center;
 }
 
 .chatName {
-    margin-right: var(--pad2);
+    margin-right: var(--pad1);
     font-size: 0.75rem;
     font-weight: 700;
+    letter-spacing: 0.05em;
     color: rgba(255, 255, 255, 0.4);
     cursor: pointer;
 }
@@ -1498,6 +1541,7 @@ a.importLinkCheck {
 
 .chatText {
     position: relative;
+    font-size: 1rem;
 }
 
 .chatText.deleteMe:hover {
@@ -1599,19 +1643,22 @@ a.importLinkCheck {
 .chatCard {
     display: block;
     margin: var(--pad2) 0;
+    max-width: 100%;
 }
 
 #chatbottom {
     position: relative;
     display: grid;
-    grid-template-columns: 3.5rem 1fr var(--pad3);
+    grid-template-columns: auto 1fr;
     justify-items: center;
+    gap: 0.5rem;
     height: var(--height-footer);
+    padding-right: var(--pad3);
 }
 
 #pickEmoji {
     grid-column: 1/2;
-    margin-left: var(--pad2);
+    margin-left: var(--pad3);
 }
 
 #pickerResults {
@@ -2093,11 +2140,12 @@ div#blog {
 @media only screen and (min-width: 640px) {
     #mainGrid,
     #mainGrid.mmchat {
-        grid-template-rows: auto auto auto 1fr;
+        grid-template-rows: auto auto auto auto 1fr;
         grid-template-columns: minmax(28rem, 1fr) minmax(18rem, 24rem);
         grid-template-areas:
             "head mmopts"
-            "stage chat"
+            "player chat"
+            "playingstage chat"
             "theme chat"
             "queues chat";
     }
@@ -2105,7 +2153,8 @@ div#blog {
     #mainGrid.mmusrs {
         grid-template-areas:
             "head mmopts"
-            "stage users"
+            "player users"
+            "playingstage users"
             "theme users"
             "queues users";
     }
@@ -2113,7 +2162,8 @@ div#blog {
     #mainGrid.login {
         grid-template-areas:
             "head queues"
-            "stage queues"
+            "player queues"
+            "playingstage queues"
             "theme queues"
             "login queues";
     }
@@ -2143,6 +2193,10 @@ div#blog {
     #mainGrid.mmqueue #thehistoryWrap {
         grid-area: queues;
     }
+
+    #queueControls {
+        padding: var(--pad3) var(--pad4);
+    }
 }
 
 @media only screen and (max-width: 799px) {
@@ -2161,26 +2215,83 @@ div#blog {
         top: 0;
     }
 
+    #mainGrid,
+    #mainGrid.mmchat {
+        grid-template-rows: auto auto auto 1fr;
+        grid-template-columns: auto minmax(28rem, 1fr) minmax(18rem, 24rem);
+        grid-template-areas:
+            "head player mmopts"
+            "head playingstage chat"
+            "head theme chat"
+            "head queues chat";
+    }
+
+    #mainGrid.mmusrs {
+        grid-template-areas:
+            "head player mmopts"
+            "head playingstage users"
+            "head theme users"
+            "head queues users";
+    }
+
+    #mainGrid.login {
+        grid-template-areas:
+            "head player queues"
+            "head playingstage queues"
+            "head theme queues"
+            "head login queues";
+    }
+
     #importPromptBox .modalContent {
         width: 480px;
     }
 
     #topbar {
-        padding-right: var(--pad4);
-        padding-left: var(--pad4);
+        flex-direction: column;
+        justify-content: center;
+        padding-top: var(--pad2);
+        padding-bottom: var(--pad4);
     }
 
-    #idtitle {
+    .header_icon {
+        margin-bottom: 0.5rem;
+    }
+
+    #loggedInUser,
+    #roomlogo {
+        margin-right: 0;
+        margin-left: 0;
+    }
+
+    #loggedInUser {
+        margin-top: 0.5rem;
+    }
+
+    #roomlogo {
+        margin-bottom: 0.5rem;
+    }
+
+    /* #idtitle {
         display: block;
+    } */
+
+    #volandthings {
+        padding-top: var(--pad4);
+        padding-bottom: var(--pad2);
     }
 
     #actualChat {
         min-width: 20rem;
-        max-width: 30rem;
+        max-width: 28rem;
+    }
+
+    #deck {
+        margin-left: 2.5vw;
+        margin-right: 2.5vw;
     }
 }
 
-@media only screen and (min-width: 1000px) {
+@media only screen and (min-width: 1024px) {
     body {
         background: linear-gradient(var(--color-bg-t1), var(--color-bg));
     }
@@ -2190,12 +2301,12 @@ div#blog {
     #mainGrid.mmchat,
     #mainGrid.mmusrs {
         grid-template-rows: auto auto auto 1fr;
-        grid-template-columns: minmax(20rem, 20vw) minmax(30rem, 48rem) 30vw;
+        grid-template-columns: auto 9fr min-content 12fr;
         grid-template-areas:
-            "users head chat"
-            "users stage chat"
-            "users theme chat"
-            "users queues chat";
+            "head users player chat"
+            "head users playingstage chat"
+            "head users theme chat"
+            "head users queues chat";
     }
 
     #mainGrid.mmusrs #queuebox,
@@ -2209,18 +2320,22 @@ div#blog {
 
     #mainGrid.login {
         grid-template-areas:
-            "head head queues"
-            "stage stage queues"
-            "theme theme queues"
-            "login login queues";
+            "head player player queues"
+            "head playingstage playingstage queues"
+            "head theme theme queues"
+            "head login login queues";
     }
 
     #mainGrid #minimodeoptions {
         display: none;
     }
 
-    #topbar {
-        padding: 0;
+    #djStage,
+    #themebox,
+    #queuebox {
+        width: 46vw;
+        max-width: 56rem;
+        justify-self: flex-end;
     }
 
     #djStage {
@@ -2237,11 +2352,6 @@ div#blog {
         width: 6.5rem;
     }
 
-    #deck {
-        margin-left: 5vw !important;
-        margin-right: 5vw !important;
-    }
-
     .djplaque {
         justify-content: space-between;
     }
@@ -2252,6 +2362,36 @@ div#blog {
 
     #allUsersWrap {
         align-self: flex-end;
+    }
+
+    #allUsers {
+        grid-auto-flow: dense;
+        padding-top: var(--pad5);
+    }
+    #allUsers .botson {
+        grid-column: -2 / -1;
+    }
+    #allUsers .djOrder {
+        grid-column: 1 / 2;
+    }
+    #allUsers .prsnNameRole {
+        grid-column: 2 / 3;
+        justify-content: flex-end;
+    }
+    #allUsers .prsnName {
+        order: 2;
+    }
+    #allUsers .prsnRole {
+        margin-left: 0;
+        margin-right: 0.5rem;
+    }
+
+    .newChat {
+        margin-left: var(--pad4);
+    }
+
+    #pickEmoji {
+        margin-left: var(--pad4);
     }
 
     #usersStats {
@@ -2267,33 +2407,5 @@ div#blog {
 
     #mainGrid.login #thehistoryWrap {
         width: 100%;
-    }
-}
-
-@media only screen and (min-width: 2100px) {
-    html {
-        font-size: calc(0.4em + 0.4vw);
-    }
-
-    #mainGrid,
-    #mainGrid.mmqueue,
-    #mainGrid.mmchat,
-    #mainGrid.mmusrs {
-        grid-template-columns: minmax(24rem, 36rem) minmax(40vw, 100vw) minmax(24rem, 36rem);
-    }
-
-    #usersbox .tab {
-        color: #ffffff;
-        background-color: var(--color-bg-t2);
-        box-shadow: 0 -0.2rem 0.5rem -0.2rem black;
-    }
-
-    .usersWrap {
-        display: block !important;
-        flex: 1;
-    }
-
-    #allUsersWrap {
-        border-right: 5px solid black;
     }
 }
