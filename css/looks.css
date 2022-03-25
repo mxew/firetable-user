@@ -945,6 +945,7 @@ select#stealpicker {
     margin-left: 1em;
     color: white;
     background-color: var(--color-orange);
+    background-image: radial-gradient(circle at 50% 75%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
     border-right: 1px solid black;
     border-left: 1px solid black;
     border-radius: 5px;
@@ -1104,14 +1105,14 @@ html .ui-button.ui-state-disabled:active {
     line-height: 1.5rem;
     text-align: center;
     color: #fff;
-    background-color: var(--color-bg-s1);
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.125), rgba(0, 0, 0, 0));
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.6));
     border-top-left-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
 }
 .djActive {
     border-top: 1px solid rgba(0, 0, 0, 0.2);
     background-color: var(--color-bg-s1) !important;
+    background-image: none;
 }
 
 .djname {
@@ -1126,10 +1127,16 @@ html .ui-button.ui-state-disabled:active {
 }
 
 #prgbar {
-    width: 100%;
-    height: 0.5rem;
-    border-bottom: 1px solid #333;
-    margin-bottom: 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+}
+#prgbarbar {
+    position: absolute;
+    left: 0;
+    height: 1px;
 }
 #screenBox {
     position: absolute;
@@ -1408,6 +1415,7 @@ a.importLinkCheck {
 #themebox {
     grid-area: theme;
     z-index: 15;
+    position: relative;
     display: flex;
     align-items: center;
     max-width: 100vw;
@@ -2139,6 +2147,7 @@ div#blog {
 /*------------------------------------ Media Queries -*/
 @media only screen and (min-width: 640px) {
     #mainGrid,
+    #mainGrid.mmqueue,
     #mainGrid.mmchat {
         grid-template-rows: auto auto auto auto 1fr;
         grid-template-columns: minmax(28rem, 1fr) minmax(18rem, 24rem);
@@ -2171,6 +2180,7 @@ div#blog {
     #mainGrid.login #queuebox,
     #mainGrid.login #thehistoryWrap,
     #mainGrid.mmchat #actualChat,
+    #mainGrid.mmqueue #actualChat,
     #mainGrid.mmusrs #usersbox,
     #mainGrid.mmchat #queuebox,
     #mainGrid.mmusrs #queuebox {
@@ -2194,8 +2204,9 @@ div#blog {
         grid-area: queues;
     }
 
-    #queueControls {
-        padding: var(--pad3) var(--pad4);
+    #queueControls,
+    #volandthings {
+        padding: var(--pad2) var(--pad4);
     }
 }
 
@@ -2276,8 +2287,7 @@ div#blog {
     } */
 
     #volandthings {
-        padding-top: var(--pad4);
-        padding-bottom: var(--pad2);
+        padding: var(--pad4) var(--pad4) var(--pad2) var(--pad4);
     }
 
     #actualChat {
@@ -2388,6 +2398,10 @@ div#blog {
 
     .newChat {
         margin-left: var(--pad4);
+    }
+
+    .nowplayn {
+        padding-left: calc(var(--pad5) - var(--pad4));
     }
 
     #pickEmoji {

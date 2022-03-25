@@ -1966,7 +1966,6 @@ firetable.ui = {
             }
             if (data.image == "img/idlogo.png" && ftconfigs.defaultAlbumArtUrl.length)
                 data.image = ftconfigs.defaultAlbumArtUrl;
-            $("#prgbar").css("background", "#151515");
             var showPlaycount = false;
             if (firetable.tagUpdate) {
                 if (data.cid == firetable.tagUpdate.cid && firetable.tagUpdate.adamData.track_name) {
@@ -2098,15 +2097,27 @@ firetable.ui = {
                 description: "",
                 format: "MS",
             });
-            firetable.moveBar = setInterval(function () {
-                var now = Date.now();
-                var sofar = now - firetable.song.started;
-                var pcnt = (sofar / (firetable.song.duration * 1000)) * 100;
-                $("#prgbar").css(
-                    "background",
-                    "linear-gradient(90deg, " + firetable.color + " " + pcnt + "%, #151515 " + pcnt + "%)"
-                );
-            }, 500);
+
+            $(".prgbar-style").remove();
+            var now = Date.now();
+            var sofar = parseInt((now - firetable.song.started) / 1000);
+            sofar = sofar < 0 ? 0 : sofar;
+            var pcnt = parseInt((sofar / firetable.song.duration) * 100);
+            var timeleft = firetable.song.duration - sofar;
+            $("head")
+                .delay(500)
+                .queue(function (next) {
+                    $(this).append(
+                        `<style class="prgbar-style">@keyframes prgbarit { from { width: ` +
+                            pcnt +
+                            `%; } to { width: 100%; } } #prgbarbar { background-color: ` +
+                            firetable.color +
+                            `; animation: prgbarit ` +
+                            timeleft +
+                            `s linear }</style>`
+                    );
+                    next();
+                });
         });
         ftapi.events.on("screenStateChanged", function (data) {
             firetable.debug && console.log("thescreen:", data);
@@ -2251,12 +2262,32 @@ firetable.ui = {
         });
         ftapi.events.on("waitlistChanged", function (data) {
             if (data) {
-                $("#allUsers .djOrder.waitlist").html("").removeClass("waitlist");
+                $("#allUsers .djOrder.waitlist").each(function () {
+                    $(this).html("").removeClass("waitlist");
+                    var $prson = $(this).closest(".prson");
+                    switch (true) {
+                        case $prson.hasClass("robot"):
+                            $prson.remove().appendTo("#usersBot");
+                            break;
+                        case $prson.hasClass("supermod"):
+                            $prson.remove().appendTo("#usersSuper");
+                            break;
+                        case $prson.hasClass("mod"):
+                            $prson.remove().appendTo("#usersMod");
+                            break;
+                        default:
+                            $prson.remove().appendTo("#usersRegular");
+                            break;
+                    }
+                });
                 for (var key in data) {
                     var position = parseInt(key + 1);
                     firetable.debug && console.log("waitlist", position, data);
                     if (data.hasOwnProperty(key)) {
-                        $("#user" + data[key].id + " .djOrder")
+                        $("#user" + data[key].id)
+                            .remove()
+                            .appendTo("#usersWaitlist")
+                            .find(".djOrder")
                             .html(
                                 '<i class="material-icons" title="#' +
                                     position +
@@ -2274,7 +2305,24 @@ firetable.ui = {
             if (data) {
                 console.log("table changed", data);
                 var countr = 0;
-                $("#allUsers .djOrder.ondeck").html("").removeClass("ondeck");
+                $("#allUsers .djOrder.ondeck").each(function () {
+                    $(this).html("").removeClass("ondeck");
+                    var $prson = $(this).closest(".prson");
+                    switch (true) {
+                        case $prson.hasClass("robot"):
+                            $prson.remove().appendTo("#usersBot");
+                            break;
+                        case $prson.hasClass("supermod"):
+                            $prson.remove().appendTo("#usersSuper");
+                            break;
+                        case $prson.hasClass("mod"):
+                            $prson.remove().appendTo("#usersMod");
+                            break;
+                        default:
+                            $prson.remove().appendTo("#usersRegular");
+                            break;
+                    }
+                });
                 for (var key in data) {
                     if (data.hasOwnProperty(key)) {
                         var removeMe = "";
@@ -2303,7 +2351,10 @@ firetable.ui = {
                             firetable.playlimit +
                             "</span></div></div></div>";
                         countr++;
-                        $("#user" + data[key].id + " .djOrder")
+                        $("#user" + data[key].id)
+                            .remove()
+                            .appendTo("#usersDJs")
+                            .find(".djOrder")
                             .html('<i class="material-icons" title="On deck #' + countr + '">album</i> ' + countr)
                             .removeClass("waitlist")
                             .addClass("ondeck");
@@ -2332,6 +2383,17 @@ firetable.ui = {
                 } else {
                     $("#avtr" + i).addClass("animate");
                     $("#djthing" + i).addClass("djActive");
+                    $(".djactive-style").remove();
+                    $("head")
+                        .delay(500)
+                        .queue(function (next) {
+                            $(this).append(
+                                `<style class="djactive-style">.djActive { box-shadow: 0 0 1rem ` +
+                                    firetable.color +
+                                    `; }</style>`
+                            );
+                            next();
+                        });
                 }
             }
         });
@@ -2344,6 +2406,17 @@ firetable.ui = {
                 } else {
                     $("#avtr" + i).addClass("animate");
                     $("#djthing" + i).addClass("djActive");
+                    $(".djactive-style").remove();
+                    $("head")
+                        .delay(500)
+                        .queue(function (next) {
+                            $(this).append(
+                                `<style class="djactive-style">.djActive { box-shadow: 0 0 1rem ` +
+                                    firetable.color +
+                                    `; }</style>`
+                            );
+                            next();
+                        });
                 }
             }
         });
@@ -2406,10 +2479,10 @@ firetable.ui = {
             return data;
         }
         ftapi.events.on("userJoined", function (data) {
-            console.log("user joined", data);
+            firetable.debug && console.log("user joined", data);
             data.html = $userTemplate.clone();
             data = userBits(data);
-            data.html.attr("id", "user" + data.userid);
+            data.html.attr("id", "user" + data.userid).addClass(data.rolename);
             data.html
                 .find(".botson")
                 .css(
