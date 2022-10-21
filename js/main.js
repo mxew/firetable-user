@@ -3,6 +3,7 @@ var firetable = {
   loggedIn: false,
   uid: null,
   uname: null,
+  avatarset: "set1",
   pvCount: 0,
   playdex: 0,
   users: {},
@@ -181,6 +182,8 @@ firetable.init = function() {
 
   $("#idtitle").text(ftconfigs.roomName);
   $("#welcomeName").text(ftconfigs.roomName);
+
+if (ftconfigs.avatarset) firetable.avatarset = ftconfigs.avatarset;
 
 if (ftconfigs.facebookURL){
   $(".sociallogo.facebook").attr("href", ftconfigs.facebookURL);
@@ -457,6 +460,9 @@ firetable.actions = {
     }
 
     if (data.image == "img/idlogo.png" && ftconfigs.defaultAlbumArtUrl.length) data.image = ftconfigs.defaultAlbumArtUrl;
+    var set = "set1";
+    if (data.avatarset) set = data.avatarset;
+
     var canvas = document.getElementById('cardMaker' + chatid);
 
     if (canvas.getContext) {
@@ -534,7 +540,7 @@ firetable.actions = {
           };
           picboy2.src = data.image;
         };
-        picboy.src = 'https://indiediscotheque.com/robots/' + data.djid + data.djname + '.png?size=175x175';
+        picboy.src = 'https://indiediscotheque.com/robots/' + data.djid + data.djname + '.png?size=175x175&set='+set;
 
 
       };
@@ -612,7 +618,7 @@ firetable.actions = {
               };
               picboy.src = 'img/id9.png';
             };
-            eight.src = 'https://indiediscotheque.com/robots/' + data.djid + data.djname + '.png?size=110x110';
+            eight.src = 'https://indiediscotheque.com/robots/' + data.djid + data.djname + '.png?size=110x110&set='+set;
           };
           cake.src = 'img/arnold.png';
         }
@@ -1309,7 +1315,7 @@ firetable.utilities = {
         Notification.requestPermission();
       } else {
         var notification = new Notification(namebo, {
-          icon: "https://indiediscotheque.com/robots/" + chatData.id + namebo + ".png?size=110x110",
+          icon: "https://indiediscotheque.com/robots/" + chatData.id + namebo + ".png?size=110x110&set="+firetable.avatarset,
           body: chatData.txt,
         });
       }
@@ -1977,7 +1983,7 @@ firetable.ui = {
             cnt = countr;
             var removeMe = "";
             if (data[key].removeAfter) removeMe = "departure_board"
-            ok1 += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><span class=\"prsnName\">" + countr + ". " + data[key].name + " <span class=\"removemeIcon material-icons\"> " + removeMe + " </span></span></div>";
+            ok1 += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110&set="+firetable.avatarset+");\"></div><span class=\"prsnName\">" + countr + ". " + data[key].name + " <span class=\"removemeIcon material-icons\"> " + removeMe + " </span></span></div>";
             countr++;
           }
         }
@@ -1994,7 +2000,7 @@ firetable.ui = {
             var removeMe = "";
             if (data[key].removeAfter) removeMe = "departure_board"
 
-            ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"avtr\" id=\"avtr" + countr + "\" style=\"background-image: url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110);\"></div><div id=\"djthing" + countr + "\" class=\"djplaque\"><div class=\"djname\"><span class=\"removemeIcon material-icons\"> " + removeMe + " </span> " + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div></div>";
+            ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"avtr\" id=\"avtr" + countr + "\" style=\"background-image: url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110&set="+firetable.avatarset+");\"></div><div id=\"djthing" + countr + "\" class=\"djplaque\"><div class=\"djname\"><span class=\"removemeIcon material-icons\"> " + removeMe + " </span> " + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div></div>";
             countr++;
           }
         }
@@ -2091,7 +2097,7 @@ firetable.ui = {
       var newUserToAddX = $("<div></div>");
       newUserToAddX.addClass("prson " + block);
       newUserToAddX.attr("id", "user" + data.userid);
-      newUserToAddX.html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
+      newUserToAddX.html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110&set="+firetable.avatarset+");\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
       firetable.utilities.chatAt(newUserToAddX); // adds the click event to @ the user
       $(destination).append(newUserToAddX);
     });
@@ -2133,7 +2139,7 @@ firetable.ui = {
         destination = "#usersBot";
       }
 
-      $("#user" + data.userid).html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110);\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
+      $("#user" + data.userid).html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110&set="+firetable.avatarset+");\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
     });
     ftapi.events.on("usersChanged", function(okdata) {
       if ($("#loggedInName").text() == ftapi.uid) {
@@ -2223,7 +2229,7 @@ firetable.ui = {
       } else {
         var $chatthing = $chatTemplate.clone();
         $chatthing.attr('id', "chat" + chatData.chatID);
-        $chatthing.find('.botson').css('background-image', "url(https://indiediscotheque.com/robots/" + chatData.id + namebo + ".png?size=110x110");
+        $chatthing.find('.botson').css('background-image', "url(https://indiediscotheque.com/robots/" + chatData.id + namebo + ".png?size=110x110&set="+firetable.avatarset);
         $chatthing.find('.utitle').html(utitle);
         $chatthing.find('.chatTime').attr('id', "chatTime" + chatData.chatID).html(firetable.utilities.format_time(chatData.time));
         if (badoop) $chatthing.addClass('badoop');
