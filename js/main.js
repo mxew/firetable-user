@@ -461,7 +461,7 @@ firetable.actions = {
 
     if (data.image == "img/idlogo.png" && ftconfigs.defaultAlbumArtUrl.length) data.image = ftconfigs.defaultAlbumArtUrl;
     var set = "set1";
-    if (data.set) set = data.avatarset;
+    if (data.set) set = data.set;
 
     var canvas = document.getElementById('cardMaker' + chatid);
 
