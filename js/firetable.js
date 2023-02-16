@@ -127,6 +127,15 @@ ftapi.init = function(firebaseConfig) {
     ftapi.events.emit("newHistory", data);
   });
 
+  // new songs emitter
+  var freshproduce = firebase.app("firetable").database().ref("newNewMusic");
+  freshproduce.on('child_added', function(dataSnapshot, prev) {
+    var data = dataSnapshot.val();
+    data.histID = dataSnapshot.key;
+    ftapi.events.emit("newHistory", data);
+  });
+
+
   // table change emitter
   var tbl = firebase.app("firetable").database().ref("table");
   tbl.on('value', function(dataSnapshot) {

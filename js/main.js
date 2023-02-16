@@ -58,7 +58,7 @@ chatScroll.getScrollElement().addEventListener('scroll', function() {
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-firetable.version = "01.09.05";
+firetable.version = "01.09.06";
 
 var player, $playlistItemTemplate;
 
@@ -1328,13 +1328,13 @@ firetable.utilities = {
     $('body').addClass('screen');
   },
   isChatPrettyMuchAtBottom: function() {
-    var scrollable = chatScroll.contentEl.scrollHeight - chatScroll.el.clientHeight;
-    var scrolled = chatScroll.contentWrapperEl.scrollTop;
-    console.log('near bottom?', scrollable, scrolled);
-    return (Math.abs(scrollable - scrolled) <= 25);
+  var scrollable = chatScroll.contentEl.scrollHeight - chatScroll.el.clientHeight;
+  var scrolled = chatScroll.contentWrapperEl.scrollTop;
+  console.log('near bottom?', scrollable, scrolled);
+  return (Math.abs(scrollable - scrolled) <= 25);
   },
   scrollToBottom: function() {
-    chatScroll.contentWrapperEl.scrollTop = chatScroll.contentEl.scrollHeight;
+  chatScroll.contentWrapperEl.scrollTop = chatScroll.contentEl.scrollHeight;
   },
   htmlEscape: function(s, preserveCR) {
     preserveCR = preserveCR ? '&#13;' : '\n';
@@ -2283,7 +2283,7 @@ firetable.ui = {
       }
 
       if (atBottom || ftapi.uid == chatData.id) firetable.utilities.scrollToBottom();
-      else $('#morechats').addClass('show');
+      //else $('#morechats').addClass('show');
     });
 
     ftapi.events.on("chatRemoved", function(data) {
