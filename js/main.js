@@ -1717,6 +1717,64 @@ firetable.ui = {
         }
       }
     }
+    var $discoverItem = $('#thediscovers .pvbar').remove();
+    ftapi.events.on('newProduce', function(data) {
+      if (data.img == "img/idlogo.png" && ftconfigs.defaultAlbumArtUrl.length) data.img = ftconfigs.defaultAlbumArtUrl;
+      var firstpart = "yt";
+      if (data.type == 2) firstpart == "sc";
+      var pkey = firstpart + "cid" + data.cid;
+      var $histItem = $discoverItem.clone();
+      $histItem.attr('id', "pvbar" + pkey);
+      $histItem.attr("data-key", pkey);
+      $histItem.attr("data-histid", data.histID);
+      $histItem.attr("data-cid", data.cid);
+      $histItem.attr("data-type", data.type);
+
+      $histItem.find('.previewicon').attr('id', "pv" + pkey).on('click', function() {
+        firetable.actions.pview(
+          $(this).closest('.pvbar').attr('data-key'),
+          true,
+          $(this).closest('.pvbar').attr('data-type'),
+          true
+        );
+      });
+      $histItem.find('.histlink').attr({
+        'href': data.url,
+        'tabindex': "-1",
+        'id': data.histID
+      }).text(data.artist + " - " + data.title);
+          $histItem.find('.edittags').on('click', function() {
+            if ($(this).hasClass("editing")){
+              $(this).removeClass("editing");
+              $(this).closest('.pvbar').find('.tagPromptBox').remove();
+            } else {
+              $(this).addClass("editing");
+              firetable.actions.editTagsPrompt($(this).closest('.pvbar').attr('data-key'),data.artist + " - " + data.title)
+            }
+          });
+    try{
+      
+        if (!ftapi.isMod) $histItem.find('.edittags').hide();      
+    } catch (e){
+      console.log(e);
+    }
+   
+      $histItem.find('.histdj').text(data.dj);
+      $histItem.find('.histdate').text(firetable.utilities.format_date(data.when));
+      $histItem.find('.histtime').text(firetable.utilities.format_time(data.when));
+      $histItem.find('.histeal').attr('id', "apv" + data.type + data.cid).on('click', function() {
+        firetable.actions.queueTrack(
+          $(this).closest('.pvbar').attr('data-cid'),
+          firetable.utilities.htmlEscape($(this).closest('.pvbar').find('.histlink').text()),
+          $(this).closest('.pvbar').attr('data-type'),
+          true
+        );
+      });
+      $histItem.find('.discart').css('background-image', 'url(' + data.img + ')');
+      $histItem.prependTo("#thediscovers");
+      // simplebar scroll update?
+    });
+
     var $historyItem = $('#thehistory .pvbar').remove();
     ftapi.events.on('editedHistory', function(data) {
         console.log("HIST EDIT", data);

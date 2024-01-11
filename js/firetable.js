@@ -135,11 +135,11 @@ ftapi.init = function(firebaseConfig) {
   });
 
   // new songs emitter
-  var freshproduce = firebase.app("firetable").database().ref("newNewMusic");
+  var freshproduce = firebase.app("firetable").database().ref("newMusic");
   freshproduce.on('child_added', function(dataSnapshot, prev) {
     var data = dataSnapshot.val();
     data.histID = dataSnapshot.key;
-    ftapi.events.emit("newHistory", data);
+    ftapi.events.emit("newProduce", data);
   });
 
 

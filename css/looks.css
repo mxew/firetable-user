@@ -523,7 +523,8 @@ div#roomlogo {
 #mainGrid.mmusrs #queuebox,
 #mainGrid.mmusrs #thehistoryWrap,
 #mainGrid.mmusrs #actualChat,
-#mainGrid.mmusrs #login {
+#mainGrid.mmusrs #login,
+#mainGrid.mmusrs #discover  {
   display: none;
 }
 
@@ -539,7 +540,8 @@ div#roomlogo {
 #mainGrid.mmqueue #usersbox,
 #mainGrid.mmqueue #thehistoryWrap,
 #mainGrid.mmqueue #actualChat,
-#mainGrid.mmqueue #login {
+#mainGrid.mmqueue #login,
+#mainGrid.mmusrs #discover {
   display: none;
 }
 
@@ -555,7 +557,8 @@ div#roomlogo {
 #mainGrid.mmchat #usersbox,
 #mainGrid.mmchat #queuebox,
 #mainGrid.mmchat #thehistoryWrap,
-#mainGrid.mmchat #login {
+#mainGrid.mmchat #login,
+#mainGrid.mmusrs #discover {
   display: none;
 }
 
@@ -1735,13 +1738,62 @@ img.emoji {
   flex: 1;
 }
 
+/* Discover */
+#discover {
+  grid-area: login;
+  padding: var(--pad5);
+  background: #151515;
+  overflow: auto;
+  height: 100%;
+  text-align: center;
+}
+
+#discover h2{
+  font-size: 2.5rem;
+  font-weight: 700;
+    padding: var(--pad4);
+
+}
+#discover p{
+  padding: var(--pad2);
+}
+
+#thediscovers .pvbar {
+    display: inline-block;
+    width: 300px;
+    height: 400px;
+    padding:20px;
+    margin-top:50px;
+}
+
+.discart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--pad2);
+  width: 300px;
+  height: 300px;
+  background-size: cover;
+  background-position: center;
+}
+
+#thediscovers .qtxt {
+    display: block;
+    flex: 1;
+}
+
+#thediscovers .pvbarWrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 /* Login */
 #welcomeInfo {
   padding-bottom: var(--pad4);
 }
 
 #login {
-  grid-area: login;
+  grid-area: queues;
   padding: var(--pad5);
   background: #151515;
   overflow: auto;
@@ -2028,6 +2080,11 @@ div#blog {
     cursor: none;
     pointer-events: none;
   }
+
+  #login {
+    grid-area: login !important;
+} 
+
 }
 
 @media only screen and (min-width: 800px) {
@@ -2092,7 +2149,7 @@ div#blog {
 
   #mainGrid.login #queuebox,
   #mainGrid.login #thehistoryWrap {
-    display: block;
+    display: none;
   }
 
   #mainGrid.login .histeal,
