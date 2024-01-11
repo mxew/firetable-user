@@ -2080,6 +2080,9 @@ div#blog {
     cursor: none;
     pointer-events: none;
   }
+  #discover{
+    display:none;
+  }
 
   #login {
     grid-area: login !important;
