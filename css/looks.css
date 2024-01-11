@@ -1116,7 +1116,7 @@ div#filterMachine {
   padding: var(--pad2);
 }
 
-#mainqueue .material-icons {
+#mainqueue .material-icons, #thehistory .material-icons {
   margin: 0 var(--pad1);
   font-size: 1.2rem;
 }

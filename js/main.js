@@ -49,7 +49,7 @@ var firetable = {
   atUsersFiltered: [],
   atString: "",
   debug: false
-}
+};
 
 if (typeof ftconfigs == "undefined") throw "config.js is missing! Copy config.js.example and rename to config.js. Edit this file and add your own app's information.";
 
@@ -58,7 +58,7 @@ chatScroll.getScrollElement().addEventListener('scroll', function() {
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-firetable.version = "01.09.06";
+firetable.version = "01.10.3";
 
 var player, $playlistItemTemplate;
 
@@ -183,34 +183,34 @@ firetable.init = function() {
   $("#idtitle").text(ftconfigs.roomName);
   $("#welcomeName").text(ftconfigs.roomName);
 
-if (ftconfigs.avatarset) firetable.avatarset = ftconfigs.avatarset;
+  if (ftconfigs.avatarset) firetable.avatarset = ftconfigs.avatarset;
 
-if (ftconfigs.facebookURL){
-  $(".sociallogo.facebook").attr("href", ftconfigs.facebookURL);
-  $(".sociallogo.facebook").css("display", "inline-block");
-}
+  if (ftconfigs.facebookURL) {
+    $(".sociallogo.facebook").attr("href", ftconfigs.facebookURL);
+    $(".sociallogo.facebook").css("display", "inline-block");
+  }
 
-if (ftconfigs.redditURL){
-  $(".sociallogo.reddit").attr("href", ftconfigs.redditURL);
-  $(".sociallogo.reddit").css("display", "inline-block");
-}
+  if (ftconfigs.redditURL) {
+    $(".sociallogo.reddit").attr("href", ftconfigs.redditURL);
+    $(".sociallogo.reddit").css("display", "inline-block");
+  }
 
-if (ftconfigs.lastfmURL){
-  $(".sociallogo.lastfm").attr("href", ftconfigs.lastfmURL);
-  $(".sociallogo.lastfm").css("display", "inline-block");
-}
+  if (ftconfigs.lastfmURL) {
+    $(".sociallogo.lastfm").attr("href", ftconfigs.lastfmURL);
+    $(".sociallogo.lastfm").css("display", "inline-block");
+  }
 
-if (ftconfigs.discordURL){
-  $(".sociallogo.discord").attr("href", ftconfigs.discordURL);
-  $(".sociallogo.discord").css("display", "inline-block");
-}
+  if (ftconfigs.discordURL) {
+    $(".sociallogo.discord").attr("href", ftconfigs.discordURL);
+    $(".sociallogo.discord").css("display", "inline-block");
+  }
 
-if (ftconfigs.soundcloudURL){
-  $(".sociallogo.soundcloud").attr("href", ftconfigs.soundcloudURL);
-  $(".sociallogo.soundcloud").css("display", "inline-block");
-}
+  if (ftconfigs.soundcloudURL) {
+    $(".sociallogo.soundcloud").attr("href", ftconfigs.soundcloudURL);
+    $(".sociallogo.soundcloud").css("display", "inline-block");
+  }
 
-  if (ftconfigs.logoImage) $("#roomlogo").css("background-image", "url("+ftconfigs.logoImage+")")
+  if (ftconfigs.logoImage) $("#roomlogo").css("background-image", "url(" + ftconfigs.logoImage + ")")
   document.title = ftconfigs.roomName + " | firetable";
   if (ftconfigs.roomInfoUrl.length) $("#roomInfo").attr("href", ftconfigs.roomInfoUrl);
   $("#version").text("You're running firetable v" + firetable.version + ".");
@@ -540,7 +540,7 @@ firetable.actions = {
           };
           picboy2.src = data.image;
         };
-        picboy.src = 'https://indiediscotheque.com/robots/' + data.djid + data.djname + '.png?size=175x175&set='+set;
+        picboy.src = 'https://indiediscotheque.com/robots/' + data.djid + data.djname + '.png?size=175x175&set=' + set;
 
 
       };
@@ -618,7 +618,7 @@ firetable.actions = {
               };
               picboy.src = 'img/id9.png';
             };
-            eight.src = 'https://indiediscotheque.com/robots/' + data.djid + data.djname + '.png?size=110x110&set='+set;
+            eight.src = 'https://indiediscotheque.com/robots/' + data.djid + data.djname + '.png?size=110x110&set=' + set;
           };
           cake.src = 'img/arnold.png';
         }
@@ -940,31 +940,16 @@ firetable.actions = {
     $("#mergeCompleted").show();
     $("#mergeHappening").hide();
   },
-  editTagsPrompt: function(songid) {
-    var song = firetable.queue[songid];
-    var $pvbar = $('#mainqueue .pvbar[data-key="' + songid + '"]');
-    $('#mainqueue .pvbar.editing').removeClass('editing');
+  editTagsPrompt: function(songid, tag, type, cid) {
+    var $pvbar = $('#thehistory .pvbar[data-key="' + songid + '"]');
+    $('#thehistory .pvbar.editing').removeClass('editing');
     $('.tagPromptBox').remove();
     $pvbar.addClass('editing');
     var $tags = $tagEditorTemplate.clone().appendTo($pvbar);
-    $tags.find(".tagMachine").val(song.name);
-    if (song.type == 1) {
-      $tags.find(".tagSongLink").attr("href", "https://youtube.com/watch?v=" + song.cid);
-    } else if (song.type == 2) {
-      firetable.actions.scGet('tracks', song.cid, function(tracks) {
-        if (tracks.permalink_url) {
-          $tags.find(".tagSongLink").attr("href", tracks.permalink_url);
-        } else {
-          $tags.find(".tagSongLink").attr("href", "http://howtojointheindiediscothequewaitlist.com/ThisSongIsBroken?thanks=true");
-        }
-      });
-    }
-
+    $tags.find(".tagMachine").val(tag);
+   
     firetable.debug && console.log('edit tags song id:', songid);
-    firetable.songToEdit = {
-      song: song,
-      key: songid
-    };
+
   },
   importList(id, name, type) {
     //time to IMPORT SOME LISTS!
@@ -1246,7 +1231,7 @@ firetable.utilities = {
             firetable.emojiMap[emojisArr[i].slug] = emojisArr[i].emoji;
             var words = "";
             words += (data[2][emojisArr[i].emoji] !== undefined) ? data[2][emojisArr[i].emoji].join(',') : "";
-            words += (oldmojis[emojisArr[i].emoji] !== undefined) ? ','+oldmojis[emojisArr[i].emoji] : "";
+            words += (oldmojis[emojisArr[i].emoji] !== undefined) ? ',' + oldmojis[emojisArr[i].emoji] : "";
             $("#picker" + catid).append('<span role="button" class="pickerResult" title="' + emojisArr[i].slug + '" data-alternative-name="' + words + '">' + emojisArr[i].emoji + '</span>');
           }
           for (let i in oldmojis) {
@@ -1315,7 +1300,7 @@ firetable.utilities = {
         Notification.requestPermission();
       } else {
         var notification = new Notification(namebo, {
-          icon: "https://indiediscotheque.com/robots/" + chatData.id + namebo + ".png?size=110x110&set="+firetable.avatarset,
+          icon: "https://indiediscotheque.com/robots/" + chatData.id + namebo + ".png?size=110x110&set=" + firetable.avatarset,
           body: chatData.txt,
         });
       }
@@ -1328,13 +1313,13 @@ firetable.utilities = {
     $('body').addClass('screen');
   },
   isChatPrettyMuchAtBottom: function() {
-  var scrollable = chatScroll.contentEl.scrollHeight - chatScroll.el.clientHeight;
-  var scrolled = chatScroll.contentWrapperEl.scrollTop;
-  console.log('near bottom?', scrollable, scrolled);
-  return (Math.abs(scrollable - scrolled) <= 25);
+    var scrollable = chatScroll.contentEl.scrollHeight - chatScroll.el.clientHeight;
+    var scrolled = chatScroll.contentWrapperEl.scrollTop;
+    console.log('near bottom?', scrollable, scrolled);
+    return (Math.abs(scrollable - scrolled) <= 25);
   },
   scrollToBottom: function() {
-  chatScroll.contentWrapperEl.scrollTop = chatScroll.contentEl.scrollHeight;
+    chatScroll.contentWrapperEl.scrollTop = chatScroll.contentEl.scrollHeight;
   },
   htmlEscape: function(s, preserveCR) {
     preserveCR = preserveCR ? '&#13;' : '\n';
@@ -1733,6 +1718,13 @@ firetable.ui = {
       }
     }
     var $historyItem = $('#thehistory .pvbar').remove();
+    ftapi.events.on('editedHistory', function(data) {
+        console.log("HIST EDIT", data);
+        $("#"+data.histID).text(data.artist+ " - " + data.title);
+    });
+    ftapi.events.on('modCheck', function(data) {
+      if (data) $(".edittags").show();
+    });
     ftapi.events.on('newHistory', function(data) {
       if (data.img == "img/idlogo.png" && ftconfigs.defaultAlbumArtUrl.length) data.img = ftconfigs.defaultAlbumArtUrl;
       var firstpart = "yt";
@@ -1741,6 +1733,7 @@ firetable.ui = {
       var $histItem = $historyItem.clone();
       $histItem.attr('id', "pvbar" + pkey);
       $histItem.attr("data-key", pkey);
+      $histItem.attr("data-histid", data.histID);
       $histItem.attr("data-cid", data.cid);
       $histItem.attr("data-type", data.type);
 
@@ -1754,8 +1747,19 @@ firetable.ui = {
       });
       $histItem.find('.histlink').attr({
         'href': data.url,
-        'tabindex': "-1"
+        'tabindex': "-1",
+        'id': data.histID
       }).text(data.artist + " - " + data.title);
+          $histItem.find('.edittags').on('click', function() {
+            firetable.actions.editTagsPrompt($(this).closest('.pvbar').attr('data-key'),data.artist + " - " + data.title)
+          });
+    try{
+      
+        if (!ftapi.isMod) $histItem.find('.edittags').hide();      
+    } catch (e){
+      console.log(e);
+    }
+   
       $histItem.find('.histdj').text(data.dj);
       $histItem.find('.histdate').text(firetable.utilities.format_date(data.when));
       $histItem.find('.histtime').text(firetable.utilities.format_time(data.when));
@@ -1983,7 +1987,7 @@ firetable.ui = {
             cnt = countr;
             var removeMe = "";
             if (data[key].removeAfter) removeMe = "departure_board"
-            ok1 += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110&set="+firetable.avatarset+");\"></div><span class=\"prsnName\">" + countr + ". " + data[key].name + " <span class=\"removemeIcon material-icons\"> " + removeMe + " </span></span></div>";
+            ok1 += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110&set=" + firetable.avatarset + ");\"></div><span class=\"prsnName\">" + countr + ". " + data[key].name + " <span class=\"removemeIcon material-icons\"> " + removeMe + " </span></span></div>";
             countr++;
           }
         }
@@ -2000,7 +2004,7 @@ firetable.ui = {
             var removeMe = "";
             if (data[key].removeAfter) removeMe = "departure_board"
 
-            ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"avtr\" id=\"avtr" + countr + "\" style=\"background-image: url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110&set="+firetable.avatarset+");\"></div><div id=\"djthing" + countr + "\" class=\"djplaque\"><div class=\"djname\"><span class=\"removemeIcon material-icons\"> " + removeMe + " </span> " + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div></div>";
+            ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"avtr\" id=\"avtr" + countr + "\" style=\"background-image: url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110&set=" + firetable.avatarset + ");\"></div><div id=\"djthing" + countr + "\" class=\"djplaque\"><div class=\"djname\"><span class=\"removemeIcon material-icons\"> " + removeMe + " </span> " + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div></div>";
             countr++;
           }
         }
@@ -2097,7 +2101,7 @@ firetable.ui = {
       var newUserToAddX = $("<div></div>");
       newUserToAddX.addClass("prson " + block);
       newUserToAddX.attr("id", "user" + data.userid);
-      newUserToAddX.html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110&set="+firetable.avatarset+");\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
+      newUserToAddX.html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110&set=" + firetable.avatarset + ");\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
       firetable.utilities.chatAt(newUserToAddX); // adds the click event to @ the user
       $(destination).append(newUserToAddX);
     });
@@ -2139,7 +2143,7 @@ firetable.ui = {
         destination = "#usersBot";
       }
 
-      $("#user" + data.userid).html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110&set="+firetable.avatarset+");\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
+      $("#user" + data.userid).html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110&set=" + firetable.avatarset + ");\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
     });
     ftapi.events.on("usersChanged", function(okdata) {
       if ($("#loggedInName").text() == ftapi.uid) {
@@ -2229,7 +2233,7 @@ firetable.ui = {
       } else {
         var $chatthing = $chatTemplate.clone();
         $chatthing.attr('id', "chat" + chatData.chatID);
-        $chatthing.find('.botson').css('background-image', "url(https://indiediscotheque.com/robots/" + chatData.id + namebo + ".png?size=110x110&set="+firetable.avatarset);
+        $chatthing.find('.botson').css('background-image', "url(https://indiediscotheque.com/robots/" + chatData.id + namebo + ".png?size=110x110&set=" + firetable.avatarset);
         $chatthing.find('.utitle').html(utitle);
         $chatthing.find('.chatTime').attr('id', "chatTime" + chatData.chatID).html(firetable.utilities.format_time(chatData.time));
         if (badoop) $chatthing.addClass('badoop');
@@ -2352,9 +2356,6 @@ firetable.ui = {
             });
 
           }
-          $newli.find('.edittags').on('click', function() {
-            firetable.actions.editTagsPrompt($(this).closest('.pvbar').attr('data-key'))
-          });
           $newli.find('.deletesong').on('click', function() {
             firetable.actions.deleteSong($(this).closest('.pvbar').attr('data-key'))
           });
@@ -2548,7 +2549,7 @@ firetable.ui = {
         });
 
         if (!firetable.pickerInit) {
-          const makeRequest = async () => {
+          const makeRequest = async() => {
             twemoji.parse(document.getElementById("pickerResults"));
             return true;
           }
@@ -2760,17 +2761,22 @@ firetable.ui = {
     });
     $(document).on("keyup", ".tagMachine", function(e) {
       if (e.which == 13) {
-        var songKey = $(this).closest('.tagPromptBox').prev('.pvbar').attr('data-key');
-        if (firetable.songToEdit) {
+        var thetype = $(this).closest('.pvbar').attr('data-type');
+        var songCid = $(this).closest('.pvbar').attr('data-cid');
+        var histID = $(this).closest('.pvbar').attr('data-histid');
           var val = $(this).val();
           if (val != "") {
-            var obj = firetable.songToEdit;
-            ftapi.actions.editTrackTag(obj.key, obj.song.cid, val);
-            firetable.songToEdit = null;
-            $(this).closest('.editing').removeClass('editing').next('.tagPromptBox').remove();
+            var yargo = val.split(" - ");
+            var theartist = yargo[0];
+            var thetitle = yargo[1];
+            if (!theartist || !thetitle){
+              alert("check yr tags");
+            } else {
+              ftapi.actions.editTag(thetype, songCid, val, histID);
+              $(this).closest('.editing').removeClass('editing').next('.tagPromptBox').remove();
+            }
           }
-        }
-      }
+              }
     });
     $("#changeUsername").bind("keyup", function(e) {
       if (e.which == 13) {
