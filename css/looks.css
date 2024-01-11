@@ -1297,10 +1297,6 @@ a.importLinkCheck {
   float: right;
 }
 
-.closeeditor {
-  display: none;
-}
-
 .tagsNlink {
   display: flex;
 }

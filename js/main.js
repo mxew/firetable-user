@@ -58,7 +58,7 @@ chatScroll.getScrollElement().addEventListener('scroll', function() {
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-firetable.version = "01.10.3";
+firetable.version = "01.10.4";
 
 var player, $playlistItemTemplate;
 
@@ -1751,7 +1751,13 @@ firetable.ui = {
         'id': data.histID
       }).text(data.artist + " - " + data.title);
           $histItem.find('.edittags').on('click', function() {
-            firetable.actions.editTagsPrompt($(this).closest('.pvbar').attr('data-key'),data.artist + " - " + data.title)
+            if ($(this).hasClass("editing")){
+              $(this).removeClass("editing");
+              $(this).closest('.pvbar').find('.tagPromptBox').remove();
+            } else {
+              $(this).addClass("editing");
+              firetable.actions.editTagsPrompt($(this).closest('.pvbar').attr('data-key'),data.artist + " - " + data.title)
+            }
           });
     try{
       
@@ -2526,10 +2532,7 @@ firetable.ui = {
       firetable.actions.cardCase();
       $("#plMachine").val("");
     });
-    $(document).on("click", ".closeeditor", function() {
-      $(this).closest('.pvbar').removeClass('editing').find('.tagPromptBox').remove();
-      firetable.songToEdit = null;
-    });
+
     $("#cardCaseButton").bind("click", function() {
       firetable.actions.cardCase();
       $("#cardsOverlay").show();
