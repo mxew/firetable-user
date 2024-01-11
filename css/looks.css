@@ -540,6 +540,7 @@ div#roomlogo {
 #mainGrid.mmqueue #usersbox,
 #mainGrid.mmqueue #thehistoryWrap,
 #mainGrid.mmqueue #actualChat,
+#mainGrid.mmqueue #discover
 #mainGrid.mmqueue #login,
 #mainGrid.mmusrs #discover {
   display: none;
@@ -1739,7 +1740,7 @@ img.emoji {
 }
 
 /* Discover */
-#discover {
+#mainGrid.login #discover {
   grid-area: login;
   padding: var(--pad5);
   background: #151515;
@@ -1747,6 +1748,11 @@ img.emoji {
   height: 100%;
   text-align: center;
 }
+
+#mainGrid.mmqueue #discover{
+  display: none !important;
+}
+
 
 #discover h2{
   font-size: 2.5rem;
@@ -2151,7 +2157,8 @@ div#blog {
   }
 
   #mainGrid.login #queuebox,
-  #mainGrid.login #thehistoryWrap {
+  #mainGrid.login #thehistoryWrap
+{
     display: none;
   }
 
