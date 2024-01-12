@@ -524,8 +524,13 @@ div#roomlogo {
 #mainGrid.mmusrs #thehistoryWrap,
 #mainGrid.mmusrs #actualChat,
 #mainGrid.mmusrs #login,
+#mainGrid.mmchat #discover,
 #mainGrid.mmusrs #discover  {
   display: none;
+}
+
+#mainGrid.mmchat #discover {
+    display: none;
 }
 
 #mainGrid.mmqueue {
