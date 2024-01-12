@@ -1742,7 +1742,7 @@ img.emoji {
 /* Discover */
 #mainGrid.login #discover {
   grid-area: login;
-  padding: var(--pad5);
+  padding: var(--pad4);
   background: #151515;
   overflow: auto;
   height: 100%;
@@ -1751,6 +1751,15 @@ img.emoji {
 
 #mainGrid.mmqueue #discover{
   display: none !important;
+}
+
+.miniLoginNavOnly{
+  display: none;
+}
+
+#minidiscover, #minijoin{
+  color: var(--orange);
+  cursor: pointer;
 }
 
 
@@ -2086,13 +2095,46 @@ div#blog {
     cursor: none;
     pointer-events: none;
   }
-  #discover{
-    display:none;
-  }
+
+/* TEMPORARY TERRIBLE MOBILE DISCOVER */
+
+.miniLoginInvisible{
+  display: none !important;
+}
+
+.miniLoginNavOnly{
+  display: block !important;
+}
+
+#thediscovers .pvbar {
+    display: inline-block;
+    width: 150px;
+    height: 300px;
+    padding: 10px;
+    margin-top: 25px;
+}
+
+#discover h2 {
+    font-size: 2rem !important;
+}
+
+#mainGrid.login #discover {
+    padding: var(--pad2) !important;
+  
+}
+
+.discart {
+
+    width: 150px !important;
+    height: 150px !important;
+
+}
 
   #login {
     grid-area: login !important;
 } 
+
+/* END TEMPORARY MOBILE DISCOVER */
 
 }
 

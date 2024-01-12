@@ -1626,6 +1626,17 @@ firetable.ui = {
   },
   init: function() {
 
+    $("#minidiscover").bind("click", function() {
+      $("#discover").removeClass("miniLoginInvisible");
+      $("#login").addClass("miniLoginInvisible");
+    });
+
+     $("#minijoin").bind("click", function() {
+      $("#discover").addClass("miniLoginInvisible");
+      $("#login").removeClass("miniLoginInvisible");
+    });
+
+
     $('#mainqueue').sortable({
       start: function(event, ui) {
         var start_pos = ui.item.index();
