@@ -58,7 +58,7 @@ chatScroll.getScrollElement().addEventListener('scroll', function() {
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-firetable.version = "01.10.4";
+firetable.version = "01.10.7";
 
 var player, $playlistItemTemplate;
 
@@ -209,6 +209,122 @@ firetable.init = function() {
     $(".sociallogo.soundcloud").attr("href", ftconfigs.soundcloudURL);
     $(".sociallogo.soundcloud").css("display", "inline-block");
   }
+
+  firetable.lastfm = {
+    sk: false,
+    key: "e86f3b80e48769c03f2b4e0609e12924",
+    songStart: null,
+    duration: null,
+    timer: null,
+    newSession: function(xhr) {
+
+      return function() {
+        console.log(xhr.responseText);
+        jsonResponse = JSON.parse(xhr.responseText);
+        firetable.lastfm.sk = jsonResponse.session.key;
+        localStorage["ftLastfmSession"] = firetable.lastfm.sk;
+        $("#scrobtoggle").html("<a onclick=\"killLastfm()\" href=\"#\">Disconnect Lastfm Scrobbling</a>");
+
+      };
+    },
+    scrobble: function() {
+      var artist = firetable.song.artist;
+      var track = firetable.song.title;
+
+      var params = {
+        artist: artist,
+        track: track,
+        timestamp: firetable.lastfm.songStart,
+        api_key: firetable.lastfm.key,
+        sk: firetable.lastfm.sk,
+        method: "track.scrobble"
+      };
+
+      var sig = firetable.lastfm.getApiSignature(params);
+      params.api_sig = sig;
+
+      var request_url = 'https://ws.audioscrobbler.com/2.0/?' + serialize(params);
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', request_url, true);
+      xhr.onload = console.log("scrobbled");
+      xhr.onerror = firetable.lastfm._onAjaxError;
+      xhr.send();
+
+    },
+    love: function() {
+      var artist = firetable.song.artist;
+      var track = firetable.song.title;
+
+      var params = {
+        artist: artist,
+        track: track,
+        api_key: firetable.lastfm.key,
+        sk: firetable.lastfm.sk,
+        method: "track.love"
+      };
+
+      var sig = firetable.lastfm.getApiSignature(params);
+      params.api_sig = sig;
+
+      var request_url = 'https://ws.audioscrobbler.com/2.0/?' + serialize(params);
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', request_url, true);
+      xhr.onload = console.log("loved");
+      xhr.onerror = firetable.lastfm._onAjaxError;
+      xhr.send();
+
+    },
+    _onAjaxError: function(xhr, status, error) {
+      console.log(xhr);
+      console.log(status);
+      console.log(error);
+    },
+    nowPlaying: function() {
+      var artist = firetable.song.artist;
+      var track = firetable.song.title;
+
+      var params = {
+        artist: artist,
+        track: track,
+        duration: firetable.lastfm.duration,
+        api_key: firetable.lastfm.key,
+        sk: firetable.lastfm.sk,
+        method: "track.updateNowPlaying"
+      };
+
+      var sig = firetable.lastfm.getApiSignature(params);
+      params.api_sig = sig;
+
+      var request_url = 'https://ws.audioscrobbler.com/2.0/?' + serialize(params);
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', request_url, true);
+      xhr.onload = console.log("nowplayd");
+      xhr.onerror = firetable.lastfm._onAjaxError;
+
+      xhr.send();
+
+    },
+    getApiSignature: function(params) {
+      var i, key, keys, max, paramString;
+
+      keys = [];
+      paramString = "";
+
+      for (key in params) {
+        if (params.hasOwnProperty(key)) {
+          keys.push(key);
+        }
+      }
+      keys.sort();
+
+      for (i = 0, max = keys.length; i < max; i += 1) {
+        key = keys[i];
+        paramString += key + params[key];
+      }
+
+      return calcMD5(paramString + "838d63e62b556f74176656640b75e33e");
+    }
+  };
 
   if (ftconfigs.logoImage) $("#roomlogo").css("background-image", "url(" + ftconfigs.logoImage + ")")
   document.title = ftconfigs.roomName + " | firetable";
@@ -947,7 +1063,7 @@ firetable.actions = {
     $pvbar.addClass('editing');
     var $tags = $tagEditorTemplate.clone().appendTo($pvbar);
     $tags.find(".tagMachine").val(tag);
-   
+
     firetable.debug && console.log('edit tags song id:', songid);
 
   },
@@ -1631,7 +1747,7 @@ firetable.ui = {
       $("#login").addClass("miniLoginInvisible");
     });
 
-     $("#minijoin").bind("click", function() {
+    $("#minijoin").bind("click", function() {
       $("#discover").addClass("miniLoginInvisible");
       $("#login").removeClass("miniLoginInvisible");
     });
@@ -1650,6 +1766,47 @@ firetable.ui = {
         firetable.actions.updateQueue();
       }
     });
+
+    //CHECK FOR LASTFM TOKEN
+
+    var thingo = localStorage["ftLastfmSession"];
+    if (thingo == "false") thingo = false;
+    if (thingo) {
+      firetable.lastfm.sk = thingo;
+      $("#scrobtoggle").html("<a onclick=\"killLastfm()\" href=\"\">Disconnect Lastfm Scrobbling</a>");
+    } else {
+      $("#scrobtoggle").html("<a href=\"http://www.last.fm/api/auth/?api_key=" + firetable.lastfm.key + "&cb=" + window.location.href + "\">Set up last.fm scrobbling</a>");
+    }
+
+    var pattern = /[?&]token=/;
+    var URL = location.search;
+
+    if (pattern.test(URL) && !firetable.lastfm.sk) {
+      var queries = {};
+      $.each(document.location.search.substr(1).split('&'), function(c, q) {
+        var i = q.split('=');
+        queries[i[0].toString()] = i[1].toString();
+      });
+      //token time
+      var params = {
+        api_key: firetable.lastfm.key,
+        token: queries.token,
+        method: "auth.getSession"
+      };
+
+      var sig = firetable.lastfm.getApiSignature(params);
+      params.api_sig = sig;
+
+      var request_url = 'https://ws.audioscrobbler.com/2.0/?' + serialize(params) + "&format=json";
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', request_url, true);
+      xhr.onload = firetable.lastfm.newSession(xhr);
+      xhr.onerror = firetable.lastfm._onAjaxError;
+
+      xhr.send();
+    }
+
+
     //GET SETTINGS FROM LOCALSTORAGE
     var disableMediaPlayback = localStorage["firetableDisableMedia"];
     if (typeof disableMediaPlayback == "undefined") {
@@ -1754,22 +1911,22 @@ firetable.ui = {
         'tabindex': "-1",
         'id': data.histID
       }).text(data.artist + " - " + data.title);
-          $histItem.find('.edittags').on('click', function() {
-            if ($(this).hasClass("editing")){
-              $(this).removeClass("editing");
-              $(this).closest('.pvbar').find('.tagPromptBox').remove();
-            } else {
-              $(this).addClass("editing");
-              firetable.actions.editTagsPrompt($(this).closest('.pvbar').attr('data-key'),data.artist + " - " + data.title)
-            }
-          });
-    try{
-      
-        if (!ftapi.isMod) $histItem.find('.edittags').hide();      
-    } catch (e){
-      console.log(e);
-    }
-   
+      $histItem.find('.edittags').on('click', function() {
+        if ($(this).hasClass("editing")) {
+          $(this).removeClass("editing");
+          $(this).closest('.pvbar').find('.tagPromptBox').remove();
+        } else {
+          $(this).addClass("editing");
+          firetable.actions.editTagsPrompt($(this).closest('.pvbar').attr('data-key'), data.artist + " - " + data.title)
+        }
+      });
+      try {
+
+        if (!ftapi.isMod) $histItem.find('.edittags').hide();
+      } catch (e) {
+        console.log(e);
+      }
+
       $histItem.find('.histdj').text(data.dj);
       $histItem.find('.histdate').text(firetable.utilities.format_date(data.when));
       $histItem.find('.histtime').text(firetable.utilities.format_time(data.when));
@@ -1788,8 +1945,8 @@ firetable.ui = {
 
     var $historyItem = $('#thehistory .pvbar').remove();
     ftapi.events.on('editedHistory', function(data) {
-        console.log("HIST EDIT", data);
-        $("#"+data.histID).text(data.artist+ " - " + data.title);
+      console.log("HIST EDIT", data);
+      $("#" + data.histID).text(data.artist + " - " + data.title);
     });
     ftapi.events.on('modCheck', function(data) {
       if (data) $(".edittags").show();
@@ -1819,22 +1976,22 @@ firetable.ui = {
         'tabindex': "-1",
         'id': data.histID
       }).text(data.artist + " - " + data.title);
-          $histItem.find('.edittags').on('click', function() {
-            if ($(this).hasClass("editing")){
-              $(this).removeClass("editing");
-              $(this).closest('.pvbar').find('.tagPromptBox').remove();
-            } else {
-              $(this).addClass("editing");
-              firetable.actions.editTagsPrompt($(this).closest('.pvbar').attr('data-key'),data.artist + " - " + data.title)
-            }
-          });
-    try{
-      
-        if (!ftapi.isMod) $histItem.find('.edittags').hide();      
-    } catch (e){
-      console.log(e);
-    }
-   
+      $histItem.find('.edittags').on('click', function() {
+        if ($(this).hasClass("editing")) {
+          $(this).removeClass("editing");
+          $(this).closest('.pvbar').find('.tagPromptBox').remove();
+        } else {
+          $(this).addClass("editing");
+          firetable.actions.editTagsPrompt($(this).closest('.pvbar').attr('data-key'), data.artist + " - " + data.title)
+        }
+      });
+      try {
+
+        if (!ftapi.isMod) $histItem.find('.edittags').hide();
+      } catch (e) {
+        console.log(e);
+      }
+
       $histItem.find('.histdj').text(data.dj);
       $histItem.find('.histdate').text(firetable.utilities.format_date(data.when));
       $histItem.find('.histtime').text(firetable.utilities.format_time(data.when));
@@ -1872,6 +2029,8 @@ firetable.ui = {
         if (firetable.song.cid == data.cid && data.adamData.track_name) {
           $("#track").text(firetable.ui.strip(data.adamData.track_name));
           $("#artist").text(firetable.ui.strip(data.adamData.artist));
+          firetable.song.title = firetable.ui.strip(data.adamData.track_name);
+          firetable.song.artist = firetable.ui.strip(data.adamData.artist);
           var nicename = firetable.song.djname;
           var showPlaycount = false;
           if (data.adamData.playcount) {
@@ -1948,6 +2107,21 @@ firetable.ui = {
       firetable.song = data;
       firetable.debug && console.log("NEW TRACK", data);
       firetable.debug && console.log('time since:', timeSince);
+
+      if (firetable.lastfm.timer != null) {
+        clearTimeout(firetable.lastfm.timer);
+        firetable.lastfm.timer = null;
+      }
+      if (firetable.lastfm.sk) {
+        firetable.lastfm.duration = Math.floor(timeLeft);
+        firetable.lastfm.songStart = Math.floor((new Date()).getTime() / 1000);
+        firetable.lastfm.timer = setTimeout(function() {
+          firetable.lastfm.timer = null;
+          firetable.lastfm.scrobble();
+        }, (timeLeft * 1000) - 3000);
+        firetable.lastfm.nowPlaying();
+      }
+
       if (data.type == 1) {
         $("#scScreen").hide();
         $("#songlink").html('<svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="youtube" class="svg-inline--fa fa-youtube fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"></path></svg>');
@@ -2621,7 +2795,7 @@ firetable.ui = {
         });
 
         if (!firetable.pickerInit) {
-          const makeRequest = async() => {
+          const makeRequest = async () => {
             twemoji.parse(document.getElementById("pickerResults"));
             return true;
           }
@@ -2655,6 +2829,14 @@ firetable.ui = {
 
 
     //SETTINGS TOGGLES
+
+    let killLastfm = function() {
+      autoDub.lastfm.sk = false;
+      localStorage["ftLastfmSession"] = firetable.lastfm.sk;
+      $("#scrobtoggle").html("<a href=\"http://www.last.fm/api/auth/?api_key=" + firetable.lastfm.key + "&cb=" + window.location.href + "\">Set up last.fm scrobbling</a>");
+
+    }
+
     $('#badoopToggle').change(function() {
       if (this.checked) {
         firetable.debug && console.log("badoop on");
@@ -2836,19 +3018,19 @@ firetable.ui = {
         var thetype = $(this).closest('.pvbar').attr('data-type');
         var songCid = $(this).closest('.pvbar').attr('data-cid');
         var histID = $(this).closest('.pvbar').attr('data-histid');
-          var val = $(this).val();
-          if (val != "") {
-            var yargo = val.split(" - ");
-            var theartist = yargo[0];
-            var thetitle = yargo[1];
-            if (!theartist || !thetitle){
-              alert("check yr tags");
-            } else {
-              ftapi.actions.editTag(thetype, songCid, val, histID);
-              $(this).closest('.editing').removeClass('editing').next('.tagPromptBox').remove();
-            }
+        var val = $(this).val();
+        if (val != "") {
+          var yargo = val.split(" - ");
+          var theartist = yargo[0];
+          var thetitle = yargo[1];
+          if (!theartist || !thetitle) {
+            alert("check yr tags");
+          } else {
+            ftapi.actions.editTag(thetype, songCid, val, histID);
+            $(this).closest('.editing').removeClass('editing').next('.tagPromptBox').remove();
           }
-              }
+        }
+      }
     });
     $("#changeUsername").bind("keyup", function(e) {
       if (e.which == 13) {
@@ -3798,6 +3980,190 @@ class Glitch {
 
   }
 
+}
+
+/*
+ * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
+ * Digest Algorithm, as defined in RFC 1321.
+ * Copyright (C) Paul Johnston 1999 - 2000.
+ * Updated by Greg Holt 2000 - 2001.
+ * See http://pajhome.org.uk/site/legal.html for details.
+ */
+
+/*
+ * Convert a 32-bit number to a hex string with ls-byte first
+ */
+var hex_chr = "0123456789abcdef";
+
+function rhex(num) {
+  str = "";
+  for (j = 0; j <= 3; j++)
+    str += hex_chr.charAt((num >> (j * 8 + 4)) & 0x0F) +
+    hex_chr.charAt((num >> (j * 8)) & 0x0F);
+  return str;
+}
+
+/*
+ * Convert a string to a sequence of 16-word blocks, stored as an array.
+ * Append padding bits and the length, as described in the MD5 standard.
+ */
+function str2blks_MD5(str) {
+  nblk = ((str.length + 8) >> 6) + 1;
+  blks = new Array(nblk * 16);
+  for (i = 0; i < nblk * 16; i++) blks[i] = 0;
+  for (i = 0; i < str.length; i++)
+    blks[i >> 2] |= str.charCodeAt(i) << ((i % 4) * 8);
+  blks[i >> 2] |= 0x80 << ((i % 4) * 8);
+  blks[nblk * 16 - 2] = str.length * 8;
+  return blks;
+}
+
+/*
+ * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+ * to work around bugs in some JS interpreters.
+ */
+function add(x, y) {
+  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+  return (msw << 16) | (lsw & 0xFFFF);
+}
+
+/*
+ * Bitwise rotate a 32-bit number to the left
+ */
+function rol(num, cnt) {
+  return (num << cnt) | (num >>> (32 - cnt));
+}
+
+/*
+ * These functions implement the basic operation for each round of the
+ * algorithm.
+ */
+function cmn(q, a, b, x, s, t) {
+  return add(rol(add(add(a, q), add(x, t)), s), b);
+}
+
+function ff(a, b, c, d, x, s, t) {
+  return cmn((b & c) | ((~b) & d), a, b, x, s, t);
+}
+
+function gg(a, b, c, d, x, s, t) {
+  return cmn((b & d) | (c & (~d)), a, b, x, s, t);
+}
+
+function hh(a, b, c, d, x, s, t) {
+  return cmn(b ^ c ^ d, a, b, x, s, t);
+}
+
+function ii(a, b, c, d, x, s, t) {
+  return cmn(c ^ (b | (~d)), a, b, x, s, t);
+}
+
+/*
+ * Take a string and return the hex representation of its MD5.
+ */
+function calcMD5(str) {
+  x = str2blks_MD5(str);
+  a = 1732584193;
+  b = -271733879;
+  c = -1732584194;
+  d = 271733878;
+
+  for (i = 0; i < x.length; i += 16) {
+    olda = a;
+    oldb = b;
+    oldc = c;
+    oldd = d;
+
+    a = ff(a, b, c, d, x[i + 0], 7, -680876936);
+    d = ff(d, a, b, c, x[i + 1], 12, -389564586);
+    c = ff(c, d, a, b, x[i + 2], 17, 606105819);
+    b = ff(b, c, d, a, x[i + 3], 22, -1044525330);
+    a = ff(a, b, c, d, x[i + 4], 7, -176418897);
+    d = ff(d, a, b, c, x[i + 5], 12, 1200080426);
+    c = ff(c, d, a, b, x[i + 6], 17, -1473231341);
+    b = ff(b, c, d, a, x[i + 7], 22, -45705983);
+    a = ff(a, b, c, d, x[i + 8], 7, 1770035416);
+    d = ff(d, a, b, c, x[i + 9], 12, -1958414417);
+    c = ff(c, d, a, b, x[i + 10], 17, -42063);
+    b = ff(b, c, d, a, x[i + 11], 22, -1990404162);
+    a = ff(a, b, c, d, x[i + 12], 7, 1804603682);
+    d = ff(d, a, b, c, x[i + 13], 12, -40341101);
+    c = ff(c, d, a, b, x[i + 14], 17, -1502002290);
+    b = ff(b, c, d, a, x[i + 15], 22, 1236535329);
+
+    a = gg(a, b, c, d, x[i + 1], 5, -165796510);
+    d = gg(d, a, b, c, x[i + 6], 9, -1069501632);
+    c = gg(c, d, a, b, x[i + 11], 14, 643717713);
+    b = gg(b, c, d, a, x[i + 0], 20, -373897302);
+    a = gg(a, b, c, d, x[i + 5], 5, -701558691);
+    d = gg(d, a, b, c, x[i + 10], 9, 38016083);
+    c = gg(c, d, a, b, x[i + 15], 14, -660478335);
+    b = gg(b, c, d, a, x[i + 4], 20, -405537848);
+    a = gg(a, b, c, d, x[i + 9], 5, 568446438);
+    d = gg(d, a, b, c, x[i + 14], 9, -1019803690);
+    c = gg(c, d, a, b, x[i + 3], 14, -187363961);
+    b = gg(b, c, d, a, x[i + 8], 20, 1163531501);
+    a = gg(a, b, c, d, x[i + 13], 5, -1444681467);
+    d = gg(d, a, b, c, x[i + 2], 9, -51403784);
+    c = gg(c, d, a, b, x[i + 7], 14, 1735328473);
+    b = gg(b, c, d, a, x[i + 12], 20, -1926607734);
+
+    a = hh(a, b, c, d, x[i + 5], 4, -378558);
+    d = hh(d, a, b, c, x[i + 8], 11, -2022574463);
+    c = hh(c, d, a, b, x[i + 11], 16, 1839030562);
+    b = hh(b, c, d, a, x[i + 14], 23, -35309556);
+    a = hh(a, b, c, d, x[i + 1], 4, -1530992060);
+    d = hh(d, a, b, c, x[i + 4], 11, 1272893353);
+    c = hh(c, d, a, b, x[i + 7], 16, -155497632);
+    b = hh(b, c, d, a, x[i + 10], 23, -1094730640);
+    a = hh(a, b, c, d, x[i + 13], 4, 681279174);
+    d = hh(d, a, b, c, x[i + 0], 11, -358537222);
+    c = hh(c, d, a, b, x[i + 3], 16, -722521979);
+    b = hh(b, c, d, a, x[i + 6], 23, 76029189);
+    a = hh(a, b, c, d, x[i + 9], 4, -640364487);
+    d = hh(d, a, b, c, x[i + 12], 11, -421815835);
+    c = hh(c, d, a, b, x[i + 15], 16, 530742520);
+    b = hh(b, c, d, a, x[i + 2], 23, -995338651);
+
+    a = ii(a, b, c, d, x[i + 0], 6, -198630844);
+    d = ii(d, a, b, c, x[i + 7], 10, 1126891415);
+    c = ii(c, d, a, b, x[i + 14], 15, -1416354905);
+    b = ii(b, c, d, a, x[i + 5], 21, -57434055);
+    a = ii(a, b, c, d, x[i + 12], 6, 1700485571);
+    d = ii(d, a, b, c, x[i + 3], 10, -1894986606);
+    c = ii(c, d, a, b, x[i + 10], 15, -1051523);
+    b = ii(b, c, d, a, x[i + 1], 21, -2054922799);
+    a = ii(a, b, c, d, x[i + 8], 6, 1873313359);
+    d = ii(d, a, b, c, x[i + 15], 10, -30611744);
+    c = ii(c, d, a, b, x[i + 6], 15, -1560198380);
+    b = ii(b, c, d, a, x[i + 13], 21, 1309151649);
+    a = ii(a, b, c, d, x[i + 4], 6, -145523070);
+    d = ii(d, a, b, c, x[i + 11], 10, -1120210379);
+    c = ii(c, d, a, b, x[i + 2], 15, 718787259);
+    b = ii(b, c, d, a, x[i + 9], 21, -343485551);
+
+    a = add(a, olda);
+    b = add(b, oldb);
+    c = add(c, oldc);
+    d = add(d, oldd);
+  }
+  return rhex(a) + rhex(b) + rhex(c) + rhex(d);
+}
+
+
+var serialize = function(obj, prefix) {
+  var str = [];
+  for (var p in obj) {
+    if (obj.hasOwnProperty(p)) {
+      var k = prefix ? prefix + "[" + p + "]" : p,
+        v = obj[p];
+      str.push(typeof v == "object" ?
+        serialize(v, k) :
+        encodeURIComponent(k) + "=" + encodeURIComponent(v));
+    }
+  }
+  return str.join("&");
 }
 
 if (!firetable.started) firetable.init();
