@@ -58,7 +58,7 @@ chatScroll.getScrollElement().addEventListener('scroll', function() {
   if (firetable.utilities.isChatPrettyMuchAtBottom()) $('#morechats').removeClass('show');
 });
 
-firetable.version = "01.10.7";
+firetable.version = "01.10.8";
 
 var player, $playlistItemTemplate;
 
@@ -229,7 +229,7 @@ firetable.init = function() {
     },
     scrobble: function() {
       var artist = firetable.song.artist;
-      var track = firetable.song.title;
+      var track = firetable.lastfm._cleanForScrobble(firetable.song.title);
 
       var params = {
         artist: artist,
@@ -253,7 +253,7 @@ firetable.init = function() {
     },
     love: function() {
       var artist = firetable.song.artist;
-      var track = firetable.song.title;
+      var track = firetable.lastfm._cleanForScrobble(firetable.song.title);
 
       var params = {
         artist: artist,
