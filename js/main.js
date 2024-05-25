@@ -279,9 +279,12 @@ firetable.init = function() {
       console.log(status);
       console.log(error);
     },
+    _cleanForScrobble: function(title) {
+      return title.replace(/ \([oO]fficial (?:[aA]udio|[vV]ideo)\)/, "")
+    },
     nowPlaying: function() {
       var artist = firetable.song.artist;
-      var track = firetable.song.title;
+      var track = firetable.lastfm._cleanForScrobble(firetable.song.title);
 
       var params = {
         artist: artist,
