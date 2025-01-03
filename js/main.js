@@ -216,6 +216,11 @@ firetable.init = function() {
     songStart: null,
     duration: null,
     timer: null,
+    killSession: function() {
+      firetable.lastfm.sk = false;
+      localStorage["ftLastfmSession"] = firetable.lastfm.sk;
+      $("#scrobtoggle").html("<a href=\"http://www.last.fm/api/auth/?api_key=" + firetable.lastfm.key + "&cb=" + window.location.href + "\">Set up last.fm scrobbling</a>");
+    },
     newSession: function(xhr) {
 
       return function() {
@@ -223,7 +228,7 @@ firetable.init = function() {
         jsonResponse = JSON.parse(xhr.responseText);
         firetable.lastfm.sk = jsonResponse.session.key;
         localStorage["ftLastfmSession"] = firetable.lastfm.sk;
-        $("#scrobtoggle").html("<a onclick=\"killLastfm()\" href=\"#\">Disconnect Lastfm Scrobbling</a>");
+        $("#scrobtoggle").html("<a onclick=\"firetable.lastfm.newSession()\" href=\"#\">Disconnect Lastfm Scrobbling</a>");
 
       };
     },
@@ -1776,7 +1781,7 @@ firetable.ui = {
     if (thingo == "false") thingo = false;
     if (thingo) {
       firetable.lastfm.sk = thingo;
-      $("#scrobtoggle").html("<a onclick=\"killLastfm()\" href=\"\">Disconnect Lastfm Scrobbling</a>");
+      $("#scrobtoggle").html("<a onclick=\"firetable.lastfm.killSession()\" href=\"#\">Disconnect Lastfm Scrobbling</a>");
     } else {
       $("#scrobtoggle").html("<a href=\"http://www.last.fm/api/auth/?api_key=" + firetable.lastfm.key + "&cb=" + window.location.href + "\">Set up last.fm scrobbling</a>");
     }
@@ -2833,12 +2838,6 @@ firetable.ui = {
 
     //SETTINGS TOGGLES
 
-    let killLastfm = function() {
-      autoDub.lastfm.sk = false;
-      localStorage["ftLastfmSession"] = firetable.lastfm.sk;
-      $("#scrobtoggle").html("<a href=\"http://www.last.fm/api/auth/?api_key=" + firetable.lastfm.key + "&cb=" + window.location.href + "\">Set up last.fm scrobbling</a>");
-
-    }
 
     $('#badoopToggle').change(function() {
       if (this.checked) {
