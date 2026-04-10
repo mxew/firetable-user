@@ -217,6 +217,10 @@ ftapi.init = function(firebaseConfig) {
           if (data) {
             returnData.user = data;
             if (data.username) ftapi.uname = data.username;
+            if (data.avatarStyle) {
+              firetable.avatarStyle = data.avatarStyle;
+              localStorage[STORAGE.avatarStyle] = data.avatarStyle;
+            }
           }
 
           ftapi.events.emit("loggedIn", returnData);
@@ -371,6 +375,23 @@ ftapi.actions = {
       var feedObj = {
         chatID: chatItem.key
       };
+      var feedItem = chatFeed.push(feedObj, function() {
+        chatItem.child("feedID").set(feedItem.key);
+      });
+    });
+  },
+  sendBotCommand: function(txt) {
+    var chatFeed = firebase.app("firetable").database().ref("chatFeed");
+    var chatData = firebase.app("firetable").database().ref("chatData");
+    var data = {
+      time: firebase.database.ServerValue.TIMESTAMP,
+      id: ftapi.uid,
+      txt: txt,
+      name: ftapi.uname,
+      botCmd: true
+    };
+    var chatItem = chatData.push(data, function() {
+      var feedObj = { chatID: chatItem.key };
       var feedItem = chatFeed.push(feedObj, function() {
         chatItem.child("feedID").set(feedItem.key);
       });
