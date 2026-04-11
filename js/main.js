@@ -1492,6 +1492,9 @@ firetable.utilities = {
     }
     return hours + ":" + min + "" + ampm;
   },
+  pluralize: function(count, singular, plural) {
+    return count + " " + (count === 1 ? singular : (plural || singular + "s"));
+  },
   debounce(func, wait, immediate) {
     var timeout;
     return function() {
@@ -1594,7 +1597,7 @@ firetable.ui = {
         console.log(firetable.dtImportList);
         console.log(firetable.dtImportName);
         if (firetable.dtImportList.length) {
-          $("#importDubResults").text("Ok... import " + firetable.dtImportName + " (" + firetable.dtImportList.length + " tracks)?")
+          $("#importDubResults").text("Ok... import " + firetable.dtImportName + " (" + firetable.utilities.pluralize(firetable.dtImportList.length, "track") + ")?")
           $("#dubimportButton").show();
         } else {
           $("#importDubResults").text("ERROR... NO TRAX?")
@@ -2058,8 +2061,9 @@ firetable.ui = {
           }
           var doTheScrollThing = firetable.utilities.isChatPrettyMuchAtBottom();
           if (showPlaycount) {
-            $("#playCount").text(data.adamData.playcount + " plays");
-            $(".npmsg" + data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong><br/>This song has been played " + data.adamData.playcount + " times.</div>");
+            var count = data.adamData.playcount;
+            $("#playCount").text(firetable.utilities.pluralize(count, "play"));
+            $(".npmsg" + data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong><br/>This song has been played " + firetable.utilities.pluralize(count, "time") + ".</div>");
           } else {
             $("#playCount").text("");
             $(".npmsg" + data.cid).last().html("<div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.adamData.track_name + "</strong> by <strong>" + data.adamData.artist + "</strong></div>");
@@ -2098,7 +2102,8 @@ firetable.ui = {
           if (firetable.tagUpdate.adamData.playcount) {
             if (firetable.tagUpdate.adamData.playcount > 0) {
               showPlaycount = true;
-              $("#playCount").text(firetable.tagUpdate.adamData.playcount + " plays");
+              var count = firetable.tagUpdate.adamData.playcount;
+              $("#playCount").text(firetable.utilities.pluralize(count, "play"));
             }
           }
         }
@@ -2178,7 +2183,8 @@ firetable.ui = {
         } else {
           var doTheScrollThing = firetable.utilities.isChatPrettyMuchAtBottom();
           if (showPlaycount) {
-            $("#chats").append("<div class=\"newChat nowplayn npmsg" + data.cid + "\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong><br/>This song has been played " + firetable.tagUpdate.adamData.playcount + " times.</div>")
+            var count = firetable.tagUpdate.adamData.playcount;
+            $("#chats").append("<div class=\"newChat nowplayn npmsg" + data.cid + "\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong><br/>This song has been played " + firetable.utilities.pluralize(count, "time") + ".</div>")
           } else {
             $("#chats").append("<div class=\"newChat nowplayn npmsg" + data.cid + "\"><div class=\"npmsg\">DJ <strong>" + nicename + "</strong> started playing <strong>" + data.title + "</strong> by <strong>" + data.artist + "</strong></div>")
           }
@@ -3174,7 +3180,7 @@ firetable.ui = {
               firetable.actions.resolveSCLink(val, function(item) {
                 if (item) {
                   if (item.sharing == "public" && item.kind == "playlist") {
-                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + firetable.utilities.pluralize(item.track_count, "song") + ")</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
                   }
                 }
               });
@@ -3188,7 +3194,7 @@ firetable.ui = {
                 for (var i = 0; i < lists.length; i++) {
                   var item = lists[i];
                   if (item.sharing == "public") {
-                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + firetable.utilities.pluralize(item.track_count, "song") + ")</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
                   }
                 }
               });
