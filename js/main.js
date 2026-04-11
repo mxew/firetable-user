@@ -1594,7 +1594,7 @@ firetable.ui = {
         console.log(firetable.dtImportList);
         console.log(firetable.dtImportName);
         if (firetable.dtImportList.length) {
-          $("#importDubResults").text("Ok... import " + firetable.dtImportName + " (" + firetable.dtImportList.length + " tracks)?")
+          $("#importDubResults").text("Ok... import " + firetable.dtImportName + " (" + firetable.dtImportList.length + " track" + (firetable.dtImportList.length === 1 ? "" : "s") + ")?")
           $("#dubimportButton").show();
         } else {
           $("#importDubResults").text("ERROR... NO TRAX?")
@@ -2099,7 +2099,8 @@ firetable.ui = {
           if (firetable.tagUpdate.adamData.playcount) {
             if (firetable.tagUpdate.adamData.playcount > 0) {
               showPlaycount = true;
-              $("#playCount").text(firetable.tagUpdate.adamData.playcount + " plays");
+              var count = firetable.tagUpdate.adamData.playcount;
+              $("#playCount").text(count + " play" + (count === 1 ? "" : "s"));
             }
           }
         }
@@ -3176,7 +3177,7 @@ firetable.ui = {
               firetable.actions.resolveSCLink(val, function(item) {
                 if (item) {
                   if (item.sharing == "public" && item.kind == "playlist") {
-                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " song" + (item.track_count === 1 ? "" : "s") + ")</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
                   }
                 }
               });
@@ -3190,7 +3191,7 @@ firetable.ui = {
                 for (var i = 0; i < lists.length; i++) {
                   var item = lists[i];
                   if (item.sharing == "public") {
-                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " song" + (item.track_count === 1 ? "" : "s") + ")</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
                   }
                 }
               });
