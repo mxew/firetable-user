@@ -1387,7 +1387,7 @@ html .ui-button.ui-state-disabled:active {
     content: "no tracks meet your search criteria";
 }
 
-#mainqueue .material-icons {
+#mainqueue .material-icons, #thehistory .material-icons {
     margin: 0 var(--pad1);
     font-size: 1.2rem;
 }
@@ -2123,6 +2123,63 @@ img.emoji,
 }
 
 /* ============================================
+   Discover
+   ============================================ */
+
+#mainGrid.login #discover {
+    grid-area: login;
+    padding: var(--pad4);
+    overflow: auto;
+    height: 100%;
+}
+
+#mainGrid.mmqueue #discover {
+    display: none;
+}
+
+.miniLoginNavOnly {
+    display: none;
+}
+
+.miniLoginInvisible {
+    display: none !important;
+}
+
+#minidiscover, #minijoin {
+    color: var(--orange);
+    cursor: pointer;
+}
+
+#thediscovers .pvbar {
+    display: inline-block;
+    width: 300px;
+    height: 400px;
+    padding: 20px;
+    margin-top: 50px;
+}
+
+.discart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--pad2);
+    width: 300px;
+    height: 300px;
+    background-size: cover;
+    background-position: center;
+}
+
+#thediscovers .qtxt {
+    display: block;
+    flex: 1;
+}
+
+#thediscovers .pvbarWrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* ============================================
    Login
    ============================================ */
 #welcomeInfo {
@@ -2531,6 +2588,9 @@ body.blog {
         pointer-events: none;
     }
 
+    .miniLoginInvisible { display: none !important; }
+    .miniLoginNavOnly { display: block !important; }
+
     .header_icon[title]::after {
         left: 50%;
         top: calc(100% + 0.5rem);
@@ -2599,6 +2659,11 @@ body.blog {
 
     .header_icon {
         margin-bottom: 0.5rem;
+    }
+
+    #mainGrid.login #queuebox,
+    #mainGrid.login #thehistoryWrap {
+        display: none;
     }
 
     #loggedInUser,
