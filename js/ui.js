@@ -41,7 +41,7 @@ firetable.ui.positionPopover = function (anchorEl, floatingEl, arrowEl, preferre
     options.placement = preferredPlacement;
   }
 
-  FloatingUIDOM.computePosition(anchorEl, floatingEl, options).then(function (pos) {
+  return FloatingUIDOM.computePosition(anchorEl, floatingEl, options).then(function (pos) {
     floatingEl.style.left = pos.x + 'px';
     floatingEl.style.top  = pos.y + 'px';
 
@@ -336,7 +336,7 @@ firetable.ui.updateScreenBtn = function (val) {
   var icons  = { on: 'capture', off: 'cancel_presentation', sync: 'microwave' };
   var titles = { on: 'Screen: always on', off: 'Screen: disabled', sync: 'Screen: synced' };
   $('#screenControl').find('.material-symbols-outlined').text(icons[val] || 'microwave');
-  $('#screenControl').attr('title', titles[val] || 'Screen: synced');
+  $('#screenControl').attr('data-label', titles[val] || 'Screen: synced').attr('aria-label', titles[val] || 'Screen: synced');
   var isOn = (val === 'on') || (val === 'sync' && firetable.screenSyncPos);
   $('#screenControl').toggleClass('on', isOn);
 };
@@ -620,6 +620,23 @@ firetable.ui.setupMiscEvents = function () {
     } catch (s) { /* ignore */ }
   });
 
+  // Close picker on Escape or click outside
+  function closeEmojiPicker() {
+    if (!$("#emojiPicker").is(":hidden")) {
+      $("#pickEmoji").removeClass('on');
+      $("#emojiPicker").slideUp(function () {
+        $('#pickerSearch').val('').trigger('change');
+        $('#newchat').focus();
+      });
+    }
+  }
+  $(document).on("keydown.emojiPicker", function (e) {
+    if (e.key === "Escape") closeEmojiPicker();
+  });
+  $(document).on("click.emojiPicker", function (e) {
+    if (!$(e.target).closest("#emojiPicker, #pickEmoji").length) closeEmojiPicker();
+  });
+
   // ── Settings Toggles ──
   $('#badoopToggle').change(function () {
     firetable.debug && console.log("badoop " + (this.checked ? "on" : "off"));
@@ -686,7 +703,7 @@ firetable.ui.setupMiscEvents = function () {
     localStorage[STORAGE.avatarStyle] = val;
     firebase.app("firetable").database().ref("users/" + ftapi.uid + "/avatarStyle").set(val)
       .catch(function (err) { console.error("[firetable] Avatar style save failed:", err); });
-    $("#loggedInUser .botson").css("background-image",
+    $("#loggedInUser .ft-avatar").css("background-image",
       "url(" + firetable.utilities.avatarURL(ftapi.uid, firetable.uname, null, val) + ")");
   });
 

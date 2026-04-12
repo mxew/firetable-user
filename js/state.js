@@ -194,8 +194,6 @@ if (chatScroll) {
 var player;
 /** @type {jQuery}  Cloned template element for playlist queue items */
 var $playlistItemTemplate;
-/** @type {jQuery}  Cloned template element for the tag editor */
-var $tagEditorTemplate;
 
 // ─── Idle Detection ─────────────────────────────────────────────────────────
 /**

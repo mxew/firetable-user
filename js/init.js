@@ -125,7 +125,6 @@ firetable.init = function () {
 
   // ── DOM Templates ──
   $playlistItemTemplate = $('#mainqueue .pvbar').remove();
-  $tagEditorTemplate = $('.tagPromptBox').remove();
 
   // ── Firebase Init ──
   ftapi.init(ftconfigs.firebase);

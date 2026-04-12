@@ -372,13 +372,19 @@ firetable.ui.dubtrackImportFileSelect = function (evt) {
  * @param {string} songid - data-key of the history item
  * @param {string} tag    - Current "Artist - Title" string
  */
-firetable.actions.editTagsPrompt = function (songid, tag) {
-  var $pvbar = $('#thehistory .pvbar[data-key="' + songid + '"]');
-  $('#thehistory .pvbar.editing').removeClass('editing');
-  $('.tagPromptBox').remove();
+firetable.actions.editTagsPrompt = function (songid, tag, anchorEl) {
+  var popoverEl = document.getElementById('tagEditorPopover');
+  if (popoverEl.matches(':popover-open')) popoverEl.hidePopover();
+  $('.pvbar.editing').removeClass('editing');
+  var $pvbar = $('.pvbar[data-key="' + songid + '"]').first();
   $pvbar.addClass('editing');
-  var $tags = $tagEditorTemplate.clone().appendTo($pvbar);
-  $tags.find(".tagMachine").val(tag);
+  firetable.editingPvbar = $pvbar;
+  $(popoverEl).find('.tagMachine').val(tag);
+  popoverEl.style.visibility = 'hidden';
+  popoverEl.showPopover();
+  firetable.ui.positionPopover(anchorEl || $pvbar.find('.edittags')[0], popoverEl, document.getElementById('tagEditorArrow'), 'bottom').then(function () {
+    $(popoverEl).find('.tagMachine')[0].focus();
+  });
   firetable.debug && console.log('edit tags song id:', songid);
 };
 
@@ -482,21 +488,22 @@ firetable.ui.setupPlaylistEvents = function () {
 
       // Edit tags button
       $newli.find('.edittags').on('click', function () {
-        if ($(this).hasClass("editing")) {
-          $(this).removeClass("editing");
-          $(this).closest('.pvbar').find('.tagPromptBox').remove();
+        var popoverEl = document.getElementById('tagEditorPopover');
+        var $pvbar = $(this).closest('.pvbar');
+        if (popoverEl.matches(':popover-open') && firetable.editingPvbar && firetable.editingPvbar.is($pvbar)) {
+          popoverEl.hidePopover();
         } else {
-          $(this).addClass("editing");
           firetable.actions.editTagsPrompt(
-            $(this).closest('.pvbar').attr('data-key'),
-            $(this).closest('.pvbar').find('.listwords').text()
+            $pvbar.attr('data-key'),
+            $pvbar.find('.listwords').text(),
+            this
           );
         }
       });
 
       // Close editor button
       $newli.find('.closeeditor').on('click', function () {
-        $(this).closest('.pvbar').removeClass('editing').find('.tagPromptBox').remove();
+        document.getElementById('tagEditorPopover').hidePopover();
       });
 
       if (!ftapi.isMod) $newli.find('.edittags, .closeeditor').hide();
@@ -668,8 +675,8 @@ firetable.ui.setupPlaylistEvents = function () {
   // ── Tag editing (Enter in .tagMachine) ──
   $(document).on("keyup", ".tagMachine", function (e) {
     if (e.which !== 13) return;
-    var songCid = $(this).closest('.pvbar').attr('data-cid');
-    var histID = $(this).closest('.pvbar').attr('data-histid');
+    var $pvbar = firetable.editingPvbar;
+    if (!$pvbar || !$pvbar.length) return;
     var val = $(this).val();
     if (!val) return;
     var yargo = val.split(" - ");
@@ -677,10 +684,20 @@ firetable.ui.setupPlaylistEvents = function () {
       alert("check yr tags");
     } else {
       ftapi.actions.editTag(
-        $(this).closest('.pvbar').attr('data-type'),
-        songCid, val, histID
+        $pvbar.attr('data-type'),
+        $pvbar.attr('data-cid'),
+        val,
+        $pvbar.attr('data-histid')
       );
-      $(this).closest('.pvbar').removeClass('editing').find('.tagPromptBox').remove();
+      document.getElementById('tagEditorPopover').hidePopover();
+    }
+  });
+
+  // ── Tag editor popover cleanup on auto-dismiss ──
+  document.getElementById('tagEditorPopover').addEventListener('toggle', function (e) {
+    if (e.newState === 'closed' && firetable.editingPvbar) {
+      firetable.editingPvbar.removeClass('editing');
+      firetable.editingPvbar = null;
     }
   });
 };

@@ -22,26 +22,26 @@
 			<div id="roomlogo"></div>
 			<div id="idtitle"></div>
 			<nav id="viewnav">
-				<button role="button" class="header_icon on" id="playlists" title="Playlists" tabindex="0">
+				<button role="button" class="header_icon on" id="playlists" data-label="Playlists" aria-label="Playlists" tabindex="0">
 					<i class="material-icons">queue_music</i>
 				</button>
-				<button role="button" class="header_icon" id="history" title="Recent" tabindex="0">
+				<button role="button" class="header_icon" id="history" data-label="Recent" aria-label="Recent" tabindex="0">
 					<i class="material-icons">history</i>
 				</button>
-				<button role="button" class="header_icon" id="discover-nav" title="Fresh" tabindex="0">
+				<button role="button" class="header_icon" id="discover-nav" data-label="Fresh" aria-label="Fresh" tabindex="0">
 					<i class="material-icons">coffee</i>
 				</button>
-				<button role="button" class="header_icon" id="cardcase" title="Cards" tabindex="0">
+				<button role="button" class="header_icon" id="cardcase" data-label="Cards" aria-label="Cards" tabindex="0">
 					<i class="material-symbols-outlined">playing_cards</i>
 				</button>
 			</nav>
 			<div class="flexpacer"></div>
-			<button id="socialTrigger" type="button" role="button" class="header_icon" popovertarget="socialPopover">
+			<button id="socialTrigger" type="button" role="button" class="header_icon" data-label="Community" aria-label="Community" popovertarget="socialPopover">
 				<i class="material-symbols-outlined">share</i>
 			</button>
-			<a id="roomInfo" class="header_icon" title="About" target="_blank" href="about"><i class="material-icons">&#xE887;</i></a>
+			<a id="roomInfo" class="header_icon" data-label="About" aria-label="About" target="_blank" href="about"><i class="material-icons">&#xE887;</i></a>
 			<div id="loggedInUser" class="openModal" data-modal="accountSettingsBox" data-tab="profile-tab">
-				<div class="botson"></div>
+				<div class="ft-avatar"></div>
 			</div>
 			<div id="reconnecting">Reconnecting...</div>
 		</header>
@@ -132,13 +132,13 @@
 		<div id="themebox">
 			<div id="prgbar"><div id="prgbarbar"></div></div>
 			<div class="themeLeft">
-				<button role="button" class="butt accent iconbutt" id="fire" title="Fire!" tabindex="0">
+				<button role="button" class="butt accent iconbutt" id="fire" data-label="Fire!" aria-label="Fire!" tabindex="0">
 					<i class="material-icons"> whatshot </i>
 				</button>
-				<a target="_blank" role="button" class="butt graybutt iconbutt" id="songlink" title="Song link" tabindex="0">
+				<a target="_blank" role="button" class="butt graybutt iconbutt" id="songlink" data-label="Song link" aria-label="Song link" tabindex="0">
 					<i class="material-icons"> link </i>
 				</a>
-				<button role="button" class="butt graybutt iconbutt" id="grab" title="Add to playlist" tabindex="0">
+				<button role="button" class="butt graybutt iconbutt" id="grab" data-label="Add to playlist" aria-label="Add to playlist" tabindex="0">
 					<i class="material-icons"> &#xE03B; </i>
 				</button>
 			</div>
@@ -146,13 +146,13 @@
 				<div id="currentTheme"></div>
 			</div>
 			<div class="themeRight">
-				<button role="button" class="butt graybutt iconbutt" id="reloadtrack" title="reload audio" tabindex="0">
+				<button role="button" class="butt graybutt iconbutt" id="reloadtrack" data-label="Reload audio" aria-label="Reload audio" tabindex="0">
 					<i class="material-icons"> refresh </i>
 				</button>
-				<button role="button" class="butt graybutt iconbutt" id="screenControl" title="Screen: synced" tabindex="0">
+				<button role="button" class="butt graybutt iconbutt" id="screenControl" data-label="Screen: synced" aria-label="Screen: synced" tabindex="0">
 					<i class="material-symbols-outlined">microwave</i>
 				</button>
-				<button role="button" class="butt graybutt iconbutt" id="volstatus" title="mute" tabindex="0">
+				<button role="button" class="butt graybutt iconbutt" id="volstatus" data-label="Mute" aria-label="Mute" tabindex="0">
 					<i class="material-icons"> &#xE050; </i>
 				</button>
 			</div>
@@ -175,7 +175,7 @@
 				<div id="chats">
 					<div id="chatKEY" class="newChat">
 						<!-- template for chat items -->
-						<div class="botson"></div>
+						<div class="ft-avatar"></div>
 						<div class="chatContent">
 							<div class="chatHead">
 								<span class="material-icons utitle"></span>
@@ -188,7 +188,7 @@
 				</div>
 			</div>
 			<div id="chatbottom">
-				<button role="button" class="butt graybutt iconbutt" id="pickEmoji" title="Emoji">
+				<button role="button" class="butt graybutt iconbutt" id="pickEmoji" data-label="Emoji" aria-label="Emoji">
 					<i class="material-icons"> insert_emoticon </i>
 				</button>
 				<form id="newchatForm" autocomplete="off" onsubmit="return false;">
@@ -226,7 +226,7 @@
 				<div id="allUsers">
 					<div id="userKEY" class="prson">
 						<!-- template for users -->
-						<div class="botson">
+						<div class="ft-avatar">
 							<span class="material-icons blockon">block</span>
 							<span class="material-icons imptcon">radio</span>
 							<span class="material-icons prsnStatus">lens</span>
@@ -257,13 +257,13 @@
 						</select>
 					</div>
 					<div id="qControlButtons">
-						<button role="button" class="butt graybutt iconbutt" id="addToQueueBttn" title="Add track">
+						<button role="button" class="butt graybutt iconbutt" id="addToQueueBttn" data-label="Add track" aria-label="Add track">
 							<i class="material-icons"> add </i>
 						</button>
-						<button role="button" class="butt graybutt iconbutt" id="mergeLists" title="Merge playlists">
+						<button role="button" class="butt graybutt iconbutt" id="mergeLists" data-label="Merge playlists" aria-label="Merge playlists">
 							<i class="material-icons"> merge_type </i>
 						</button>
-						<button role="button" class="butt graybutt iconbutt" id="shuffleQueue" title="Shuffle list">
+						<button role="button" class="butt graybutt iconbutt" id="shuffleQueue" data-label="Shuffle list" aria-label="Shuffle list">
 							<i class="material-icons"> shuffle </i>
 						</button>
 					</div>
@@ -301,7 +301,7 @@
 					<div id="mainqueue" class="innr">
 						<div class="pvbar" id="pvbarKEY">
 							<!-- template for playlist items -->
-							<div class="pvbarWrap">							<div class="q-art"></div>								<i role="button" id="pvKEY" class="material-icons previewicon"></i>
+							<div class="pvbarWrap">							<div class="q-art"></div>								<button id="pvKEY" class="material-icons previewicon"></button>
 								<span class="track-warning"></span>
 								<div class="listwords"></div>
 								<i role="button" class="material-icons bumpsongs"
@@ -314,21 +314,7 @@
 								<i role="button" class="material-icons deletesong" title="Delete track">delete</i>
 							</div>
 						</div>
-						<div class="tagPromptBox">
-							<!-- template for tag editor -->
-							<div class="tagsNlink">
-								<input type="text" placeholder="Artist - Song Title" class="tagMachine" />
-								<a target="_blank" href="https://youtube.com" class="tagSongLink"><i role="button"
-										class="material-icons tracklink" title="Track link">link</i></a>
-							</div>
-							<small><i>Edit the song tag + hit enter to save</i></small><br />
-							<br />
-							<b>Rohn Standard Notation</b><br />
-							Standard: <i>Artist - Song Title</i><br />
-							Remix: <i>Artist - Song Title (Remixartist Remix)</i><br />
-							Featuring: <i>Artist - Song Title feat. Subartist</i><br />
-							Featuring + Remix: <i>Artist - Song Title feat. Subartist (Remixartist Remix)</i>
-						</div>
+
 					</div>
 				</div>
 				<div id="plmanager">
@@ -353,7 +339,7 @@
 						<div class="pvbar" id="pvbarKEY">
 							<!-- template for search result items -->
 							<div class="pvbarWrap">
-								<i role="button" id="pvKEY" class="material-icons previewicon">&#xE037;</i>
+						<button id="pvKEY" class="material-icons previewicon">&#xE037;</button>
 								<div class="listwords"></div>
 								<i role="button" id="pvKEY" class="material-icons queuetrack">&#xE03B;</i>
 							</div>
@@ -369,20 +355,14 @@
 			</div>
 			<div id="thehistory" class="scroll-view">
 				<div class="pvbar" id="pvbar0">
-					<div class="pvbarWrap">
-						<div class="histart">
-							<i role="button" id="pv0" class="material-icons previewicon">&#xE037;</i>
-						</div>
-						<div class="qtxt">
-							<div class="listwords"><a target="_blank" href="" class="histlink"></a></div>
-							<div class="histmoreinfo">
-								played by <span class="histdj"></span> on <span class="histdate"></span> at
-								<span class="histtime"></span>
-							</div>
-						</div>
-						<i role="button" class="material-icons edittags" title="Edit tags">edit</i>
-						<div role="button" class="histeal"><i id="apvX0" class="material-icons">&#xE03B;</i></div>
+				<div class="histart">
+						<button class="material-icons previewicon" id="pv0">&#xE037;</button>
 					</div>
+					<span class="ft-avatar hist-dj-avatar"></span>
+					<div class="listwords"><span class="histlink"></span></div>
+					<button class="material-icons edittags" title="Edit tags">edit</button>
+					<a class="material-icons tracklink-btn" title="Track link" target="_blank" href="">open_in_new</a>
+					<button class="histeal material-icons" id="apvX0">&#xE03B;</button>
 				</div>
 			</div>
 		</div>
@@ -398,11 +378,11 @@
 				<div class="pvbar" id="pvbar0">
 					<div class="pvbarWrap">
 						<div class="discart">
-							<i role="button" id="pv0" class="material-icons previewicon">&#xE037;</i>
+							<button id="pv0" class="material-icons previewicon">&#xE037;</button>
 						</div>
 						<div class="qtxt">
 							<div class="listwords"><a target="_blank" href="" class="histlink"></a></div>
-							<div class="histmoreinfo">played by <span class="histdj"></span> on <span class="histdate"></span> at <span class="histtime"></span></div>
+							<span class="histdj"></span> · <span class="histdate"></span> <span class="histtime"></span>
 						</div>
 					</div>
 				</div>
@@ -661,6 +641,20 @@
 			<a title="Soundcloud" target="_blank" class="header_icon sociallogo soundcloud">
 				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M7 17.939h-1v-8.068c.308-.231.639-.429 1-.566v8.634zm3 0h1v-9.224c-.229.265-.443.548-.621.857l-.379-.184v8.551zm-2 0h1v-8.848c-.508-.079-.623-.05-1-.01v8.858zm-4 0h1v-7.02c-.312.458-.555.971-.692 1.535l-.308-.182v5.667zm-3-5.25c-.606.547-1 1.354-1 2.268 0 .914.394 1.721 1 2.268v-4.536zm18.879-.671c-.204-2.837-2.404-5.079-5.117-5.079-1.022 0-1.964.328-2.762.877v10.123h9.089c1.607 0 2.911-1.393 2.911-3.106 0-2.233-2.168-3.772-4.121-2.815zm-16.879-.027c-.302-.024-.526-.03-1 .122v5.689c.446.143.636.138 1 .138v-5.949z"/></svg>
 			</a>
+		</div>
+	</div>
+
+	<div id="tagEditorPopover" popover="auto" class="ft-popover">
+		<div id="tagEditorArrow" class="ft-arrow"></div>
+		<div class="ft-popover-box tagPromptBox">
+			<input type="text" placeholder="Artist - Song Title" class="tagMachine" />
+			<small><i>Edit the song tag + hit enter to save</i></small><br />
+			<br />
+			<b>Rohn Standard Notation</b><br />
+			Standard: <i>Artist - Song Title</i><br />
+			Remix: <i>Artist - Song Title (Remixartist Remix)</i><br />
+			Featuring: <i>Artist - Song Title feat. Subartist</i><br />
+			Featuring + Remix: <i>Artist - Song Title feat. Subartist (Remixartist Remix)</i>
 		</div>
 	</div>
 

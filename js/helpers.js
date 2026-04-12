@@ -261,7 +261,7 @@ firetable.utilities = {
 
   /**
    * Attach a click handler to an element that inserts "@username " into the chat input.
-   * Works on .prson (user list), .botson (chat avatar), and .chatName elements.
+   * Works on .prson (user list), .ft-avatar (chat avatar), and .chatName elements.
    * @param {jQuery} element - jQuery-wrapped DOM element
    */
   chatAt: function (element) {
@@ -269,7 +269,7 @@ firetable.utilities = {
       var nameToAt;
       if (element.hasClass("prson")) {
         nameToAt = $(this).find(".prsnName").text();
-      } else if (element.hasClass("botson")) {
+      } else if (element.hasClass("ft-avatar")) {
         nameToAt = $(this).next(".chatContent").find(".chatName").text();
       } else if (element.hasClass("chatName")) {
         nameToAt = $(this).text();
