@@ -1223,11 +1223,11 @@ firetable.actions = {
       name: name,
       cid: cid
     };
-    $("#apv" + type + cid).find(".material-icons").text("check");
+    $("#apv" + type + cid).find(".material-symbols-outlined").text("check");
     $("#apv" + type + cid).css("color", firetable.orange);
     $("#apv" + type + cid).css("pointer-events", "none");
     setTimeout(function() {
-      $("#apv" + type + cid).find(".material-icons").text("playlist_add");
+      $("#apv" + type + cid).find(".material-symbols-outlined").text("playlist_add");
       $("#apv" + type + cid).removeAttr("style");
     }, 3000);
 
@@ -2244,7 +2244,7 @@ firetable.ui = {
             cnt = countr;
             var removeMe = "";
             if (data[key].removeAfter) removeMe = "departure_board"
-            ok1 += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110&set=" + firetable.avatarset + ");\"></div><span class=\"prsnName\">" + countr + ". " + data[key].name + " <span class=\"removemeIcon material-icons\"> " + removeMe + " </span></span></div>";
+            ok1 += "<div class=\"prson\"><div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110&set=" + firetable.avatarset + ");\"></div><span class=\"prsnName\">" + countr + ". " + data[key].name + " <span class=\"removemeIcon material-symbols-outlined\"> " + removeMe + " </span></span></div>";
             countr++;
           }
         }
@@ -2261,7 +2261,7 @@ firetable.ui = {
             var removeMe = "";
             if (data[key].removeAfter) removeMe = "departure_board"
 
-            ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"avtr\" id=\"avtr" + countr + "\" style=\"background-image: url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110&set=" + firetable.avatarset + ");\"></div><div id=\"djthing" + countr + "\" class=\"djplaque\"><div class=\"djname\"><span class=\"removemeIcon material-icons\"> " + removeMe + " </span> " + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div></div>";
+            ok1 += "<div id=\"spt" + countr + "\" class=\"spot\"><div class=\"avtr\" id=\"avtr" + countr + "\" style=\"background-image: url(https://indiediscotheque.com/robots/" + data[key].id + "" + data[key].name + ".png?size=110x110&set=" + firetable.avatarset + ");\"></div><div id=\"djthing" + countr + "\" class=\"djplaque\"><div class=\"djname\"><span class=\"removemeIcon material-symbols-outlined\"> " + removeMe + " </span> " + data[key].name + "</div><div class=\"playcount\">" + data[key].plays + "/<span id=\"plimit" + countr + "\">" + firetable.playlimit + "</span></div></div></div>";
             countr++;
           }
         }
@@ -2315,7 +2315,7 @@ firetable.ui = {
       for (key in data) {
         if (data[key]) {
           ftapi.lookup.userByName(key, function(person) {
-            $("#activeSuspentions").append("<div class=\"importResult\"><div class=\"imtxt\">" + person.username + "</div><i role=\"button\" onclick=\"firetable.actions.unban('" + person.userid + "')\" class=\"material-icons\" title=\"Unsuspend\">&#xE5C9;</i></div>");
+            $("#activeSuspentions").append("<div class=\"importResult\"><div class=\"imtxt\">" + person.username + "</div><i role=\"button\" onclick=\"firetable.actions.unban('" + person.userid + "')\" class=\"material-symbols-outlined\" title=\"Unsuspend\">&#xE5C9;</i></div>");
           });
         }
       }
@@ -2358,7 +2358,7 @@ firetable.ui = {
       var newUserToAddX = $("<div></div>");
       newUserToAddX.addClass("prson " + block);
       newUserToAddX.attr("id", "user" + data.userid);
-      newUserToAddX.html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110&set=" + firetable.avatarset + ");\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
+      newUserToAddX.html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110&set=" + firetable.avatarset + ");\"><span class=\"material-symbols-outlined block\">" + blockcon + "</span><span class=\"material-symbols-outlined herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
       firetable.utilities.chatAt(newUserToAddX); // adds the click event to @ the user
       $(destination).append(newUserToAddX);
     });
@@ -2400,7 +2400,7 @@ firetable.ui = {
         destination = "#usersBot";
       }
 
-      $("#user" + data.userid).html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110&set=" + firetable.avatarset + ");\"><span class=\"material-icons block\">" + blockcon + "</span><span class=\"material-icons herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
+      $("#user" + data.userid).html("<div class=\"botson\" style=\"background-image:url(https://indiediscotheque.com/robots/" + data.userid + "" + data.username + ".png?size=110x110&set=" + firetable.avatarset + ");\"><span class=\"material-symbols-outlined block\">" + blockcon + "</span><span class=\"material-symbols-outlined herecon " + isIdle + "\">" + herecon + "</span></div><span class=\"prsnName\">" + data.username + "</span><span class=\"utitle\">" + rolename + "</span><span class=\"prsnJoined\">joined " + firetable.utilities.format_date(data.joined) + "</span>");
     });
     ftapi.events.on("usersChanged", function(okdata) {
       if ($("#loggedInName").text() == ftapi.uid) {
@@ -2605,7 +2605,7 @@ firetable.ui = {
                 flagIcon = "flag";
               }
             }
-            $newli.find('.track-warning').html("<span class=\"material-icons\"> " + flagIcon + " </span>");
+            $newli.find('.track-warning').html("<span class=\"material-symbols-outlined\"> " + flagIcon + " </span>");
             $newli.find('.track-warning').prop('title', 'Flagged as ' + flagLabel + ' on ' + firetable.utilities.format_date(thisone.flagged.date) + '. Click to remove flag.');
             $newli.find('.track-warning').on('click', function() {
               ftapi.actions.unflagTrack($(this).closest('.pvbar').attr('data-key'));
@@ -3128,7 +3128,7 @@ firetable.ui = {
                       if (response.result.items.length === 1) {
                         var item = response.result.items[0];
                         vidTitle = item.snippet.title;
-                        $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.snippet.title + " by " + item.snippet.channelTitle + "</div><a target=\"_blank\" href=\"https://www.youtube.com/playlist?list=" + listID + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + listID + "', '" + firetable.utilities.htmlEscape(item.snippet.title) + "', 1)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+                        $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.snippet.title + " by " + item.snippet.channelTitle + "</div><a target=\"_blank\" href=\"https://www.youtube.com/playlist?list=" + listID + "\" class=\"importLinkCheck\"><i class=\"material-symbols-outlined\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + listID + "', '" + firetable.utilities.htmlEscape(item.snippet.title) + "', 1)\" class=\"material-symbols-outlined\" title=\"Import\">&#xE02E;</i></div>");
                       } else {
                         // no result
                       }
@@ -3158,7 +3158,7 @@ firetable.ui = {
                   firetable.debug && console.log('import search results:', response);
                   $.each(srchItems, function(index, item) {
                     vidTitle = item.snippet.title;
-                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.snippet.title + " by " + item.snippet.channelTitle + "</div><a target=\"_blank\" href=\"https://www.youtube.com/playlist?list=" + item.id.playlistId + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id.playlistId + "', '" + firetable.utilities.htmlEscape(item.snippet.title) + "', 1)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.snippet.title + " by " + item.snippet.channelTitle + "</div><a target=\"_blank\" href=\"https://www.youtube.com/playlist?list=" + item.id.playlistId + "\" class=\"importLinkCheck\"><i class=\"material-symbols-outlined\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id.playlistId + "', '" + firetable.utilities.htmlEscape(item.snippet.title) + "', 1)\" class=\"material-symbols-outlined\" title=\"Import\">&#xE02E;</i></div>");
                   })
                 })
               }
@@ -3174,7 +3174,7 @@ firetable.ui = {
               firetable.actions.resolveSCLink(val, function(item) {
                 if (item) {
                   if (item.sharing == "public" && item.kind == "playlist") {
-                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-symbols-outlined\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-symbols-outlined\" title=\"Import\">&#xE02E;</i></div>");
                   }
                 }
               });
@@ -3188,7 +3188,7 @@ firetable.ui = {
                 for (var i = 0; i < lists.length; i++) {
                   var item = lists[i];
                   if (item.sharing == "public") {
-                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-icons\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-icons\" title=\"Import\">&#xE02E;</i></div>");
+                    $("#importResults").append("<div class=\"importResult\"><div class=\"imtxt\">" + item.title + " by " + item.user.username + " (" + item.track_count + " songs)</div><a target=\"_blank\" href=\"" + item.permalink_url + "\" class=\"importLinkCheck\"><i class=\"material-symbols-outlined\">&#xE250;</i></a> <i role=\"button\" onclick=\"firetable.actions.importList('" + item.id + "', '" + firetable.utilities.htmlEscape(item.title) + "', 2)\" class=\"material-symbols-outlined\" title=\"Import\">&#xE02E;</i></div>");
                   }
                 }
               });

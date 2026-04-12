@@ -234,8 +234,8 @@ firetable.ui.setupSearchEvents = function () {
             var item = response.items[0];
             $("#importResults").append(
               '<div class="importResult"><div class="imtxt">' + item.snippet.title + ' by ' + item.snippet.channelTitle + '</div>' +
-              '<a target="_blank" href="https://www.youtube.com/playlist?list=' + listID + '" class="importLinkCheck"><i class="material-icons">&#xE250;</i></a> ' +
-              '<i role="button" onclick="firetable.actions.importList(\'' + listID + '\', \'' + firetable.utilities.htmlEscape(item.snippet.title) + '\', 1)" class="material-icons" title="Import">&#xE02E;</i></div>'
+              '<a target="_blank" href="https://www.youtube.com/playlist?list=' + listID + '" class="importLinkCheck"><i class="material-symbols-outlined">&#xE250;</i></a> ' +
+              '<i role="button" onclick="firetable.actions.importList(\'' + listID + '\', \'' + firetable.utilities.htmlEscape(item.snippet.title) + '\', 1)" class="material-symbols-outlined" title="Import">&#xE02E;</i></div>'
             );
           }
         });
@@ -245,8 +245,8 @@ firetable.ui.setupSearchEvents = function () {
           $.each(response.items || [], function (index, item) {
             $("#importResults").append(
               '<div class="importResult"><div class="imtxt">' + item.snippet.title + ' by ' + item.snippet.channelTitle + '</div>' +
-              '<a target="_blank" href="https://www.youtube.com/playlist?list=' + item.id.playlistId + '" class="importLinkCheck"><i class="material-icons">&#xE250;</i></a> ' +
-              '<i role="button" onclick="firetable.actions.importList(\'' + item.id.playlistId + '\', \'' + firetable.utilities.htmlEscape(item.snippet.title) + '\', 1)" class="material-icons" title="Import">&#xE02E;</i></div>'
+              '<a target="_blank" href="https://www.youtube.com/playlist?list=' + item.id.playlistId + '" class="importLinkCheck"><i class="material-symbols-outlined">&#xE250;</i></a> ' +
+              '<i role="button" onclick="firetable.actions.importList(\'' + item.id.playlistId + '\', \'' + firetable.utilities.htmlEscape(item.snippet.title) + '\', 1)" class="material-symbols-outlined" title="Import">&#xE02E;</i></div>'
             );
           });
         });
@@ -260,8 +260,8 @@ firetable.ui.setupSearchEvents = function () {
           if (item && item.sharing === "public" && item.kind === "playlist") {
             $("#importResults").append(
               '<div class="importResult"><div class="imtxt">' + item.title + ' by ' + item.user.username + ' (' + firetable.utilities.pluralize(item.track_count, "song") + ')</div>' +
-              '<a target="_blank" href="' + item.permalink_url + '" class="importLinkCheck"><i class="material-icons">&#xE250;</i></a> ' +
-              '<i role="button" onclick="firetable.actions.importList(\'' + item.id + '\', \'' + firetable.utilities.htmlEscape(item.title) + '\', 2)" class="material-icons" title="Import">&#xE02E;</i></div>'
+              '<a target="_blank" href="' + item.permalink_url + '" class="importLinkCheck"><i class="material-symbols-outlined">&#xE250;</i></a> ' +
+              '<i role="button" onclick="firetable.actions.importList(\'' + item.id + '\', \'' + firetable.utilities.htmlEscape(item.title) + '\', 2)" class="material-symbols-outlined" title="Import">&#xE02E;</i></div>'
             );
           }
         });
@@ -273,8 +273,8 @@ firetable.ui.setupSearchEvents = function () {
             if (item.sharing === "public") {
               $("#importResults").append(
                 '<div class="importResult"><div class="imtxt">' + item.title + ' by ' + item.user.username + ' (' + firetable.utilities.pluralize(item.track_count, "song") + ')</div>' +
-                '<a target="_blank" href="' + item.permalink_url + '" class="importLinkCheck"><i class="material-icons">&#xE250;</i></a> ' +
-                '<i role="button" onclick="firetable.actions.importList(\'' + item.id + '\', \'' + firetable.utilities.htmlEscape(item.title) + '\', 2)" class="material-icons" title="Import">&#xE02E;</i></div>'
+                '<a target="_blank" href="' + item.permalink_url + '" class="importLinkCheck"><i class="material-symbols-outlined">&#xE250;</i></a> ' +
+                '<i role="button" onclick="firetable.actions.importList(\'' + item.id + '\', \'' + firetable.utilities.htmlEscape(item.title) + '\', 2)" class="material-symbols-outlined" title="Import">&#xE02E;</i></div>'
               );
             }
           }

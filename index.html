@@ -23,13 +23,13 @@
 			<div id="idtitle"></div>
 			<nav id="viewnav">
 				<button role="button" class="header_icon on" id="playlists" data-label="Playlists" aria-label="Playlists" tabindex="0">
-					<i class="material-icons">queue_music</i>
+					<i class="material-symbols-outlined">queue_music</i>
 				</button>
 				<button role="button" class="header_icon" id="history" data-label="Recent" aria-label="Recent" tabindex="0">
-					<i class="material-icons">history</i>
+					<i class="material-symbols-outlined">history</i>
 				</button>
 				<button role="button" class="header_icon" id="discover-nav" data-label="Fresh" aria-label="Fresh" tabindex="0">
-					<i class="material-icons">coffee</i>
+					<i class="material-symbols-outlined">coffee</i>
 				</button>
 				<button role="button" class="header_icon" id="cardcase" data-label="Cards" aria-label="Cards" tabindex="0">
 					<i class="material-symbols-outlined">playing_cards</i>
@@ -39,7 +39,7 @@
 			<button id="socialTrigger" type="button" role="button" class="header_icon" data-label="Community" aria-label="Community" popovertarget="socialPopover">
 				<i class="material-symbols-outlined">share</i>
 			</button>
-			<a id="roomInfo" class="header_icon" data-label="About" aria-label="About" target="_blank" href="about"><i class="material-icons">&#xE887;</i></a>
+			<a id="roomInfo" class="header_icon" data-label="About" aria-label="About" target="_blank" href="about"><i class="material-symbols-outlined">&#xE887;</i></a>
 			<div id="loggedInUser" class="openModal" data-modal="accountSettingsBox" data-tab="profile-tab">
 				<div class="ft-avatar"></div>
 			</div>
@@ -133,13 +133,13 @@
 			<div id="prgbar"><div id="prgbarbar"></div></div>
 			<div class="themeLeft">
 				<button role="button" class="butt accent iconbutt" id="fire" data-label="Fire!" aria-label="Fire!" tabindex="0">
-					<i class="material-icons"> whatshot </i>
+					<i class="material-symbols-outlined"> mode_heat </i>
 				</button>
 				<a target="_blank" role="button" class="butt graybutt iconbutt" id="songlink" data-label="Song link" aria-label="Song link" tabindex="0">
-					<i class="material-icons"> link </i>
+					<i class="material-symbols-outlined"> link </i>
 				</a>
 				<button role="button" class="butt graybutt iconbutt" id="grab" data-label="Add to playlist" aria-label="Add to playlist" tabindex="0">
-					<i class="material-icons"> &#xE03B; </i>
+					<i class="material-symbols-outlined"> &#xE03B; </i>
 				</button>
 			</div>
 			<div class="themeCenter">
@@ -147,13 +147,13 @@
 			</div>
 			<div class="themeRight">
 				<button role="button" class="butt graybutt iconbutt" id="reloadtrack" data-label="Reload audio" aria-label="Reload audio" tabindex="0">
-					<i class="material-icons"> refresh </i>
+					<i class="material-symbols-outlined"> refresh </i>
 				</button>
 				<button role="button" class="butt graybutt iconbutt" id="screenControl" data-label="Screen: synced" aria-label="Screen: synced" tabindex="0">
 					<i class="material-symbols-outlined">microwave</i>
 				</button>
 				<button role="button" class="butt graybutt iconbutt" id="volstatus" data-label="Mute" aria-label="Mute" tabindex="0">
-					<i class="material-icons"> &#xE050; </i>
+					<i class="material-symbols-outlined"> &#xE050; </i>
 				</button>
 			</div>
 		</div>
@@ -178,7 +178,7 @@
 						<div class="ft-avatar"></div>
 						<div class="chatContent">
 							<div class="chatHead">
-								<span class="material-icons utitle"></span>
+								<span class="material-symbols-outlined utitle"></span>
 								<div class="chatName"></div>
 							</div>
 							<div id="chattxtKEY" class="chatText"></div>
@@ -189,7 +189,7 @@
 			</div>
 			<div id="chatbottom">
 				<button role="button" class="butt graybutt iconbutt" id="pickEmoji" data-label="Emoji" aria-label="Emoji">
-					<i class="material-icons"> insert_emoticon </i>
+					<i class="material-symbols-outlined"> insert_emoticon </i>
 				</button>
 				<form id="newchatForm" autocomplete="off" onsubmit="return false;">
 					<input maxlength="240" autocomplete="off" name="newchat" placeholder="Chat a thing" type="text"
@@ -204,8 +204,8 @@
 				</div>
 				<div id="morechats">
 					<button class="butt graybutt" role="button">
-						<i class="material-icons">arrow_downward</i> new messages
-						<i class="material-icons">arrow_downward</i>
+						<i class="material-symbols-outlined">arrow_downward</i> new messages
+						<i class="material-symbols-outlined">arrow_downward</i>
 					</button>
 				</div>
 				<div id="atPicker"></div>
@@ -216,29 +216,29 @@
 			<div id="usersStats">
 				<h2><span id="numListeners"></span> People</h2>
 				<div class="listenerType">
-					<i class="material-icons">room</i> <span id="numRoomListeners"></span>
+					<i class="material-symbols-outlined">room</i> <span id="numRoomListeners"></span>
 				</div>
 				<div class="listenerType">
-					<i class="material-icons">radio</i> <span id="numStreamListeners"></span>
+					<i class="material-symbols-outlined">radio</i> <span id="numStreamListeners"></span>
 				</div>
 			</div>
 			<div id="allUsersWrap" class="usersWrap scroll-view">
+				<div id="usersWaitlist"></div>
 				<div id="allUsers">
 					<div id="userKEY" class="prson">
 						<!-- template for users -->
 						<div class="ft-avatar">
-							<span class="material-icons blockon">block</span>
-							<span class="material-icons imptcon">radio</span>
-							<span class="material-icons prsnStatus">lens</span>
+							<span class="material-symbols-outlined blockon">block</span>
+							<span class="material-symbols-outlined imptcon">radio</span>
+							<span class="material-symbols-outlined prsnStatus">lens</span>
 						</div>
 						<div class="prsnNameRole">
 							<span class="prsnName"></span>
-							<span class="material-icons prsnRole"></span>
+							<span class="material-symbols-outlined prsnRole"></span>
 						</div>
 						<span class="djOrder"></span>
 					</div>
 					<div id="usersDJs"></div>
-					<div id="usersWaitlist"></div>
 					<div id="usersBot"></div>
 					<div id="usersSuper"></div>
 					<div id="usersMod"></div>
@@ -258,13 +258,13 @@
 					</div>
 					<div id="qControlButtons">
 						<button role="button" class="butt graybutt iconbutt" id="addToQueueBttn" data-label="Add track" aria-label="Add track">
-							<i class="material-icons"> add </i>
+							<i class="material-symbols-outlined"> add </i>
 						</button>
 						<button role="button" class="butt graybutt iconbutt" id="mergeLists" data-label="Merge playlists" aria-label="Merge playlists">
-							<i class="material-icons"> merge_type </i>
+							<i class="material-symbols-outlined"> merge_type </i>
 						</button>
 						<button role="button" class="butt graybutt iconbutt" id="shuffleQueue" data-label="Shuffle list" aria-label="Shuffle list">
-							<i class="material-icons"> shuffle </i>
+							<i class="material-symbols-outlined"> shuffle </i>
 						</button>
 					</div>
 					<button role="button" class="butt graybutt" id="cancelqsearch">Cancel</button>
@@ -276,7 +276,7 @@
 							<select id="mergepicker">
 								<option value="0">Default Playlist</option>
 							</select>
-							<i class="material-icons"> arrow_right_alt </i>
+							<i class="material-symbols-outlined"> arrow_right_alt </i>
 							<select id="mergepicker2">
 								<option value="0">Default Playlist</option>
 							</select>
@@ -301,17 +301,17 @@
 					<div id="mainqueue" class="innr">
 						<div class="pvbar" id="pvbarKEY">
 							<!-- template for playlist items -->
-							<div class="pvbarWrap">							<div class="q-art"></div>								<button id="pvKEY" class="material-icons previewicon"></button>
+							<div class="pvbarWrap">							<div class="q-art"></div>								<button id="pvKEY" class="material-symbols-outlined previewicon"></button>
 								<span class="track-warning"></span>
 								<div class="listwords"></div>
-								<i role="button" class="material-icons bumpsongs"
+								<i role="button" class="material-symbols-outlined bumpsongs"
 									title="Send to top">vertical_align_top</i>
-								<i role="button" class="material-icons bottomsongs"
+								<i role="button" class="material-symbols-outlined bottomsongs"
 									title="Send to bottom">vertical_align_bottom</i>
 
-								<i role="button" class="material-icons closeeditor" title="Close tags editor">close</i>
-								<i role="button" class="material-icons histeal" title="Add to playlist">playlist_add</i>
-								<i role="button" class="material-icons deletesong" title="Delete track">delete</i>
+								<i role="button" class="material-symbols-outlined closeeditor" title="Close tags editor">close</i>
+								<i role="button" class="material-symbols-outlined histeal" title="Add to playlist">playlist_add</i>
+								<i role="button" class="material-symbols-outlined deletesong" title="Delete track">delete</i>
 							</div>
 						</div>
 
@@ -339,9 +339,9 @@
 						<div class="pvbar" id="pvbarKEY">
 							<!-- template for search result items -->
 							<div class="pvbarWrap">
-						<button id="pvKEY" class="material-icons previewicon">&#xE037;</button>
+						<button id="pvKEY" class="material-symbols-outlined previewicon">&#xE037;</button>
 								<div class="listwords"></div>
-								<i role="button" id="pvKEY" class="material-icons queuetrack">&#xE03B;</i>
+								<i role="button" id="pvKEY" class="material-symbols-outlined queuetrack">&#xE03B;</i>
 							</div>
 						</div>
 					</div>
@@ -356,13 +356,13 @@
 			<div id="thehistory" class="scroll-view">
 				<div class="pvbar" id="pvbar0">
 				<div class="histart">
-						<button class="material-icons previewicon" id="pv0">&#xE037;</button>
+						<button class="material-symbols-outlined previewicon" id="pv0">&#xE037;</button>
 					</div>
 					<span class="ft-avatar hist-dj-avatar"></span>
 					<div class="listwords"><span class="histlink"></span></div>
-					<button class="material-icons edittags" title="Edit tags">edit</button>
-					<a class="material-icons tracklink-btn" title="Track link" target="_blank" href="">open_in_new</a>
-					<button class="histeal material-icons" id="apvX0">&#xE03B;</button>
+					<button class="material-symbols-outlined edittags" title="Edit tags">edit</button>
+					<a class="material-symbols-outlined tracklink-btn" title="Track link" target="_blank" href="">open_in_new</a>
+					<button class="histeal material-symbols-outlined" id="apvX0">&#xE03B;</button>
 				</div>
 			</div>
 		</div>
@@ -378,7 +378,7 @@
 				<div class="pvbar" id="pvbar0">
 					<div class="pvbarWrap">
 						<div class="discart">
-							<button id="pv0" class="material-icons previewicon">&#xE037;</button>
+							<button id="pv0" class="material-symbols-outlined previewicon">&#xE037;</button>
 						</div>
 						<div class="qtxt">
 							<div class="listwords"><a target="_blank" href="" class="histlink"></a></div>
@@ -451,7 +451,7 @@
 		<div class="modalThing" id="deletePromptBox">
 			<div class="modalHeader">
 				<h2>Playlist Deletion Zone</h2>
-				<button role="button" class="butt graybutt iconbutt closeModal" title="Close"><i class="material-icons">close</i></button>
+				<button role="button" class="butt graybutt iconbutt closeModal" title="Close"><i class="material-symbols-outlined">close</i></button>
 			</div>
 				<div class="modalContent">
 				So you want to delete a playlist huh? This action is <strong>irreversible.</strong><br /> If you're
@@ -464,51 +464,10 @@
 			</div>
 		</div>
 
-		<div class="modalThing" id="settingsBox">
-			<div class="modalHeader">
-				<h2>Setthings</h2>
-				<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
-			</div>
-			<div class="modalContent">
-				Set all of the things here on the table.
-				<br /><br />
-				<div class="settingline">
-					<input type="checkbox" id="badoopToggle" name="badoopToggle">
-					<label for="badoopToggle">Badoop sound for @mentions</label>
-				</div>
-				<div class="settingline">
-					<input type="checkbox" id="desktopNotifyMentionsToggle" name="DTNMToggle">
-					<label for="DTNMToggle">Desktop notifications for @mentions</label>
-				</div>
-				<div class="settingline">
-					<input type="checkbox" id="showImagesToggle" name="showImagesToggle">
-					<label for="showImagesToggle">Show images in chat</label><br />
-					<input type="checkbox" id="showAvatarsToggle" name="showAvatarsToggle">
-					<label for="showAvatarsToggle">Show user avatars in chat</label>
-				</div>
-				<div class="settingline">
-					<input type="checkbox" id="mediaDisableToggle" name="mediaDisableToggle">
-					<label for="mediaDisableToggle">Disable Media Playback</label><br />
-				</div>
-				<div class="settingline">
-					<input id="screenControlTogsync" type="radio" name="screenControl" value="sync">
-					<label for="screenControlTogsync">Screen Sync</label><br>
-					<input id="screenControlTogon" type="radio" name="screenControl" value="on">
-					<label for="screenControlTogon">Screen Always</label><br>
-					<input id="screenControlTogoff" type="radio" name="screenControl" value="off">
-					<label for="screenControlTogoff">Screen Disabled</label>
-				</div>
-				<div class="settingline">
-					<span id="scrobtoggle"></span>
-				</div>
-				<div id="version" class="settingline"></div>
-			</div>
-		</div>
-
 		<div class="modalThing" id="cardsBox">
 			<div class="modalHeader">
 				<h2>Your Card Case</h2>
-				<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-icons" title="Close"> close </i></button>
+				<button role="button" class="butt graybutt iconbutt closeModal"><i class="material-symbols-outlined" title="Close"> close </i></button>
 			</div>
 			<div class="modalContent">
 				<div id="cardsMain">loading your cards...</div>
@@ -521,7 +480,7 @@
 				<button class="tab" data-tab="settings-tab">Settings</button>
 				<button class="tab" data-tab="mod-tab" id="modTab">Mod</button>
 				<button role="button" class="butt graybutt small logoutButt" id="logOutButton">Log Out</button>
-				<button role="button" class="butt graybutt iconbutt closeModal" id="accountSettingsClose" title="Close"><i class="material-icons">close</i></button>
+				<button role="button" class="butt graybutt iconbutt closeModal" id="accountSettingsClose" title="Close"><i class="material-symbols-outlined">close</i></button>
 			</div>
 			<div class="modalContent">
 				<div id="profile-tab" class="tabPanel">
@@ -564,7 +523,7 @@
 					</div>
 					<div class="settingline">
 						<input type="checkbox" id="desktopNotifyMentionsToggle" name="DTNMToggle">
-						<label for="DTNMToggle">Desktop notifications for @mentions</label>
+						<label for="desktopNotifyMentionsToggle">Desktop notifications for @mentions</label>
 					</div>
 					<div class="settingline">
 						<input type="checkbox" id="showImagesToggle" name="showImagesToggle">
@@ -597,7 +556,7 @@
 		<div class="modalThing" id="importPromptBox">
 			<div class="modalHeader">
 				<h2>Playlist Import Machine</h2>
-				<button role="button" class="butt graybutt iconbutt closeModal" title="Close"><i class="material-icons">close</i></button>
+				<button role="button" class="butt graybutt iconbutt closeModal" title="Close"><i class="material-symbols-outlined">close</i></button>
 			</div>
 			<div class="modalContent">
 				<div id="importSources" class="tabs">
