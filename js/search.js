@@ -259,7 +259,7 @@ firetable.ui.setupSearchEvents = function () {
         firetable.actions.resolveSCLink(val, function (item) {
           if (item && item.sharing === "public" && item.kind === "playlist") {
             $("#importResults").append(
-              '<div class="importResult"><div class="imtxt">' + item.title + ' by ' + item.user.username + ' (' + item.track_count + ' songs)</div>' +
+              '<div class="importResult"><div class="imtxt">' + item.title + ' by ' + item.user.username + ' (' + firetable.utilities.pluralize(item.track_count, "song") + ')</div>' +
               '<a target="_blank" href="' + item.permalink_url + '" class="importLinkCheck"><i class="material-icons">&#xE250;</i></a> ' +
               '<i role="button" onclick="firetable.actions.importList(\'' + item.id + '\', \'' + firetable.utilities.htmlEscape(item.title) + '\', 2)" class="material-icons" title="Import">&#xE02E;</i></div>'
             );
@@ -272,7 +272,7 @@ firetable.ui.setupSearchEvents = function () {
             var item = lists[i];
             if (item.sharing === "public") {
               $("#importResults").append(
-                '<div class="importResult"><div class="imtxt">' + item.title + ' by ' + item.user.username + ' (' + item.track_count + ' songs)</div>' +
+                '<div class="importResult"><div class="imtxt">' + item.title + ' by ' + item.user.username + ' (' + firetable.utilities.pluralize(item.track_count, "song") + ')</div>' +
                 '<a target="_blank" href="' + item.permalink_url + '" class="importLinkCheck"><i class="material-icons">&#xE250;</i></a> ' +
                 '<i role="button" onclick="firetable.actions.importList(\'' + item.id + '\', \'' + firetable.utilities.htmlEscape(item.title) + '\', 2)" class="material-icons" title="Import">&#xE02E;</i></div>'
               );

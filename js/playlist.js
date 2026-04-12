@@ -351,7 +351,7 @@ firetable.ui.dubtrackImportFileSelect = function (evt) {
         });
       }
       if (firetable.dtImportList.length) {
-        $("#importDubResults").text("Ok... import " + firetable.dtImportName + " (" + firetable.dtImportList.length + " tracks)?");
+        $("#importDubResults").text("Ok... import " + firetable.dtImportName + " (" + firetable.utilities.pluralize(firetable.dtImportList.length, "track") + ")?");
         $("#dubimportButton").show();
       } else {
         $("#importDubResults").text("ERROR... NO TRAX?");

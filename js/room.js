@@ -270,9 +270,10 @@ firetable.ui.setupRoomEvents = function () {
 
     var doTheScrollThing = firetable.utilities.isChatPrettyMuchAtBottom();
     if (showPlaycount) {
-      $("#playCount").text(data.adamData.playcount + " plays");
+      var count = data.adamData.playcount;
+      $("#playCount").text(firetable.utilities.pluralize(count, "play"));
       $(".npmsg" + data.cid).last().find(".npmsg").html(
-        'DJ <strong>' + nicename + '</strong> started playing <strong>' + data.adamData.track_name + '</strong> by <strong>' + data.adamData.artist + '</strong><br/>This song has been played ' + data.adamData.playcount + ' times.'
+        'DJ <strong>' + nicename + '</strong> started playing <strong>' + data.adamData.track_name + '</strong> by <strong>' + data.adamData.artist + '</strong><br/>This song has been played ' + firetable.utilities.pluralize(count, "time") + '.'
       );
     } else {
       $("#playCount").text("");
@@ -313,7 +314,7 @@ firetable.ui.setupRoomEvents = function () {
       }
       if (firetable.tagUpdate.adamData.playcount > 0) {
         showPlaycount = true;
-        $("#playCount").text(firetable.tagUpdate.adamData.playcount + " plays");
+        $("#playCount").text(firetable.utilities.pluralize(firetable.tagUpdate.adamData.playcount, "play"));
       }
     }
 
@@ -401,7 +402,7 @@ firetable.ui.setupRoomEvents = function () {
         var doTheScrollThing = firetable.utilities.isChatPrettyMuchAtBottom();
         var npmsgHTML;
         if (showPlaycount) {
-      npmsgHTML = '<div class="newChat nowplayn npmsg' + data.cid + '"><div class="npmsg">DJ <strong>' + nicename + '</strong> started playing <strong>' + data.title + '</strong> by <strong>' + data.artist + '</strong><br/>This song has been played ' + firetable.tagUpdate.adamData.playcount + ' times.</div><span class="npmsg-fires"></span>';
+      npmsgHTML = '<div class="newChat nowplayn npmsg' + data.cid + '"><div class="npmsg">DJ <strong>' + nicename + '</strong> started playing <strong>' + data.title + '</strong> by <strong>' + data.artist + '</strong><br/>This song has been played ' + firetable.utilities.pluralize(firetable.tagUpdate.adamData.playcount, "time") + '.</div><span class="npmsg-fires"></span>';
         } else {
           npmsgHTML = '<div class="newChat nowplayn npmsg' + data.cid + '"><div class="npmsg">DJ <strong>' + nicename + '</strong> started playing <strong>' + data.title + '</strong> by <strong>' + data.artist + '</strong></div><span class="npmsg-fires"></span>';
         }

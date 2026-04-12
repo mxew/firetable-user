@@ -152,6 +152,11 @@ firetable.utilities = {
     $('body').addClass('screen');
   },
 
+  /** Returns "count singular" or "count plural" (defaults to singular+"s") */
+  pluralize: function (count, singular, plural) {
+    return count + " " + (count === 1 ? singular : (plural || singular + "s"));
+  },
+
   // ─── Chat Scroll ─────────────────────────────────────────────────────────
 
   /**
