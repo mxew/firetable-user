@@ -33,11 +33,11 @@ firetable.actions.queueTrack = function (cid, name, type, tobottom) {
   var info = { type: type, name: name, cid: cid };
 
   // Visual feedback: checkmark on the queue button
-  $("#apv" + type + cid).find(".material-icons").text("check");
+  $("#apv" + type + cid).find(".material-symbols-outlined").text("check");
   $("#apv" + type + cid).css("color", firetable.orange);
   $("#apv" + type + cid).css("pointer-events", "none");
   setTimeout(function () {
-    $("#apv" + type + cid).find(".material-icons").text("playlist_add");
+    $("#apv" + type + cid).find(".material-symbols-outlined").text("playlist_add");
     $("#apv" + type + cid).removeAttr("style");
   }, 3000);
 
@@ -473,7 +473,7 @@ firetable.ui.setupPlaylistEvents = function () {
           flagIcon = "flag";
         }
         $newli.find('.track-warning')
-          .html('<span class="material-icons"> ' + flagIcon + ' </span>')
+          .html('<span class="material-symbols-outlined"> ' + flagIcon + ' </span>')
           .prop('title', 'Flagged as ' + flagLabel + ' on ' + firetable.utilities.format_date(thisone.flagged.date) + '. Click to remove flag.')
           .on('click', function () {
             ftapi.actions.unflagTrack($(this).closest('.pvbar').attr('data-key'));

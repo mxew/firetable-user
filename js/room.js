@@ -497,24 +497,54 @@ firetable.ui.setupRoomEvents = function () {
   // ── Waitlist ──
   ftapi.events.on("waitlistChanged", function (data) {
     firetable.waitlistData = data;
-    var html = "";
-    var cnt = "0";
+
+    // Restore any users previously hidden due to waitlist
+    $('#allUsers .prson[data-waitlist-hidden]').show().removeAttr('data-waitlist-hidden');
+
+    var html = '';
+    var hasEntries = false;
     if (data) {
       var countr = 1;
       for (var key in data) {
         if (data.hasOwnProperty(key)) {
-          cnt = countr;
-          var removeMe = data[key].removeAfter ? "departure_board" : "";
-          html += '<div class="prson"><div class="ft-avatar" style="background-image:url(' +
-            firetable.utilities.avatarURL(data[key].id, data[key].name) +
-            ');"></div><span class="prsnName">' + countr + '. ' + data[key].name +
-            ' <span class="removemeIcon material-icons"> ' + removeMe + ' </span></span></div>';
+          hasEntries = true;
+          var userId = data[key].id;
+          var removeMe = data[key].removeAfter
+            ? '<span class="removemeIcon material-symbols-outlined">departure_board</span>' : '';
+
+          // Look up role icon from live user data
+          var userInfo = ftapi.users && ftapi.users[userId];
+          var roleicon = 'person';
+          var roleiconclass = 'material-symbols-outlined';
+          if (userInfo) {
+            if (userInfo.mod)      { roleicon = 'shield';       roleiconclass = 'material-symbols-outlined-outlined'; }
+            if (userInfo.supermod) { roleicon = 'local_police'; roleiconclass = 'material-symbols-outlined'; }
+            if (userInfo.hostbot)  { roleicon = 'smart_toy';    roleiconclass = 'material-symbols-outlined'; }
+          }
+
+          html += '<div class="waitlist-item">' +
+            '<span class="waitlist-pos">' + countr + '</span>' +
+            '<span class="waitlist-name">' +
+            firetable.utilities.htmlEscape(data[key].name) + removeMe +
+            '</span>' +
+            '<span class="' + roleiconclass + ' prsnRole">' + roleicon + '</span>' +
+            '<div class="ft-avatar" style="background-image:url(' +
+            firetable.utilities.avatarURL(userId, data[key].name) +
+            ');"></div>' +
+            '</div>';
+
+          // Hide this user from the regular user list
+          $('#user' + userId).attr('data-waitlist-hidden', '1').hide();
           countr++;
         }
       }
     }
-    $("#label2 .count").text(" (" + cnt + ")");
-    $("#justwaitlist").html(html);
+    var $wl = $('#usersWaitlist');
+    if (hasEntries) {
+      $wl.html('<div class="waitlist-label"><span class="material-symbols-outlined">queue_music</span> Up next</div>' + html).addClass('has-entries');
+    } else {
+      $wl.removeClass('has-entries').empty();
+    }
   });
 
   // ── DJ Table ──
@@ -532,10 +562,10 @@ firetable.ui.setupRoomEvents = function () {
           var btnIcon = isSelf ? 'close' : 'person_remove';
           var btnTitle = isSelf ? 'Step down' : 'Remove from deck';
           var actionBtn = showBtn
-            ? '<button class="iconbutt deckRemoveBtn" data-userid="' + data[key].id + '" data-tablekey="' + key + '" title="' + btnTitle + '"><i class="material-icons">' + btnIcon + '</i></button>'
+            ? '<button class="iconbutt deckRemoveBtn" data-userid="' + data[key].id + '" data-tablekey="' + key + '" title="' + btnTitle + '"><i class="material-symbols-outlined">' + btnIcon + '</i></button>'
             : '';
           var departureIndicator = data[key].removeAfter
-            ? '<span class="removemeIcon material-icons" title="Stepping down after this song">departure_board</span>'
+            ? '<span class="removemeIcon material-symbols-outlined" title="Stepping down after this song">departure_board</span>'
             : '';
           html += '<div id="spt' + countr + '" class="spot">' +
             '<div class="avtr" id="avtr' + countr + '" style="background-image: url(' +
@@ -633,7 +663,7 @@ firetable.ui.setupRoomEvents = function () {
         ftapi.lookup.userByName(key, function (person) {
           $("#activeSuspentions").append(
             '<div class="importResult"><div class="imtxt">' + person.username + '</div>' +
-            '<i role="button" onclick="firetable.actions.unban(\'' + person.userid + '\')" class="material-icons" title="Unsuspend">&#xE5C9;</i></div>'
+            '<i role="button" onclick="firetable.actions.unban(\'' + person.userid + '\')" class="material-symbols-outlined" title="Unsuspend">&#xE5C9;</i></div>'
           );
         });
       }

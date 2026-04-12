@@ -70,7 +70,7 @@
     --shadow-drop: 0 0.25rem 0.5rem -0.25rem black;
 
     /* History timeline */
-    --color-border: #2a2a2a;
+    --color-border: #333;
     --hist-time-w: 3.25rem;
     --hist-connector-w: 1rem;
     --hist-avatar-size: 1.5rem;
@@ -457,7 +457,7 @@ code {
     color: white;
 }
 
-.iconbutt .material-icons,
+.iconbutt .material-symbols-outlined,
 .iconbutt .material-symbols-outlined {
     font-size: 1.43rem;
 }
@@ -537,7 +537,7 @@ code {
     }
 }
 
-.working .material-icons {
+.working .material-symbols-outlined {
     animation: spin 3s infinite linear;
 }
 
@@ -548,7 +548,7 @@ code {
     margin-left: var(--pad3);
 }
 
-#viewnav .header_icon .material-icons,
+#viewnav .header_icon .material-symbols-outlined,
 #viewnav .header_icon .material-symbols-outlined {
     font-size: 1.75rem;
 }
@@ -639,18 +639,18 @@ a.sociallogo[href] {
     box-shadow: none;
 }
 
-.header_icon .material-icons,
+.header_icon .material-symbols-outlined,
 .header_icon .material-symbols-outlined {
     font-size: 1.2rem;
     color: var(--color-text-muted);
 }
 
-.header_icon:hover .material-icons,
+.header_icon:hover .material-symbols-outlined,
 .header_icon:hover .material-symbols-outlined {
     color: white;
 }
 
-.header_icon.on .material-icons,
+.header_icon.on .material-symbols-outlined,
 .header_icon.on .material-symbols-outlined {
     color: white;
 }
@@ -850,7 +850,7 @@ a.sociallogo[href] {
     font-weight: 700;
 }
 
-#usersStats .material-icons {
+#usersStats .material-symbols-outlined {
     font-size: 1rem;
     color: var(--color-text-muted);
 }
@@ -873,8 +873,83 @@ a.sociallogo[href] {
 }
 
 #allUsersWrap {
-    height: 100%;
+    flex: 1;
+    min-height: 0;
     width: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#usersWaitlist {
+    display: none;
+    flex-direction: column;
+    gap: var(--pad2);
+    flex-shrink: 0;
+    padding: var(--pad2) var(--pad4);
+    border-bottom: 1px solid var(--color-border);
+
+    &.has-entries {
+        display: flex;
+
+        + #allUsers {
+            padding-top: var(--pad2);
+        }
+    }
+}
+
+.waitlist-label {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    margin-bottom: 0.1rem;
+
+    & .material-symbols-outlined {
+        font-size: 1rem;
+    }
+}
+
+.waitlist-item {
+    display: flex;
+    align-items: center;
+    gap: var(--pad2);
+    font-size: 0.875rem;
+
+    & .ft-avatar     { order: 0; width: 1.5rem; height: 1.5rem; flex-shrink: 0; }
+    & .prsnRole      { order: 1; }
+    & .waitlist-name { order: 2; }
+    & .waitlist-pos  { order: 3; margin-left: auto;}
+}
+
+.waitlist-pos {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    width: 1rem;
+    text-align: left;
+    flex-shrink: 0;
+}
+
+.waitlist-name {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 500;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    & .removemeIcon {
+        font-size: 1rem;
+        color: var(--color-text-muted);
+    }
 }
 .prson.idlething .imptcon {
     overflow: auto;
@@ -935,14 +1010,14 @@ a.sociallogo[href] {
     line-height: 0;
     color: var(--color-text-muted);
 }
-.djOrder .material-icons {
+.djOrder .material-symbols-outlined {
     margin-right: 0.25rem;
     font-size: 1.25rem;
     line-height: 0;
     color: rgba(123, 123, 123, 0.5);
 }
-.djOrder.ondeck .material-icons,
-.djOrder.waitlist .material-icons {
+.djOrder.ondeck .material-symbols-outlined,
+.djOrder.waitlist .material-symbols-outlined {
     color: var(--color-text-muted);
 }
 .djOrder span {
@@ -1564,12 +1639,12 @@ html .ui-button.ui-state-disabled:active {
     content: "no tracks meet your search criteria";
 }
 
-#mainqueue .material-icons, #thehistory .material-icons {
+#mainqueue .material-symbols-outlined, #thehistory .material-symbols-outlined {
     margin: 0 var(--pad1);
     font-size: 1.2rem;
 }
 
-#thehistory button.material-icons:not(.previewicon) {
+#thehistory button.material-symbols-outlined:not(.previewicon) {
     background: none;
     border: none;
     padding: 0;
@@ -1722,7 +1797,7 @@ html .ui-button.ui-state-disabled:active {
     white-space: nowrap;
 }
 
-#mergeBox .material-icons {
+#mergeBox .material-symbols-outlined {
     font-size: 17px !important;
     font-weight: 700;
     cursor: default;
@@ -1740,7 +1815,7 @@ html .ui-button.ui-state-disabled:active {
     border-bottom: 1px solid var(--color-bg-s2);
 }
 
-.importResult .material-icons {
+.importResult .material-symbols-outlined {
     margin-left: var(--pad2);
     font-size: 1rem;
 }
@@ -2485,6 +2560,7 @@ img.emoji,
     padding: var(--pad2);
     background-color: var(--color-bg-t1);
     border-radius: var(--radius-md);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 
 .discart {
@@ -3154,6 +3230,49 @@ body.blog {
     #allUsersWrap {
         align-self: flex-end;
         transform: translateX(1vw);
+    }
+
+    #usersWaitlist {
+        display: none;
+        flex-direction: column;
+        gap: var(--pad2) 0;
+        padding: var(--pad4) var(--pad4) var(--pad2);
+        border-bottom: 1px solid var(--color-border);
+
+        &.has-entries {
+            display: flex;
+        }
+    }
+
+    .waitlist-label {
+        justify-content: flex-end;
+    }
+
+    .waitlist-item {
+        display: grid;
+        grid-template-columns: auto 1fr auto auto;
+        align-items: center;
+        gap: var(--pad2);
+
+        & > * { order: 0 !important; }
+    }
+
+    .waitlist-pos {
+        justify-self: start;
+    }
+
+    .waitlist-name {
+        justify-content: flex-end;
+        text-align: right;
+    }
+
+    .waitlist-item .prsnRole {
+        justify-self: center;
+    }
+
+    .waitlist-item .ft-avatar {
+        width: 1.5rem;
+        height: 1.5rem;
     }
 
     #allUsers {

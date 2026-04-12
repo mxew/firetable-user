@@ -57,7 +57,7 @@ firetable.init = function () {
   if (socialPopoverEl) {
     socialPopoverEl.addEventListener('toggle', function (e) {
       var btn = document.getElementById('socialTrigger');
-      var icon = btn && btn.querySelector('.material-icons');
+      var icon = btn && btn.querySelector('.material-symbols-outlined');
       if (e.newState === 'open') {
         if (icon) icon.textContent = 'close';
         socialPopoverEl.style.visibility = 'hidden';

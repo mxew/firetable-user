@@ -647,6 +647,28 @@ firetable.ui.setupMiscEvents = function () {
     firetable.debug && console.log("show images " + (this.checked ? "on" : "off"));
     localStorage[STORAGE.showImages] = this.checked;
     firetable.showImages = this.checked;
+    var imageUrlRegex = /((http(s?):)([/|.|\w|\s|-])*\.(?:jpe?g|gif|png))/g;
+    if (this.checked) {
+      // Convert plain image links → inline images
+      $('#actualChat a[href]').not('.inlineImgLink').each(function () {
+        var url = $(this).attr('href');
+        if (url && imageUrlRegex.test(url)) {
+          var $img = $('<a class="inlineImgLink" target="_blank" tabindex="-1">' +
+            '<img src="' + url + '" class="inlineImage" />' +
+            '<span role="button" class="hideImage">&times;</span></a>').attr('href', url);
+          $(this).replaceWith($img);
+        }
+        imageUrlRegex.lastIndex = 0;
+      });
+    } else {
+      // Convert inline images → plain links
+      $('#actualChat a.inlineImgLink').each(function () {
+        var url = $(this).attr('href');
+        var $link = $('<a target="_blank" tabindex="-1"></a>').attr('href', url).text(url);
+        $(this).replaceWith($link);
+      });
+    }
+    firetable.utilities.scrollToBottom();
   });
   $('#mediaDisableToggle').change(function () {
     firetable.debug && console.log("media disable " + (this.checked ? "on" : "off"));

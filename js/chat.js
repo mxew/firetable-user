@@ -129,9 +129,9 @@ firetable.ui.setupChatEvents = function () {
     // Resolve sender's display name and role
     if (ftapi.users[chatData.id]) {
       if (ftapi.users[chatData.id].username) namebo = ftapi.users[chatData.id].username;
-      if (ftapi.users[chatData.id].mod) utitle = "mod";
-      if (ftapi.users[chatData.id].supermod) utitle = "supermod";
-      if (ftapi.users[chatData.id].hostbot) utitle = "robot";
+      if (ftapi.users[chatData.id].mod) utitle = "shield";
+      if (ftapi.users[chatData.id].supermod) utitle = "local_police";
+      if (ftapi.users[chatData.id].hostbot) utitle = "smart_toy";
     } else if (chatData.name) {
       namebo = chatData.name;
     }
