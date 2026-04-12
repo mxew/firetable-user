@@ -7,6 +7,7 @@ var ftapi = {
   started: false,
   loggedIn: false,
   banned: false,
+  isMod: false,
   presenceDetectRef: null,
   presenceDetectEvent: null,
   blockEvent: null,
@@ -127,6 +128,21 @@ ftapi.init = function(firebaseConfig) {
     ftapi.events.emit("newHistory", data);
   });
 
+  recentz.on('child_changed', function(dataSnapshot) {
+     var data = dataSnapshot.val();
+    data.histID = dataSnapshot.key;
+    ftapi.events.emit("editedHistory", data);
+  });
+
+  // new songs emitter
+  var freshproduce = firebase.app("firetable").database().ref("newMusic");
+  freshproduce.on('child_added', function(dataSnapshot, prev) {
+    var data = dataSnapshot.val();
+    data.histID = dataSnapshot.key;
+    ftapi.events.emit("newProduce", data);
+  });
+
+
   // table change emitter
   var tbl = firebase.app("firetable").database().ref("table");
   tbl.on('value', function(dataSnapshot) {
@@ -220,6 +236,10 @@ ftapi.init = function(firebaseConfig) {
             if (data.avatarStyle) {
               firetable.avatarStyle = data.avatarStyle;
               localStorage[STORAGE.avatarStyle] = data.avatarStyle;
+            }
+            if (data.mod || data.supermod) {
+              ftapi.isMod = true;
+              ftapi.events.emit("modCheck", true);
             }
           }
 
@@ -516,42 +536,6 @@ ftapi.actions = {
     var removeThis = ftapi.queueRef.child(trackID + "/flagged");
     removeThis.remove();
   },
-  editTrackTag: function(trackID, cid, newTag) {
-    if (ftapi.queue[trackID]) {
-      if (ftapi.queue[trackID].cid == cid) {
-        var changeref = ftapi.queueRef.child(trackID);
-        var trackObj = ftapi.queue[trackID];
-        trackObj.name = newTag;
-        changeref.set(trackObj);
-      } else {
-        //song appears to have moved since the editing began, let's try and find it...
-        for (var key in ftapi.queue) {
-          if (ftapi.queue.hasOwnProperty(key)) {
-            if (ftapi.queue[key].cid == cid) {
-              var changeref = ftapi.queueRef.child(key);
-              var trackObj = ftapi.queue[key];
-              trackObj.name = newTag;
-              changeref.set(trackObj);
-              return;
-            }
-          }
-        }
-      }
-    } else {
-      //song appears to have moved since the editing began, let's try and find it...
-      for (var key in ftapi.queue) {
-        if (ftapi.queue.hasOwnProperty(key)) {
-          if (ftapi.queue[key].cid == cid) {
-            var changeref = ftapi.queueRef.child(key);
-            var trackObj = ftapi.queue[key];
-            trackObj.name = newTag;
-            changeref.set(trackObj);
-            return;
-          }
-        }
-      }
-    }
-  },
   deleteList: function(listID) {
     var removeThis = firebase.app("firetable").database().ref("playlists/" + ftapi.uid + "/" + listID);
     removeThis.remove();
@@ -790,6 +774,20 @@ ftapi.actions = {
   deleteChat: function(feedID) {
     var feedEntry = firebase.app("firetable").database().ref("chatFeed/" + feedID + "/hidden");
     feedEntry.set(true);
+  },
+  editTag: function(type, cid, tag, histID){
+    console.log(type+" "+cid+" "+tag+ " "+histID);
+    var yargo = tag.split(" - ");
+    var theartist = yargo[0];
+    var thetitle = yargo[1];
+    //UPDATE HISTORY
+    var histRef = firebase.app("firetable").database().ref("songHistory/" + histID);
+    histRef.child("artist").set(theartist);
+    histRef.child("title").set(thetitle);
+    //UPDATE GLOBAL
+    var globalRef = firebase.app("firetable").database().ref("globalTracks/" + type + "" +cid);
+    globalRef.child("artist").set(theartist);
+    globalRef.child("title").set(thetitle);
   }
 };
 

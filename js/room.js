@@ -90,22 +90,20 @@ function renderHistoryItem(data, $template, containerSel, artClass) {
   });
 
   // Track link
-  $histItem.find('.histlink').attr({
-    'href': data.url,
-    'tabindex': "-1",
-    'id': data.histID
-  }).text(data.artist + " - " + data.title);
+  $histItem.find('.histlink').attr('id', data.histID).text(data.artist + " - " + data.title);
+  $histItem.find('.tracklink-btn').attr('href', data.url || '');
 
   // Edit tags button (mod only)
   $histItem.find('.edittags').on('click', function () {
-    if ($(this).hasClass("editing")) {
-      $(this).removeClass("editing");
-      $(this).closest('.pvbar').find('.tagPromptBox').remove();
+    var popoverEl = document.getElementById('tagEditorPopover');
+    var $pvbar = $(this).closest('.pvbar');
+    if (popoverEl.matches(':popover-open') && firetable.editingPvbar && firetable.editingPvbar.is($pvbar)) {
+      popoverEl.hidePopover();
     } else {
-      $(this).addClass("editing");
       firetable.actions.editTagsPrompt(
-        $(this).closest('.pvbar').attr('data-key'),
-        data.artist + " - " + data.title
+        $pvbar.attr('data-key'),
+        data.artist + " - " + data.title,
+        this
       );
     }
   });
@@ -117,6 +115,9 @@ function renderHistoryItem(data, $template, containerSel, artClass) {
 
   // Metadata
   $histItem.find('.histdj').text(data.dj);
+  $histItem.find('.hist-dj-avatar')
+    .css('background-image', 'url(' + firetable.utilities.avatarURL(data.djid || data.dj, data.dj, '40x40') + ')')
+    .attr('data-label', data.dj);
   $histItem.find('.histdate').text(firetable.utilities.format_date(data.when));
   $histItem.find('.histtime').text(firetable.utilities.format_time(data.when));
 
@@ -156,10 +157,10 @@ function renderHistoryItem(data, $template, containerSel, artClass) {
       firetable.stealTarget = { cid: btnCid, type: btnType, title: btnTitle };
       $btn.addClass('on');
 
-      $("#stealContain").css({
-        top: $btn.offset().top + $btn.outerHeight(),
-        left: $btn.offset().left - 16
-      }).show();
+      var stealContainEl = document.getElementById('stealContain');
+      stealContainEl.style.visibility = 'hidden';
+      $("#stealContain").show();
+      firetable.ui.positionPopover($btn[0], stealContainEl, document.getElementById('stealArrow'), 'left');
     });
   });
 
@@ -168,7 +169,30 @@ function renderHistoryItem(data, $template, containerSel, artClass) {
     $histItem.find('.' + artClass).css('background-image', 'url(' + data.img + ')');
   }
 
-  $histItem.prependTo(containerSel);
+  if (containerSel === "#thehistory") {
+    var dateKey = firetable.utilities.format_date(data.when);
+    var when = new Date(data.when);
+    var dateLabel = when.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    var $dayGroup = $('#thehistory .hist-day-group[data-date="' + dateKey + '"]');
+    if ($dayGroup.length === 0) {
+      $dayGroup = $(
+        '<div class="hist-day-group" data-date="' + dateKey + '">' +
+        '<div class="hist-day-header" role="button">' + dateLabel + '</div>' +
+        '<div class="hist-day-items"></div>' +
+        '</div>'
+      );
+      $dayGroup.prependTo('#thehistory');
+    }
+    var timeStr = firetable.utilities.format_time(data.when);
+    var $avatar = $histItem.find('.hist-dj-avatar').detach();
+    var $entry = $('<div class="hist-entry"></div>');
+    $('<span class="hist-timestamp">' + timeStr + '</span>').appendTo($entry);
+    $avatar.appendTo($entry);
+    $histItem.appendTo($entry);
+    $entry.prependTo($dayGroup.find('.hist-day-items'));
+  } else {
+    $histItem.prependTo(containerSel);
+  }
 }
 
 // ─── Room Event Binding ──────────────────────────────────────────────────────
@@ -190,13 +214,22 @@ firetable.ui.setupRoomEvents = function () {
 
   function applyHistoryFilter() {
     var q = ($("#histFilter").val() || "").toLowerCase().trim();
-    $("#thehistory .pvbar").each(function () {
-      var text = ($(this).find('.histlink').text() + " " + $(this).find('.histdj').text()).toLowerCase();
+    $("#thehistory .hist-entry").each(function () {
+      var $pvbar = $(this).find('.pvbar');
+      var text = ($pvbar.find('.histlink').text() + " " + $pvbar.find('.histdj').text()).toLowerCase();
       $(this).toggle(q.length === 0 || text.indexOf(q) !== -1);
+    });
+    $("#thehistory .hist-day-group").each(function () {
+      var hasVisible = $(this).find('.hist-entry:visible').length > 0;
+      $(this).toggle(!q.length || hasVisible);
     });
   }
 
   $(document).on('input.histfilter', '#histFilter', applyHistoryFilter);
+
+  $(document).on('click', '#thehistory .hist-day-header', function () {
+    $(this).closest('.hist-day-group').toggleClass('collapsed');
+  });
 
   ftapi.events.on('newHistory', function (data) {
     renderHistoryItem(data, $historyItem, "#thehistory", "histart");
@@ -270,9 +303,10 @@ firetable.ui.setupRoomEvents = function () {
 
     var doTheScrollThing = firetable.utilities.isChatPrettyMuchAtBottom();
     if (showPlaycount) {
-      $("#playCount").text(data.adamData.playcount + " plays");
+      var count = data.adamData.playcount;
+      $("#playCount").text(firetable.utilities.pluralize(count, "play"));
       $(".npmsg" + data.cid).last().find(".npmsg").html(
-        'DJ <strong>' + nicename + '</strong> started playing <strong>' + data.adamData.track_name + '</strong> by <strong>' + data.adamData.artist + '</strong><br/>This song has been played ' + data.adamData.playcount + ' times.'
+        'DJ <strong>' + nicename + '</strong> started playing <strong>' + data.adamData.track_name + '</strong> by <strong>' + data.adamData.artist + '</strong><br/>This song has been played ' + firetable.utilities.pluralize(count, "time") + '.'
       );
     } else {
       $("#playCount").text("");
@@ -313,7 +347,7 @@ firetable.ui.setupRoomEvents = function () {
       }
       if (firetable.tagUpdate.adamData.playcount > 0) {
         showPlaycount = true;
-        $("#playCount").text(firetable.tagUpdate.adamData.playcount + " plays");
+        $("#playCount").text(firetable.utilities.pluralize(firetable.tagUpdate.adamData.playcount, "play"));
       }
     }
 
@@ -401,7 +435,7 @@ firetable.ui.setupRoomEvents = function () {
         var doTheScrollThing = firetable.utilities.isChatPrettyMuchAtBottom();
         var npmsgHTML;
         if (showPlaycount) {
-      npmsgHTML = '<div class="newChat nowplayn npmsg' + data.cid + '"><div class="npmsg">DJ <strong>' + nicename + '</strong> started playing <strong>' + data.title + '</strong> by <strong>' + data.artist + '</strong><br/>This song has been played ' + firetable.tagUpdate.adamData.playcount + ' times.</div><span class="npmsg-fires"></span>';
+      npmsgHTML = '<div class="newChat nowplayn npmsg' + data.cid + '"><div class="npmsg">DJ <strong>' + nicename + '</strong> started playing <strong>' + data.title + '</strong> by <strong>' + data.artist + '</strong><br/>This song has been played ' + firetable.utilities.pluralize(firetable.tagUpdate.adamData.playcount, "time") + '.</div><span class="npmsg-fires"></span>';
         } else {
           npmsgHTML = '<div class="newChat nowplayn npmsg' + data.cid + '"><div class="npmsg">DJ <strong>' + nicename + '</strong> started playing <strong>' + data.title + '</strong> by <strong>' + data.artist + '</strong></div><span class="npmsg-fires"></span>';
         }
@@ -471,7 +505,7 @@ firetable.ui.setupRoomEvents = function () {
         if (data.hasOwnProperty(key)) {
           cnt = countr;
           var removeMe = data[key].removeAfter ? "departure_board" : "";
-          html += '<div class="prson"><div class="botson" style="background-image:url(' +
+          html += '<div class="prson"><div class="ft-avatar" style="background-image:url(' +
             firetable.utilities.avatarURL(data[key].id, data[key].name) +
             ');"></div><span class="prsnName">' + countr + '. ' + data[key].name +
             ' <span class="removemeIcon material-icons"> ' + removeMe + ' </span></span></div>';
@@ -516,14 +550,14 @@ firetable.ui.setupRoomEvents = function () {
       }
       // Fill empty spots
       if (countr < 4) {
-        html += '<div class="spot empty"><div class="djplaque"><button class="butt graybutt small addmeButt" role="button">Join deck</button></div></div>';
+        html += '<div class="spot empty"><div class="djplaque"><button class="butt graybutt small addmeButt" role="button">Step up</button></div></div>';
         countr++;
         for (var i = countr; i < 4; i++) {
           html += '<div class="spot empty"><div class="djplaque">&nbsp;</div></div>';
         }
       }
     } else {
-      html += '<div class="spot empty"><div class="djplaque"><button class="butt graybutt small addmeButt" role="button">Join deck</button></div></div>';
+      html += '<div class="spot empty"><div class="djplaque"><button class="butt graybutt small addmeButt" role="button">Step up</button></div></div>';
       for (var i = 0; i < 3; i++) {
         html += '<div class="spot empty"><div class="djplaque">&nbsp;</div></div>';
       }
@@ -559,6 +593,13 @@ firetable.ui.setupRoomEvents = function () {
         $("#avtr" + i).removeClass("animate");
         $("#djthing" + i).removeClass("djActive");
       }
+    }
+  });
+
+  // Re-render deck when user data arrives (mod status affects button visibility)
+  ftapi.events.on("usersChanged", function () {
+    if (firetable.tableData !== undefined) {
+      ftapi.events.emit("tableChanged", firetable.tableData);
     }
   });
 
@@ -614,7 +655,7 @@ firetable.ui.setupRoomEvents = function () {
     $('.customColorStyles').remove();
     $("head").append(
       "<style class='customColorStyles'>:root { --color-accent: " + firetable.color + "; } " +
-      ":focus { box-shadow: 0 0 0.5rem " + firetable.color + "; } " +
+      ":focus-visible { box-shadow: 0 0 0.5rem " + firetable.color + "; } " +
       ".accent:not(#fire), .butt:not(.graybutt):not(#fire), .ui-slider-horizontal .ui-slider-range-min { background-color: " + firetable.color + "; color: " + firetable.countcolor + "; } " +
       "#fire { background-color: " + firetable.color + "; } " +
       ".iconbutt.on { color: " + firetable.color + "; border-bottom: 1px solid " + firetable.color + "66; box-shadow: inset 0 0 1rem " + firetable.color + "33; } " +

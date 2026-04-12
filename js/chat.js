@@ -187,7 +187,7 @@ firetable.ui.setupChatEvents = function () {
       // ── New message block (different user or @-mention break) ──
       var $chatthing = $chatTemplate.clone();
       $chatthing.attr('id', "chat" + chatData.chatID);
-      $chatthing.find('.botson').css(
+      $chatthing.find('.ft-avatar').css(
         'background-image',
         "url(" + firetable.utilities.avatarURL(chatData.id, namebo) + ")"
       );
@@ -201,7 +201,7 @@ firetable.ui.setupChatEvents = function () {
       $chatthing.find(".chatName").text(namebo);
 
       // Click-to-@ on avatar and name
-      firetable.utilities.chatAt($chatthing.find('.botson'));
+      firetable.utilities.chatAt($chatthing.find('.ft-avatar'));
       firetable.utilities.chatAt($chatthing.find('.chatName'));
       twemoji.parse($chatthing.find(".chatText")[0]);
       $chatthing.appendTo("#chats");

@@ -39,6 +39,8 @@ firetable.actions.logIn = function (email, password) {
 
 /** Sign out. */
 firetable.actions.logOut = function () {
+  $("#overlay").removeClass('show');
+  $(".modalThing").removeClass('show');
   ftapi.actions.logOut();
   firetable.debug && console.log("logout");
 };
@@ -72,7 +74,7 @@ firetable.actions.showLoginScreen = function () {
   $("#grab").css("display", "none");
 
   if (firetable.loginForm && !$("#login").html()) {
-    $("#mainGrid").append('<div id="login">' + firetable.loginForm + '</div>');
+    $("#mainGrid").append('<div id="login" class="scroll-view">' + firetable.loginForm + '</div>');
     firetable.ui.loginEventsInit();
   }
 };
@@ -102,7 +104,7 @@ firetable.actions.loggedIn = function (user) {
     displayName = ftapi.users[ftapi.uid].username;
   }
   $("#loggedInName").text(displayName);
-  $("#loggedInUser .botson").css("background-image", "url(" + firetable.utilities.avatarURL(ftapi.uid, displayName) + ")");
+  $("#loggedInUser .ft-avatar").css("background-image", "url(" + firetable.utilities.avatarURL(ftapi.uid, displayName) + ")");
   $("#avatarStylePicker").val(firetable.avatarStyle);
 
   // Load all playlists into the picker
@@ -340,7 +342,7 @@ function buildUserHTML(data) {
   if (data.supermod) { roleicon = "local_police"; roleiconclass = "material-icons"; }
   if (data.hostbot) { roleicon = "smart_toy"; roleiconclass = "material-icons"; }
 
-  return '<div class="botson" style="background-image:url(' + firetable.utilities.avatarURL(data.userid, data.username, null, data.avatarStyle) + ');">' +
+  return '<div class="ft-avatar" style="background-image:url(' + firetable.utilities.avatarURL(data.userid, data.username, null, data.avatarStyle) + ');">' +
          '<span class="material-icons blockon">' + blockcon + '</span>' +
          '</div>' +
          '<span class="' + roleiconclass + ' prsnRole">' + roleicon + '</span>' +
@@ -397,7 +399,7 @@ firetable.ui.setupUserEvents = function () {
       if ($("#loggedInName").text() === ftapi.uid) {
         $("#loggedInName").text(ownUsername);
       }
-      $("#loggedInUser .botson").css("background-image", "url(" + firetable.utilities.avatarURL(ftapi.uid, ownUsername) + ")");
+      $("#loggedInUser .ft-avatar").css("background-image", "url(" + firetable.utilities.avatarURL(ftapi.uid, ownUsername) + ")");
     }
     // Show supermod controls if applicable
     if (ftapi.uid && ftapi.users[ftapi.uid] && ftapi.users[ftapi.uid].supermod) {
