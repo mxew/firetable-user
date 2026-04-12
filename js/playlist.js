@@ -417,6 +417,12 @@ firetable.ui.setupPlaylistEvents = function () {
             .attr("data-type", thisone.type)
             .attr("data-cid", thisone.cid);
 
+      // Album art thumbnail
+      var artUrl = thisone.type === MEDIA_YOUTUBE
+        ? 'https://i.ytimg.com/vi/' + thisone.cid + '/mqdefault.jpg'
+        : '';
+      if (artUrl) $newli.find('.q-art').css('background-image', 'url(' + artUrl + ')');
+
       // Preview button
       $newli.find('.previewicon').attr('id', "pv" + key).on('click', function () {
         firetable.actions.pview(
@@ -474,6 +480,27 @@ firetable.ui.setupPlaylistEvents = function () {
         firetable.actions.deleteSong($(this).closest('.pvbar').attr('data-key'));
       });
 
+      // Edit tags button
+      $newli.find('.edittags').on('click', function () {
+        if ($(this).hasClass("editing")) {
+          $(this).removeClass("editing");
+          $(this).closest('.pvbar').find('.tagPromptBox').remove();
+        } else {
+          $(this).addClass("editing");
+          firetable.actions.editTagsPrompt(
+            $(this).closest('.pvbar').attr('data-key'),
+            $(this).closest('.pvbar').find('.listwords').text()
+          );
+        }
+      });
+
+      // Close editor button
+      $newli.find('.closeeditor').on('click', function () {
+        $(this).closest('.pvbar').removeClass('editing').find('.tagPromptBox').remove();
+      });
+
+      if (!ftapi.isMod) $newli.find('.edittags, .closeeditor').hide();
+
       // Add-to-playlist button
       $newli.find('.histeal').on('click', function () {
         var $btn = $(this);
@@ -507,10 +534,10 @@ firetable.ui.setupPlaylistEvents = function () {
           firetable.stealSourceBtn = $btn;
           firetable.stealTarget = { cid: btnCid, type: btnType, title: btnTitle };
           $btn.addClass('on');
-          $("#stealContain").css({
-            top: $btn.offset().top + $btn.outerHeight(),
-            left: $btn.offset().left - 16
-          }).show();
+          var stealContainEl = document.getElementById('stealContain');
+          stealContainEl.style.visibility = 'hidden';
+          $("#stealContain").show();
+          firetable.ui.positionPopover($btn[0], stealContainEl, document.getElementById('stealArrow'), 'left');
         });
       });
 
@@ -653,7 +680,7 @@ firetable.ui.setupPlaylistEvents = function () {
         $(this).closest('.pvbar').attr('data-type'),
         songCid, val, histID
       );
-      $(this).closest('.editing').removeClass('editing').next('.tagPromptBox').remove();
+      $(this).closest('.pvbar').removeClass('editing').find('.tagPromptBox').remove();
     }
   });
 };

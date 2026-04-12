@@ -156,10 +156,10 @@ function renderHistoryItem(data, $template, containerSel, artClass) {
       firetable.stealTarget = { cid: btnCid, type: btnType, title: btnTitle };
       $btn.addClass('on');
 
-      $("#stealContain").css({
-        top: $btn.offset().top + $btn.outerHeight(),
-        left: $btn.offset().left - 16
-      }).show();
+      var stealContainEl = document.getElementById('stealContain');
+      stealContainEl.style.visibility = 'hidden';
+      $("#stealContain").show();
+      firetable.ui.positionPopover($btn[0], stealContainEl, document.getElementById('stealArrow'), 'left');
     });
   });
 
@@ -516,14 +516,14 @@ firetable.ui.setupRoomEvents = function () {
       }
       // Fill empty spots
       if (countr < 4) {
-        html += '<div class="spot empty"><div class="djplaque"><button class="butt graybutt small addmeButt" role="button">Join deck</button></div></div>';
+        html += '<div class="spot empty"><div class="djplaque"><button class="butt graybutt small addmeButt" role="button">Step up</button></div></div>';
         countr++;
         for (var i = countr; i < 4; i++) {
           html += '<div class="spot empty"><div class="djplaque">&nbsp;</div></div>';
         }
       }
     } else {
-      html += '<div class="spot empty"><div class="djplaque"><button class="butt graybutt small addmeButt" role="button">Join deck</button></div></div>';
+      html += '<div class="spot empty"><div class="djplaque"><button class="butt graybutt small addmeButt" role="button">Step up</button></div></div>';
       for (var i = 0; i < 3; i++) {
         html += '<div class="spot empty"><div class="djplaque">&nbsp;</div></div>';
       }
@@ -614,7 +614,7 @@ firetable.ui.setupRoomEvents = function () {
     $('.customColorStyles').remove();
     $("head").append(
       "<style class='customColorStyles'>:root { --color-accent: " + firetable.color + "; } " +
-      ":focus { box-shadow: 0 0 0.5rem " + firetable.color + "; } " +
+      ":focus-visible { box-shadow: 0 0 0.5rem " + firetable.color + "; } " +
       ".accent:not(#fire), .butt:not(.graybutt):not(#fire), .ui-slider-horizontal .ui-slider-range-min { background-color: " + firetable.color + "; color: " + firetable.countcolor + "; } " +
       "#fire { background-color: " + firetable.color + "; } " +
       ".iconbutt.on { color: " + firetable.color + "; border-bottom: 1px solid " + firetable.color + "66; box-shadow: inset 0 0 1rem " + firetable.color + "33; } " +

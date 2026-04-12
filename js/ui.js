@@ -15,6 +15,54 @@
 
 // ─── Player Controls Visibility ──────────────────────────────────────────────
 
+// ─── Floating UI Popover Positioning ─────────────────────────────────────────
+firetable.ui.positionPopover = function (anchorEl, floatingEl, arrowEl, preferredPlacement) {
+  var ARROW_SIZE = 8; // px — must match .ft-arrow width/height in CSS
+
+  // Reset to known origin before computePosition measures the element
+  floatingEl.style.top  = '0';
+  floatingEl.style.left = '0';
+
+  // When a preferred placement is given, use flip() to respect it but fall
+  // back to the opposite side if there's no space.
+  // Otherwise use autoPlacement() to always pick the side with most space.
+  var options = {
+    strategy: 'fixed',
+    middleware: [
+      FloatingUIDOM.offset(ARROW_SIZE),
+      preferredPlacement
+        ? FloatingUIDOM.flip()
+        : FloatingUIDOM.autoPlacement({ padding: 8 }),
+      FloatingUIDOM.shift({ padding: 8 }),
+      arrowEl ? FloatingUIDOM.arrow({ element: arrowEl, padding: 8 }) : null
+    ]
+  };
+  if (preferredPlacement) {
+    options.placement = preferredPlacement;
+  }
+
+  FloatingUIDOM.computePosition(anchorEl, floatingEl, options).then(function (pos) {
+    floatingEl.style.left = pos.x + 'px';
+    floatingEl.style.top  = pos.y + 'px';
+
+    if (arrowEl && pos.middlewareData.arrow) {
+      var ax = pos.middlewareData.arrow.x;
+      var ay = pos.middlewareData.arrow.y;
+      // staticSide is the edge the arrow pokes out of — opposite the placement side
+      var staticSide = { top: 'bottom', bottom: 'top', left: 'right', right: 'left' }[pos.placement.split('-')[0]];
+      Object.assign(arrowEl.style, {
+        left:   ax != null ? ax + 'px' : '',
+        top:    ay != null ? ay + 'px' : '',
+        right:  '',
+        bottom: '',
+        [staticSide]: -(ARROW_SIZE / 2) + 'px'
+      });
+    }
+
+    floatingEl.style.visibility = 'visible';
+  });
+};
+
 /**
  * Hide player/preview controls (when media playback is disabled).
  */
@@ -230,13 +278,13 @@ firetable.ui.initSettings = function () {
 // ── Queue view navigation ──
 firetable.ui.showView = function (name, push) {
   if (push !== false) {
-    var base = location.pathname.replace(/\/(playlists|history|cards)\/?$/, '/').replace(/\/$/, '') + '/';
+    var base = location.pathname.replace(/\/(playlists|history|cards|discover)\/?$/, '/').replace(/\/$/, '') + '/';
     history.pushState({ view: name }, '', base + name);
   }
-  var headerBtns = { playlists: '#playlists', history: '#history', cards: '#cardcase' };
-  var miniTabs   = { playlists: '#mm-playlists', history: '#mm-history', cards: '#mm-cards' };
+  var headerBtns = { playlists: '#playlists', history: '#history', cards: '#cardcase', discover: '#discover-nav' };
+  var miniTabs   = { playlists: '#mm-playlists', history: '#mm-history', cards: '#mm-cards', discover: '#mm-discover' };
   // Drive visibility via CSS class, not inline styles, so media-query rules always win
-  $('#mainGrid').removeClass('view-playlists view-history view-cards').addClass('view-' + name);
+  $('#mainGrid').removeClass('view-playlists view-history view-cards view-discover').addClass('view-' + name);
   $.each(headerBtns, function (key, sel) {
     $(sel).toggleClass('on', key === name);
   });
@@ -254,7 +302,7 @@ firetable.ui.syncNavState = function () {
   if (isWide) {
     // At 640px+: mini-nav only shows People/Chat.
     // Ensure exactly one of those two tabs is active.
-    $('#mm-playlists, #mm-history, #mm-cards').removeClass('on');
+    $('#mm-playlists, #mm-history, #mm-cards, #mm-discover').removeClass('on');
     var isMMusrs = $grid.hasClass('mmusrs');
     $('#minimodeoptions #mmusrs').toggleClass('on', isMMusrs);
     $('#minimodeoptions #mmchat').toggleClass('on', !isMMusrs);
@@ -266,9 +314,10 @@ firetable.ui.syncNavState = function () {
     } else if ($grid.hasClass('mmchat')) {
       $('#mmchat').addClass('on');
     } else if ($grid.hasClass('mmqueue')) {
-      var activeTab = $grid.hasClass('view-history') ? 'mm-history'
-                    : $grid.hasClass('view-cards')   ? 'mm-cards'
-                    :                                  'mm-playlists';
+      var activeTab = $grid.hasClass('view-history')  ? 'mm-history'
+                    : $grid.hasClass('view-cards')    ? 'mm-cards'
+                    : $grid.hasClass('view-discover') ? 'mm-discover'
+                    :                                   'mm-playlists';
       $('#' + activeTab).addClass('on');
     } else {
       // No matching layout class — default to people.
@@ -279,7 +328,7 @@ firetable.ui.syncNavState = function () {
 };
 
 firetable.ui.getViewFromPath = function () {
-  var m = location.pathname.match(/\/(playlists|history|cards)\/?$/);
+  var m = location.pathname.match(/\/(playlists|history|cards|discover)\/?$/);
   return (m && m[1]) || 'playlists';
 };
 
@@ -292,22 +341,101 @@ firetable.ui.updateScreenBtn = function (val) {
   $('#screenControl').toggleClass('on', isOn);
 };
 
+// ─── Floating UI Tooltip ─────────────────────────────────────────────────────
+firetable.ui.tooltip = (function () {
+  var tipEl;
+
+  function show(anchor, text) {
+    tipEl.textContent = text;
+    tipEl.style.visibility = 'hidden';
+    tipEl.classList.add('is-visible');
+    FloatingUIDOM.computePosition(anchor, tipEl, {
+      placement: 'top',
+      strategy: 'fixed',
+      middleware: [
+        FloatingUIDOM.offset(6),
+        FloatingUIDOM.flip(),
+        FloatingUIDOM.shift({ padding: 8 })
+      ]
+    }).then(function (pos) {
+      tipEl.style.left = pos.x + 'px';
+      tipEl.style.top  = pos.y + 'px';
+      tipEl.style.visibility = 'visible';
+    });
+  }
+
+  function hide() {
+    tipEl.classList.remove('is-visible');
+  }
+
+  function bind() {
+    tipEl = document.getElementById('ft-tooltip');
+
+    // ── Deck: DJ name on plaque hover ──
+    $(document).on('mouseenter.ft-tooltip', '#deck .djname', function () {
+      var playcount = $(this).siblings('.playcount').text().trim();
+      if (playcount) show(this, playcount);
+    }).on('mouseleave.ft-tooltip', '#deck .djname', hide);
+
+    // ── Deck icon buttons + departure indicator: title-based ──
+    $('#deck').on('mouseenter.ft-tooltip', '[title]', function () {
+      var $el = $(this), text = $el.attr('title');
+      $el.attr('data-ft-title', text).removeAttr('title');
+      show(this, text);
+    }).on('mouseleave.ft-tooltip', '[data-ft-title]', function () {
+      var $el = $(this);
+      $el.attr('title', $el.attr('data-ft-title')).removeAttr('data-ft-title');
+      hide();
+    });
+
+    // ── Themebox buttons ──
+    $('#themebox').on('mouseenter.ft-tooltip', '[title]', function () {
+      var $el = $(this), text = $el.attr('title');
+      $el.attr('data-ft-title', text).removeAttr('title');
+      show(this, text);
+    }).on('mouseleave.ft-tooltip', '[data-ft-title]', function () {
+      var $el = $(this);
+      $el.attr('title', $el.attr('data-ft-title')).removeAttr('data-ft-title');
+      hide();
+    });
+
+    // ── Queue list: overflow-only title tooltip for track names ──
+    $('#queuelist').on('mouseenter.ft-tooltip', '.listwords', function () {
+      if (this.scrollWidth > this.offsetWidth) show(this, $(this).text().trim());
+    }).on('mouseleave.ft-tooltip', '.listwords', hide);
+
+    // ── Queue list: title-based tooltips for song action buttons ──
+    $('#queuelist').on('mouseenter.ft-tooltip', '[title]', function () {
+      var $el = $(this), text = $el.attr('title');
+      $el.attr('data-ft-title', text).removeAttr('title');
+      show(this, text);
+    }).on('mouseleave.ft-tooltip', '[data-ft-title]', function () {
+      var $el = $(this);
+      $el.attr('title', $el.attr('data-ft-title')).removeAttr('data-ft-title');
+      hide();
+    });
+  }
+
+  return { bind: bind, show: show, hide: hide };
+})();
+
 firetable.ui.setupMiscEvents = function () {
 
-  // ── Mini mode discover/login tabs ──
+  // ── Floating UI tooltips ──
+  firetable.ui.tooltip.bind();
+
+  // ── Mini mode discover/login tabs (pre-login only) ──
   $("#minidiscover").bind("click", function () {
-    $("#discover").removeClass("miniLoginInvisible");
-    $("#login").addClass("miniLoginInvisible");
+    firetable.ui.showView('discover');
   });
   $("#minijoin").bind("click", function () {
-    $("#discover").addClass("miniLoginInvisible");
-    $("#login").removeClass("miniLoginInvisible");
+    firetable.ui.showView('playlists');
   });
 
   // ── Mini-mode tabs ──
   $("#minimodeoptions .tab").bind("click", function () {
     var tabId = $(this).attr('id');
-    var viewTabs = ['mm-playlists', 'mm-history', 'mm-cards'];
+    var viewTabs = ['mm-playlists', 'mm-history', 'mm-cards', 'mm-discover'];
     var gridClass = (viewTabs.indexOf(tabId) !== -1) ? 'mmqueue' : tabId;
     // Only swap the layout class (mmusrs/mmchat/mmqueue); preserve view-* class
     // so the CSS view-class rules work correctly across breakpoints
@@ -320,6 +448,8 @@ firetable.ui.setupMiscEvents = function () {
       firetable.ui.showView('history');
     } else if (tabId === 'mm-cards') {
       firetable.ui.showView('cards');
+    } else if (tabId === 'mm-discover') {
+      firetable.ui.showView('discover');
     }
   });
 
@@ -343,10 +473,10 @@ firetable.ui.setupMiscEvents = function () {
           }
         }
         $('#grab').addClass('on');
-        $("#stealContain").css({
-          'top': $('#grab').offset().top + $('#grab').height(),
-          'left': $('#grab').offset().left - 16
-        }).show();
+        var stealContainEl = document.getElementById('stealContain');
+        stealContainEl.style.visibility = 'hidden';
+        $("#stealContain").show();
+        firetable.ui.positionPopover(document.getElementById('grab'), stealContainEl, document.getElementById('stealArrow'));
       });
     } else {
       $('#grab').removeClass('on');
@@ -449,6 +579,9 @@ firetable.ui.setupMiscEvents = function () {
 
   // ── Card Case panel ──
   $("#cardcase").bind("click", function () { firetable.ui.showView('cards'); });
+
+  // ── Discover / Fresh Produce panel ──
+  $("#discover-nav").bind("click", function () { firetable.ui.showView('discover'); });
 
   // ── Emoji Picker ──
   $("#pickerNav").on("click", "span", function () {

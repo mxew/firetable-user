@@ -49,12 +49,24 @@ firetable.init = function () {
     { cls: "soundcloud", url: ftconfigs.soundcloudURL }
   ];
   socialLinks.forEach(function (link) {
-    if (link.url) {
-      $(".sociallogo." + link.cls)
-        .attr("href", link.url)
-        .css("display", "inline-block");
-    }
+    if (link.url) $(".sociallogo." + link.cls).attr("href", link.url);
   });
+
+  // Social popover: position anchored to trigger, swap icon on toggle
+  var socialPopoverEl = document.getElementById('socialPopover');
+  if (socialPopoverEl) {
+    socialPopoverEl.addEventListener('toggle', function (e) {
+      var btn = document.getElementById('socialTrigger');
+      var icon = btn && btn.querySelector('.material-icons');
+      if (e.newState === 'open') {
+        if (icon) icon.textContent = 'close';
+        socialPopoverEl.style.visibility = 'hidden';
+        firetable.ui.positionPopover(btn, socialPopoverEl, document.getElementById('socialArrow'));
+      } else {
+        if (icon) icon.textContent = 'share';
+      }
+    });
+  }
 
   if (ftconfigs.logoImage) {
     $("#roomlogo").css("background-image", "url(" + ftconfigs.logoImage + ")");
@@ -75,10 +87,6 @@ firetable.init = function () {
     $('#playerArea, #scScreen')
       .width($('#djStage').outerWidth())
       .height($('#djStage').outerHeight());
-    $("#stealContain").css({
-      'top': $('#grab').offset().top + $('#grab').height(),
-      'left': $('#grab').offset().left - 16
-    });
     setup(); // Re-create the p5.js canvas at the new size
   }, 500));
 
