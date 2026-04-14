@@ -393,6 +393,35 @@ firetable.ui.setupUserEvents = function () {
   });
 
   ftapi.events.on("usersChanged", function (okdata) {
+    // Rebuild the user list sections from scratch — handles the timing case
+    // where userJoined fires while #appShell is detached (login screen).
+    $("#usersBot, #usersSuper, #usersMod, #usersRegular").empty();
+    if (okdata) {
+      // Track which IDs are on the waitlist so we skip them
+      var waitlistIds = {};
+      if (firetable.waitlistData) {
+        for (var wk in firetable.waitlistData) {
+          if (firetable.waitlistData.hasOwnProperty(wk)) {
+            waitlistIds[firetable.waitlistData[wk].id] = true;
+          }
+        }
+      }
+      for (var uid in okdata) {
+        if (!okdata.hasOwnProperty(uid)) continue;
+        var data = okdata[uid];
+        data.userid = uid;
+        if (ftapi.blockedUsers && ftapi.blockedUsers[uid]) data.blocked = true;
+        if (waitlistIds[uid]) continue;
+        var isIdle = (data.idle && data.idle.isIdle && !data.hostbot) ? "idle" : "";
+        var $el = $("<div></div>")
+          .addClass("prson" + (data.blocked ? " blockd" : "") + (isIdle ? " " + isIdle : ""))
+          .attr("id", "user" + uid)
+          .html(buildUserHTML(data));
+        firetable.utilities.chatAt($el);
+        $(getUserDestination(data)).append($el);
+      }
+    }
+
     // Update own display name and avatar if it was showing UID
     if (ftapi.uid && ftapi.users[ftapi.uid] && ftapi.users[ftapi.uid].username) {
       var ownUsername = ftapi.users[ftapi.uid].username;
@@ -408,7 +437,7 @@ firetable.ui.setupUserEvents = function () {
       }
       $("#modTab").show();
     }
-    var count = Object.keys(okdata).length;
+    var count = okdata ? Object.keys(okdata).length : 0;
     $("#label1 .count").text(" (" + count + ")");
     firetable.debug && console.log('users:', okdata);
   });
