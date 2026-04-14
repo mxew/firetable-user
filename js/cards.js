@@ -16,6 +16,12 @@ firetable.actions = firetable.actions || {};
 firetable.actions.cardCase = function () {
   $("#cardsMain").html("");
   ftapi.lookup.cardCollection(function (data) {
+    if (!data) {
+      var $empty = $('<p class="cardsEmpty"><span class="emoji">📭</span><br />You don\'t have any cards yet.</p>');
+      $("#cardsMain").html($empty);
+      twemoji.parse($("#cardsMain")[0]);
+      return;
+    }
     for (var key in data) {
       if (!data.hasOwnProperty(key)) continue;
       var childData = data[key];
