@@ -40,7 +40,7 @@
 				<i class="material-symbols-outlined">share</i>
 			</button>
 			<a id="roomInfo" class="header_icon" data-label="About" aria-label="About" target="_blank" href="about"><i class="material-symbols-outlined">&#xE887;</i></a>
-			<div id="loggedInUser" class="openModal" data-modal="accountSettingsBox" data-tab="profile-tab">
+			<div id="loggedInUser" class="openModal header_icon" data-modal="accountSettingsBox" data-tab="profile-tab" data-label="Profile & Settings" aria-label="Profile & Settings">
 				<div class="ft-avatar"></div>
 			</div>
 			<div id="reconnecting">Reconnecting...</div>
@@ -488,6 +488,7 @@
 					Change your username to some other thing...<br /><br />
 					<input type="text" placeholder="Change Username" id="changeUsername" />
 					<div class="responseBox" id="usernameResponse"></div>
+					<div id="avatarPickerSection">
 					<br />
 					Avatar:<br /><br />
 					<select id="avatarStylePicker">
@@ -513,6 +514,7 @@
 						</optgroup>
 					</select>
 					<br /><br />
+					</div><!-- /#avatarPickerSection -->
 				</div>
 				<div id="settings-tab" class="tabPanel active">
 					Set all of the things here on the table.

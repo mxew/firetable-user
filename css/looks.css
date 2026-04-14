@@ -2750,6 +2750,10 @@ img.emoji,
     border-radius: 0;
 }
 
+#avatarPickerSection {
+    display: none;
+}
+
 .tabPanel {
     display: none;
     flex-direction: column;
