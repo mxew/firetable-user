@@ -15,6 +15,101 @@
 
 firetable.actions = firetable.actions || {};
 
+firetable.actions.syncFireReactionButtons = function () {
+  var userHasFire = !!(ftapi.uid && firetable.fireReactors && firetable.fireReactors[ftapi.uid]);
+  $("#fire").toggleClass("on", userHasFire);
+  if (userHasFire) {
+    $("#cloud_with_rain").removeClass("on");
+  }
+};
+
+firetable.actions.updateFireReactionDisplay = function () {
+  if (!firetable.song) return;
+
+  var count = firetable.fireCount || 0;
+  var $fires = $(".npmsg" + firetable.song.cid).last().find(".npmsg-fires");
+
+  firetable.actions.syncFireReactionButtons();
+
+  if (!count) {
+    if ($fires.length) {
+      $fires.text("").removeAttr("style");
+    }
+    if (typeof window.firetableSetFyreIntensity === "function") {
+      window.firetableSetFyreIntensity(0);
+    }
+    return;
+  }
+
+  var size = Math.min(10 + ((count - 1) * 5), 46);
+  if ($fires.length) {
+    $fires.text("🔥").css("font-size", size + "px");
+  }
+
+  if (typeof window.firetableIgniteFyre === "function") {
+    window.firetableIgniteFyre(count);
+  }
+};
+
+firetable.actions.processFireReactionMessage = function (chatData) {
+  var rawTxt = firetable.ui.strip(chatData.txt || "");
+  var isFire = rawTxt === ":fire:" || rawTxt === "🔥";
+  var isFireOff = rawTxt === ":fire_off:";
+  var isRain = rawTxt === ":cloud_with_rain:" || rawTxt === "🌧";
+
+  if (!isFire && !isFireOff && !isRain) return false;
+
+  if (!firetable.song || !firetable.song.started) {
+    firetable.pendingFireReactions.push(chatData);
+    return true;
+  }
+
+  if (chatData.time < firetable.song.started) {
+    return true;
+  }
+
+  if (isRain) {
+    firetable.fireReactors = {};
+    firetable.fireCount = 0;
+    firetable.actions.updateFireReactionDisplay();
+    $("#cloud_with_rain").addClass("on");
+    return true;
+  }
+
+  if (isFireOff) {
+    if (firetable.fireReactors[chatData.id]) {
+      delete firetable.fireReactors[chatData.id];
+      firetable.fireCount = Math.max(0, firetable.fireCount - 1);
+      firetable.actions.updateFireReactionDisplay();
+    } else {
+      firetable.actions.syncFireReactionButtons();
+    }
+    return true;
+  }
+
+  if (!firetable.fireReactors[chatData.id]) {
+    firetable.fireReactors[chatData.id] = true;
+    firetable.fireCount += 1;
+    firetable.actions.updateFireReactionDisplay();
+  } else {
+    firetable.actions.syncFireReactionButtons();
+  }
+  return true;
+};
+
+firetable.actions.replayPendingFireReactions = function () {
+  if (!firetable.song || !firetable.pendingFireReactions.length) return;
+
+  var pending = firetable.pendingFireReactions.slice().sort(function (a, b) {
+    return (a.time || 0) - (b.time || 0);
+  });
+  firetable.pendingFireReactions = [];
+
+  pending.forEach(function (chatData) {
+    firetable.actions.processFireReactionMessage(chatData);
+  });
+};
+
 /**
  * Display a local-only response in chat (not sent to server).
  * Used for command feedback like block/unblock confirmations.
@@ -116,6 +211,11 @@ firetable.ui.setupChatEvents = function () {
   // ── Incoming Chat Messages ──
   ftapi.events.on("newChat", function (chatData) {
     if (chatData.botCmd) return;
+
+    if (firetable.actions.processFireReactionMessage(chatData)) {
+      return;
+    }
+
     var namebo = chatData.id;
     var utitle = "";
     var atBottom = firetable.utilities.isChatPrettyMuchAtBottom();
@@ -419,17 +519,11 @@ firetable.ui.setupChatEvents = function () {
 
   // ── Fire / Rain reaction buttons ──
   $("#fire").bind("click", function () {
-    if (firetable.song) {
-      var $fires = $(".npmsg" + firetable.song.cid).last().find(".npmsg-fires");
-      if ($fires.text() === "") {
-        $fires.text("🔥").css("font-size", "10px");
-      } else {
-        var currentSize = parseInt($fires.css("font-size")) || 10;
-        $fires.css("font-size", (currentSize + 3) + "px");
-      }
-      if (firetable.utilities.isChatPrettyMuchAtBottom()) firetable.utilities.scrollToBottom();
+    if (ftapi.uid && firetable.fireReactors[ftapi.uid]) {
+      ftapi.actions.sendChat(":fire_off:");
+    } else {
+      ftapi.actions.sendChat(":fire:");
     }
-    $("#fire").addClass("on");
   });
   $("#cloud_with_rain").bind("click", function () {
     ftapi.actions.sendChat(":cloud_with_rain:");
