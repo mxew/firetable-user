@@ -48,8 +48,8 @@ function onPlayerReady(event) {
   firetable.ytLoaded = true;
 
   // ── Restore volume ──
-  var vol = localStorage[STORAGE.volume];
-  if (typeof vol === "undefined") {
+  var vol = parseInt(localStorage[STORAGE.volume], 10);
+  if (isNaN(vol)) {
     vol = DEFAULT_VOLUME;
     localStorage[STORAGE.volume] = DEFAULT_VOLUME;
   }

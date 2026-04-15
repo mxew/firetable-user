@@ -405,7 +405,12 @@ firetable.utilities = {
       if (firetable.ytLoaded) player.stopVideo();
       firetable.scSeek = timeSince;
       if (!firetable.disableMediaPlayback) {
-        firetable.scwidget.load(SC_API_TRACK_URL + data.cid, { auto_play: true });
+        firetable.scwidget.load(SC_API_TRACK_URL + data.cid, {
+          auto_play: true,
+          callback: function () {
+            firetable.scwidget.play();
+          }
+        });
       }
       if (opts.forceVolume) {
         var vol = $("#slider").slider("value");

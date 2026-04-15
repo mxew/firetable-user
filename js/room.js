@@ -203,6 +203,36 @@ function renderHistoryItem(data, $template, containerSel, artClass) {
  */
 firetable.ui.setupRoomEvents = function () {
 
+  function positionFyreAtActiveDJ() {
+    var $fyre = $("#fyre");
+    var $stage = $("#djStage");
+    if (!$fyre.length || !$stage.length) return;
+
+    var $activeSpot = $("#deck .spot").eq(firetable.playdex);
+    if (!$activeSpot.length || $activeSpot.hasClass("empty")) {
+      $fyre.hide();
+      return;
+    }
+
+    var stageRect = $stage[0].getBoundingClientRect();
+    var spotRect = $activeSpot[0].getBoundingClientRect();
+    var centerX = spotRect.left - stageRect.left + (spotRect.width / 2);
+    var width = Math.max(96, Math.min(spotRect.width * 1.35, stageRect.width * 0.45));
+    var height = Math.max(120, Math.min(spotRect.width * 2.1, stageRect.height * 0.9));
+
+    $fyre.css({
+      left: centerX + "px",
+      width: width + "px",
+      height: height + "px"
+    }).show();
+
+    if (firetable.fyreStage && typeof firetable.fyreStage.onResize === "function") {
+      firetable.fyreStage.onResize();
+    }
+  }
+
+  $(window).off('resize.fyrePosition').on('resize.fyrePosition', positionFyreAtActiveDJ);
+
   // ── Discover (Recently Played by Others) ──
   var $discoverItem = $('#thediscovers .pvbar').remove();
   ftapi.events.on('newProduce', function (data) {
@@ -319,6 +349,11 @@ firetable.ui.setupRoomEvents = function () {
 
   // ── New Song ──
   ftapi.events.on('newSong', function (data) {
+    firetable.fireCount = 0;
+    firetable.fireReactors = {};
+    if (typeof window.firetableSetFyreIntensity === 'function') {
+      window.firetableSetFyreIntensity(0);
+    }
     $("#playCount, #lastPlay, #firstPlay").text("");
     window.dispatchEvent(new Event('resize'));
     $("#cloud_with_rain, #fire").removeClass("on");
@@ -413,9 +448,11 @@ firetable.ui.setupRoomEvents = function () {
             auto_play: true,
             single_active: false,
             callback: function () {
-              var vol = localStorage[STORAGE.volume];
+              var vol = parseInt(localStorage[STORAGE.volume], 10) || DEFAULT_VOLUME;
               player.setVolume(vol);
               firetable.scwidget.setVolume(vol);
+              // Explicitly play — auto_play can be suppressed in background tabs
+              firetable.scwidget.play();
             }
           });
         }
@@ -445,6 +482,8 @@ firetable.ui.setupRoomEvents = function () {
         firetable.lastChatId = false;
       }
     }
+
+    firetable.actions.replayPendingFireReactions();
 
     // ── Countdown timer ──
     $("#timr").countdown({
@@ -624,6 +663,8 @@ firetable.ui.setupRoomEvents = function () {
         $("#djthing" + i).removeClass("djActive");
       }
     }
+
+    positionFyreAtActiveDJ();
   });
 
   // Re-render deck when user data arrives (mod status affects button visibility)
@@ -645,6 +686,8 @@ firetable.ui.setupRoomEvents = function () {
         $("#djthing" + i).removeClass("djActive");
       }
     }
+
+    positionFyreAtActiveDJ();
   });
 
   // ── Play Limit ──

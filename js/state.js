@@ -136,6 +136,12 @@ var firetable = {
   lastChatId: false,
   /** @type {boolean}  Suppress the first "now playing" chat message on page load */
   nonpmsg: true,
+  /** @type {number}  Shared fire reaction count for the current song */
+  fireCount: 0,
+  /** @type {Object<string, boolean>}  User IDs that have fired on the current song */
+  fireReactors: {},
+  /** @type {Array<Object>}  Fire/rain reaction chat messages seen before current song state is ready */
+  pendingFireReactions: [],
 
   // ── Mod Tools ──
   /** @type {Object|null}  Ban update subscription data */
