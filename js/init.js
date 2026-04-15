@@ -99,8 +99,8 @@ firetable.init = function () {
   firetable.scwidget.bind(SC.Widget.Events.READY, function () {
     // When a SC track starts playing, apply volume + seek
     firetable.scwidget.bind(SC.Widget.Events.PLAY, function () {
-      var vol = localStorage[STORAGE.volume];
-      if (!vol) {
+      var vol = parseInt(localStorage[STORAGE.volume], 10);
+      if (isNaN(vol)) {
         vol = DEFAULT_VOLUME;
         localStorage[STORAGE.volume] = DEFAULT_VOLUME;
       }

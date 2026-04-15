@@ -413,9 +413,11 @@ firetable.ui.setupRoomEvents = function () {
             auto_play: true,
             single_active: false,
             callback: function () {
-              var vol = localStorage[STORAGE.volume];
+              var vol = parseInt(localStorage[STORAGE.volume], 10) || DEFAULT_VOLUME;
               player.setVolume(vol);
               firetable.scwidget.setVolume(vol);
+              // Explicitly play — auto_play can be suppressed in background tabs
+              firetable.scwidget.play();
             }
           });
         }
