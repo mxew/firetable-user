@@ -428,7 +428,7 @@ code {
 }
 
 .graybutt {
-    color: var(--color-text-muted);
+    color: rgba(255, 255, 255, 0.55);
     background: rgba(255, 255, 255, 0.05);
 }
 
@@ -457,9 +457,10 @@ code {
 .iconbutt.on {
     color: var(--color-orange);
     background: rgba(255, 255, 255, 0.033);
-    border-top: 1px solid black;
-    border-bottom: 1px solid var(--color-orange66);
-    box-shadow: inset 0 0 1rem var(--color-orange33);
+    border-top: 1px solid rgba(88, 88, 88, 0.5);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 0 1rem rgba(123, 123, 123, 0.125);
+    text-shadow: 0 0 1rem black;
 }
 
 #fire.on {
@@ -973,15 +974,15 @@ a.sociallogo[href] {
     display: flex;
     align-items: center;
     margin-left: 0.25rem;
-    font-size: 0.875rem;
-    font-weight: 400;
+    font-size: 1rem;
+    font-weight: 100;
 }
 .prson.blockd .prsnNameRole {
     opacity: 0.5;
 }
 
 .prsnName {
-    font-weight: 500;
+    font-weight: 300;
     color: var(--color-text);
     white-space: nowrap;
     overflow-x: hidden;
@@ -1057,8 +1058,8 @@ a.sociallogo[href] {
     display: flex;
     align-items: center;
     position: relative;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 2rem;
+    height: 2rem;
     background-position: 50% 72%;
 }
 
@@ -2007,8 +2008,9 @@ a.importLinkCheck {
 .newChat .ft-avatar {
     position: relative;
     z-index: 2;
-    width: 2rem;
-    height: 2rem;
+    margin-top: 0.125rem;
+    width: 1.75rem;
+    height: 1.75rem;
     cursor: pointer;
 }
 
@@ -2057,16 +2059,21 @@ a.importLinkCheck {
 }
 
 .chatContent .utitle {
-    position: absolute;
-    z-index: 2;
-    left: -1.5rem;
+    flex: 0 0 auto;
+    font-size: 1em;
+    margin-left: 0.25em;
     color: var(--color-text-dim);
+}
+
+.chatContent .utitle:empty {
+    display: none;
 }
 
 .chatHead {
     position: relative;
     display: flex;
     align-items: center;
+    gap: 0;
 }
 
 .chatHead::after {
@@ -2078,7 +2085,7 @@ a.importLinkCheck {
 }
 
 .chatName {
-    margin-right: var(--pad1);
+    flex: 0 0 auto;
     font-size: 0.75rem;
     font-weight: 500;
     color: rgba(255, 255, 255, 0.4);
@@ -2104,9 +2111,11 @@ a.importLinkCheck {
 }
 
 .chatText {
-    position: relative;
-    font-size: 0.75rem;
     grid-column: 1 / -1;
+    position: relative;
+    font-size: 0.8125rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .chatText.deleteMe:hover {
