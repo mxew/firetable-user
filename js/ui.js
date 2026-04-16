@@ -275,61 +275,152 @@ firetable.ui.initSettings = function () {
  * modals, settings toggles, grab, volume, mini-mode, emoji picker, etc.
  * Called once from firetable.ui.init().
  */
-// ── Queue view navigation ──
-firetable.ui.showView = function (name, push) {
-  if (push !== false) {
-    var base = location.pathname.replace(/\/(playlists|history|cards|discover)\/?$/, '/').replace(/\/$/, '') + '/';
-    history.pushState({ view: name }, '', base + name);
-  }
-  var headerBtns = { playlists: '#playlists', history: '#history', cards: '#cardcase', discover: '#discover-nav' };
-  var miniTabs   = { playlists: '#mm-playlists', history: '#mm-history', cards: '#mm-cards', discover: '#mm-discover' };
-  // Drive visibility via CSS class, not inline styles, so media-query rules always win
-  $('#mainGrid').removeClass('view-playlists view-history view-cards view-discover').addClass('view-' + name);
-  $.each(headerBtns, function (key, sel) {
-    $(sel).toggleClass('on', key === name);
-  });
-  $.each(miniTabs, function (key, sel) {
-    $(sel).toggleClass('on', key === name);
-  });
-  if (name === 'cards') { firetable.actions.cardCase(); }
-};
 
-// ── Sync mini-nav active tab to current grid + view state ──
-// Called on init and whenever the viewport crosses the 640px breakpoint.
-firetable.ui.syncNavState = function () {
-  var isWide = window.matchMedia('(min-width: 640px)').matches;
-  var $grid  = $('#mainGrid');
-  if (isWide) {
-    // At 640px+: mini-nav only shows People/Chat.
-    // Ensure exactly one of those two tabs is active.
-    $('#mm-playlists, #mm-history, #mm-cards, #mm-discover').removeClass('on');
-    var isMMusrs = $grid.hasClass('mmusrs');
-    $('#minimodeoptions #mmusrs').toggleClass('on', isMMusrs);
-    $('#minimodeoptions #mmchat').toggleClass('on', !isMMusrs);
-  } else {
-    // At mobile: 5-tab mini-nav must reflect grid-class + view-class.
-    $('#minimodeoptions .tab').removeClass('on');
-    if ($grid.hasClass('mmusrs')) {
-      $('#mmusrs').addClass('on');
-    } else if ($grid.hasClass('mmchat')) {
-      $('#mmchat').addClass('on');
-    } else if ($grid.hasClass('mmqueue')) {
-      var activeTab = $grid.hasClass('view-history')  ? 'mm-history'
-                    : $grid.hasClass('view-cards')    ? 'mm-cards'
-                    : $grid.hasClass('view-discover') ? 'mm-discover'
-                    :                                   'mm-playlists';
-      $('#' + activeTab).addClass('on');
+// ─── Navigation State ─────────────────────────────────────────────────────────
+// Tracks three independent pieces of state:
+//   view         – which content view is active (playlists|history|cards|discover)
+//   side         – which side panel is active at medium (chat|people)
+//   mobileSection – which group shows on mobile (view|chat|people)
+// All three are persisted to localStorage so refresh restores the exact state.
+
+firetable.nav = {
+  view: 'playlists',
+  side: 'chat',
+  mobileSection: 'view',
+
+  _validViews:   ['playlists', 'history', 'cards', 'discover'],
+  _validSides:   ['chat', 'people'],
+  _validMobile:  ['view', 'chat', 'people'],
+  _viewTabMap:   { playlists: 'mm-playlists', history: 'mm-history', cards: 'mm-cards', discover: 'mm-discover' },
+
+  /** Persist current state to localStorage. */
+  save: function () {
+    localStorage[STORAGE.navView]   = firetable.nav.view;
+    localStorage[STORAGE.navSide]   = firetable.nav.side;
+    localStorage[STORAGE.navMobile] = firetable.nav.mobileSection;
+  },
+
+  /** Restore state from URL path (backward compat) then localStorage. */
+  restore: function () {
+    var n = firetable.nav;
+    // URL path takes priority for viewNav (handles old bookmarks / shared links)
+    var pathMatch = location.pathname.match(/\/(playlists|history|cards|discover)\/?$/);
+    if (pathMatch) {
+      n.view = pathMatch[1];
+      n.mobileSection = 'view';
+      // Clean up the URL so it doesn't look like we still do path-based routing
+      history.replaceState(null, '', location.pathname.replace(/\/(playlists|history|cards|discover)\/?$/, '/'));
     } else {
-      // No matching layout class — default to people.
-      $grid.addClass('mmusrs');
-      $('#mmusrs').addClass('on');
+      var sv = localStorage[STORAGE.navView];
+      if (sv && n._validViews.indexOf(sv) !== -1) n.view = sv;
     }
+    var ss = localStorage[STORAGE.navSide];
+    if (ss && n._validSides.indexOf(ss) !== -1) n.side = ss;
+
+    var sm = localStorage[STORAGE.navMobile];
+    if (sm && n._validMobile.indexOf(sm) !== -1) n.mobileSection = sm;
+
+    n.save();
+  },
+
+  /** Set the active content view. */
+  setView: function (name) {
+    firetable.nav.view = name;
+    firetable.nav.mobileSection = 'view';
+    firetable.nav.save();
+    firetable.nav.apply();
+  },
+
+  /** Set the active side panel (chat or people). */
+  setSide: function (name) {
+    firetable.nav.side = name;
+    firetable.nav.mobileSection = name; // 'chat' or 'people'
+    firetable.nav.save();
+    firetable.nav.apply();
+  },
+
+  /** Handle a mini-mode tab click by its element ID. */
+  setMobileTab: function (tabId) {
+    var n = firetable.nav;
+    var viewMap = { 'mm-playlists': 'playlists', 'mm-history': 'history', 'mm-cards': 'cards', 'mm-discover': 'discover' };
+    if (viewMap[tabId]) {
+      n.view = viewMap[tabId];
+      n.mobileSection = 'view';
+    } else if (tabId === 'mmchat') {
+      n.side = 'chat';
+      n.mobileSection = 'chat';
+    } else if (tabId === 'mmusrs') {
+      n.side = 'people';
+      n.mobileSection = 'people';
+    }
+    n.save();
+    n.apply();
+  },
+
+  /** Apply the current nav state to the DOM based on viewport size. */
+  apply: function () {
+    var n    = firetable.nav;
+    var $g   = $('#mainGrid');
+    var isLg = window.matchMedia('(min-width: 1024px)').matches;
+    var isMd = window.matchMedia('(min-width: 640px)').matches;
+
+    // ── View class (always) ──
+    $g.removeClass('view-playlists view-history view-cards view-discover')
+      .addClass('view-' + n.view);
+
+    // ── Header buttons (visible at 640px+) ──
+    $('#playlists').toggleClass('on',    n.view === 'playlists');
+    $('#history').toggleClass('on',      n.view === 'history');
+    $('#cardcase').toggleClass('on',     n.view === 'cards');
+    $('#discover-nav').toggleClass('on', n.view === 'discover');
+
+    // ── Layout classes ──
+    $g.removeClass('mmqueue mmchat mmusrs');
+
+    if (isLg) {
+      // 1024px+: chat AND people always visible (CSS overrides).
+      // Still set a layout class so resizing down transitions smoothly.
+      $g.addClass(n.side === 'people' ? 'mmusrs' : 'mmchat');
+    } else if (isMd) {
+      // 640px–1023px: side panel = chat or people
+      $g.addClass(n.side === 'people' ? 'mmusrs' : 'mmchat');
+      // Mini-mode shows only Chat / People tabs at this size
+      $('#minimodeoptions .tab').removeClass('on');
+      $('#mmusrs').toggleClass('on', n.side === 'people');
+      $('#mmchat').toggleClass('on',  n.side === 'chat');
+    } else {
+      // Mobile: one panel at a time
+      if (n.mobileSection === 'people') {
+        $g.addClass('mmusrs');
+      } else if (n.mobileSection === 'chat') {
+        $g.addClass('mmchat');
+      } else {
+        $g.addClass('mmqueue');
+      }
+      // Mini-mode shows all 6 tabs
+      $('#minimodeoptions .tab').removeClass('on');
+      if (n.mobileSection === 'people') {
+        $('#mmusrs').addClass('on');
+      } else if (n.mobileSection === 'chat') {
+        $('#mmchat').addClass('on');
+      } else {
+        $('#' + n._viewTabMap[n.view]).addClass('on');
+      }
+    }
+
+    if (n.view === 'cards') firetable.actions.cardCase();
   }
 };
 
+// ── Backward-compat wrapper so any remaining showView calls still work ──
+firetable.ui.showView = function (name) {
+  firetable.nav.setView(name);
+};
+firetable.ui.syncNavState = function () {
+  firetable.nav.apply();
+};
 firetable.ui.getViewFromPath = function () {
-  var m = location.pathname.match(/\/(playlists|history|cards|discover)\/?$/);
-  return (m && m[1]) || 'playlists';
+  return firetable.nav.view;
 };
 
 firetable.ui.updateScreenBtn = function (val) {
@@ -426,35 +517,24 @@ firetable.ui.setupMiscEvents = function () {
 
   // ── Mini mode discover/login tabs (pre-login only) ──
   $("#minidiscover").bind("click", function () {
-    firetable.ui.showView('discover');
+    firetable.nav.setView('discover');
   });
   $("#minijoin").bind("click", function () {
-    firetable.ui.showView('playlists');
+    firetable.nav.setView('playlists');
   });
 
   // ── Mini-mode tabs ──
   $("#minimodeoptions .tab").bind("click", function () {
-    var tabId = $(this).attr('id');
-    var viewTabs = ['mm-playlists', 'mm-history', 'mm-cards', 'mm-discover'];
-    var gridClass = (viewTabs.indexOf(tabId) !== -1) ? 'mmqueue' : tabId;
-    // Only swap the layout class (mmusrs/mmchat/mmqueue); preserve view-* class
-    // so the CSS view-class rules work correctly across breakpoints
-    $("#mainGrid").removeClass('mmusrs mmchat mmqueue').addClass(gridClass);
-    $("#minimodeoptions .tab").removeClass('on');
-    $(this).addClass('on');
-    if (tabId === 'mm-playlists') {
-      firetable.ui.showView('playlists');
-    } else if (tabId === 'mm-history') {
-      firetable.ui.showView('history');
-    } else if (tabId === 'mm-cards') {
-      firetable.ui.showView('cards');
-    } else if (tabId === 'mm-discover') {
-      firetable.ui.showView('discover');
-    }
+    firetable.nav.setMobileTab($(this).attr('id'));
   });
 
-  // ── Sync nav tabs on breakpoint change ──
-  window.matchMedia('(min-width: 640px)').addEventListener('change', firetable.ui.syncNavState);
+  // ── Re-apply nav state when crossing breakpoints ──
+  window.matchMedia('(min-width: 640px)').addEventListener('change', function () {
+    firetable.nav.apply();
+  });
+  window.matchMedia('(min-width: 1024px)').addEventListener('change', function () {
+    firetable.nav.apply();
+  });
 
   // ── Grab (steal to another playlist) ──
   $("#grab").bind("click", function () {
@@ -522,13 +602,14 @@ firetable.ui.setupMiscEvents = function () {
   });
 
   $(window).on('popstate', function () {
-    firetable.ui.showView(firetable.ui.getViewFromPath(), false);
+    firetable.nav.restore();
+    firetable.nav.apply();
   });
 
-  $("#history").bind("click", function () { firetable.ui.showView('history'); });
+  $("#history").bind("click", function () { firetable.nav.setView('history'); });
 
   // ── Playlists button toggle ──
-  $("#playlists").bind("click", function () { firetable.ui.showView('playlists'); });
+  $("#playlists").bind("click", function () { firetable.nav.setView('playlists'); });
 
   // ── Reload Track ──
   $("#reloadtrack").bind("click", firetable.actions.reloadtrack);
@@ -578,10 +659,10 @@ firetable.ui.setupMiscEvents = function () {
   });
 
   // ── Card Case panel ──
-  $("#cardcase").bind("click", function () { firetable.ui.showView('cards'); });
+  $("#cardcase").bind("click", function () { firetable.nav.setView('cards'); });
 
   // ── Discover / Fresh Produce panel ──
-  $("#discover-nav").bind("click", function () { firetable.ui.showView('discover'); });
+  $("#discover-nav").bind("click", function () { firetable.nav.setView('discover'); });
 
   // ── Emoji Picker ──
   $("#pickerNav").on("click", "span", function () {
@@ -821,11 +902,9 @@ firetable.ui.init = function () {
   firetable.ui.setupRoomEvents();
   firetable.ui.setupMiscEvents();
 
-  // Restore active view from URL path on initial load
-  firetable.ui.showView(firetable.ui.getViewFromPath(), false);
-
-  // Sync mini-nav active tab to match current viewport
-  firetable.ui.syncNavState();
+  // Restore nav state from URL / localStorage and apply to DOM
+  firetable.nav.restore();
+  firetable.nav.apply();
 
   // Start drag-and-drop link detection
   firetable.ui.LinkGrabber.start();

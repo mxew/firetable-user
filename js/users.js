@@ -151,9 +151,9 @@ firetable.actions.loggedIn = function (user) {
   $("#loggedInName").show();
   $("#logOutButton").show().on('click', firetable.actions.logOut);
   firetable.debug && console.log('remove login class from mainGrid');
-  $('#mainGrid').removeClass('login').removeClass('pre-auth').addClass('mmusrs');
-  firetable.ui.showView(firetable.ui.getViewFromPath(), false);
-  firetable.ui.syncNavState();
+  $('#mainGrid').removeClass('login').removeClass('pre-auth');
+  firetable.nav.restore();
+  firetable.nav.apply();
   $("#grab").css("display", "inline-block");
 };
 

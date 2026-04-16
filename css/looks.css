@@ -2589,10 +2589,6 @@ img.emoji,
     height: 100%;
 }
 
-#mainGrid.view-discover #discover {
-    display: flex;
-}
-
 #mainGrid.login.view-discover #discover {
     grid-area: login;
     display: flex;

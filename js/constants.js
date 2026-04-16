@@ -38,7 +38,10 @@ var STORAGE = {
   desktopNotify:      "firetableDTNM",
   screenControl:      "firetableScreenControl",
   avatarStyle:        "firetableAvatarStyle",
-  lastfmSession:      "ftLastfmSession"
+  lastfmSession:      "ftLastfmSession",
+  navView:            "firetableNavView",
+  navSide:            "firetableNavSide",
+  navMobile:          "firetableNavMobile"
 };
 
 // ─── External Service URLs ──────────────────────────────────────────────────
