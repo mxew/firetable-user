@@ -1599,7 +1599,7 @@ html .ui-button.ui-state-disabled:active {
 
 #fyre {
     position: absolute;
-    bottom: -2rem;
+    bottom: -4rem;
     left: 50%;
     width: min(22rem, 60%);
     height: 14rem;
@@ -2916,7 +2916,100 @@ img.emoji,
 #cardsMain {
     display: grid;
     grid-gap: 0.625rem;
-    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+}
+
+#cardStats {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--pad2);
+    padding: var(--pad3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-t1);
+}
+
+.cardStatsSummary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+    gap: var(--pad2);
+}
+
+.cardStatTile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: var(--pad2);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-bg-s2);
+}
+
+.cardStatLabel {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+}
+
+.cardStatValue {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+}
+
+.cardStatDjBreakdown {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pad1);
+}
+
+#cardStats .hist-day-header {
+    position: static;
+    top: auto;
+}
+
+#cardStats .hist-day-items.cardStatDjList {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    padding-left: 0;
+}
+
+#cardStats .hist-day-group.collapsed .hist-day-items.cardStatDjList {
+    display: none;
+}
+
+#cardStats .hist-day-items.cardStatDjList::before {
+    content: none;
+}
+
+.cardStatDjRow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 999px;
+    background-color: var(--color-bg-s2);
+    border: 1px solid var(--color-border);
+}
+
+.cardStatDjName {
+    color: var(--color-text);
+    font-size: 0.75rem;
+}
+
+.cardStatDjCount {
+    min-width: 1.25rem;
+    text-align: center;
+    border-radius: 999px;
+    padding: 0.1rem 0.35rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #000;
+    background-color: var(--color-orange);
 }
 
 .cardsEmpty {
@@ -2947,7 +3040,8 @@ img.emoji,
 }
 
 span.cardShareChat,
-span.cardGiftChat {
+span.cardGiftChat,
+span.cardViewLarger {
     position: absolute;
     font-size: 0.875rem;
     background-color: #000;
@@ -2957,13 +3051,18 @@ span.cardGiftChat {
 }
 
 span.cardShareChat {
-    top: 33%;
+    top: 25%;
 }
 
 span.cardGiftChat {
-    bottom: 33%;
+    top: 42%;
 }
 
+span.cardViewLarger {
+    top: 59%;
+}
+
+span.cardViewLarger:hover,
 span.cardGiftChat:hover,
 span.cardShareChat:hover {
     background-color: var(--color-orange);
@@ -2971,8 +3070,36 @@ span.cardShareChat:hover {
 }
 
 .caseCardSpot:hover .cardShareChat,
-.caseCardSpot:hover .cardGiftChat {
+.caseCardSpot:hover .cardGiftChat,
+.caseCardSpot:hover .cardViewLarger {
     display: block;
+}
+
+/* ── View Larger modal ── */
+#cardViewLargerModal {
+    position: relative;
+    background: transparent;
+    align-items: stretch;
+    justify-content: flex-start;
+    width: min(92vw, calc(92vh * (225 / 300)));
+    max-height: 92vh;
+    padding: var(--pad3);
+    box-sizing: border-box;
+    gap: var(--pad2);
+    background-color: var(--color-bg-s2);
+}
+
+#cardViewLargerModal #cardViewLargerClose {
+    align-self: flex-end;
+    margin: 0;
+}
+
+#cardViewLargerCanvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: calc(92vh - 4.5rem);
+    aspect-ratio: 225 / 300;
 }
 
 #importDubContent {

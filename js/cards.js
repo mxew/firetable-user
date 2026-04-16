@@ -10,6 +10,76 @@
 
 firetable.actions = firetable.actions || {};
 
+$(document)
+  .off('click.cardStatsToggle')
+  .on('click.cardStatsToggle', '#cardStats .hist-day-header', function () {
+    var $group = $(this).closest('.hist-day-group');
+    $group.toggleClass('collapsed');
+    $(this).attr('aria-expanded', String(!$group.hasClass('collapsed')));
+  });
+
+/**
+ * Build a stats panel for the current card collection.
+ * @param {Object} data - Card collection keyed by card ID
+ * @returns {string} HTML for the stats panel
+ */
+firetable.actions.renderCardStats = function (data) {
+  var keys = Object.keys(data || {});
+  var total = keys.length;
+  var minTemp = null;
+  var maxTemp = null;
+  var perDj = {};
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  keys.forEach(function (key) {
+    var card = data[key] || {};
+    var dj = (card.djname || 'Unknown DJ').trim() || 'Unknown DJ';
+    var temp = Number(card.temp);
+
+    perDj[dj] = (perDj[dj] || 0) + 1;
+
+    if (!isNaN(temp)) {
+      if (minTemp === null || temp < minTemp) minTemp = temp;
+      if (maxTemp === null || temp > maxTemp) maxTemp = temp;
+    }
+  });
+
+  var djRows = Object.keys(perDj).sort(function (a, b) {
+    if (perDj[b] !== perDj[a]) return perDj[b] - perDj[a];
+    return a.localeCompare(b);
+  }).map(function (name) {
+    return (
+      '<span class="cardStatDjRow">' +
+      '<span class="cardStatDjName">' + escapeHtml(name) + '</span>' +
+      '<span class="cardStatDjCount">' + perDj[name] + '</span>' +
+      '</span>'
+    );
+  }).join('');
+
+  return (
+    '<section id="cardStats">' +
+    '<div class="cardStatsSummary">' +
+    '<div class="cardStatTile"><span class="cardStatLabel">Total Cards</span><span class="cardStatValue">' + total + '</span></div>' +
+    '<div class="cardStatTile"><span class="cardStatLabel">Unique DJs</span><span class="cardStatValue">' + Object.keys(perDj).length + '</span></div>' +
+    '<div class="cardStatTile"><span class="cardStatLabel">Lowest Temp</span><span class="cardStatValue">' + (minTemp === null ? '--' : (minTemp + '°')) + '</span></div>' +
+    '<div class="cardStatTile"><span class="cardStatLabel">Highest Temp</span><span class="cardStatValue">' + (maxTemp === null ? '--' : (maxTemp + '°')) + '</span></div>' +
+    '</div>' +
+    '<div class="cardStatDjBreakdown hist-day-group collapsed">' +
+    '<div class="hist-day-header" role="button" aria-expanded="false">Cards Per DJ</div>' +
+    '<div class="hist-day-items cardStatDjList">' + djRows + '</div>' +
+    '</div>' +
+    '</section>'
+  );
+};
+
 /**
  * Open the card case modal and render all cards the user owns.
  */
@@ -22,6 +92,7 @@ firetable.actions.cardCase = function () {
       twemoji.parse($("#cardsMain")[0]);
       return;
     }
+    $("#cardsMain").append(firetable.actions.renderCardStats(data));
     for (var key in data) {
       if (!data.hasOwnProperty(key)) continue;
       var childData = data[key];
@@ -31,6 +102,7 @@ firetable.actions.cardCase = function () {
         '<canvas width="225" height="300" class="caseCard" id="cardMaker' + key + '"></canvas>' +
         '<span role="button" onclick="firetable.actions.giftCard(\'' + key + '\')" class="cardGiftChat">Gift to DJ</span>' +
         '<span role="button" onclick="firetable.actions.chatCard(\'' + key + '\')" class="cardShareChat">Share In Chat</span>' +
+        '<span role="button" onclick="firetable.actions.viewLargerCard(\'' + key + '\')" class="cardViewLarger">View Larger</span>' +
         '</span>'
       );
       firetable.actions.displayCard(childData, key);
@@ -44,6 +116,24 @@ firetable.actions.cardCase = function () {
  */
 firetable.actions.chatCard = function (cardid) {
   ftapi.actions.sendChat("Check out my card...", cardid);
+};
+
+/**
+ * Open a near-fullscreen modal showing just the card canvas.
+ * @param {string} cardid - Card key
+ */
+firetable.actions.viewLargerCard = function (cardid) {
+  var $src = $('#cardMaker' + cardid);
+  if (!$src.length) return;
+  // Clone the canvas and draw the source into it at native resolution
+  var srcCanvas = $src[0];
+  var $dest = $('#cardViewLargerCanvas');
+  var dest = $dest[0];
+  dest.width  = srcCanvas.width;
+  dest.height = srcCanvas.height;
+  dest.getContext('2d').drawImage(srcCanvas, 0, 0);
+  $('#overlay').addClass('show');
+  $('#cardViewLargerModal').addClass('show');
 };
 
 /**
