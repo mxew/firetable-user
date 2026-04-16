@@ -106,8 +106,8 @@ body {
     margin: 0;
     font-size: 1rem;
     color: var(--color-text);
-    background: var(--color-bg);
-    background: linear-gradient(var(--color-bg-t1), var(--color-bg));
+    background-color: var(--color-bg);
+    background-image: linear-gradient(var(--color-bg-t1), var(--color-bg));
     overflow: hidden;
 }
 
