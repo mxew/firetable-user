@@ -69,10 +69,17 @@ firetable.actions.processFireReactionMessage = function (chatData) {
   }
 
   if (isRain) {
-    firetable.fireReactors = {};
-    firetable.fireCount = 0;
-    firetable.actions.updateFireReactionDisplay();
-    $("#cloud_with_rain").addClass("on");
+    if (firetable.fireReactors[chatData.id]) {
+      delete firetable.fireReactors[chatData.id];
+      firetable.fireCount = Math.max(0, firetable.fireCount - 1);
+      firetable.actions.updateFireReactionDisplay();
+    } else {
+      firetable.actions.syncFireReactionButtons();
+    }
+    if (chatData.id === ftapi.uid) {
+      $("#cloud_with_rain").addClass("on");
+      $("#fire").removeClass("on");
+    }
     return true;
   }
 
@@ -520,7 +527,9 @@ firetable.ui.setupChatEvents = function () {
   // ── Fire / Rain reaction buttons ──
   $("#fire").bind("click", function () {
     if (ftapi.uid && firetable.fireReactors[ftapi.uid]) {
-      ftapi.actions.sendChat(":fire_off:");
+      ftapi.actions.sendChat(":cloud_with_rain:");
+      $("#cloud_with_rain").addClass("on");
+      $("#fire").removeClass("on");
     } else {
       ftapi.actions.sendChat(":fire:");
     }

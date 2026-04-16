@@ -2653,7 +2653,8 @@ img.emoji,
 }
 
 #thediscovers .qtxt {
-    display: block;
+    display: flex;
+    flex-direction: column;
     flex: 1;
 }
 
@@ -2661,16 +2662,93 @@ img.emoji,
     font-size: 0.8rem;
     font-weight: 500;
     line-height: 1.3;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+}
+
+#thediscovers .histlink {
+    display: block;
+}
+
+#thediscovers .fresh-track-title,
+#thediscovers .fresh-track-artist {
+    display: block;
+}
+
+#thediscovers .fresh-track-title {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--color-text-light);
+}
+
+#thediscovers .fresh-track-artist {
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: var(--color-text);
+}
+
+#thediscovers .fresh-meta {
+    margin-top: auto;
+    padding-top: var(--pad1);
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 0.35rem;
+}
+
+#thediscovers .fresh-dj-avatar {
+    order: 3;
+    width: 1.35rem;
+    height: 1.35rem;
+    background-size: auto 140%;
+    background-position: center 60%;
+    margin-left: auto;
+    flex-shrink: 0;
+    overflow: visible;
+}
+
+#thediscovers .fresh-dj-avatar[data-label] {
+    position: relative;
+}
+
+#thediscovers .fresh-dj-avatar[data-label]::after {
+    content: attr(data-label);
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 0.4rem);
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+    font-family: var(--font-family);
+    white-space: nowrap;
+    color: var(--color-text-light);
+    background: var(--color-bg-t2);
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 150ms ease;
+    z-index: 100;
+}
+
+#thediscovers .fresh-dj-avatar[data-label]:hover::after {
+    opacity: 1;
+}
+
+#thediscovers .histdj,
+#thediscovers .histdate,
+#thediscovers .histtime {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    margin-top: 0;
+}
+
+#thediscovers .histdate {
+    order: 1;
+}
+
+#thediscovers .histtime {
+    order: 2;
 }
 
 #thediscovers .histdj {
-    font-size: 0.7rem;
-    color: var(--color-text-dim);
-    margin-top: var(--pad1);
+    display: none;
 }
 
 /* ============================================
