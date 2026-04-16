@@ -423,10 +423,10 @@ firetable.ui.setupRoomEvents = function () {
 
       if (firetable.ytLoaded && !firetable.preview) {
         if (firetable.scLoaded) firetable.scwidget.pause();
-        if (!firetable.disableMediaPlayback) player.loadVideoById(data.cid, secSince, "large");
-        var thevol = $("#slider").slider("value");
+        var thevol = firetable.utilities.getEffectiveVolume();
         player.setVolume(thevol);
         firetable.scwidget.setVolume(thevol);
+        if (!firetable.disableMediaPlayback) player.loadVideoById(data.cid, secSince, "large");
       }
 
     } else if (data.type === MEDIA_SOUNDCLOUD) {
@@ -448,7 +448,7 @@ firetable.ui.setupRoomEvents = function () {
             auto_play: true,
             single_active: false,
             callback: function () {
-              var vol = parseInt(localStorage[STORAGE.volume], 10) || DEFAULT_VOLUME;
+              var vol = firetable.utilities.getEffectiveVolume();
               player.setVolume(vol);
               firetable.scwidget.setVolume(vol);
               // Explicitly play — auto_play can be suppressed in background tabs

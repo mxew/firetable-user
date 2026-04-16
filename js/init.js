@@ -99,11 +99,7 @@ firetable.init = function () {
   firetable.scwidget.bind(SC.Widget.Events.READY, function () {
     // When a SC track starts playing, apply volume + seek
     firetable.scwidget.bind(SC.Widget.Events.PLAY, function () {
-      var vol = parseInt(localStorage[STORAGE.volume], 10);
-      if (isNaN(vol)) {
-        vol = DEFAULT_VOLUME;
-        localStorage[STORAGE.volume] = DEFAULT_VOLUME;
-      }
+      var vol = firetable.utilities.getEffectiveVolume();
       firetable.scwidget.setVolume(vol);
       if (firetable.scSeek) firetable.scwidget.seekTo(firetable.scSeek);
     });
@@ -116,7 +112,10 @@ firetable.init = function () {
       if (!firetable.preview) {
         firetable.scSeek = timeSince;
         if (!firetable.disableMediaPlayback) {
-          firetable.scwidget.load(SC_API_TRACK_URL + data.cid, { auto_play: true });
+          firetable.scwidget.load(SC_API_TRACK_URL + data.cid, {
+            auto_play: true,
+            callback: function () { firetable.scwidget.play(); }
+          });
         }
       }
     }
@@ -172,6 +171,27 @@ firetable.init = function () {
   /** Current user was un-banned */
   ftapi.events.on("userUnbanned", function () {
     window.location.reload();
+  });
+
+  // ── Visibility-change recovery ─────────────────────────────────────────
+  // Chrome suppresses audible autoplay in background tabs.  When the user
+  // returns, retry playback so they don't have to click "refresh audio".
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden || firetable.disableMediaPlayback) return;
+    var vol = firetable.utilities.getEffectiveVolume();
+    if (firetable.song && firetable.song.type == MEDIA_YOUTUBE && firetable.ytLoaded) {
+      if (player.getPlayerState() !== 1) {
+        player.setVolume(vol);
+        player.playVideo();
+      }
+    } else if (firetable.song && firetable.song.type == MEDIA_SOUNDCLOUD && firetable.scLoaded) {
+      firetable.scwidget.isPaused(function (paused) {
+        if (paused) {
+          firetable.scwidget.setVolume(vol);
+          firetable.scwidget.play();
+        }
+      });
+    }
   });
 
   // ── UI Init (wires everything up) ──

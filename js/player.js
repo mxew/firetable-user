@@ -48,11 +48,7 @@ function onPlayerReady(event) {
   firetable.ytLoaded = true;
 
   // ── Restore volume ──
-  var vol = parseInt(localStorage[STORAGE.volume], 10);
-  if (isNaN(vol)) {
-    vol = DEFAULT_VOLUME;
-    localStorage[STORAGE.volume] = DEFAULT_VOLUME;
-  }
+  var vol = firetable.utilities.getEffectiveVolume();
   player.setVolume(vol);
 
   // ── Restore mute state ──
@@ -68,12 +64,14 @@ function onPlayerReady(event) {
   }
 
   // ── Volume slider ──
+  var sliderVol = parseInt(localStorage[STORAGE.volume], 10);
+  if (isNaN(sliderVol)) sliderVol = DEFAULT_VOLUME;
   $("#slider").slider({
     orientation: "vertical",
     range: "min",
     min: 0,
     max: 100,
-    value: vol,
+    value: sliderVol,
     step: 5,
     slide: function (event, ui) {
       player.setVolume(ui.value);

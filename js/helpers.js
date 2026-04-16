@@ -9,6 +9,20 @@
 
 firetable.utilities = {
 
+  // ─── Volume ───────────────────────────────────────────────────────────────
+
+  /**
+   * Return the effective playback volume, respecting mute state.
+   * Avoids the `parseInt("0") || DEFAULT_VOLUME` bug that causes loud bursts.
+   * @returns {number} 0 when muted, otherwise the stored volume (or DEFAULT_VOLUME).
+   */
+  getEffectiveVolume: function () {
+    var muted = localStorage[STORAGE.mute];
+    if (muted && muted !== "false") return 0;
+    var vol = parseInt(localStorage[STORAGE.volume], 10);
+    return isNaN(vol) ? DEFAULT_VOLUME : vol;
+  },
+
   // ─── Avatar URL ──────────────────────────────────────────────────────────
 
   /**
@@ -391,15 +405,13 @@ firetable.utilities = {
 
     var secSince = Math.floor(timeSince / 1000);
 
+    var vol = firetable.utilities.getEffectiveVolume();
+
     if (data.type === MEDIA_YOUTUBE) {
       if (firetable.scLoaded) firetable.scwidget.pause();
+      player.setVolume(vol);
       if (!firetable.disableMediaPlayback) {
         player.loadVideoById(data.cid, secSince, "large");
-      }
-      if (opts.forceVolume) {
-        var vol = $("#slider").slider("value");
-        player.setVolume(vol);
-        firetable.scwidget.setVolume(vol);
       }
     } else if (data.type === MEDIA_SOUNDCLOUD) {
       if (firetable.ytLoaded) player.stopVideo();
@@ -408,14 +420,10 @@ firetable.utilities = {
         firetable.scwidget.load(SC_API_TRACK_URL + data.cid, {
           auto_play: true,
           callback: function () {
+            firetable.scwidget.setVolume(vol);
             firetable.scwidget.play();
           }
         });
-      }
-      if (opts.forceVolume) {
-        var vol = $("#slider").slider("value");
-        player.setVolume(vol);
-        firetable.scwidget.setVolume(vol);
       }
     }
   }
