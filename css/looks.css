@@ -1065,15 +1065,17 @@ a.sociallogo[href] {
 
 .blockon {
     display: none;
-    width: 2.2rem;
-    height: 2.2rem;
-    font-size: 2.2rem;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 1.67rem;
     background-color: rgba(0, 0, 0, 0.5);
-    color: var(--color-orange);
+    color: rgba(222 55 0);
     border-radius: var(--radius-pill);
 }
 .prson.blockd .blockon {
-    display: block;
+    display: flex;
 }
 .blockon:empty {
     display: none;

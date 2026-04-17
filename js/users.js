@@ -326,7 +326,7 @@ firetable.ui.loginLinkToggle = function (id) {
  * @returns {string} Inner HTML for the user row
  */
 function buildUserHTML(data) {
-  var blockcon = data.blocked ? "block" : "";
+  var blockcon = data.blocked ? "keyboard_off" : "";
   var herecon = "lens";
   var isIdle = "";
 
