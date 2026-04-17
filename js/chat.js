@@ -337,6 +337,18 @@ firetable.ui.setupChatEvents = function () {
     if (atBottom || ftapi.uid === chatData.id) {
       firetable.utilities.scrollToBottom();
     }
+
+    // ── Chat pruning: remove oldest messages to prevent unbounded DOM growth ──
+    // Canvases (card shares), avatar background-images, and twemoji nodes all
+    // hold memory that never gets freed without this.
+    var MAX_CHAT_MESSAGES = 200;
+    var $allChats = $('#chats').children();
+    if ($allChats.length > MAX_CHAT_MESSAGES) {
+      $allChats.slice(0, $allChats.length - MAX_CHAT_MESSAGES).remove();
+      // Invalidate grouping state so the next message always starts a fresh block
+      firetable.lastChatPerson = false;
+      firetable.lastChatId = false;
+    }
   });
 
   // ── Chat Removal (mod delete) ──

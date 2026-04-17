@@ -29,9 +29,21 @@ class Ember
 		})
 		
 		
-		setInterval(() => {
-			this.addEmber();
-		}, 300)
+		this._intervalId = null;
+		this.resume();
+	}
+
+	pause() {
+		if (this._intervalId) {
+			clearInterval(this._intervalId);
+			this._intervalId = null;
+		}
+	}
+
+	resume() {
+		if (!this._intervalId) {
+			this._intervalId = setInterval(() => { this.addEmber(); }, 300);
+		}
 	}
 	
 	stoke(multiplier)
@@ -142,10 +154,21 @@ class Fire
 			this.flame.filters.push(new PIXI.filters.PixelateFilter());
 		}
 		
-		setInterval(() => {
-			this.addFlame();
-		}, 50)
-		
+		this._intervalId = null;
+		this.resume();
+	}
+
+	pause() {
+		if (this._intervalId) {
+			clearInterval(this._intervalId);
+			this._intervalId = null;
+		}
+	}
+
+	resume() {
+		if (!this._intervalId) {
+			this._intervalId = setInterval(() => { this.addFlame(); }, 50);
+		}
 	}
 	
 	makeBlob(texture)
@@ -334,6 +357,16 @@ class Stage
 			var alpha = visible ? ((0.08 + (normalized * 0.62) + (overdriveNorm * 0.28)) * layerWeight * this.flames[i].coreBoost) : 0;
 			this.flames[i].fire.alpha = Math.min(alpha, 1);
 			this.flames[i].flame.alpha = visible ? Math.min(1, 0.88 + (overdriveNorm * 0.18)) : 0;
+		}
+
+		// Pause/resume animation intervals to avoid burning CPU/GPU when fire
+		// is not visible (no one is DJing).
+		if (visible) {
+			for (var j = 0; j < this.flames.length; j++) { this.flames[j].resume(); }
+			this.ember.resume();
+		} else {
+			for (var j = 0; j < this.flames.length; j++) { this.flames[j].pause(); }
+			this.ember.pause();
 		}
 	}
 
