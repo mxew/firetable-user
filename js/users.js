@@ -326,7 +326,7 @@ firetable.ui.loginLinkToggle = function (id) {
  * @returns {string} Inner HTML for the user row
  */
 function buildUserHTML(data) {
-  var blockcon = data.blocked ? "keyboard_off" : "";
+  var blockcon = data.blocked ? "block" : "";
   var herecon = "lens";
   var isIdle = "";
 
@@ -343,7 +343,7 @@ function buildUserHTML(data) {
   if (data.hostbot) { roleicon = "smart_toy"; roleiconclass = "material-symbols-outlined"; }
 
   return '<div class="ft-avatar" style="background-image:url(' + firetable.utilities.avatarURL(data.userid, data.username, null, data.avatarStyle) + ');">' +
-         '<span class="material-symbols-outlined blockon">' + blockcon + '</span>' +
+         '<span class="material-symbols-outlined blockon"' + (data.blocked ? ' title="This user is blocked and cannot post in chat."' : '') + '>' + blockcon + '</span>' +
          '</div>' +
          '<span class="' + roleiconclass + ' prsnRole">' + roleicon + '</span>' +
          '<div class="prsnNameRole" title="Joined ' + firetable.utilities.format_date(data.joined) + '">' +

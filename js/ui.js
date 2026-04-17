@@ -505,6 +505,17 @@ firetable.ui.tooltip = (function () {
       $el.attr('title', $el.attr('data-ft-title')).removeAttr('data-ft-title');
       hide();
     });
+
+    // ── User list: title-based tooltips ──
+    $('#allUsersWrap').on('mouseenter.ft-tooltip', '[title]', function () {
+      var $el = $(this), text = $el.attr('title');
+      $el.attr('data-ft-title', text).removeAttr('title');
+      show(this, text);
+    }).on('mouseleave.ft-tooltip', '[data-ft-title]', function () {
+      var $el = $(this);
+      $el.attr('title', $el.attr('data-ft-title')).removeAttr('data-ft-title');
+      hide();
+    });
   }
 
   return { bind: bind, show: show, hide: hide };
