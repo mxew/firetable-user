@@ -644,8 +644,8 @@ firetable.ui.setupRoomEvents = function () {
             if (hasPending && !!data[key].removeAfter === !!_pendingDeparture[data[key].id]) {
               delete _pendingDeparture[data[key].id];
             }
-            var departureTitleOff = isSelfDj ? 'You will not be taking the bus after your next play' : djDisplayName + ' will not be taking the bus after their next play';
-            var departureTitleOn  = isSelfDj ? 'You are taking the bus after your next play'           : djDisplayName + ' is taking the bus after their next play';
+            var departureTitleOff = isSelfDj ? `Step down after your next play` : 'Have ' + djDisplayName + ' step down after their next play';
+            var departureTitleOn  = isSelfDj ? `Don't step down after your next play` : `Don't have ` + djDisplayName + ' step down after their next play';
             var departureTitle = removeAfterValue ? departureTitleOn : departureTitleOff;
             departureIndicator = '<button class="iconbutt deckDepartureBtn' + (removeAfterValue ? ' on' : '') + '" data-tablekey="' + key + '" data-userid="' + data[key].id + '" data-djname="' + djDisplayName + '" title="' + departureTitle + '"><i class="material-symbols-outlined">departure_board</i></button>';
           } else if (data[key].removeAfter) {
