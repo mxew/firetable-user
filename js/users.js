@@ -346,7 +346,7 @@ function buildUserHTML(data) {
          '<span class="material-symbols-outlined blockon"' + (data.blocked ? ' title="You have blocked this user. They will not see your chats, and you will not see their chats."' : '') + '>' + blockcon + '</span>' +
          '</div>' +
          '<span class="' + roleiconclass + ' prsnRole">' + roleicon + '</span>' +
-         '<div class="prsnNameRole" title="Joined ' + firetable.utilities.format_date(data.joined) + '">' +
+         '<div class="prsnNameRole">' +
          '<span class="prsnName">' + data.username + '</span>' +
          '</div>';
 }
@@ -378,6 +378,7 @@ firetable.ui.setupUserEvents = function () {
     var $el = $("<div></div>")
       .addClass("prson" + (data.blocked ? " blockd" : "") + (isIdle ? " " + isIdle : ""))
       .attr("id", "user" + data.userid)
+      .attr("data-userid", data.userid)
       .html(buildUserHTML(data));
     firetable.utilities.chatAt($el);
     $(getUserDestination(data)).append($el);
@@ -416,6 +417,7 @@ firetable.ui.setupUserEvents = function () {
         var $el = $("<div></div>")
           .addClass("prson" + (data.blocked ? " blockd" : "") + (isIdle ? " " + isIdle : ""))
           .attr("id", "user" + uid)
+          .attr("data-userid", uid)
           .html(buildUserHTML(data));
         firetable.utilities.chatAt($el);
         $(getUserDestination(data)).append($el);

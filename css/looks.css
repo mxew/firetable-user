@@ -904,16 +904,23 @@ a.sociallogo[href] {
 }
 
 #allUsers {
-    display: grid;
-    grid-template-columns: auto auto 1fr;
-    align-items: center;
-    gap: var(--pad2);
+    display: flex;
+    flex-direction: column;
     padding: var(--pad4);
 }
 
-#allUsers > *,
+#allUsers > * {
+    display: flex;
+    flex-direction: column;
+}
+
 #allUsers .prson {
-    display: contents;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--pad2);
+    padding: var(--pad1) 0;
+    cursor: pointer;
 }
 
 #allUsers #userKEY.prson {
@@ -1011,7 +1018,8 @@ a.sociallogo[href] {
 .prsnNameRole {
     display: flex;
     align-items: center;
-    margin-left: 0.25rem;
+    flex: 1;
+    min-width: 0;
     font-size: 1rem;
     font-weight: 100;
 }
@@ -3256,7 +3264,7 @@ body.blog {
     top: 0;
     left: 0;
     z-index: 9999;
-    background-color: var(--color-bg-s2);
+    background-color: var(--color-bg-t3);
     color: var(--color-text-light);
     padding: 0.2rem 0.5rem;
     border-radius: var(--radius-sm);
@@ -3271,6 +3279,54 @@ body.blog {
 
 #ft-tooltip.is-visible {
     opacity: 1;
+}
+
+#ft-user-tip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    background-color: var(--color-bg-t3);
+    color: var(--color-text-light);
+    padding: 0.5rem 0.65rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    pointer-events: none;
+    min-width: 11rem;
+    box-shadow: 0 2px 8px black;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 120ms ease;
+
+    p {
+        font-size: 0.75rem;
+        color: var(--color-text-dim);
+        text-align: center;
+    }
+}
+
+#ft-user-tip.is-visible {
+    opacity: 1;
+}
+
+#ft-user-tip-arrow {
+    position: absolute;
+    width: 0.5rem;
+    height: 0.5rem;
+    background: var(--color-bg-t3);
+    transform: rotate(45deg);
+    pointer-events: none;
+}
+
+#ft-user-tip .utt-fact {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    line-height: 1.7;
+}
+
+#ft-user-tip .utt-label {
+    color: var(--color-text-muted);
 }
 
 /* ============================================
@@ -3598,25 +3654,13 @@ body.blog {
     }
 
     #allUsers {
-        grid-template-columns: 1fr auto auto;
-        grid-auto-flow: dense;
         padding-top: var(--pad5);
     }
-    #allUsers .ft-avatar {
-        grid-column: -2 / -1;
-    }
-    #allUsers .prsnRole {
-        grid-column: -3 / -2;
-    }
-    #allUsers .djOrder {
-        grid-column: 1 / 2;
+    #allUsers .prson {
+        flex-direction: row-reverse;
     }
     #allUsers .prsnNameRole {
-        grid-column: 1 / 2;
         justify-content: flex-end;
-    }
-    #allUsers .prsnName {
-        order: 2;
     }
 
     .newChat {

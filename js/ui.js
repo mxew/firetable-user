@@ -506,7 +506,7 @@ firetable.ui.tooltip = (function () {
       hide();
     });
 
-    // ── User list: title-based tooltips ──
+    // ── User list: title-based tooltips (for blocked icon etc.) ──
     $('#allUsersWrap').on('mouseenter.ft-tooltip', '[title]', function () {
       var $el = $(this), text = $el.attr('title');
       $el.attr('data-ft-title', text).removeAttr('title');
@@ -516,6 +516,118 @@ firetable.ui.tooltip = (function () {
       $el.attr('title', $el.attr('data-ft-title')).removeAttr('data-ft-title');
       hide();
     });
+
+    // ── User list: rich user info tooltip on .prson hover ──
+    var userTipEl = document.getElementById('ft-user-tip');
+    var userTipArrowEl = document.getElementById('ft-user-tip-arrow');
+    var $userTip  = $(userTipEl);
+    var _cardCountCache = {};
+
+    function showUserTip(anchorEl, userid) {
+      var userData = ftapi.users && ftapi.users[userid];
+      if (!userData) return;
+
+      var role = userData.hostbot  ? 'Bot'
+               : userData.supermod ? 'Supermod'
+               : userData.mod      ? 'Mod'
+               : 'Member';
+
+      var facts = [];
+
+      if (userData.joined) {
+        facts.push({ label: 'Joined', val: firetable.utilities.format_date(userData.joined) });
+      }
+
+      facts.push({ label: 'Role', val: role });
+
+      // Session plays (if currently on the deck)
+      if (firetable.tableData) {
+        for (var k in firetable.tableData) {
+          if (firetable.tableData.hasOwnProperty(k) && firetable.tableData[k].id === userid) {
+            facts.push({ label: 'Session plays', val: firetable.tableData[k].plays });
+            break;
+          }
+        }
+      }
+
+      // Audio broadcasting
+      if (userData.idle && userData.idle.audio === 2) {
+        facts.push({ label: 'Audio', val: 'Broadcasting' });
+      }
+
+      // Cards (async — placeholder first)
+      facts.push({ label: 'Cards', val: '<span class="utt-cards-val">…</span>' });
+
+      var factsHtml = facts.map(function (f) {
+        return '<div class="utt-fact"><span class="utt-label">' + f.label + '</span><span class="utt-val">' + f.val + '</span></div>';
+      }).join('');
+
+      $userTip.find('.utt-facts').html(factsHtml);
+      $userTip.attr('data-for', userid);
+
+      // >1024px: tooltip on the right; <=1024px: tooltip on the left
+      var placement = window.matchMedia('(min-width: 1024px)').matches ? 'right' : 'left';
+
+      userTipEl.style.visibility = 'hidden';
+      $userTip.addClass('is-visible');
+
+      FloatingUIDOM.computePosition(anchorEl, userTipEl, {
+        placement: placement,
+        strategy: 'fixed',
+        middleware: [
+          FloatingUIDOM.offset(8),
+          FloatingUIDOM.flip(),
+          FloatingUIDOM.shift({ padding: 8 }),
+          FloatingUIDOM.arrow({ element: userTipArrowEl, padding: 4 })
+        ]
+      }).then(function (pos) {
+        userTipEl.style.left = pos.x + 'px';
+        userTipEl.style.top  = pos.y + 'px';
+
+        // Arrow positioning
+        if (pos.middlewareData.arrow) {
+          var ax = pos.middlewareData.arrow.x;
+          var ay = pos.middlewareData.arrow.y;
+          var staticSide = { top: 'bottom', bottom: 'top', left: 'right', right: 'left' }[pos.placement.split('-')[0]];
+          Object.assign(userTipArrowEl.style, {
+            left:         ax != null ? ax + 'px' : '',
+            top:          ay != null ? ay + 'px' : '',
+            right:        '',
+            bottom:       '',
+            [staticSide]: '-4px'
+          });
+        }
+
+        userTipEl.style.visibility = 'visible';
+      });
+
+      // Resolve card count
+      if (_cardCountCache.hasOwnProperty(userid)) {
+        $userTip.find('.utt-cards-val').text(_cardCountCache[userid]);
+      } else {
+        firebase.app("firetable").database().ref("cards")
+          .orderByChild('owner').equalTo(userid)
+          .once("value")
+          .then(function (snap) {
+            var count = snap.numChildren();
+            _cardCountCache[userid] = count;
+            if ($userTip.attr('data-for') === userid) {
+              $userTip.find('.utt-cards-val').text(count);
+            }
+          });
+      }
+    }
+
+    function hideUserTip() {
+      $userTip.removeClass('is-visible').removeAttr('data-for');
+    }
+
+    $('#allUsersWrap')
+      .on('mouseenter.ft-usertip', '.prson', function () {
+        var uid = $(this).attr('data-userid');
+        if (uid) showUserTip(this, uid);
+      })
+      .on('mouseleave.ft-usertip', '.prson', hideUserTip);
   }
 
   return { bind: bind, show: show, hide: hide };
