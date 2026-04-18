@@ -2037,6 +2037,7 @@ a.importLinkCheck {
 #newchatForm {
     grid-column: 2/3;
     width: 100%;
+    padding-right: var(--pad4);
 }
 
 .newChat {
@@ -3662,7 +3663,7 @@ body.blog {
     }
 
     .newChat {
-        margin-left: var(--pad4);
+        margin-inline: var(--pad4);
     }
 
     .nowplayn {
