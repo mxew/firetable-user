@@ -601,6 +601,15 @@ firetable.ui.tooltip = (function () {
         userTipEl.style.visibility = 'visible';
       });
 
+      // Mod/supermod actions
+      var ownUser = ftapi.uid && ftapi.users && ftapi.users[ftapi.uid];
+      var isMod = ownUser && (ownUser.mod || ownUser.supermod);
+      var actionsHtml = '';
+      if (isMod && userid !== ftapi.uid) {
+        actionsHtml = '<button class="utt-action-btn" data-action="add-to-deck">Add to deck</button>';
+      }
+      $userTip.find('.utt-actions').html(actionsHtml);
+
       // Resolve card count
       if (_cardCountCache.hasOwnProperty(userid)) {
         $userTip.find('.utt-cards-val').text(_cardCountCache[userid]);
@@ -618,16 +627,34 @@ firetable.ui.tooltip = (function () {
       }
     }
 
-    function hideUserTip() {
-      $userTip.removeClass('is-visible').removeAttr('data-for');
+    var _hideTimer = null;
+    function scheduleHideUserTip() {
+      _hideTimer = setTimeout(function () {
+        $userTip.removeClass('is-visible').removeAttr('data-for');
+      }, 150);
     }
+    function cancelHideUserTip() {
+      clearTimeout(_hideTimer);
+    }
+
+    $(userTipEl)
+      .on('mouseenter', cancelHideUserTip)
+      .on('mouseleave', scheduleHideUserTip)
+      .on('click', '[data-action="add-to-deck"]', function () {
+        var uid = $userTip.attr('data-for');
+        var userData = uid && ftapi.users && ftapi.users[uid];
+        if (userData && userData.username) {
+          ftapi.actions.sendBotCommand('!add ' + userData.username);
+        }
+      });
 
     $('#allUsersWrap')
       .on('mouseenter.ft-usertip', '.prson', function () {
+        cancelHideUserTip();
         var uid = $(this).attr('data-userid');
         if (uid) showUserTip(this, uid);
       })
-      .on('mouseleave.ft-usertip', '.prson', hideUserTip);
+      .on('mouseleave.ft-usertip', '.prson', scheduleHideUserTip);
   }
 
   return { bind: bind, show: show, hide: hide };

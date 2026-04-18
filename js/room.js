@@ -733,16 +733,13 @@ firetable.ui.setupRoomEvents = function () {
       if (userId === ftapi.uid) {
         ftapi.actions.sendBotCommand("!removeme");
       } else {
-        var tableKey = $(this).data('tablekey');
-        firebase.app("firetable").database().ref("table/" + tableKey).remove();
-        if (firetable.waitlistData) {
-          for (var wkey in firetable.waitlistData) {
-            if (firetable.waitlistData.hasOwnProperty(wkey) && firetable.waitlistData[wkey].id === userId) {
-              firebase.app("firetable").database().ref("waitlist/" + wkey).remove();
-              break;
-            }
+        var djName = firetable.tableData && (function () {
+          for (var k in firetable.tableData) {
+            if (firetable.tableData.hasOwnProperty(k) && firetable.tableData[k].id === userId)
+              return firetable.tableData[k].name;
           }
-        }
+        })();
+        if (djName) ftapi.actions.sendBotCommand("!remove " + djName);
       }
     });
 
