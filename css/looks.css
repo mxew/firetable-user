@@ -1552,16 +1552,21 @@ html .ui-button.ui-state-disabled:active {
     padding: 0.5rem;
     box-sizing: border-box;
     z-index: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    background-image: url(../img/idlogo2.png);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-blend-mode: hue;
 }
 
 .ft-eq-bar {
     flex: 1;
     min-height: 15%;
     background-color: var(--color-accent);
-    opacity: 0.25;
     animation: ft-eq-bounce 10s ease-in-out infinite;
-    transform: scaleX(2) scaleY(2);
-    filter: blur(50px);
+    transform: scaleX(3) scaleY(3);
+    filter: blur(150px);
 }
 
 .ft-eq-bar:nth-child(1)  { animation-duration: 11s; animation-delay: 0s; background-color: color-mix(in srgb, var(--color-accent) 80%, rebeccapurple 20%); }
