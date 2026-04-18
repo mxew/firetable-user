@@ -3491,7 +3491,7 @@ body.blog {
     #mainGrid.mmchat,
     #mainGrid.mmusrs {
         grid-template-rows: auto 1fr;
-        grid-template-columns: min-content minmax(min-content, auto) min-content minmax(min-content, auto);
+        grid-template-columns: min-content 20vw min-content 30vw;
         grid-template-areas:
             "head people stage chat"
             "head people view  chat";
@@ -3564,7 +3564,6 @@ body.blog {
 
     #allUsersWrap {
         align-self: flex-end;
-        transform: translateX(1vw);
     }
 
     #usersWaitlist {
