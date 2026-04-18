@@ -182,6 +182,7 @@
 				<form id="newchatForm" autocomplete="off" onsubmit="return false;">
 					<input maxlength="240" autocomplete="off" name="newchat" placeholder="Chat a thing" type="text"
 						id="newchat" tabindex="0" />
+					<div id="typing-indicator"></div>
 				</form>
 				<div id="emojiPicker">
 					<div id="pickerNav"></div>
@@ -524,6 +525,10 @@
 					<div class="settingline">
 						<input type="checkbox" id="desktopNotifyMentionsToggle" name="DTNMToggle">
 						<label for="desktopNotifyMentionsToggle">Desktop notifications for @mentions</label>
+					</div>
+					<div class="settingline">
+						<input type="checkbox" id="shareTypingToggle" name="shareTypingToggle">
+						<label for="shareTypingToggle">Let others know when I'm typing</label>
 					</div>
 					<div class="settingline">
 						<input type="checkbox" id="showImagesToggle" name="showImagesToggle">

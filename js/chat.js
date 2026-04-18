@@ -368,6 +368,87 @@ firetable.ui.setupChatEvents = function () {
     $(this).closest('.chatText').toggleClass('hideImg');
   });
 
+  // ── Typing indicator ──
+  var _typingRef = null;
+  var _typingTimeout = null;
+  var _typingListener = null;
+  var _typingUsers = {}; // uid -> username
+
+  function _renderTypingIndicator() {
+    var named = [];
+    var anonymousCount = 0;
+    for (var uid in _typingUsers) {
+      if (!_typingUsers.hasOwnProperty(uid) || uid === ftapi.uid) continue;
+      if (_typingUsers[uid] === null) {
+        anonymousCount++;
+      } else {
+        named.push(_typingUsers[uid]);
+      }
+    }
+    var $el = $('#typing-indicator');
+    var total = named.length + anonymousCount;
+    if (!total) { $el.empty(); return; }
+
+    var label;
+    if (anonymousCount && !named.length) {
+      label = anonymousCount === 1 ? 'Someone is typing' : anonymousCount + ' people are typing';
+    } else if (!anonymousCount) {
+      label = named.length === 1
+        ? named[0] + ' is typing'
+        : named.length === 2
+          ? named[0] + ' and ' + named[1] + ' are typing'
+          : total + ' people are typing';
+    } else {
+      label = total + ' people are typing';
+    }
+    $el.html('<div class="typing-dots"><span></span><span></span><span></span></div><span>' + label + '</span>');
+  }
+
+  function _setTyping(isTyping) {
+    if (!_typingRef || !ftapi.uid) return;
+    _typingRef.set(isTyping ? true : null);
+  }
+
+  function _setShareTyping(share) {
+    if (!ftapi.uid) return;
+    firebase.app("firetable").database().ref("users/" + ftapi.uid + "/shareTyping").set(share ? null : false);
+  }
+
+  function _startTypingListener() {
+    if (_typingListener) return;
+    var usersRef = firebase.app("firetable").database().ref("users");
+    _typingListener = usersRef.on("value", function (snap) {
+      _typingUsers = {};
+      snap.forEach(function (child) {
+        var d = child.val();
+        if (d && d.typing && child.key !== ftapi.uid) {
+          _typingUsers[child.key] = (d.shareTyping === false) ? null : (d.username || child.key);
+        }
+      });
+      _renderTypingIndicator();
+    });
+  }
+
+  ftapi.events.on("loggedIn", function () {
+    _typingRef = firebase.app("firetable").database().ref("users/" + ftapi.uid + "/typing");
+    _typingRef.onDisconnect().set(null);
+    _setShareTyping(firetable.shareTyping !== false);
+    _startTypingListener();
+  });
+
+  ftapi.events.on("loggedOut", function () {
+    _typingUsers = {};
+    _renderTypingIndicator();
+    _typingRef = null;
+    clearTimeout(_typingTimeout);
+  });
+
+  $("#newchat").on("input", function () {
+    _setTyping(true);
+    clearTimeout(_typingTimeout);
+    _typingTimeout = setTimeout(function () { _setTyping(null); }, 4000);
+  });
+
   // ── Chat Input: Send Message + Slash Commands ──
   $("#newchat").bind("keypress", function (e) {
     if (e.key === "Enter") {
@@ -437,6 +518,8 @@ firetable.ui.setupChatEvents = function () {
         ftapi.actions.sendChat(txt);
       }
 
+      clearTimeout(_typingTimeout);
+      _setTyping(null);
       $("#newchat").val("");
       $("#emojiPicker").slideUp();
       $("#pickEmoji").removeClass("on");

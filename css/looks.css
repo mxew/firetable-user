@@ -61,7 +61,7 @@
     --pad6: 8rem;
 
     /* Layout */
-    --height-footer: 3rem;
+    --height-footer: 3.5rem;
 
     /* Radii */
     --radius-sm: 0.25rem;
@@ -2241,6 +2241,46 @@ a.importLinkCheck {
     gap: 0.5rem;
     height: var(--height-footer);
     padding-right: var(--pad3);
+}
+
+#typing-indicator {
+    padding-top: var(--pad1);
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    max-width: 54ch;
+    margin-inline: auto;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    &:empty { min-height: 0; padding: 0; }
+}
+
+.typing-dots {
+    display: inline-flex;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.typing-dots span {
+    display: block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-text-muted);
+    animation: typing-bounce 1.2s ease-in-out infinite;
+}
+
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30%            { transform: translateY(-4px); opacity: 1; }
 }
 
 #pickEmoji {

@@ -260,6 +260,18 @@ firetable.ui.initSettings = function () {
   }
   firetable.ui.updateScreenBtn(firetable.screenControl);
 
+  // ── Share Typing Status ──
+  var shareTyping = localStorage[STORAGE.shareTyping];
+  if (typeof shareTyping == "undefined") {
+    localStorage[STORAGE.shareTyping] = true;
+    firetable.shareTyping = true;
+    $("#shareTypingToggle").prop("checked", true);
+  } else {
+    shareTyping = JSON.parse(shareTyping);
+    firetable.shareTyping = shareTyping;
+    $("#shareTypingToggle").prop("checked", shareTyping);
+  }
+
   // ── Avatar Style ──
   var savedAvatarStyle = localStorage[STORAGE.avatarStyle];
   if (savedAvatarStyle) {
@@ -874,6 +886,13 @@ firetable.ui.setupMiscEvents = function () {
     firetable.debug && console.log("badoop " + (this.checked ? "on" : "off"));
     localStorage[STORAGE.badoop] = this.checked;
     firetable.playBadoop = this.checked;
+  });
+  $('#shareTypingToggle').change(function () {
+    localStorage[STORAGE.shareTyping] = this.checked;
+    firetable.shareTyping = this.checked;
+    if (ftapi.uid) {
+      firebase.app("firetable").database().ref("users/" + ftapi.uid + "/shareTyping").set(this.checked ? null : false);
+    }
   });
   $('#showImagesToggle').change(function () {
     firetable.debug && console.log("show images " + (this.checked ? "on" : "off"));
