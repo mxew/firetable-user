@@ -365,8 +365,43 @@ code {
 }
 
 .removemeIcon {
+    grid-area: 1 / 1;
+    justify-self: start;
     font-size: 1rem;
-    vertical-align: middle;
+    line-height: 1.5rem;
+}
+
+.djplaque .deckDepartureBtn {
+    grid-area: 1 / 1;
+    justify-self: start;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    box-shadow: none;
+}
+.djplaque .deckDepartureBtn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+}
+.djplaque .deckDepartureBtn.on {
+    color: var(--color-orange);
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    text-shadow: none;
+}
+.djplaque .deckDepartureBtn i {
+    font-size: 0.9rem;
+    pointer-events: none;
 }
 
 .djplaque .deckRemoveBtn {
@@ -558,7 +593,6 @@ code {
     margin-left: var(--pad3);
 }
 
-#viewnav .header_icon .material-symbols-outlined,
 #viewnav .header_icon .material-symbols-outlined {
     font-size: 1.75rem;
 }
@@ -647,6 +681,10 @@ a.sociallogo[href] {
     background: none;
     border: 0;
     box-shadow: none;
+
+    &#cardcase i {
+        transform: rotate(180deg);
+    }
 }
 
 .header_icon .material-symbols-outlined,
@@ -1552,7 +1590,7 @@ html .ui-button.ui-state-disabled:active {
     padding: 0.5rem;
     box-sizing: border-box;
     z-index: 0;
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(0, 0, 0, 0.95);
     background-image: url(../img/idlogo2.png);
     background-size: 100%;
     background-repeat: no-repeat;

@@ -604,6 +604,7 @@ firetable.ui.setupRoomEvents = function () {
   });
 
   // ── DJ Table ──
+  var _pendingDeparture = {}; // userId -> true|null while bot command is in-flight
   ftapi.events.on("tableChanged", function (data) {
     firetable.tableData = data;
     var html = "";
@@ -620,9 +621,26 @@ firetable.ui.setupRoomEvents = function () {
           var actionBtn = showBtn
             ? '<button class="iconbutt deckRemoveBtn" data-userid="' + data[key].id + '" data-tablekey="' + key + '" title="' + btnTitle + '"><i class="material-symbols-outlined">' + btnIcon + '</i></button>'
             : '';
-          var departureIndicator = data[key].removeAfter
-            ? '<span class="removemeIcon material-symbols-outlined" title="Stepping down after this song">departure_board</span>'
-            : '';
+          var departureIndicator;
+          if (showBtn) {
+            var isSelfDj = data[key].id === ftapi.uid;
+            var djDisplayName = firetable.utilities.htmlEscape(data[key].name);
+            // Use pending state if a bot command is in-flight, else use Firebase value
+            var hasPending = _pendingDeparture.hasOwnProperty(data[key].id);
+            var removeAfterValue = hasPending ? _pendingDeparture[data[key].id] : data[key].removeAfter;
+            // Clear pending once Firebase has caught up
+            if (hasPending && !!data[key].removeAfter === !!_pendingDeparture[data[key].id]) {
+              delete _pendingDeparture[data[key].id];
+            }
+            var departureTitleOff = isSelfDj ? 'You will not be taking the bus after your next play' : djDisplayName + ' will not be taking the bus after their next play';
+            var departureTitleOn  = isSelfDj ? 'You are taking the bus after your next play'           : djDisplayName + ' is taking the bus after their next play';
+            var departureTitle = removeAfterValue ? departureTitleOn : departureTitleOff;
+            departureIndicator = '<button class="iconbutt deckDepartureBtn' + (removeAfterValue ? ' on' : '') + '" data-tablekey="' + key + '" data-userid="' + data[key].id + '" data-djname="' + djDisplayName + '" title="' + departureTitle + '"><i class="material-symbols-outlined">departure_board</i></button>';
+          } else if (data[key].removeAfter) {
+            departureIndicator = '<span class="removemeIcon material-symbols-outlined" title="Stepping down after this song">departure_board</span>';
+          } else {
+            departureIndicator = '';
+          }
           html += '<div id="spt' + countr + '" class="spot">' +
             '<div class="avtr" id="avtr' + countr + '" style="background-image: url(' +
             firetable.utilities.avatarURL(data[key].id, data[key].name) + ');"></div>' +
@@ -651,6 +669,29 @@ firetable.ui.setupRoomEvents = function () {
     $("#deck").html(html);
     $("#deck").off('click.addme').on('click.addme', '.addmeButt', function () {
       ftapi.actions.sendBotCommand("!addme");
+    });
+    $("#deck").off('click.departure').on('click.departure', '.deckDepartureBtn', function () {
+      var $btn = $(this);
+      var tableKey = $btn.data('tablekey');
+      var userId = $btn.data('userid');
+      var djName = $btn.data('djname');
+      var isSelf = userId === ftapi.uid;
+      var isOn = $btn.hasClass('on');
+      var newIsOn = !isOn;
+      // Optimistic UI update
+      $btn.toggleClass('on', newIsOn);
+      var newTitle = newIsOn
+        ? (isSelf ? 'You are taking the bus after your next play'           : djName + ' is taking the bus after their next play')
+        : (isSelf ? 'You will not be taking the bus after your next play' : djName + ' will not be taking the bus after their next play');
+      $btn.attr('title', newTitle);
+      if (isSelf) {
+        // Record pending state so re-renders don't clobber UI while bot processes the command
+        _pendingDeparture[userId] = newIsOn ? true : null;
+        ftapi.actions.sendBotCommand(newIsOn ? '!removeafter' : '!dontremoveme');
+      } else {
+        _pendingDeparture[userId] = newIsOn ? true : null;
+        firebase.app("firetable").database().ref("table/" + tableKey + "/removeAfter").set(newIsOn ? true : null);
+      }
     });
     $("#deck").off('click.remove').on('click.remove', '.deckRemoveBtn', function () {
       var userId = $(this).data('userid');
