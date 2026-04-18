@@ -582,7 +582,8 @@ firetable.ui.setupMiscEvents = function () {
     var src = firetable.stealTarget || (firetable.song && firetable.song.cid != 0 && {
       cid: firetable.song.cid,
       type: firetable.song.type,
-      title: firetable.song.artist + " - " + firetable.song.title
+      title: firetable.song.artist + " - " + firetable.song.title,
+      img: (firetable.imgCache && firetable.imgCache[firetable.song.cid]) || ''
     });
     if (src) {
       if (firetable.stealSourceBtn) {
@@ -592,7 +593,7 @@ firetable.ui.setupMiscEvents = function () {
         $("#grab").removeClass('on');
       }
       firetable.stealTarget = null;
-      ftapi.actions.addToList(src.type, src.title, src.cid, dest);
+      ftapi.actions.addToList(src.type, src.title, src.cid, dest, null, src.img);
       $("#stealContain").hide();
     }
   });

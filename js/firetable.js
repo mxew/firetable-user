@@ -452,7 +452,7 @@ ftapi.actions = {
     newlist.set(obj);
     return listid;
   },
-  addToList: function(type, name, cid, dest, callback) {
+  addToList: function(type, name, cid, dest, callback, img) {
     var destref;
     if (dest) {
       if (dest == 0) {
@@ -468,6 +468,7 @@ ftapi.actions = {
       name: name,
       cid: cid
     };
+    if (img) info.img = img;
     var newTrack = destref.push(info, function() {
       if (callback) callback();
     });

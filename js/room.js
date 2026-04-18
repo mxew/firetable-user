@@ -142,8 +142,14 @@ function renderHistoryItem(data, $template, containerSel, artClass) {
   $histItem.find('.histeal').attr('id', "apv" + data.type + data.cid).on('click', function () {
     var $btn = $(this);
     var btnCid = $(this).closest('.pvbar').attr('data-cid');
-    var btnType = $(this).closest('.pvbar').attr('data-type');
-    var btnTitle = firetable.utilities.htmlEscape($(this).closest('.pvbar').find('.histlink').text());
+    var btnType = parseInt($(this).closest('.pvbar').attr('data-type'), 10);
+    var btnImg = $(this).closest('.pvbar').attr('data-img') || '';
+    var $histlink = $(this).closest('.pvbar').find('.histlink');
+    var $trackTitle = $histlink.find('.fresh-track-title');
+    var $trackArtist = $histlink.find('.fresh-track-artist');
+    var btnTitle = ($trackTitle.length && $trackArtist.length)
+      ? firetable.utilities.htmlEscape($trackArtist.text().trim() + ' - ' + $trackTitle.text().trim())
+      : firetable.utilities.htmlEscape($histlink.text());
 
     // If this button's picker is already open, close it
     if (firetable.stealSourceBtn && firetable.stealSourceBtn.is($btn) && !$("#stealContain").is(':hidden')) {
@@ -171,7 +177,7 @@ function renderHistoryItem(data, $template, containerSel, artClass) {
       $("#grab").removeClass('on');
 
       firetable.stealSourceBtn = $btn;
-      firetable.stealTarget = { cid: btnCid, type: btnType, title: btnTitle };
+      firetable.stealTarget = { cid: btnCid, type: btnType, title: btnTitle, img: btnImg };
       $btn.addClass('on');
 
       var stealContainEl = document.getElementById('stealContain');
@@ -185,6 +191,12 @@ function renderHistoryItem(data, $template, containerSel, artClass) {
   if (artClass) {
     $histItem.find('.' + artClass).css('background-image', 'url(' + data.img + ')');
   }
+  // Cache img by cid so playlist renderer can use it even without Firebase storage
+  if (data.img && data.cid) {
+    firetable.imgCache = firetable.imgCache || {};
+    firetable.imgCache[data.cid] = data.img;
+  }
+  $histItem.attr('data-img', data.img || '');
 
   if (containerSel === "#thehistory") {
     var dateKey = firetable.utilities.format_date(data.when);

@@ -424,9 +424,9 @@ firetable.ui.setupPlaylistEvents = function () {
             .attr("data-cid", thisone.cid);
 
       // Album art thumbnail
-      var artUrl = thisone.type === MEDIA_YOUTUBE
+      var artUrl = (thisone.type == MEDIA_YOUTUBE)
         ? 'https://i.ytimg.com/vi/' + thisone.cid + '/mqdefault.jpg'
-        : '';
+        : (thisone.img || (firetable.imgCache && firetable.imgCache[thisone.cid]) || '');
       if (artUrl) $newli.find('.q-art').css('background-image', 'url(' + artUrl + ')');
 
       // Preview button
