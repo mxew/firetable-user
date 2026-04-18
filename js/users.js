@@ -343,7 +343,7 @@ function buildUserHTML(data) {
   if (data.hostbot) { roleicon = "smart_toy"; roleiconclass = "material-symbols-outlined"; }
 
   return '<div class="ft-avatar" style="background-image:url(' + firetable.utilities.avatarURL(data.userid, data.username, null, data.avatarStyle) + ');">' +
-         '<span class="material-symbols-outlined blockon"' + (data.blocked ? ' title="This user is blocked and cannot post in chat."' : '') + '>' + blockcon + '</span>' +
+         '<span class="material-symbols-outlined blockon"' + (data.blocked ? ' title="You have blocked this user. They will not see your chats, and you will not see their chats."' : '') + '>' + blockcon + '</span>' +
          '</div>' +
          '<span class="' + roleiconclass + ' prsnRole">' + roleicon + '</span>' +
          '<div class="prsnNameRole" title="Joined ' + firetable.utilities.format_date(data.joined) + '">' +
