@@ -1484,6 +1484,9 @@ html .ui-button.ui-state-disabled:active {
 #deck {
     grid-area: deck;
     display: flex;
+    justify-content: center;
+    gap: var(--pad1);
+    padding-inline: var(--pad1);
     max-width: 100vw;
 }
 
@@ -1498,8 +1501,7 @@ html .ui-button.ui-state-disabled:active {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    margin-right: var(--pad2);
-    margin-left: var(--pad2);
+    max-width: 10rem;
     min-width: 0;
 }
 
@@ -1531,7 +1533,7 @@ html .ui-button.ui-state-disabled:active {
     grid-template-rows: 1fr;
     align-items: center;
     min-width: 0;
-    padding: 0 var(--pad2);
+    padding: 0 var(--pad1);
     font-size: 0.75rem;
     line-height: 1.5rem;
     color: #fff;
@@ -3460,8 +3462,9 @@ body.blog {
     }
 
     #deck {
-        margin-left: 2.5vw;
-        margin-right: 2.5vw;
+        margin-left: var(--pad4);
+        margin-right: var(--pad4);
+        gap: var(--pad3);
     }
 
     .chatText {
