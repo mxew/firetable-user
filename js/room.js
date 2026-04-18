@@ -264,12 +264,15 @@ firetable.ui.setupRoomEvents = function () {
 
   // ── Discover (Recently Played by Others) ──
   var $discoverItem = $('#thediscovers .pvbar').remove();
+  firetable._produceCache = firetable._produceCache || [];
   ftapi.events.on('newProduce', function (data) {
+    firetable._produceCache.push(data);
     renderHistoryItem(data, $discoverItem, "#thediscovers", "discart");
   });
 
   // ── History (Your Play History) ──
   var $historyItem = $('#thehistory .pvbar').remove();
+  firetable._historyCache = firetable._historyCache || [];
 
   function applyHistoryFilter() {
     var q = ($("#histFilter").val() || "").toLowerCase().trim();
@@ -291,8 +294,28 @@ firetable.ui.setupRoomEvents = function () {
   });
 
   ftapi.events.on('newHistory', function (data) {
+    firetable._historyCache.push(data);
     renderHistoryItem(data, $historyItem, "#thehistory", "histart");
     applyHistoryFilter();
+  });
+
+  // ── Re-render history/discover after re-login ──
+  // Firebase won't re-fire child_added for already-seen items after a logout/login
+  // cycle, so replay from cache into the now-reattached containers.
+  ftapi.events.on('loggedIn', function () {
+    if (firetable._produceCache && firetable._produceCache.length) {
+      $('#thediscovers').empty();
+      firetable._produceCache.forEach(function (data) {
+        renderHistoryItem(data, $discoverItem, "#thediscovers", "discart");
+      });
+    }
+    if (firetable._historyCache && firetable._historyCache.length) {
+      $('#thehistory').empty();
+      firetable._historyCache.forEach(function (data) {
+        renderHistoryItem(data, $historyItem, "#thehistory", "histart");
+      });
+      applyHistoryFilter();
+    }
   });
 
   // ── Edited History (tag correction) ──
