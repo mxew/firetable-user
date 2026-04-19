@@ -369,17 +369,22 @@ firetable.ui.setupChatEvents = function () {
   });
 
   // ── Typing indicator ──
+  // State lives at typing/{uid} (top-level node, not inside users/):
+  //   value = username string → user is sharing their name
+  //   value = true           → user is typing anonymously
+  //   absent / null          → not typing
+  // This keeps the listener tiny (just the typing node) and rules simple.
   var _typingRef = null;
   var _typingTimeout = null;
   var _typingListener = null;
-  var _typingUsers = {}; // uid -> username
+  var _typingUsers = {}; // uid -> string (name) | true (anonymous)
 
   function _renderTypingIndicator() {
     var named = [];
     var anonymousCount = 0;
     for (var uid in _typingUsers) {
       if (!_typingUsers.hasOwnProperty(uid) || uid === ftapi.uid) continue;
-      if (_typingUsers[uid] === null) {
+      if (_typingUsers[uid] === true) {
         anonymousCount++;
       } else {
         named.push(_typingUsers[uid]);
@@ -406,23 +411,23 @@ firetable.ui.setupChatEvents = function () {
 
   function _setTyping(isTyping) {
     if (!_typingRef || !ftapi.uid) return;
-    _typingRef.set(isTyping ? true : null);
-  }
-
-  function _setShareTyping(share) {
-    if (!ftapi.uid) return;
-    firebase.app("firetable").database().ref("users/" + ftapi.uid + "/shareTyping").set(share ? null : false);
+    if (isTyping) {
+      // Write name if sharing, otherwise boolean true (anonymous)
+      var val = (firetable.shareTyping !== false && ftapi.uname) ? ftapi.uname : true;
+      _typingRef.set(val);
+    } else {
+      _typingRef.set(null);
+    }
   }
 
   function _startTypingListener() {
     if (_typingListener) return;
-    var usersRef = firebase.app("firetable").database().ref("users");
-    _typingListener = usersRef.on("value", function (snap) {
+    var typingRef = firebase.app("firetable").database().ref("typing");
+    _typingListener = typingRef.on("value", function (snap) {
       _typingUsers = {};
       snap.forEach(function (child) {
-        var d = child.val();
-        if (d && d.typing && child.key !== ftapi.uid) {
-          _typingUsers[child.key] = (d.shareTyping === false) ? null : (d.username || child.key);
+        if (child.key !== ftapi.uid && child.val() !== null) {
+          _typingUsers[child.key] = child.val(); // string or true
         }
       });
       _renderTypingIndicator();
@@ -430,9 +435,8 @@ firetable.ui.setupChatEvents = function () {
   }
 
   ftapi.events.on("loggedIn", function () {
-    _typingRef = firebase.app("firetable").database().ref("users/" + ftapi.uid + "/typing");
+    _typingRef = firebase.app("firetable").database().ref("typing/" + ftapi.uid);
     _typingRef.onDisconnect().set(null);
-    _setShareTyping(firetable.shareTyping !== false);
     _startTypingListener();
   });
 

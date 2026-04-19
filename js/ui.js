@@ -890,9 +890,8 @@ firetable.ui.setupMiscEvents = function () {
   $('#shareTypingToggle').change(function () {
     localStorage[STORAGE.shareTyping] = this.checked;
     firetable.shareTyping = this.checked;
-    if (ftapi.uid) {
-      firebase.app("firetable").database().ref("users/" + ftapi.uid + "/shareTyping").set(this.checked ? null : false);
-    }
+    // No Firebase write needed — preference is encoded in the value written
+    // to typing/{uid} on the next keypress (username vs true).
   });
   $('#showImagesToggle').change(function () {
     firetable.debug && console.log("show images " + (this.checked ? "on" : "off"));
