@@ -745,6 +745,8 @@ firetable.actions = {
             eight.src = 'https://indiediscotheque.com/robots/' + data.djid + data.djname + '.png?size=110x110&set=' + set;
           };
           cake.src = 'img/arnold.png';
+        } else {
+          doImages();
         }
       } else {
         doImages();
